@@ -1,0 +1,165 @@
+#' Extracts and imports metadata from an rloadest loadReg model into an object of class 
+#' "metadata"
+#' 
+#' @importFrom rloadest loadReg
+#' @export
+#' @param load.model object of class "loadReg", typically produced using 
+#'   rloadest::loadReg(), from which metadata is to be imported
+#' @return Object of class "metadata" with slots modified according to the
+#'   metadata contained in load.model
+#' @family getMetadata
+getMetadata.loadReg <- function(fit) {
+
+  metadata(
+    constituent=fit$constituent,
+    flow=fit$flow,
+    load.rate="",
+    dates=fit$dates,
+    conc.units=fit$conc.units, 
+    flow.units=fit$flow.units, 
+    load.units=fit$load.units, 
+    load.rate.units=paste0(fit$load.units,"/day"),
+    station=fit$station)
+
+}
+
+
+#' Resample the coefficients from a loadReg model.
+#' 
+#' Dives deep into loadReg objects to replace the coefficients for the purpose
+#' of simulating new predictions.
+#' 
+#' @param fit a loadReg object
+#' @param flux.or.conc Should the resampling be done for the coefficients 
+#'   appropriate to flux or those for concentration?
+#' @return A new loadReg object with resampled coefficients such that one of 
+#'   predConc or predLoad (corresponding to the value of \code{flux.or.conc}) 
+#'   will make predictions reflecting those new coefficients. No other 
+#'   properties of the returned model are guaranteed.
+#' @export
+resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
+  
+  # Validate arguments
+  match.arg.loadflex(flux.or.conc)
+  
+  # We only need to adjust the one model fit we're going to use
+  onefit <- switch(
+    flux.or.conc,
+    flux=fit$lfit,
+    conc=fit$cfit)
+  
+  ## Resample Coefficients ##
+  
+  # Like simple linear models, the vector of fitted coefficients for an AMLE 
+  # model (called omega-hat in Cohn 2005) is distributed according to a 
+  # multivariate normal, according to paragraph 28 of Cohn 2005. The parameters 
+  # are mean M = Beta + Aarrow * sigma, variance = SIGMA = Carrow*sigma^2 (eq. 
+  # 32) where Carrow = (Varrow - gamma(gamma')(Vomegahatomegahat))/N. These have
+  # non-obvious names in the LOADEST code, but they're present.
+  
+  
+  ## Extract useful info from the model
+
+  # Calculate S2_U, C, and M (Cohn 2005 section 4.4) as done in TAC_LOAD.f
+  PARMLE <- onefit$PARMLE # PARMLE[1:NPAR] == Beta_hat and PARMLE[NPAR+1] == sigma_hat^2, as used in Eq. 29.
+  NPAR <- onefit$NPAR # The number of actual parameters, K in Eq. 29
+  CV <- onefit$CV # "covar. of std normals censored at XSI's w.r.t. S**2"
+  SCV <- onefit$SCV # "covar. of standard normals censored at XSI's w.r.t. S". somethign special is stored in SCV[NPAR+1,NPAR+1]. this is the version used to calculate C, and is Varrow in eq. 33.
+  NOBSC <- onefit$NOBSC # equal to the N used in Cohn 2005 - number of calibration observations
+  # P24: B_Betaihat = Bias_1[Betaihat]/sigma and B_sigmahat = Bias_1[sigma_hat]/sigma
+  BIAS <- onefit$BIAS
+  SBIAS <- onefit$SBIAS # maybe SBIAS = fit$BIAS/NOBSC, where BIAS == the B_arrow of text after Eq 31?
+  S2 <- PARMLE[NPAR+1]
+  # DO 10 I=1,NPAR
+  #   GAMMA(I) = SCV(I,NPAR+1)/SCV(NPAR+1,NPAR+1)    # Text between Eqs 29 & 30
+  GAMMA <- SCV[1:NPAR,NPAR+1]/SCV[NPAR+1,NPAR+1]
+  #   OMEGA(I) = PARMLE(I)-GAMMA(I)*SQRT(S2)         # Eq 29
+  OMEGA <- PARMLE[1:NPAR]-GAMMA*sqrt(S2)
+  #   B(I) = SBIAS(I)-GAMMA(I)*(1.D0+SBIAS(NPAR+1))  # B(I) == the A_arrow of text after Eq 31?
+  # 10   CONTINUE
+  # DO 30 I=1,NPAR
+  #   DO 20 K=1,NPAR
+  #     C(I,K) = SCV(I,K)-SCV(NPAR+1,NPAR+1)*GAMMA(I)*GAMMA(K)
+  #   20      CONTINUE
+  # 30   CONTINUE
+  C <- SCV[1:NPAR,1:NPAR] - SCV[NPAR+1,NPAR+1]*(GAMMA %*% t(GAMMA))
+  # S2_U = S2/(1.D0+BIAS(NPAR+1))
+  S2_U <- S2/(1+BIAS[NPAR+1]) # S2_U (the AMLE estimate) is used for sigma^2 in eq. 59. should work for eq. 32, too.
+  
+  
+  ## This part parallels the resampling of a regular linear model (lm) and is 
+  ## adapted from 
+  ## http://www.clayford.net/statistics/simulation-to-represent-uncertainty-in-regression-coefficients/
+  
+  coefs <- OMEGA
+  cov.scaled <- C * S2_U # scaled covariance matrix
+  cov.unscaled <- C # unscaled covariance matrix
+  s.hat <- sqrt(S2_U) # residual standard error, AMLE estimate
+  # n - k is supposed to be degrees of freedom. eq. 36 has df = v = 
+  # 2N*((1+Bs2/N)^2/Vs2s2). If I understand right that the calculation of S2_U 
+  # (S2_U <- S2/(1+BIAS[NPAR+1]), above) is the same equation as in paragraph 
+  # 29, then Bs2/N is stored in BIAS[NPAR+1]. Vs2s2 is probably 
+  # CV[NPAR+1,NPAR+1], though I'd like more evidence to be sure. To be like an 
+  # lm, n.minus.k should be close to 23 for the app2 data (less if there were 
+  # censored data). What I get with 2*NOBSC*((1+BIAS[NPAR+1])^2 / 
+  # CV[NPAR+1,NPAR+1]) happens to be exactly the square of 23...so...take the 
+  # sqrt? I guess I will...Ultimately, though, we could head for sigma^2=v*sA^2 
+  # / chi_v^2 which chi_v^2 is a random variable with the given chi-square 
+  # distribution, v degrees of freedom. Alternatively, Eqn. 41 gives a second relation 
+  # between sA^2 and sigma^2, solveable for sigma using the Pythagorean theorem
+  # because the LHS, b1, and b2 are known. Still, surely this is close enough for a
+  # first cut.
+  n.minus.k <- sqrt(2*NOBSC*((1+BIAS[NPAR+1])^2 / CV[NPAR+1,NPAR+1]))
+  
+  # Simulate residual standard deviation. Is it still the case, even with the 
+  # altered distribution of s and sigma, that sigma.hat.sim (==s.hat.sim) is chi
+  # square with df=n.minus.k? Could be close but not perfect. rloadest::EXPON.f 
+  # assumes "S2 is a GAMMA(ALPHA,SIGMA^2*KAPPA) random variable", but then, S2
+  # is not SIGMA2, and SIGMA2 is the s.hat^2 we really want.
+  s.hat.sim <- s.hat*sqrt(n.minus.k/rchisq(1, n.minus.k))
+  
+  # Simulate regression coefficients
+  library(MASS)
+  omega.sim <- mvrnorm(n=1, mu=coefs, Sigma=s.hat.sim^2*cov.unscaled)
+  
+  
+  ## Now work the coefficients back into their places in the loadReg$Xfit (onefit) object
+  
+  # To adjust the model enough that new predictions reflect the resampled 
+  # coefficients, we need to make sure that PARMLE, BIAS, CV, SBIAS, and SCV are
+  # up to date (because these are the variables used by 
+  # predLoad/estlday/TAC_LOAD to calculate MVUE, which are the point load 
+  # estimates). The other arguments to TAC_LOAD are NPAR and XLPRED; of those,
+  # NPAR should stay the same, and XLPRED will be computed by the predLoad or
+  # predConc call from the new predictor data, so we don't need to worry about
+  # them.
+  
+  # Put PARMLE back together with new coefficients and S2
+  PARMLE <- omega.sim - GAMMA*sqrt(S2)
+  S2 <- s.hat.sim * (1+BIAS[NPAR+1])
+  onefit$PARMLE <- c(PARMLE, S2)
+  # Even though TAC_LOAD, etc. use PARMLE, coef.loadReg ~= coef.censReg uses
+  # PARAML. Within rloadest, PARAML is also used for plot.loadReg and
+  # print.loadReg. It's quick enough, I guess...let's replace it here.
+  onefit$PARAML <- onefit$PARMLE
+  
+  # Leave BIAS, CV, SBIAS, and SCV untouched for prediction of new points. 
+  # Prediction of intervals doesn't matter; simulateSolute offers no uncertainty
+  # information. But TAC_LOAD also uses these for reprediction (in particular, 
+  # for the g_v(...) term in eq. 42) - BIAS and CV go into the calculation of 
+  # ALPHA and KAPPA, and SBIAS and SCV go into the calculation of GAMMA, A1, and
+  # B1. All that said, I think their original values are the ones we want: bias 
+  # and the covariance structure of the coefficients shouldn't change just
+  # because we resample the coefficients.
+  
+  # Put the updated onefit back into a loadReg object
+  if(flux.or.conc=="flux") {
+    fit$lfit <- onefit
+  } else {
+    fit$cfit <- onefit
+  }
+  
+  # Return the loadReg object
+  fit
+  
+}
