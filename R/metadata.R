@@ -388,7 +388,7 @@ getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"),
   if(!(colname %in% names(data))) {
     stop("data does not contain the expected ",field," column, '",colname,"'")
   }
-  colvals <- data[,colname]
+  colvals <- data[[colname]]
   
   if(attach.units) {
     units <- switch(

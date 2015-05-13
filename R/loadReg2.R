@@ -66,6 +66,7 @@ setClass(
 #'   object from new data
 #' @return A fitted loadReg2 model.
 #' 
+#' @importFrom rloadest loadReg
 #' @export
 #' @family load.model.inits
 loadReg2 <- function(load.reg,
@@ -77,14 +78,17 @@ loadReg2 <- function(load.reg,
   pred.format <- match.arg.loadflex(pred.format)
   store <- match.arg.loadflex(store, choices=c("data","fitting.function"), several.ok=TRUE)
   
+  # Load rloadest. Not crazy about loading this way, but seems to be necessary for eval() calls
+  library(rloadest)
+    
   # Require that load.reg is a call to loadReg (and not an already-generated
   # loadReg) to ensure that we can extract the right information from it.
   loadReg_call <- substitute(load.reg)
   if(is(loadReg_call, "name")) { 
     # The refitting function [only] will pass the call as a symbol (name) 
     # containing language that is itself a call to loadReg. A clever user could 
-    # probably trick this test into thinking they're inputting a refit...I'm OK
-    # with that.
+    # probably trick this test into thinking they're inputting a refit...that's
+    # on them to avoid.
     loadReg_call <- load.reg
     is_refit <- TRUE
   } else {
@@ -103,7 +107,7 @@ loadReg2 <- function(load.reg,
     stop("load.reg must be a call of the form loadReg(...)")
   }
   
-  # If we received the call as a symbol, we should now refit the model. 
+  # Fit or refit the model
   if(is_refit) {
     # Refitting occurs in the context (environment) of refit.envir, which is an 
     # argument that we've left off the list of documented arguments (it's in
@@ -114,6 +118,9 @@ loadReg2 <- function(load.reg,
     refit_envir <- list(...)[["refit.envir"]]
     # Now refit in the refit_envir. enclos works because refit_envir is actually a list.
     load.reg <- eval(loadReg_call, envir=refit_envir, enclos=parent.frame())
+  } else {
+    # if first time, fit in parent environment as a straight loadReg call would
+    load.reg <- eval(loadReg_call, envir=parent.frame()) 
   }
   
   # Get the metadata, which we'll need to do the following data checks
