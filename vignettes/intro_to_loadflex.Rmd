@@ -1,0 +1,117 @@
+---
+title: "Introduction to loadflex"
+author: Alison Appling
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to loadflex}
+  \usepackage[utf8]{inputenc}
+---
+
+The `loadflex` package lets you quickly fit and compare concentrations and/or fluxes of solutes in watersheds. This vignette demonstrates the application of `loadflex` to fit four different model types to the same data, to assess and compare those models, and to estimate average solute concentrations and fluxes at both quarter-hourly and monthly scales.
+
+We will use the data supplied with the `loadflex` package. These include nitrate concentration observations from the Lamprey River in southeastern New Hampshire, where researchers in the NH Water Resources Research Center (University of New Hampshire; PI: William H. McDowell) have been monitoring water quality weekly since 1999. Discharge data are from the same location, Packers Falls, from a USGS gaging station (http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500).
+
+```{r, echo=FALSE, message=FALSE}
+# Set options for producing the html file & figures
+library(knitr)
+opts_chunk$set(echo=TRUE, message=FALSE)
+```
+
+Start by loading the package.
+
+```{r}
+library(loadflex)
+```
+
+Load the data provided in this package.
+
+```{r data}
+# Interpolation data: Packers Falls NO3 grab sample observations
+data(lamprey_nitrate)
+intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
+
+# Calibration data: Restrict to points separated by more than 6 days
+regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
+
+# Estimation data: Packers Falls discharge
+data(lamprey_discharge)
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00"))
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
+```
+
+Create a metadata description of the dataset & desired output.
+
+```{r fig_1A}
+meta <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", station="Lamprey River, NH")
+```
+
+Fit four models: interpolation, linear, rloadest, and composite. Many variants on these models are possible. For example: `loadInterp` models may use any of several interp.fun options; see `?interpolations`. `loadLm` accepts any linear model acceptable to `lm()`, not just the very simple formula we have used here. `loadReg2` functions are also flexible as specified in the documentation for \pkg{rloadest}. `loadComp` models accept a linear model as fit by either `loadLm` or `loadReg2` and any of the interp.fun options available to `loadInterp`.
+
+```{r fig_1B}
+no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation, 
+  data=intdat, metadata=meta)
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+  data=regdat, metadata=meta, retrans=exp)
+no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
+  flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+  flow.units="cfs", conc.units="mg/L", load.units="kg"))
+no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
+  interp.data=intdat)
+```
+
+You can inspect these models in a variety of model-specific ways. Here are some commands to try (we won't print them here because the output can be lengthy):
+
+```{r, eval=FALSE}
+print(no3_li)
+getFittingFunction(no3_lm)
+getFittedModel(no3_lr)
+getFittingData(no3_lc)
+```
+
+Now generate point predictions from each model.
+
+```{r fig_1C}
+preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE)
+```
+
+A few lines from one of the resulting prediction data.frames (they're all structured the same way):
+
+```{r}
+head(preds_lr)
+```
+
+Here are a few ways to inspect the models:
+
+```{r fig_1D, eval=FALSE}
+summary(getFittedModel(no3_lm))
+qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
+residDurbinWatson(no3_lr, "conc", newdata=regdat, irreg=TRUE)
+residDurbinWatson(no3_lr, "conc", newdata=intdat, irreg=TRUE)
+estimateRho(no3_lr, "conc", newdata=regdat, irreg=TRUE)$rho
+estimateRho(no3_lr, "conc", newdata=intdat, irreg=TRUE)$rho
+getCorrectionFraction(no3_lc, "flux", newdat=intdat)
+```
+
+Aggregate from point predictions to monthly predictions from each model. You can also do this for mean concentration or total flux for the month, or for years or other time intervals.
+
+```{r, fig_1E}
+aggs_li <- aggregateSolute(preds_li, meta, "flux rate", "month")
+aggs_lm <- aggregateSolute(preds_lm, meta, "flux rate", "month")
+aggs_lr <- aggregateSolute(preds_lr, meta, "flux rate", "month")
+aggs_lc <- aggregateSolute(preds_lc, meta, "flux rate", "month")
+```
+
+A few lines from one of the resulting aggregated flux data.frames (they're all structured the same way):
+
+```{r}
+head(aggs_lc)
+```

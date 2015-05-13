@@ -20,6 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #' 
+#' @importFrom dplyr %>% group_by_ summarise
 #' @import unitted
 #' @param preds Either a vector of predicted instantaneous fluxes or 
 #'   concentrations or a data.frame containing the columns "fit", "se.pred", and
@@ -213,11 +214,9 @@ aggregateSolute <- function(
     # Return the calculated SE
     sqrt(cov_matrix_sum)/length(se.preds)
   }
-  library(plyr) # plyr doesn't get used until unitted functions are used, but when it does get used, it needs to have been loaded before dplyr
-  library(dplyr)
   agg_preds <- v(data.frame(preds, se.preds, dates, aggregate_by)) %>%
-    regroup(as.list(agg.by)) %>%
-    summarise(Value=mean(preds), SE=if(se.agg | ci.agg) SEofSum(dates, se.preds) else NA) %>%
+    group_by_(.dots=as.list(agg.by)) %>%
+    dplyr::summarise(Value=mean(preds), SE=if(se.agg | ci.agg) SEofSum(dates, se.preds) else NA) %>%
     as.data.frame()
   
   ### Notes on Uncertainty ### 
