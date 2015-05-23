@@ -8,7 +8,7 @@
 \description{
 Models and Tools for Watershed Flux Estimates
 }
-\section{Methods}{
+\section{Models}{
 
 
   \itemize{
@@ -25,6 +25,20 @@ Models and Tools for Watershed Flux Estimates
   }
 }
 
+\section{Predictions}{
+
+
+  \itemize{
+
+  \item Make predictions at the resolution of the predictor data:
+  \code{\link{predictSolute}}
+
+  \item Collect predictions into means or totals over longer time periods:
+  \code{\link{aggregateSolute}}
+
+  }
+}
+
 \section{Installation}{
 
 
@@ -33,10 +47,9 @@ Models and Tools for Watershed Flux Estimates
 
   library(devtools)
 
-  install.packages(c("USGSwsData", "USGSwsDataRetrieval", "USGSwsBase",
-  "USGSwsGraphs", "USGSwsStats", "USGSwsQW"),
-  repos=c("http://usgs-r.github.com","http://cran.us.r-project.org"),
-  dependencies=TRUE, type="both")
+  install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats",
+  "smwrQW"), repos=c("http://owi.usgs.gov/R", "http://usgs-r.github.com",
+  "http://cran.us.r-project.org"), dependencies=TRUE, type="both")
 
   install_github("USGS-R/rloadest")
 
