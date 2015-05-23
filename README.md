@@ -1,5 +1,4 @@
-loadflex: Models and Tools for Watershed Flux Estimates
---------
+# loadflex: Models and tools for watershed flux estimates
 
 This package implements several of the most common methods for 
 modeling and predicting watershed solute fluxes and concentrations, including
@@ -17,13 +16,12 @@ To get started, load the package and type `?loadflex`.
 To see how to cite this package, type `citation("loadflex")`.
 
 
-Installation
-------------
+# Installation
 
 loadflex makes use of packages that are currently only available from
 GitHub. To install these packages, run the following lines:
    
-```
+```{r}
 library(devtools)
    
 install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW"), 
