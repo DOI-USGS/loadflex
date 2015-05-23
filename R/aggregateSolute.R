@@ -21,6 +21,7 @@
 #' distribution of each flux prediction.
 #' 
 #' @importFrom dplyr %>% group_by_ summarise
+#' @importFrom lubridate tz
 #' @import unitted
 #' @param preds Either a vector of predicted instantaneous fluxes or 
 #'   concentrations or a data.frame containing the columns "fit", "se.pred", and
@@ -152,10 +153,10 @@ aggregateSolute <- function(
         switch(
           agg.by,
           "unit"=1:length(preds),
-          "day"=strftime(dates, "%Y-%m-%d"),
-          "month"=strftime(dates, "%Y-%m"),
+          "day"=strftime(dates, "%Y-%m-%d", tz=tz(dates)),
+          "month"=strftime(dates, "%Y-%m", tz=tz(dates)),
           "water_year"={library(rloadest); waterYear(dates)}, ### NOT FINISHED: this is an rloadest function. might want to write our own ###
-          "calendar_year"=strftime(dates, "%Y"),
+          "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
           stop("")
         )),
