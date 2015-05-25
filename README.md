@@ -1,6 +1,11 @@
-[![Travis-CI Build Status](https://travis-ci.org/NA/NA.png?branch=master)](https://travis-ci.org/NA/NA)
+# loadflex
+## Models and tools for watershed flux estimates
 
-# loadflex: Models and tools for watershed flux estimates
+| Name       | Status           |  
+| :------------ |:-------------|  
+| Linux Build: | [![Build Status](https://travis-ci.org/McDowellLab/loadflex.svg)](https://travis-ci.org/McDowellLab/loadflex)  |
+| Package tests: | [![Coverage Status](https://coveralls.io/repos/McDowellLab/loadflex/badge.svg?branch=master)](https://coveralls.io/r/McDowellLab/loadflex?branch=master) |  
+
 
 This package implements several of the most common methods for 
 modeling and predicting watershed solute fluxes and concentrations, including
