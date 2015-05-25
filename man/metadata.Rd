@@ -15,6 +15,10 @@ updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
 exampleMetadata()
 }
 \arguments{
+\item{constituent}{character. The name of the solute or suspended material
+whose load is to be modeled. Also the name of the data.frame column
+describing that solute or material.}
+
 \item{flow}{character. The name of the data.frame column describing flow
 (discharge)}
 
@@ -50,10 +54,6 @@ with any non-empty elements of new.metadata.}
 
 \item{...}{named arguments describing metadata elements to be modified; the
 names may be any of those accepted by \code{metadata()}.}
-
-\item{constitutent}{character. The name of the solute or suspended material
-whose load is to be modeled. Also the name of the data.frame column
-describing that solute or material.}
 }
 \value{
 \code{metadata} returns a new metadata object with the specified

@@ -9,6 +9,12 @@ match.arg.loadflex(arg, choices, several.ok = FALSE)
 \arguments{
 \item{arg}{An argument, passed as a symbol. May be a missing argument to the
 calling function.}
+
+\item{choices}{Optional. A vector of choices, character or logical, that
+should be accepted by partial matching.}
+
+\item{several.ok}{logical. If TRUE, a vector of several choices in \code{arg}
+will be accepted and returned as such.}
 }
 \value{
 The argument after matching to the allowed options for that argument

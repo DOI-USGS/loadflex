@@ -22,6 +22,7 @@
 #' 
 #' @importFrom dplyr %>% group_by_ summarise
 #' @importFrom lubridate tz
+#' @importFrom smwrBase waterYear
 #' @import unitted
 #' @param preds Either a vector of predicted instantaneous fluxes or 
 #'   concentrations or a data.frame containing the columns "fit", "se.pred", and
@@ -53,7 +54,7 @@
 #'   set by \code{agg.by}.
 #' @param cormat.function A function that takes a vector of datetimes (Date, 
 #'   POSIXct, chron, etc.) and returns a Matrix indicating the assumed/estimated
-#'   correlation between prediction errors on each pair of datetimes. See
+#'   correlation between prediction errors on each pair of datetimes. See 
 #'   \link{correlations-2D} for predefined options.
 #' @param ci.agg logical. Should confidence intervals for the aggregate 
 #'   predictions be returned?
@@ -61,6 +62,9 @@
 #' @param deg.free numeric. The degrees of freedom to use in calculating 
 #'   confidence intervals from SEPs. If NA, a normal distribution is used rather
 #'   than the more standard t distribution.
+#' @param ci.distrib character. The distribution to assume for uncertainty in 
+#'   the aggregate flux or concentration distribution. The default is 
+#'   "lognormal".
 #' @param se.agg logical. Should standard errors of the aggregate predictions be
 #'   returned?
 #' @param na.rm logical. Should NA values be ignored during aggregation (TRUE), 
@@ -174,7 +178,7 @@ aggregateSolute <- function(
           "unit"=1:length(preds),
           "day"=strftime(dates, "%Y-%m-%d", tz=tz(dates)),
           "month"=strftime(dates, "%Y-%m", tz=tz(dates)),
-          "water_year"=rloadest::waterYear(dates),
+          "water_year"=waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
           stop("")

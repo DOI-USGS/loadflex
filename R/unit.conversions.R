@@ -202,7 +202,6 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' unitted form
 #' 
 #' @import unitted
-#' @export
 #' @param freeform.units character string or list of character strings 
 #'   describing one or more sets of units. "Freeform" is an exaggeration but 
 #'   gets at the idea that these units can take a greater variety of forms than 
@@ -213,9 +212,9 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' @return a unitbundle or list of unitbundles containing equivalent but simpler
 #'   and more uniform units
 #' @examples
-#' translateFreeformToUnitted("cfs") # "ft^3 s^-1"
-#' translateFreeformToUnitted("kg/d") # "kg d^-1"
-#' translateFreeformToUnitted("mg L^-1") # "mg L^-1"
+#' loadflex:::translateFreeformToUnitted("cfs") # "ft^3 s^-1"
+#' loadflex:::translateFreeformToUnitted("kg/d") # "kg d^-1"
+#' loadflex:::translateFreeformToUnitted("mg L^-1") # "mg L^-1"
 translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   # Quick escape if our work is already done.
   if(validMetadataUnits(freeform.units, "ANY")) {
@@ -253,16 +252,17 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' Provide the conversion factor which, when multiplied by flow * conc, gives 
 #' the flux in the desired units
 #' 
-#' By dividing rather than multiplying by this factor, the output of this
-#' function may also be used to convert from flux units to the units of the
+#' By dividing rather than multiplying by this factor, the output of this 
+#' function may also be used to convert from flux units to the units of the 
 #' product of flow and concentration.
 #' 
 #' @import unitted
 #' @export flowconcToFluxConversion
 #' @param flow.units character. The units of flow.
 #' @param conc.units character. The units of concentration.
-#' @param load.units character. The units of flux.
-#' @param unitted logical. If TRUE, the conversion factor is returned with units attached.
+#' @param load.rate.units character. The units of flux.
+#' @param attach.units logical. If TRUE, the conversion factor is returned with
+#'   units attached.
 #' @return numeric, or unitted numeric if unitted=TRUE. The conversion factor.
 #' @examples
 #' flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
@@ -342,12 +342,14 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
 #' @param data data.frame containing, at a minimum, the columns named by 
 #'   metadata@@constituent and metadata@@flow
 #' @param flux.or.conc character giving the desired output format
-#' @param calculate logical. If FALSE, looks for a column containing the output 
-#'   of interest. If true, uses the other two columns (out of those for conc, 
-#'   flow, and flux) to calculate the output of interest.
 #' @param metadata An object of class "metadata" describing the units of flow 
 #'   (flow.units) and concentration (conc.units) of the input data, and the 
 #'   desired units of load (load.rate.units) for the output data
+#' @param calculate logical. If FALSE, looks for a column containing the output 
+#'   of interest. If true, uses the other two columns (out of those for conc, 
+#'   flow, and flux) to calculate the output of interest.
+#' @param attach.units logical. If TRUE, the converted observations are returned
+#'   with units attached.
 #' @export
 #' @keywords units
 #' @examples
@@ -418,15 +420,18 @@ observeSolute <- function(
 #' according to the metadata.
 #' 
 #' @param preds raw prediction values
-#' @param from.format format of the raw predictions
-#' @param to.format character. Determines if the returned value is a load or a 
-#'   concentration.
-#' @param newdata a data.frame with nrow() == length(preds) and with any columns
-#'   that will be needed to perform the requested conversion: for example,
-#'   from="conc" and to="flux" implies that discharge will be available in
-#'   newdata
-#' @param metadata - will be used to determine the units
-#' @param attach units - attach the units to the returned value
+#' @param from.format character in 
+#'   \code{c("flux","conc*flow","flux/flow","conc")}. Format of the raw 
+#'   predictions.
+#' @param to.format character indicating whether the returned value should be a 
+#'   flux or a concentration.
+#' @param newdata a data.frame with nrow() == length(preds) and containing any 
+#'   columns (named as in \code{metadata}) that will be needed to perform the
+#'   requested conversion. For example, from="conc" and to="flux" implies that
+#'   a discharge column will be available in \code{newdata}.
+#' @param metadata An object of class \code{\link{metadata}} used to determine 
+#'   the units of inputs and desired output
+#' @param attach.units logical. Attach the units to the returned value?
 #' @return converted predictions (in the format/units specified by to.format and
 #'   metadata)
 #' @export

@@ -12,11 +12,15 @@
 #' 
 #' @param arg An argument, passed as a symbol. May be a missing argument to the 
 #'   calling function.
+#' @param choices Optional. A vector of choices, character or logical, that 
+#'   should be accepted by partial matching.
+#' @param several.ok logical. If TRUE, a vector of several choices in \code{arg}
+#'   will be accepted and returned as such.
 #' @return The argument after matching to the allowed options for that argument 
 #'   name. This may differ from the original value of \code{arg} if \code{arg} 
 #'   is a truncated version of one of the character options for the argument 
 #'   (identified using \code{pmatch}, as in \code{match.arg}.
-#' 
+#'   
 #' @examples
 #' # match.arg.loadflex knows about some variables by their names alone
 #' flux.or.conc="conc"; flux.or.conc <- loadflex:::match.arg.loadflex(flux.or.conc)

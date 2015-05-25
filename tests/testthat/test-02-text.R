@@ -1,4 +1,4 @@
-context("text operations")
+context("text")
 
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 

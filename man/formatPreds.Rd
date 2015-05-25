@@ -10,19 +10,22 @@ formatPreds(preds, from.format = c("flux", "conc*flow", "flux/flow", "conc"),
 \arguments{
 \item{preds}{raw prediction values}
 
-\item{from.format}{format of the raw predictions}
+\item{from.format}{character in
+\code{c("flux","conc*flow","flux/flow","conc")}. Format of the raw
+predictions.}
 
-\item{to.format}{character. Determines if the returned value is a load or a
-concentration.}
+\item{to.format}{character indicating whether the returned value should be a
+flux or a concentration.}
 
-\item{newdata}{a data.frame with nrow() == length(preds) and with any columns
-that will be needed to perform the requested conversion: for example,
-from="conc" and to="flux" implies that discharge will be available in
-newdata}
+\item{newdata}{a data.frame with nrow() == length(preds) and containing any
+columns (named as in \code{metadata}) that will be needed to perform the
+requested conversion. For example, from="conc" and to="flux" implies that
+a discharge column will be available in \code{newdata}.}
 
-\item{metadata}{- will be used to determine the units}
+\item{metadata}{An object of class \code{\link{metadata}} used to determine
+the units of inputs and desired output}
 
-\item{attach}{units - attach the units to the returned value}
+\item{attach.units}{logical. Attach the units to the returned value?}
 }
 \value{
 converted predictions (in the format/units specified by to.format and

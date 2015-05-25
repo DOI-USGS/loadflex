@@ -220,7 +220,7 @@ setClass(
 #' }
 #' 
 #' @rdname metadata
-#' @param constitutent character. The name of the solute or suspended material 
+#' @param constituent character. The name of the solute or suspended material 
 #'   whose load is to be modeled. Also the name of the data.frame column 
 #'   describing that solute or material.
 #' @param flow character. The name of the data.frame column describing flow 

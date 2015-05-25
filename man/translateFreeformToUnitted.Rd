@@ -26,8 +26,8 @@ Convert units from a greater variety of forms, including rloadest form, to
 unitted form
 }
 \examples{
-translateFreeformToUnitted("cfs") # "ft^3 s^-1"
-translateFreeformToUnitted("kg/d") # "kg d^-1"
-translateFreeformToUnitted("mg L^-1") # "mg L^-1"
+loadflex:::translateFreeformToUnitted("cfs") # "ft^3 s^-1"
+loadflex:::translateFreeformToUnitted("kg/d") # "kg d^-1"
+loadflex:::translateFreeformToUnitted("mg L^-1") # "mg L^-1"
 }
 
