@@ -27,4 +27,12 @@ function (1) decides what the available options are without reference to the
 defaults defined in the calling function, and (2) permits atomic but
 non-character choices.
 }
+\examples{
+# match.arg.loadflex knows about some variables by their names alone
+flux.or.conc="conc"; flux.or.conc <- loadflex:::match.arg.loadflex(flux.or.conc)
+attach.units=TRUE; attach.units <- loadflex:::match.arg.loadflex(attach.units)
+
+# you can also pass in custom choices. as always, partial matching is available
+ci.distrib="log"; ci.distrib <- loadflex:::match.arg.loadflex(ci.distrib, c("lognormal","normal"))
+}
 
