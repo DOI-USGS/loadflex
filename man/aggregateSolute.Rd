@@ -100,4 +100,22 @@ where we will assume something about the covariance matrix.
 However, we will deviate from the above equation to accommodate the lognormal
 distribution of each flux prediction.
 }
+\examples{
+metadata_example <- exampleMetadata()
+preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)),
+  date=seq(as.Date("2018-05-15"), as.Date("2019-05-14"), by=as.difftime(1, units="days")))
+aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month")
+
+# with a custom aggregation group
+preds_regrouped <- transform(preds_example, simple.season=ordered(
+  c("winter","spring","summer","fall")[floor(((as.numeric(strftime(date, "\%m"))+0)\%\%12)/3)+1],
+  c("winter","spring","summer","fall")))
+aggregateSolute(preds_example, metadata=metadata_example, format="conc",
+                agg.by="simple.season", custom=preds_regrouped)
+
+# with a custom prediction error correlation matrix
+new_correlation_assumption <- getCormatFirstOrder(rho=0.9, time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
+aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
+                cormat.function=new_correlation_assumption)
+}
 
