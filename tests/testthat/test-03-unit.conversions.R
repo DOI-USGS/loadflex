@@ -1,3 +1,5 @@
+context("unit.conversions")
+
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("validMetadataUnits works", {
@@ -23,10 +25,10 @@ test_that("validMetadataUnits works", {
 
 test_that("translateFreeformToUnitted works", {
   
-  expect_equal(translateFreeformToUnitted("colonies /L"), "colonies L^-1")
-  expect_equal(translateFreeformToUnitted("mg per dL"), "mg dL^-1")
-  expect_equal(translateFreeformToUnitted("cfs"), "ft^3 s^-1")
-  expect_equal(translateFreeformToUnitted("cubic meters per second"), "m^3 s^-1")
+  expect_equal(loadflex:::translateFreeformToUnitted("colonies /L"), "colonies L^-1")
+  expect_equal(loadflex:::translateFreeformToUnitted("mg per dL"), "mg dL^-1")
+  expect_equal(loadflex:::translateFreeformToUnitted("cfs"), "ft^3 s^-1")
+  expect_equal(loadflex:::translateFreeformToUnitted("cubic meters per second"), "m^3 s^-1")
   
 })
 

@@ -20,6 +20,9 @@ desired units of load (load.rate.units) for the output data}
 \item{calculate}{logical. If FALSE, looks for a column containing the output
 of interest. If true, uses the other two columns (out of those for conc,
 flow, and flux) to calculate the output of interest.}
+
+\item{attach.units}{logical. If TRUE, the converted observations are returned
+with units attached.}
 }
 \description{
 Calculates observed instantaneous loading rates or concentrations from

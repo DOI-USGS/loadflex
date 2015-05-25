@@ -13,9 +13,10 @@ flowconcToFluxConversion(flow.units, conc.units, load.rate.units,
 
 \item{conc.units}{character. The units of concentration.}
 
-\item{load.units}{character. The units of flux.}
+\item{load.rate.units}{character. The units of flux.}
 
-\item{unitted}{logical. If TRUE, the conversion factor is returned with units attached.}
+\item{attach.units}{logical. If TRUE, the conversion factor is returned with
+units attached.}
 }
 \value{
 numeric, or unitted numeric if unitted=TRUE. The conversion factor.

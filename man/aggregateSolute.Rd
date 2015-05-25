@@ -61,6 +61,10 @@ predictions be returned?}
 confidence intervals from SEPs. If NA, a normal distribution is used rather
 than the more standard t distribution.}
 
+\item{ci.distrib}{character. The distribution to assume for uncertainty in
+the aggregate flux or concentration distribution. The default is
+"lognormal".}
+
 \item{se.agg}{logical. Should standard errors of the aggregate predictions be
 returned?}
 

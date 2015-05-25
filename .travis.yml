@@ -1,22 +1,19 @@
-# Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
+language: r
+sudo: required
+warnings_are_errors: true
 
-language: c
+r_github_packages:
+ - jimhester/covr
+ - appling/unitted@v0.2.0
+ - USGS-R/smwrData
+ - USGS-R/smwrBase
+ - USGS-R/smwrGraphs
+ - USGS-R/smwrStats
+ - USGS-R/smwrQW
+ - USGS-R/rloadest
 
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-
-install:
-  - ./travis-tool.sh install_deps
-
-script: ./travis-tool.sh run_tests
-
-after_failure:
-  - ./travis-tool.sh dump_logs
-
-env:
-  - WARNINGS_ARE_ERRORS=1
+after_success:
+  - Rscript -e 'covr::coveralls()'
 
 notifications:
   email:
