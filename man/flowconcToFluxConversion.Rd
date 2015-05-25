@@ -25,4 +25,9 @@ By dividing rather than multiplying by this factor, the output of this
 function may also be used to convert from flux units to the units of the
 product of flow and concentration.
 }
+\examples{
+flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
+flowconcToFluxConversion("cfs", "g/L", "kg/d") # 2446.589
+library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
+}
 

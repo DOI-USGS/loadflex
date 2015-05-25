@@ -30,7 +30,6 @@
 #' @slot custom ANY. Empty by default, but may be modified to store any 
 #'   additional data the user wants to track.
 #' @exportClass metadata
-library(methods)
 setClass(
   "metadata",
   slots=c(

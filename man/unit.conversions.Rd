@@ -11,6 +11,9 @@ multiplers that will allow common conversions among units}
 Defines the units that are permissible in load models, along with the
 multiplers that will allow common conversions among units
 }
+\examples{
+data(unit.conversions); unit.conversions
+}
 \keyword{data}
 \keyword{units}
 

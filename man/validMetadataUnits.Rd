@@ -18,4 +18,11 @@ logical. TRUE if valid for that unit type, FALSE otherwise
 \description{
 Check whether these units are acceptable (without translation) for inclusion in metadata
 }
+\examples{
+validMetadataUnits("colonies d^-1") # TRUE
+validMetadataUnits("nonsensical") # FALSE
+validMetadataUnits("g", unit.type="load.units") # TRUE
+validMetadataUnits("g", unit.type="flow.units") # FALSE
+}
+\keyword{units}
 
