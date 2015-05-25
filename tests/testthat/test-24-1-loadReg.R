@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 #' loadReg() is defined within rloadest. The functions required to implement
 #' loadModelInterface are defined in loadReg.R within the current package.

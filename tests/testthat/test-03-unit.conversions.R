@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("validMetadataUnits works", {
 
@@ -87,7 +87,7 @@ test_that("observeSolute generates concentrations with the expected units & form
 })
 
 test_that("formatPreds gets predictions into the right format", {
-  library(rloadest) #for loadConvFactor, for comparison
+  library(rloadest, quietly=TRUE) #for loadConvFactor, for comparison
   obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*loadConvFactor("cms", "mg/l", "mg") )
   row.names(obs) <- paste(11:20)
   md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
