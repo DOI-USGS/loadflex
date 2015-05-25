@@ -10,8 +10,20 @@
 \arguments{
 \item{x}{a character vector to convert}
 }
+\value{
+a character vector with each word having its first letter capitalized
+  and all others lowercase
+}
 \description{
 Convert each word in x to have an upper-case first letter and lower-case
- subsequent letters. Doesn't make exceptions for articles like "the" or "a".
+subsequent letters. Doesn't make exceptions for articles like "the" or "a". A
+word is defined as continuous alpha characters, so "bill's" becomes "Bill'S"
+and "u.s.a." becomes "U.S.A".
 }
+\examples{
+loadflex:::.sentenceCase("the QUICK brown Fox jumped oVer the LaZY doG")
+loadflex:::.sentenceCase(c("QUICK brown Fox","LaZY doG"))
+loadflex:::.sentenceCase(c("u.s.a.", "u_s_a", "bill's", "3 bears", "2 be or not 2be"))
+}
+\keyword{internal}
 
