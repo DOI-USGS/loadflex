@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/NA/NA.png?branch=master)](https://travis-ci.org/NA/NA)
+
 # loadflex: Models and tools for watershed flux estimates
 
 This package implements several of the most common methods for 
