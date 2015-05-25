@@ -1,3 +1,5 @@
+context("uncertainty")
+
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("it's easy to get log-to-linear transformations of distribution moments", {
@@ -19,4 +21,11 @@ test_that("it's easy to get log-to-linear transformations of distribution moment
   # you may supply more than one sd
   expect_equal(logToLin(ms=linToLog(meanlin=9, sdlin=c(1,3,5))), data.frame(meanlin=9, sdlin=c(1,3,5)))
   expect_equal(linToLog(ms=logToLin(meanlog=9, sdlog=c(1,3,5))), data.frame(meanlog=9, sdlog=c(1,3,5)))
+  
+  # mixed conversion
+  linparams <- data.frame(meanlin=1, sdlin=0.5)
+  logparams <- linToLog(ms=linparams)
+  expect_equal(mixedToLog(meanlin=linparams$meanlin, sdlog=logparams$sdlog), data.frame(meanlog=-0.1115718, sdlog=0.472380), tol=0.00001)
+  expect_equal(logToLin(ms=mixedToLog(meanlin=linparams$meanlin, sdlog=logparams$sdlog)), linparams, tol=0.00001)
+  
 })

@@ -19,7 +19,8 @@ mixedToLog(meanlin, sdlog, meanlog, sdlin)
 meaning as the \code{meanlog} argument to \code{\link[stats]{rlnorm}}.}
 
 \item{sdlog}{The standard deviation of the distribution on the log scale,
-with the same}
+with the same meaning as the \code{sdlog} argument to
+\code{\link[stats]{rlnorm}}.}
 
 \item{mslist}{Optionally, a list containing the meanlog and sdlog as the
 first and second elements. If this argument is specified, the first two
@@ -81,5 +82,35 @@ equal exp(sd(N)); this function exists to apply those more complicated
 expressions on the right in the above list. Specifically, this function helps
 you convert from \code{meanlog=mean(N)}, \code{sdlog=sd(N)} to an appropriate
 mean and sd for \code{L} in linear space.
+}
+\examples{
+# Explore with draws from a lognormally distributed sample
+library(ggplot2)
+logparams <- list(meanlog = 1, sdlog = 0.5)
+loglin_data <- data.frame(rlnorm=rlnorm(1000, meanlog=logparams$meanlog, sdlog=logparams$sdlog))
+ggplot(loglin_data, aes(x=log(rlnorm))) + geom_density() +
+  geom_vline(x=logparams$meanlog, color="red") +
+  geom_vline(x=logparams$meanlog+c(-1,1)*logparams$sdlog, color="blue")
+linparams <- logToLin(ms=logparams)
+ggplot(loglin_data, aes(x=rlnorm)) + geom_density() +
+  geom_vline(x=linparams$meanlin, color="red") +
+  geom_vline(x=linparams$meanlin+c(-1,1)*linparams$sdlin, color="blue")
+#
+# logToLin
+logToLin(meanlog=1, sdlog=0.5)
+logToLin(mslist=list(meanlog=1, sdlog=0.5))
+logToLin(ms=linToLog(meanlin=3.080217, sdlin=1.641572))
+#
+# linToLog
+linToLog(meanlin=1, sdlin=0.5)
+linToLog(mslist=list(meanlin=1, sdlin=0.5))
+linToLog(ms=logToLin(meanlog=-0.1115718, sdlog=0.4723807))
+#
+# mixedToLog
+linparams <- data.frame(meanlin=1, sdlin=0.5)
+logparams <- linToLog(ms=linparams)
+mixedToLog(meanlin=linparams$meanlin, sdlog=logparams$sdlog)
+\dontrun{mixedToLog(meanlog=logparams$meanlog, sdlin=linparams$sdlin)}
+logToLin(ms=mixedToLog(meanlin=linparams$meanlin, sdlog=logparams$sdlog))
 }
 
