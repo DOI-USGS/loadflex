@@ -1,12 +1,21 @@
 ### Some basic text handling helper functions
 
-#' Capitalize first letter of words. 
-#'
-#'  Convert each word in x to have an upper-case first letter and lower-case
-#'  subsequent letters. Doesn't make exceptions for articles like "the" or "a".
-#'  
-#'  @name sentenceCase
-#'  @param x a character vector to convert
+#' Capitalize first letter of words.
+#' 
+#' Convert each word in x to have an upper-case first letter and lower-case 
+#' subsequent letters. Doesn't make exceptions for articles like "the" or "a". A
+#' word is defined as continuous alpha characters, so "bill's" becomes "Bill'S"
+#' and "u.s.a." becomes "U.S.A".
+#' 
+#' @name sentenceCase
+#' @param x a character vector to convert
+#' @return a character vector with each word having its first letter capitalized
+#'   and all others lowercase
+#' @keywords internal
+#' @examples
+#' loadflex:::.sentenceCase("the QUICK brown Fox jumped oVer the LaZY doG")
+#' loadflex:::.sentenceCase(c("QUICK brown Fox","LaZY doG"))
+#' loadflex:::.sentenceCase(c("u.s.a.", "u_s_a", "bill's", "3 bears", "2 be or not 2be"))
 .sentenceCase <- function(x) {
   # Convert x to lower case
   x <- tolower(x)
@@ -29,6 +38,9 @@
 #' @param reduce.spaces logical. Reduce multiple consecutive spaces to a single one?
 #' @param old.space regular expression defining space; default includes punctuation, space, and tab
 #' @return The respaced character string
+#' @keywords internal
+#' @examples
+#' loadflex:::.reSpace("this  \t old *!$?# mandolin", reduce.spaces=TRUE) # returns "this_old_mandolin"
 .reSpace <- function(x, new.space="_", reduce.spaces=FALSE, old.space="[[:punct:]|[:blank:]]") {
   ss <- sapply(x, function(onex) {
     s <- strsplit(onex, old.space)[[1]]

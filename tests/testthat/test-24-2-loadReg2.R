@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 #' loadReg2 is a wrapper for loadReg produced by rloadest.
 library(rloadest)

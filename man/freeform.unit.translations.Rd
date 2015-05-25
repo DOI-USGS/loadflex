@@ -9,6 +9,9 @@
 Contains a dictionary with which we will translate a range of possibilities
 into a smaller, more uniform set of units
 }
+\examples{
+data(freeform.unit.translations); freeform.unit.translations
+}
 \keyword{data}
 \keyword{units}
 

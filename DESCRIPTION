@@ -19,12 +19,16 @@ Imports:
     plyr,
     dplyr,
     ggplot2,
+    lubridate,
     rloadest,
     splines,
     stats,
     MASS,
     car,
     unitted
+Suggests:
+    knitr,
+    testthat
 License: GPL (>= 2)
 URL: https://github.com/McDowellLab/loadflex
 Collate:

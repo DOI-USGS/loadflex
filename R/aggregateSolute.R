@@ -75,6 +75,24 @@
 #'   estimates and is named after the value of \code{format}. The values in the 
 #'   second column will be in the units specified by \code{metadata}.
 #'   
+#' @examples
+#' metadata_example <- exampleMetadata()
+#' preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
+#'   date=seq(as.Date("2018-05-15"), as.Date("2019-05-14"), by=as.difftime(1, units="days")))
+#' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month")
+#' 
+#' # with a custom aggregation group
+#' preds_regrouped <- transform(preds_example, simple.season=ordered(
+#'   c("winter","spring","summer","fall")[floor(((as.numeric(strftime(date, "%m"))+0)%%12)/3)+1], 
+#'   c("winter","spring","summer","fall")))
+#' aggregateSolute(preds_example, metadata=metadata_example, format="conc", 
+#'                 agg.by="simple.season", custom=preds_regrouped)
+#' 
+#' # with a custom prediction error correlation matrix
+#' new_correlation_assumption <- getCormatFirstOrder(rho=0.9, time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
+#' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
+#'                 cormat.function=new_correlation_assumption)
+#' 
 #' @export
 aggregateSolute <- function(
   preds, metadata, format=c("conc", "flux rate", "flux total"), 
@@ -96,7 +114,8 @@ aggregateSolute <- function(
       stop("Custom must be NA or a data.frame")
     }
   } else {
-    if(nrow(custom) != length(preds)) {
+    numpreds <- if(is.data.frame(preds)) nrow(preds) else length(preds)
+    if(nrow(custom) != numpreds) {
       stop("When custom is a data.frame, it must have as many rows as there are values in preds, se.preds, etc.")
     }
     colnames(custom) <- .reSpace(colnames(custom),"_") # do this after the match.arg.loadflex call
@@ -155,7 +174,7 @@ aggregateSolute <- function(
           "unit"=1:length(preds),
           "day"=strftime(dates, "%Y-%m-%d", tz=tz(dates)),
           "month"=strftime(dates, "%Y-%m", tz=tz(dates)),
-          "water_year"={library(rloadest); waterYear(dates)}, ### NOT FINISHED: this is an rloadest function. might want to write our own ###
+          "water_year"=rloadest::waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
           stop("")

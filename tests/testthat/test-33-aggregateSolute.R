@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("Unit aggregation works", {
   ex <- data.frame(preds=1:15, se.preds=1, dates=seq(as.Date("2000/1/1"), by = "week", length.out = 15))

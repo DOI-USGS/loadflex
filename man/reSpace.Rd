@@ -23,4 +23,8 @@ The respaced character string
 \description{
 Replace any space or spaces with a single new.space character apiece
 }
+\examples{
+loadflex:::.reSpace("this  \\t old *!$?# mandolin", reduce.spaces=TRUE) # returns "this_old_mandolin"
+}
+\keyword{internal}
 

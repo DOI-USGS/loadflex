@@ -1,10 +1,13 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+context("text operations")
+
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that(".sentenceCase works", {
   
   expect_equal(loadflex:::.sentenceCase("hark the herald"), "Hark The Herald")
   expect_equal(loadflex:::.sentenceCase("Hark tHE heRald"), "Hark The Herald")
-  
+  expect_equal(loadflex:::.sentenceCase(c("QUICK brown Fox","LaZY doG")), c("Quick Brown Fox","Lazy Dog"))
+
 })
 
 

@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("it's easy to get log-to-linear transformations of distribution moments", {
   # meanlin, sdlin, meanlog, and sdlog args work, and the outputs are a

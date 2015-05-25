@@ -1,4 +1,4 @@
-tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
+tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("validMetadataUnits works", {
 
@@ -38,9 +38,13 @@ test_that("flowconcToFluxConversion works", {
   cf2 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = FALSE)
   expect_equivalent(cf2, 2.8317e-05)
   expect_equal(get_units(cf2), NA)
+
+  # Comparisons to the sister rloadest function
+  expect_equal(flowconcToFluxConversion("cfs","ug/l","kg/d"), rloadest::loadConvFactor("cfs","ug/L","kg"))
+  expect_equal(flowconcToFluxConversion("cfs","colonies/dL","million colonies per d"), rloadest::loadConvFactor("cfs","col/dL","million colonies"))
 })
 
-test_that("observeSolute generates loads with the expected units & format", {
+test_that("observeSolute generates fluxes with the expected units & format", {
   obs <- data.frame(MyConc=1:10, MyFlow=rep(10,10))
   row.names(obs) <- paste(11:20)
   md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", dates="none",
@@ -87,8 +91,7 @@ test_that("observeSolute generates concentrations with the expected units & form
 })
 
 test_that("formatPreds gets predictions into the right format", {
-  library(rloadest) #for loadConvFactor, for comparison
-  obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*loadConvFactor("cms", "mg/l", "mg") )
+  obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "mg") )
   row.names(obs) <- paste(11:20)
   md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
                        flow.units="cms", conc.units="mg/l", load.units="mg", load.rate.units="mg/day")
