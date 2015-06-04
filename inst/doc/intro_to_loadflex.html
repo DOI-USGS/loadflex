@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Alison Appling" />
+
+
+<title>Introduction to loadflex</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">Introduction to loadflex</h1>
+<h4 class="author"><em>Alison Appling</em></h4>
+<h4 class="date"><em>04 June, 2015</em></h4>
+</div>
+
+
+<p>The <code>loadflex</code> package lets you quickly fit and compare concentrations and/or fluxes of solutes in watersheds. This vignette demonstrates the application of <code>loadflex</code> to fit four different model types to the same data, to assess and compare those models, and to estimate average solute concentrations and fluxes at both quarter-hourly and monthly scales.</p>
+<p>We will use the data supplied with the <code>loadflex</code> package. These include nitrate concentration observations from the Lamprey River in southeastern New Hampshire, where researchers in the NH Water Resources Research Center (University of New Hampshire; PI: William H. McDowell) have been monitoring water quality weekly since 1999. Discharge data are from the same location, Packers Falls, from a USGS gaging station (<a href="http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500" class="uri">http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500</a>).</p>
+<p>Start by loading the package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(loadflex)</code></pre>
+<p>Load the data provided in this package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Interpolation data: Packers Falls NO3 grab sample observations</span>
+<span class="kw">data</span>(lamprey_nitrate)
+intdat &lt;-<span class="st"> </span>lamprey_nitrate[<span class="kw">c</span>(<span class="st">&quot;DATE&quot;</span>,<span class="st">&quot;DISCHARGE&quot;</span>,<span class="st">&quot;NO3&quot;</span>)]
+
+<span class="co"># Calibration data: Restrict to points separated by more than 6 days</span>
+regdat &lt;-<span class="st"> </span><span class="kw">subset</span>(lamprey_nitrate, REGR)[<span class="kw">c</span>(<span class="st">&quot;DATE&quot;</span>,<span class="st">&quot;DISCHARGE&quot;</span>,<span class="st">&quot;NO3&quot;</span>)]
+
+<span class="co"># Estimation data: Packers Falls discharge</span>
+<span class="kw">data</span>(lamprey_discharge)
+estdat &lt;-<span class="st"> </span><span class="kw">subset</span>(lamprey_discharge, DATE &lt;<span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="st">&quot;2012-10-01 00:00:00&quot;</span>))
+estdat &lt;-<span class="st"> </span>estdat[<span class="kw">seq</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(estdat), <span class="dt">by=</span><span class="dv">96</span>/<span class="dv">4</span>),] <span class="co"># pare to 4 obs/day for speed</span></code></pre>
+<p>Create a metadata description of the dataset &amp; desired output.</p>
+<pre class="sourceCode r"><code class="sourceCode r">meta &lt;-<span class="st"> </span><span class="kw">metadata</span>(<span class="dt">constituent=</span><span class="st">&quot;NO3&quot;</span>, <span class="dt">flow=</span><span class="st">&quot;DISCHARGE&quot;</span>, 
+  <span class="dt">dates=</span><span class="st">&quot;DATE&quot;</span>, <span class="dt">conc.units=</span><span class="st">&quot;mg L^-1&quot;</span>, <span class="dt">flow.units=</span><span class="st">&quot;cfs&quot;</span>, <span class="dt">load.units=</span><span class="st">&quot;kg&quot;</span>, 
+  <span class="dt">load.rate.units=</span><span class="st">&quot;kg d^-1&quot;</span>, <span class="dt">station=</span><span class="st">&quot;Lamprey River, NH&quot;</span>)</code></pre>
+<p>Fit four models: interpolation, linear, rloadest, and composite. Many variants on these models are possible. For example: <code>loadInterp</code> models may use any of several interp.fun options; see <code>?interpolations</code>. <code>loadLm</code> accepts any linear model acceptable to <code>lm()</code>, not just the very simple formula we have used here. <code>loadReg2</code> functions are also flexible as specified in the documentation for . <code>loadComp</code> models accept a linear model as fit by either <code>loadLm</code> or <code>loadReg2</code> and any of the interp.fun options available to <code>loadInterp</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">no3_li &lt;-<span class="st"> </span><span class="kw">loadInterp</span>(<span class="dt">interp.format=</span><span class="st">&quot;conc&quot;</span>, <span class="dt">interp.fun=</span>rectangularInterpolation, 
+  <span class="dt">data=</span>intdat, <span class="dt">metadata=</span>meta)
+no3_lm &lt;-<span class="st"> </span><span class="kw">loadLm</span>(<span class="dt">formula=</span><span class="kw">log</span>(NO3) ~<span class="st"> </span><span class="kw">log</span>(DISCHARGE), <span class="dt">pred.format=</span><span class="st">&quot;conc&quot;</span>, 
+  <span class="dt">data=</span>regdat, <span class="dt">metadata=</span>meta, <span class="dt">retrans=</span>exp)
+no3_lr &lt;-<span class="st"> </span><span class="kw">loadReg2</span>(<span class="kw">loadReg</span>(NO3 ~<span class="st"> </span><span class="kw">model</span>(<span class="dv">9</span>), <span class="dt">data=</span>regdat,
+  <span class="dt">flow=</span><span class="st">&quot;DISCHARGE&quot;</span>, <span class="dt">dates=</span><span class="st">&quot;DATE&quot;</span>, <span class="dt">time.step=</span><span class="st">&quot;instantaneous&quot;</span>, 
+  <span class="dt">flow.units=</span><span class="st">&quot;cfs&quot;</span>, <span class="dt">conc.units=</span><span class="st">&quot;mg/L&quot;</span>, <span class="dt">load.units=</span><span class="st">&quot;kg&quot;</span>))
+no3_lc &lt;-<span class="st"> </span><span class="kw">loadComp</span>(<span class="dt">reg.model=</span>no3_lr, <span class="dt">interp.format=</span><span class="st">&quot;conc&quot;</span>, 
+  <span class="dt">interp.data=</span>intdat)</code></pre>
+<p>You can inspect these models in a variety of model-specific ways. Here are some commands to try (we won’t print them here because the output can be lengthy):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(no3_li)
+<span class="kw">getFittingFunction</span>(no3_lm)
+<span class="kw">getFittedModel</span>(no3_lr)
+<span class="kw">getFittingData</span>(no3_lc)</code></pre>
+<p>Now generate point predictions from each model.</p>
+<pre class="sourceCode r"><code class="sourceCode r">preds_li &lt;-<span class="st"> </span><span class="kw">predictSolute</span>(no3_li, <span class="st">&quot;flux&quot;</span>, estdat, <span class="dt">se.pred=</span><span class="ot">TRUE</span>, <span class="dt">date=</span><span class="ot">TRUE</span>)
+preds_lm &lt;-<span class="st"> </span><span class="kw">predictSolute</span>(no3_lm, <span class="st">&quot;flux&quot;</span>, estdat, <span class="dt">se.pred=</span><span class="ot">TRUE</span>, <span class="dt">date=</span><span class="ot">TRUE</span>)
+preds_lr &lt;-<span class="st"> </span><span class="kw">predictSolute</span>(no3_lr, <span class="st">&quot;flux&quot;</span>, estdat, <span class="dt">se.pred=</span><span class="ot">TRUE</span>, <span class="dt">date=</span><span class="ot">TRUE</span>)
+preds_lc &lt;-<span class="st"> </span><span class="kw">predictSolute</span>(no3_lc, <span class="st">&quot;flux&quot;</span>, estdat, <span class="dt">se.pred=</span><span class="ot">TRUE</span>, <span class="dt">date=</span><span class="ot">TRUE</span>)</code></pre>
+<p>A few lines from one of the resulting prediction data.frames (they’re all structured the same way):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(preds_lr)</code></pre>
+<pre><code>##                  date      fit  se.pred
+## 1 1999-10-01 00:00:00 15.72780 4.722913
+## 2 1999-10-01 06:00:00 16.68311 5.010515
+## 3 1999-10-01 12:00:00 17.39594 5.225214
+## 4 1999-10-01 18:00:00 16.94764 5.090053
+## 5 1999-10-02 00:00:00 16.72981 5.024355
+## 6 1999-10-02 06:00:00 16.51078 4.958313</code></pre>
+<p>Here are a few ways to inspect the models:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">getFittedModel</span>(no3_lm))
+<span class="kw">qplot</span>(<span class="dt">x=</span>Date, <span class="dt">y=</span>Resid, <span class="dt">data=</span><span class="kw">getResiduals</span>(no3_li, <span class="dt">newdata=</span>intdat))
+<span class="kw">residDurbinWatson</span>(no3_lr, <span class="st">&quot;conc&quot;</span>, <span class="dt">newdata=</span>regdat, <span class="dt">irreg=</span><span class="ot">TRUE</span>)
+<span class="kw">residDurbinWatson</span>(no3_lr, <span class="st">&quot;conc&quot;</span>, <span class="dt">newdata=</span>intdat, <span class="dt">irreg=</span><span class="ot">TRUE</span>)
+<span class="kw">estimateRho</span>(no3_lr, <span class="st">&quot;conc&quot;</span>, <span class="dt">newdata=</span>regdat, <span class="dt">irreg=</span><span class="ot">TRUE</span>)$rho
+<span class="kw">estimateRho</span>(no3_lr, <span class="st">&quot;conc&quot;</span>, <span class="dt">newdata=</span>intdat, <span class="dt">irreg=</span><span class="ot">TRUE</span>)$rho
+<span class="kw">getCorrectionFraction</span>(no3_lc, <span class="st">&quot;flux&quot;</span>, <span class="dt">newdat=</span>intdat)</code></pre>
+<p>Aggregate from point predictions to monthly predictions from each model. You can also do this for mean concentration or total flux for the month, or for years or other time intervals.</p>
+<pre class="sourceCode r"><code class="sourceCode r">aggs_li &lt;-<span class="st"> </span><span class="kw">aggregateSolute</span>(preds_li, meta, <span class="st">&quot;flux rate&quot;</span>, <span class="st">&quot;month&quot;</span>)
+aggs_lm &lt;-<span class="st"> </span><span class="kw">aggregateSolute</span>(preds_lm, meta, <span class="st">&quot;flux rate&quot;</span>, <span class="st">&quot;month&quot;</span>)
+aggs_lr &lt;-<span class="st"> </span><span class="kw">aggregateSolute</span>(preds_lr, meta, <span class="st">&quot;flux rate&quot;</span>, <span class="st">&quot;month&quot;</span>)
+aggs_lc &lt;-<span class="st"> </span><span class="kw">aggregateSolute</span>(preds_lc, meta, <span class="st">&quot;flux rate&quot;</span>, <span class="st">&quot;month&quot;</span>)</code></pre>
+<p>A few lines from one of the resulting aggregated flux data.frames (they’re all structured the same way):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(aggs_lc)</code></pre>
+<pre><code>##     Month Flux_Rate        SE  CI_lower  CI_upper
+## 1 1999-10  32.81057  2.468790  28.23778  37.90923
+## 2 1999-11  58.04888  3.927682  50.73108  66.11956
+## 3 1999-12  75.51837  4.969967  66.24543  85.71807
+## 4 2000-01  93.16276  6.364417  81.31096 106.24622
+## 5 2000-02 123.67410 10.083408 105.08839 144.58571
+## 6 2000-03 201.53798 14.004645 175.48220 230.35026</code></pre>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
