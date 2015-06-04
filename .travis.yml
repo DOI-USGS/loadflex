@@ -4,7 +4,7 @@ warnings_are_errors: true
 
 r_github_packages:
  - jimhester/covr
- - appling/unitted@v0.2.0
+ - appling/unitted
  - USGS-R/smwrData
  - USGS-R/smwrBase
  - USGS-R/smwrGraphs
