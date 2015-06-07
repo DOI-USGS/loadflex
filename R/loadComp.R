@@ -19,6 +19,7 @@
 #'   linear space.
 #' @slot abs.or.rel.resids character specifying whether interpolation should be 
 #'   by absolute residuals (obs-pred) or relative residuals (obs/pred).
+#' @importFrom methods setClass
 #' @exportClass compModel
 #' @family load.model.fits
 setClass(
@@ -51,6 +52,7 @@ setClass(
 
 #' A load model class implementing the composite method for flux estimation.
 #' 
+#' @importFrom methods setClass
 #' @exportClass loadComp
 #' @family load.model.classes
 setClass(

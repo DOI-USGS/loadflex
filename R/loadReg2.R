@@ -16,6 +16,7 @@
 #' @include loadReg.R
 #' @rdname loadReg2-class
 #' @name loadReg2-class
+#' @importFrom methods setClass
 #' @exportClass loadReg2
 #' @family load.model.classes
 setClass(

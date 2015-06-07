@@ -19,6 +19,7 @@
 #'   interpolate.
 #' @slot interp.function Function that accepts arguments \code{dates.in}, 
 #'   \code{y.in}, and \code{dates.out}, then returns predictions \code{y.out}
+#' @importFrom methods setClass
 #' @exportClass interpModel
 #' @family load.model.fits
 setClass(
@@ -65,6 +66,7 @@ setClass(
 #' @slot fit the interpolation model to be used.
 #' @slot MSE numeric. The mean squared error, i.e., the variance of prediction
 #'   errors, probably as estimated by leave-one-out cross validation.
+#' @importFrom methods setClass
 #' @exportClass loadInterp
 #' @family load.model.classes
 setClass(

@@ -23,6 +23,7 @@
 #'   fitting the model.
 #' @slot retrans.function A function to be applied to the y predictions before
 #'   returning their values from \code{predictSolute()}.
+#' @importFrom methods setClass
 #' @exportClass loadModel
 #' @family load.model.classes
 setClass(
@@ -77,6 +78,7 @@ setClass(
 #' @rdname show.loadModel
 #' @name show.loadModel
 #' @param object loadModel object to be displayed.
+#' @importFrom methods setMethod
 #' @exportMethod show
 setMethod(
   "show", "loadModel", 

@@ -29,6 +29,7 @@
 #' @slot station character. A description of the sampling station or site.
 #' @slot custom ANY. Empty by default, but may be modified to store any 
 #'   additional data the user wants to track.
+#' @importFrom methods setClass
 #' @exportClass metadata
 setClass(
   "metadata",
@@ -456,6 +457,7 @@ getInfo <- function(metadata, field=c("station", "custom")) {
 #' @rdname show.metadata
 #' @name show.metadata
 #' @param object The metadata object to be displayed
+#' @importFrom methods setMethod
 #' @exportMethod show
 setMethod(
   "show", "metadata", 
@@ -485,6 +487,7 @@ setMethod(
 #' @param e2 metadata object to be compared.
 #' @return logical value indicating whether the two metadata objects have
 #'   identical contents.
+#' @importFrom methods setMethod
 #' @exportMethod ==
 #' @family metadata
 setMethod(

@@ -7,6 +7,7 @@
 #' loadLms can take any lm formula.
 #' 
 #' @slot fit the interpolation model to be used.
+#' @importFrom methods setClass
 #' @exportClass loadLm
 #' @family load.model.classes
 setClass(
