@@ -3,23 +3,13 @@
 
 #' Create a vector of baseflow rates.
 #' 
+#' Internal for now; not yet ready to be a part of the official API
+#' 
 #' Given a dataset with date and flow columns, separates total flow into 
 #' baseflow and runoff; returns a vector of baseflow rates. Several methods are 
 #' available and can be selected with the "method" argument. All methods assume 
 #' that the time series is evenly spaced, and all work better with 
 #' higher-resolution data (e.g., hourly or daily rather than weekly or monthly).
-#' The \code{hysep} method further requires that dates can be specified as dates
-#' without hours, minutes, or seconds, i.e., that the time step is a multiple of
-#' 1 day.
-#' 
-#' method=="hysep": Uses the HYSEP model, and specifically the hysep function 
-#' from the USGS package DVstats. This package must be installed before the 
-#' method can be used. To install from the USGS GitHub page, call 
-#' \code{library(devtools); install_github("DVstats",user="USGS-R")}. When using
-#' the hysep() method, the user will likely want to choose among methods 
-#' available within hysep(), which are specified by setting the \code{select} 
-#' argument; see the parameter description for \code{select} for details. This 
-#' method requires specification of the \code{da} and \code{select} parameters.
 #' 
 #' method=="1p digital filter": Uses the one-paramter digital filter described 
 #' by Nathan, R.J. and T.A. McMahon, 1990. Evaluation of Automated Techniques 
@@ -61,11 +51,12 @@
 #'   HO-L17-Baseflow-Separation.pdf)
 #' @param ... other arguments passed to the specified method (currently only 
 #'   'hysep' takes other arguments; see ?DVstats::hysep)
-#' @export
+#'   
 #' @references Implementation of the 1- and 2-parameter digital filters was 
 #'   aided by the online lecture notes of A. Allen Bradley, Jr. for his Fall 
 #'   2013 Hydrology course (http://user.engineering.uiowa.edu/~flood)
 #' @family predictors
+#' @keywords internal
 getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter","2p digital filter"), 
                              da, select, alpha, BFImax, ...) {
   
@@ -76,12 +67,32 @@ getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter
   switch(
     method,
     "hysep"={
-      # Wraps the DVstats::hysep() approach for separating baseflow and stormflow.
+      # I've made hysep unavailable, at least for now, because it requires an
+      # additional USGS-R dependency that may not be used much. Can we provide a
+      # helper function to help the user prepare/process data for/from
+      # DVstats::hysep() rather than wrapping that function here?
+      
+      # This method wraps the DVstats::hysep() approach for separating baseflow and stormflow.
       # Advantage: already implemented. Disadvantage: requires that dates are in the
       # Date format, effectively limiting the resolution to <=1 observation per day.
       
-      # library(devtools); install_github("DVstats",user="USGS-R")
-      library(DVstats)
+      # roxygen2 documentation: 
+      #   method=="hysep": Uses the HYSEP model, and specifically the hysep function 
+      #   from the USGS package DVstats. This package must be installed before the 
+      #   method can be used. To install from the USGS GitHub page, call 
+      #   \code{library(devtools); install_github("DVstats",user="USGS-R")}. When using
+      #   the hysep() method, the user will likely want to choose among methods 
+      #   available within hysep(), which are specified by setting the \code{select} 
+      #   argument; see the parameter description for \code{select} for details. This 
+      #   method requires specification of the \code{da} and \code{select} parameters. 
+      #   The \code{hysep} method further requires that dates can be specified as dates
+      #   without hours, minutes, or seconds, i.e., that the time step is a multiple of
+      #   1 day.  
+      #
+      #   importFrom DVstats hysep
+      
+      # install_github("USGS-R/DVstats")
+      # library(DVstats)
       
       if(is.Date(Dates)) {
         DateDates <- Dates
@@ -130,6 +141,8 @@ getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter
 #' Create a logical vector indicating whether flow at each time point is 
 #' dominantly baseflow.
 #' 
+#' Internal for now; not yet ready to be a part of the official API
+#' 
 #' @param data a data.frame of data including a column for flow (with that 
 #'   column name specified by metadata).
 #' @param metadata a metadata object specifying, at minimum, the column name in 
@@ -139,8 +152,8 @@ getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter
 #' @param threshold numeric. The minimum fraction of flow that must be baseflow 
 #'   for a time point to be classified as baseflow (TRUE).
 #'   
-#' @export
 #' @family predictors
+#' @keywords internal
 getPred_isBaseflow <- function(data, metadata, baseflow, threshold=0.8) {
   totalflow <- getCol(metadata, data, "flow", FALSE)
   return(baseflow/totalflow >= threshold)

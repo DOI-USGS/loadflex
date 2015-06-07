@@ -1,41 +1,72 @@
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 #' loadReg2 is a wrapper for loadReg produced by rloadest.
-library(rloadest)
+#library(rloadest)
 
 test_that("loadReg2 models can be created", {
   
-  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
-                          Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  simpledata <- transform(rloadest::app2.calib[-which(diff(rloadest::app2.calib$DATES) < 7),], 
+                          Period=smwrBase::seasons(DATES,breaks=c("Apr", "Jul")))
   
   # loadReg2 requires that you create the loadReg object within the loadReg2 call
   datename <- "DATES"
-  lr <- loadReg(
-    Atrazine ~ Period*center(log(FLOW)), 
+  library(smwrBase) # b/c rloadest:::loadestTadj calls dectime without declaring imports smwrBase
+  lr <- rloadest::loadReg(
+    Atrazine ~ Period*rloadest::center(log(FLOW)), 
     data = simpledata,
     flow = "FLOW", dates = datename, conc.units="mg/L")
+  detach(package:smwrBase)
   expect_error(loadReg2(lr), "load.reg must be a call")
   expect_error(loadReg2(function(lr){lr}()), "load.reg must be a call")
   
   # Fit the model by the rules
+  expect_error(loadReg2(
+    loadReg(
+      Atrazine ~ Period*center(log(FLOW)), 
+      data = simpledata,
+      flow = "FLOW", dates = "DATES", conc.units="mg/L")), "library(rloadest)", fixed=TRUE)
+  library(rloadest)
+  expect_message(load.model <- loadReg2(
+    loadReg(
+      Atrazine ~ Period*center(log(FLOW)), 
+      data = simpledata,
+      flow = "FLOW", dates = "DATES", conc.units="mg/L")), "citation")
+  # expect no message the second and subsequent times:
   load.model <- loadReg2(
     loadReg(
       Atrazine ~ Period*center(log(FLOW)), 
       data = simpledata,
       flow = "FLOW", dates = "DATES", conc.units="mg/L"))
+  # detach rloadest and all of the other packages that got loaded in order to
+  # load rloadest
+  detach(package:rloadest)
+  detach(package:smwrQW)
+  detach(package:smwrStats)
+  detach(package:smwrGraphs)
+  detach(package:smwrBase)
+  detach(package:dataRetrieval)
+  detach(package:lubridate)
   expect_is(load.model, "loadReg2")
 })
 
 
 test_that("loadReg2 models implement the loadModelInterface", {
-  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
-                          Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  simpledata <- transform(rloadest::app2.calib[-which(diff(rloadest::app2.calib$DATES) < 7),], 
+                          Period=smwrBase::seasons(DATES,breaks=c("Apr", "Jul")))
   
   # Fit the model
-  load.model <- loadReg2(loadReg(
+  library(rloadest)
+  suppressMessages(load.model <- loadReg2(loadReg(
     Atrazine ~ Period*center(log(FLOW)), 
     data = simpledata,
-    flow = "FLOW", dates = "DATES", conc.units="mg/L"))
+    flow = "FLOW", dates = "DATES", conc.units="mg/L")))
+  detach(package:rloadest)
+  detach(package:smwrQW)
+  detach(package:smwrStats)
+  detach(package:smwrGraphs)
+  detach(package:smwrBase)
+  detach(package:dataRetrieval)
+  detach(package:lubridate)
   
   # Try running these to see if we get errors
   getMetadata(load.model)
@@ -190,7 +221,6 @@ test_that("loadReg2 models can find and report their uncertainty", {
 
 test_that("simulateSolute.loadReg2 looks OK", {
   # libraries for %>% and gather
-  library(plyr) # should be loaded before dplyr
   library(dplyr)
   library(tidyr)
   

@@ -202,11 +202,11 @@ getRhoFirstOrderFun <- function(rho, time.step=as.difftime(1, units="hours")) {
 #'   faster.
 #' @return A function that accepts a new vector of N dates and produces an 
 #'   N-by-N correlation matrix.
+#' @importFrom Matrix Matrix
 #' @export
 getCormatCustom <- function(cor1D.function, vectorized=FALSE) {
   if(vectorized) {
     function(dates) {
-      library(Matrix)
       cor_matrix <- Matrix(0, nrow=length(dates), ncol=length(dates)) # starts sparse
       for(i in 1:length(dates)) {
         cor_matrix[i,] <- cor1D.function(dates[i], dates)
@@ -215,7 +215,6 @@ getCormatCustom <- function(cor1D.function, vectorized=FALSE) {
     }
   } else {
     function(dates) {
-      library(Matrix)
       cor_matrix <- Matrix(0, nrow=length(dates), ncol=length(dates)) # starts sparse
       for(i in 1:length(dates)) {
         for(j in 1:length(dates)) {
@@ -237,6 +236,7 @@ getCormatCustom <- function(cor1D.function, vectorized=FALSE) {
 #' 
 #' @param max.tao length of the covariance band, defaults to 1 day
 #' @return matrix of the covariances
+#' @importFrom Matrix Matrix
 #' @export
 getCormatTaoBand <- function(max.tao=as.difftime(1, units="days")) {
   function(dates) {
@@ -267,7 +267,6 @@ getCormatTaoBand <- function(max.tao=as.difftime(1, units="days")) {
     }
     
     # Create a sparse matrix and fill it with 1s where needed
-    library(Matrix)
     mat <- Matrix(data=0, nrow=length(dates), ncol=length(dates), sparse=diff(range(dates))>max.tao)
     mat[do.call("rbind", ids)] <- 1
     mat
@@ -281,10 +280,10 @@ getCormatTaoBand <- function(max.tao=as.difftime(1, units="days")) {
 #' @param max.tao don't consider covariance for values further apart then this. 
 #' @return covariance defined as difference between the times divided by the time step don't calculate covariance for 
 #'         values further away then max.tao.    
+#' @importFrom Matrix Matrix
 #' @export 
 getCormatFirstOrder <- function(rho, time.step=as.difftime(1, units="hours"), max.tao=as.difftime(1, units="days")) {
   function(dates) {
-    library(Matrix)
     mat <- Matrix(data=0, nrow=length(dates), ncol=length(dates), sparse=diff(range(dates))>as.difftime(1, units="days"))
     row_min <- row_max <- 1
     for(i in 1:length(dates)) {
@@ -334,9 +333,9 @@ getCormatFirstOrder <- function(rho, time.step=as.difftime(1, units="hours"), ma
 #'   autocorrelation matrix should be produced.
 #' @return A matrix of autocorrelation coefficients for all possible pairs of 
 #'   date-times in \code{dates}.
+#' @importFrom Matrix Matrix
 #' @export
 cormatEqualDates <- function(dates) {
-  library(Matrix)
   mat <- Matrix(data=0, nrow=length(dates), ncol=length(dates), sparse=diff(range(dates))>as.difftime(1, units="days"))
   datefactors <- as.numeric(as.factor(as.Date(dates)))
   for(i in datefactors) {
@@ -365,9 +364,9 @@ cormat1DayBand <- getCormatTaoBand(as.difftime(1, units="days"))
 #' but it's faster than the alternatives.
 #' 
 #' @rdname correlations-2D
+#' @importFrom Matrix Diagonal
 #' @export
 cormatDiagonal <- function(dates) {
-  library(Matrix)
   Diagonal(length(dates))
 }
 

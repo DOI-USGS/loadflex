@@ -21,10 +21,10 @@ column name specified by metadata).}
   for a time point to be classified as baseflow (TRUE).}
 }
 \description{
-Create a logical vector indicating whether flow at each time point is
-dominantly baseflow.
+Internal for now; not yet ready to be a part of the official API
 }
 \seealso{
 Other predictors: \code{\link{getPred_baseflow}}
 }
+\keyword{internal}
 

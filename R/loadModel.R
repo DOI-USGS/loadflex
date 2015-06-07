@@ -23,6 +23,7 @@
 #'   fitting the model.
 #' @slot retrans.function A function to be applied to the y predictions before
 #'   returning their values from \code{predictSolute()}.
+#' @importFrom methods setClass
 #' @exportClass loadModel
 #' @family load.model.classes
 setClass(
@@ -77,6 +78,7 @@ setClass(
 #' @rdname show.loadModel
 #' @name show.loadModel
 #' @param object loadModel object to be displayed.
+#' @importFrom methods setMethod
 #' @exportMethod show
 setMethod(
   "show", "loadModel", 
@@ -301,7 +303,6 @@ predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
-#' @import MASS
 #' @inheritParams simulateSolute
 #' @param load.model A loadModel object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names

@@ -1,21 +1,45 @@
-library(ggplot2) 
-library(reshape2)
-library(RColorBrewer)
-
+#' Plot composite method results for concentrations.
+#' 
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @param ... arguments passed to plotCM
+#' 
+#' @keywords internal
 plotConcCM <- function(...) {
   plotCM("Conc",FALSE, ...)
 }
 
+#' Plot composite method results for fluxes. 
+#' 
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @param ... arguments passed to plotCM
+#' 
+#' @keywords internal
 plotLoadsCM <- function(...) {
   plotCM("Flux",FALSE, ...)
 }
+
+#' Plot observations relevant to the composite method.
+#' 
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @param ... arguments passed to plotCM
+#' 
+#' @keywords internal
 plotObservationsCM <- function(...) {
   plotCM("Conc",TRUE, ...)
 }
 
-#' create plots
+#' Create plots for examining the results from the composite method
 #' 
-#' create plots for examining the results from the composite method
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @keywords internal
 #' 
 #' @param flux.or.conc character indicating whether the plots are of 
 #'   concentrations or loads, this is used for string concatation to name the
@@ -27,12 +51,14 @@ plotObservationsCM <- function(...) {
 #'   observations
 #' @param composite, TRUE or FALSE flag for whether or not to display the
 #'   composite results
-#' @param linear.interpoltation TRUE or FALSE flag for whether or not to display
+#' @param linear.interpolation TRUE or FALSE flag for whether or not to display
 #'   linear interpolation of the observations
 #' @param regression TRUE or FALSE flag for whether or not to display the linear
 #'   regression results
 #' @param xrange, a user provded range for the xvalues (dates)
 #' @param verbose flag for to print for debugging
+#' 
+#' @importFrom ggplot2 ggplot geom_line ylab theme_bw
 plotCM <- function(flux.or.conc, show.observations, load.model, finalloads, observations=NULL, 
                    composite=TRUE, linear.interpolation=FALSE, regression=TRUE,  xrange="none", 
                    dateField="Date", verbose=FALSE) {
@@ -203,7 +229,7 @@ plotCM <- function(flux.or.conc, show.observations, load.model, finalloads, obse
   # Make and print the plot (scoping problems would arise if we gave the ggobject to the user)
   ggsPlot <- ggplot(data=ggdata, aes(x=DATE, y=value, color=variable, linetype=variable, shape=variable)) +
     geom_line(na.rm=TRUE) + geom_point(na.rm=TRUE) +
-    make_legend(scale_colour_manual, brewer.pal(4,"Set1")[1:4]) +
+    make_legend(scale_colour_manual, c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3")) + #brewer.pal(4,"Set1")[1:4]
     make_legend(scale_linetype_manual, c(1,1,1,0)) +
     make_legend(scale_shape_manual, c(NA,NA,NA,19)) + 
     ylab(ylabel) +
@@ -214,21 +240,40 @@ plotCM <- function(flux.or.conc, show.observations, load.model, finalloads, obse
   invisible(NULL)
 }
 
+
+#' Plot concentration residuals.
+#' 
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @keywords internal
 plotConcResidualsCM <- function(...){
   plotResidualsCM("conc", ...)
 }
+
+#' Plot flux residuals.
+#' 
+#' Not sure we want to include this function in the official API, so keeping it
+#' internal for now.
+#' 
+#' @keywords internal
 plotLoadResidualsCM <- function(...){
   plotResidualsCM("Flux", ...)
 }
-#' plot residuals 
+
+#' Plot concentration or flux residuals.
 #' 
-#' plot residuals for visual analysis. 
+#' Not sure we want to include this function in the official API, so keeping it 
+#' internal for now.
 #' 
-#' @param load.model use this to pull names of date column and constituent name 
+#' @keywords internal
+#'   
+#' @param load.model use this to pull names of date column and constituent name
 #' @param observations these are the observations to plot the residuals for
-#' @param dateField name of the date field in observations 
-#' @param verbose debugging flag 
-#' @param day.of.year flag if true will plot residuals by the day of year to, can help user look for senasonality  
+#' @param dateField name of the date field in observations
+#' @param verbose debugging flag
+#' @param day.of.year flag if true will plot residuals by the day of year to,
+#'   can help user look for seasonality
 plotResidualsCM <- function(type, load.model, observations, dateField="Date", verbose=FALSE,  xObservations=FALSE, xFlow=FALSE, day.of.year=FALSE){
  
   dateName <- load.model$dates
@@ -258,7 +303,6 @@ plotResidualsCM <- function(type, load.model, observations, dateField="Date", ve
     resids$Conc_Obs <- observations[[soluteName]]
     estName <- "Load_Est"
   }
-
 
   if(verbose){
     print(date_col)
@@ -291,38 +335,15 @@ plotResidualsCM <- function(type, load.model, observations, dateField="Date", ve
   invisible(NULL)
 }
 
-# plotLoadResidualsCM <- function(load.model, observations, dateField="Date", verbose=FALSE){
-#   resids <- residuals(load.model)
-#   
-#   #this won't work unless the observations are identical to those passed into predLoad...but see getRegressionSoluteResiduals()
-#   dateName <- load.model$dates
-#   date_col <- names(which(sapply(c(dateField, "Date",  dateName, "Period"), function(field) { !is.null(observations[[field]]) } ))[1])
-#   if(verbose){
-#     print(date_col)
-#   }
-#   # Add to the new plotsols data.frame. Since this is the first column we're
-#   # adding to plotsols, we'll actually create the data.frame right here - it
-#   # will be a data.frame with only one column, called DATE.
-#   plotsols <- setNames(observations[date_col], "DATE")
-#   plotsols$resids <- resids
-#   if(verbose) print(head(plotsols))
-#   # Convert to POSIXct if feasible. This will require some thought to figure out
-#   # which sorts of Period formats can be generated by predLoad and predConc. In
-#   # the meantime, here we address just a couple of the possibilities.
-#   plotsols <- transformDates(plotsols)
-#   plotsols <- meltDates(plotsols)
-#   if(verbose) print(head(plotsols))
-#   
-#   # Make and print the plot (scoping problems would arise if we gave the ggobject to the user)
-#  
-#     ggsPlot <- ggplot(plotsols, aes(x=DATE, y=value)) + 
-#       geom_hline(color="darkgray") + geom_point() + theme_bw() +ylab("residuals")
-# 
-#   print(ggsPlot)
-#   
-#   invisible(NULL)
-# }
 
+#' Helper function for plotting: transform dates from something to something.
+#' 
+#' We definitely don't want to include this function in the official API, so 
+#' keeping it internal.
+#' 
+#' @param plotsols A data.frame with a DATE column
+#' @return same data.frame but with DATE field converted to POSIXct or lt
+#' @keywords internal
 transformDates <- function(plotsols){
   # Convert to POSIXct if feasible. This will require some thought to figure out
   # which sorts of Period formats can be generated by predLoad and predConc. In
@@ -348,6 +369,14 @@ transformDates <- function(plotsols){
   return(plotsols)
 }
 
+#' Helper function for plotting: melt dates from wide to long format.
+#' 
+#' We definitely don't want to include this function in the official API, so 
+#' keeping it internal.
+#' 
+#' @param plotsols A data.frame with a DATE column
+#'   
+#' @keywords internal
 meltDates <- function(plotsols){
   ### Sort by date (don't do this before adding all the columns!)
   # this appears to be unnecessary; ggplot still plots them in chronological order even when they're out of order in the data.frame
@@ -355,7 +384,14 @@ meltDates <- function(plotsols){
   ### reshape the data.frame to take full advantage of ggplot functions.
   #reshape2::melt isn't handling POSIXct dates (?!), so use a character version of the date for melt, then replace with the POSIXt date
   plotsols$CDATE <- as.character(plotsols$DATE)
-  ggdata <- melt(plotsols[-1], id.vars=c("CDATE"))
+  
+  # intentionally breaking this function because I'm not yet ready to introduce 
+  # a package dependency on reshape2 when (1) tidyr is better and (2) this is
+  # the only place we use melt() and (3) plots aren't yet a well supported part
+  # of our API.
+  stop("sorry - meltDates has been disconnected for now. please submit an issue if this is something you're trying to use.")
+  # importFrom reshape2 melt
+  # ggdata <- melt(plotsols[-1], id.vars=c("CDATE"))
   
   ggdata$DATE <- plotsols$DATE[match(ggdata$CDATE, plotsols$CDATE)]
   return(ggdata)

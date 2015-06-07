@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plotResidualsCM}
 \alias{plotResidualsCM}
-\title{plot residuals}
+\title{Plot concentration or flux residuals.}
 \usage{
 plotResidualsCM(type, load.model, observations, dateField = "Date",
   verbose = FALSE, xObservations = FALSE, xFlow = FALSE,
@@ -17,9 +17,12 @@ plotResidualsCM(type, load.model, observations, dateField = "Date",
 
 \item{verbose}{debugging flag}
 
-\item{day.of.year}{flag if true will plot residuals by the day of year to, can help user look for senasonality}
+\item{day.of.year}{flag if true will plot residuals by the day of year to,
+can help user look for seasonality}
 }
 \description{
-plot residuals for visual analysis.
+Not sure we want to include this function in the official API, so keeping it
+internal for now.
 }
+\keyword{internal}
 

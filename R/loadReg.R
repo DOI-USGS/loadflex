@@ -1,3 +1,20 @@
+#' Actions & checks for when the user [indirectly] calls loadReg()
+#' 
+#' Require that the user has loaded rloadest. Also give the user a message about
+#' rloadest if appropriate.
+#' 
+#' @keywords internal
+checkRloadestStatus <- function() {
+  rloadest_loaded <- "package:rloadest" %in% search()
+  if(!rloadest_loaded) {
+    stop("to use loadReg2(), please call library(rloadest) first")
+  } else if(!pkg_env$rloadest_msg_given) {
+    message("You are fitting an rloadest model (loadReg). ",
+            "Please remember to cite both citation('loadflex') and citation('rloadest').")
+    pkg_env$rloadest_msg_given <- TRUE
+  }
+}
+
 #' Extracts and imports metadata from an rloadest loadReg model into an object of class 
 #' "metadata"
 #' 
@@ -36,6 +53,7 @@ getMetadata.loadReg <- function(fit) {
 #'   predConc or predLoad (corresponding to the value of \code{flux.or.conc}) 
 #'   will make predictions reflecting those new coefficients. No other 
 #'   properties of the returned model are guaranteed.
+#' @importFrom MASS mvrnorm
 #' @export
 resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   
@@ -119,7 +137,6 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   s.hat.sim <- s.hat*sqrt(n.minus.k/rchisq(1, n.minus.k))
   
   # Simulate regression coefficients
-  library(MASS)
   omega.sim <- mvrnorm(n=1, mu=coefs, Sigma=s.hat.sim^2*cov.unscaled)
   
   

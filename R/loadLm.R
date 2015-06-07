@@ -7,6 +7,7 @@
 #' loadLms can take any lm formula.
 #' 
 #' @slot fit the interpolation model to be used.
+#' @importFrom methods setClass
 #' @exportClass loadLm
 #' @family load.model.classes
 setClass(
@@ -283,6 +284,7 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
 #' @return A new lm object with resampled coefficients such that predict.lm()
 #'   will make predictions reflecting those new coefficients. No other
 #'   properties of the returned model are guaranteed.
+#' @importFrom MASS mvrnorm
 #' @export
 #' @references 
 #' http://www.clayford.net/statistics/simulation-to-represent-uncertainty-in-regression-coefficients/
@@ -305,7 +307,6 @@ resampleCoefficients.lm <- function(fit) {
   s.hat.sim <- s.hat*sqrt(n.minus.k/rchisq(1, n.minus.k))
   
   # Simulate regression coefficients
-  library(MASS)
   coef.resim <- mvrnorm(n=1, mu=coefs, Sigma=s.hat.sim^2*cov.unscaled)
   
   # Put the new coefficients into the model. It's $coefficients, not $coef, that
@@ -323,7 +324,6 @@ resampleCoefficients.lm <- function(fit) {
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
-#' @import MASS
 #' @inheritParams simulateSolute
 #' @param load.model A loadLm object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names

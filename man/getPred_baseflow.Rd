@@ -43,27 +43,17 @@ http://user.engineering.uiowa.edu/~flood/handouts/
 HO-L17-Baseflow-Separation.pdf)}
 
 \item{...}{other arguments passed to the specified method (currently only
-'hysep' takes other arguments; see ?DVstats::hysep)}
+  'hysep' takes other arguments; see ?DVstats::hysep)}
 }
 \description{
+Internal for now; not yet ready to be a part of the official API
+}
+\details{
 Given a dataset with date and flow columns, separates total flow into
 baseflow and runoff; returns a vector of baseflow rates. Several methods are
 available and can be selected with the "method" argument. All methods assume
 that the time series is evenly spaced, and all work better with
 higher-resolution data (e.g., hourly or daily rather than weekly or monthly).
-The \code{hysep} method further requires that dates can be specified as dates
-without hours, minutes, or seconds, i.e., that the time step is a multiple of
-1 day.
-}
-\details{
-method=="hysep": Uses the HYSEP model, and specifically the hysep function
-from the USGS package DVstats. This package must be installed before the
-method can be used. To install from the USGS GitHub page, call
-\code{library(devtools); install_github("DVstats",user="USGS-R")}. When using
-the hysep() method, the user will likely want to choose among methods
-available within hysep(), which are specified by setting the \code{select}
-argument; see the parameter description for \code{select} for details. This
-method requires specification of the \code{da} and \code{select} parameters.
 
 method=="1p digital filter": Uses the one-paramter digital filter described
 by Nathan, R.J. and T.A. McMahon, 1990. Evaluation of Automated Techniques
@@ -84,4 +74,5 @@ Implementation of the 1- and 2-parameter digital filters was
 \seealso{
 Other predictors: \code{\link{getPred_isBaseflow}}
 }
+\keyword{internal}
 

@@ -45,8 +45,8 @@ test_that("Aggregations by unit line up with rloadest counterparts", {
   agg_flux <- aggregateSolute(preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, agg.by="unit", na.rm=TRUE, deg.free=DF)
   
   # Make the comparable predictions using rloadest
-  agg_c_rl <- predConc(reg.model@fit, newdata=simpledata, by="unit")
-  agg_l_rl <- predLoad(reg.model@fit, newdata=simpledata, by="unit")
+  agg_c_rl <- rloadest::predConc(reg.model@fit, newdata=simpledata, by="unit")
+  agg_l_rl <- rloadest::predLoad(reg.model@fit, newdata=simpledata, by="unit")
 
   # Compare the concentration predictions from our aggregation and predConc
   expect_equal(agg_conc$Conc, agg_c_rl$Conc)
