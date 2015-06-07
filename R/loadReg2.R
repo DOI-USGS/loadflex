@@ -79,9 +79,6 @@ loadReg2 <- function(load.reg,
   pred.format <- match.arg.loadflex(pred.format)
   store <- match.arg.loadflex(store, choices=c("data","fitting.function"), several.ok=TRUE)
   
-  # Load rloadest. Not crazy about loading this way, but seems to be necessary for eval() calls
-  library(rloadest)
-    
   # Require that load.reg is a call to loadReg (and not an already-generated
   # loadReg) to ensure that we can extract the right information from it.
   loadReg_call <- substitute(load.reg)
@@ -102,11 +99,28 @@ loadReg2 <- function(load.reg,
   if(is(loadReg_call, "call")) {
     if(loadReg_call[[1]] == "loadReg") {
       call_ok <- TRUE
+      # one option for the future is to replace the function name with the 
+      # namespace::function version, as in "loadReg_call[[1]] <- 
+      # quote(rloadest::loadReg)". someday this may be sufficient to evaluate an
+      # rloadest model, but we're not there yet. For one thing, loadReg calls 
+      # may include additional loadReg functions such as center(). For another, 
+      # rloadest:::loadestTadj appears to call dectime without declaring imports
+      # smwrBase, which means you need to have rloadest actually loaded so that
+      # its dependencies (including smwrBase) are also loaded.
     }
   }
   if(!call_ok) {
     stop("load.reg must be a call of the form loadReg(...)")
   }
+  
+  # Require that the rloadest namespace has been loaded by the user. Can't do 
+  # the package loading here because we would get the WARNING "'library' or 
+  # 'require' call to 'rloadest' in package code." during R CMD check. Can't 
+  # import the relevant rloadest functions into this function because they're 
+  # not openly named anywhere in this function code, which means R CMD check 
+  # would worry that we're importing things without using them. So instead we'll
+  # require the user to do the loading for us.
+  checkRloadestStatus()
   
   # Fit or refit the model
   if(is_refit) {
@@ -228,6 +242,7 @@ loadReg2 <- function(load.reg,
 #'   is not supplied, the original fitting data will be used.
 #' @return A vector of data.frame of predictions, as for the generic 
 #'   \code{\link{predictSolute}}.
+#' @importFrom rloadest predConc predLoad
 #' @export
 #' @family predictSolute
 predictSolute.loadReg2 <- function(
@@ -238,6 +253,9 @@ predictSolute.loadReg2 <- function(
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
+  
+  # Validate rloadest status
+  checkRloadestStatus()
   
   # Extract the metadata in object into our standard metadata format, and modify
   # it if load.units has been passed in separately. We'll use the metadata just
@@ -380,6 +398,7 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
   from.interval <- match.arg.loadflex(from.interval, c("confidence","prediction"))
   method <- match.arg.loadflex(method, c("parametric", "non-parametric"))
   if(missing(newdata)) newdata <- getFittingData(load.model) # need to do this for predictSolute call in case non-parametric method overwrites load.model@data
+  checkRloadestStatus()
   
   # Generate bootstrap model
   if(method=="parametric") {

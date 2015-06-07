@@ -1,3 +1,20 @@
+#' Actions & checks for when the user [indirectly] calls loadReg()
+#' 
+#' Require that the user has loaded rloadest. Also give the user a message about
+#' rloadest if appropriate.
+#' 
+#' @keywords internal
+checkRloadestStatus <- function() {
+  rloadest_loaded <- "package:rloadest" %in% search()
+  if(!rloadest_loaded) {
+    stop("to use loadReg2(), please call library(rloadest) first")
+  } else if(!pkg_env$rloadest_msg_given) {
+    message("You are fitting an rloadest model (loadReg). ",
+            "Please remember to cite both citation('loadflex') and citation('rloadest').")
+    pkg_env$rloadest_msg_given <- TRUE
+  }
+}
+
 #' Extracts and imports metadata from an rloadest loadReg model into an object of class 
 #' "metadata"
 #' 

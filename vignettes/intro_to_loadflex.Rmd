@@ -58,6 +58,7 @@ no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation,
   data=intdat, metadata=meta)
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
   data=regdat, metadata=meta, retrans=exp)
+library(rloadest)
 no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
   flow.units="cfs", conc.units="mg/L", load.units="kg"))
