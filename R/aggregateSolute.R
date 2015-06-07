@@ -23,7 +23,7 @@
 #' @importFrom dplyr %>% group_by_ summarise
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
-#' @import unitted
+#' @importFrom unitted u v get_units
 #' @param preds Either a vector of predicted instantaneous fluxes or 
 #'   concentrations or a data.frame containing the columns "fit", "se.pred", and
 #'   "date"

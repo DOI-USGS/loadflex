@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plotCM}
 \alias{plotCM}
-\title{create plots}
+\title{Create plots for examining the results from the composite method}
 \usage{
 plotCM(flux.or.conc, show.observations, load.model, finalloads,
   observations = NULL, composite = TRUE, linear.interpolation = FALSE,
@@ -26,17 +26,19 @@ observations}
 \item{composite,}{TRUE or FALSE flag for whether or not to display the
 composite results}
 
+\item{linear.interpolation}{TRUE or FALSE flag for whether or not to display
+linear interpolation of the observations}
+
 \item{regression}{TRUE or FALSE flag for whether or not to display the linear
 regression results}
 
 \item{xrange,}{a user provded range for the xvalues (dates)}
 
 \item{verbose}{flag for to print for debugging}
-
-\item{linear.interpoltation}{TRUE or FALSE flag for whether or not to display
-linear interpolation of the observations}
 }
 \description{
-create plots for examining the results from the composite method
+Not sure we want to include this function in the official API, so keeping it
+internal for now.
 }
+\keyword{internal}
 

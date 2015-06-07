@@ -190,7 +190,6 @@ test_that("resampleCoefficients.lm looks OK", {
 
 test_that("simulateSolute.loadLm looks OK", {
   # libraries for %>% and gather
-  library(plyr) # should be loaded before dplyr
   library(dplyr)
   library(tidyr)
   

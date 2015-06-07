@@ -150,7 +150,7 @@ generateUnitsData <- function() {
 
 #' Check whether these units are acceptable (without translation) for inclusion in metadata
 #' 
-#' @import unitted
+#' @importFrom unitted separate_units get_units unitbundle
 #' @param unitstr A string representing units (just one bundle at a time, please)
 #' @param type A string describing the type of units desired
 #' @return logical. TRUE if valid for that unit type, FALSE otherwise
@@ -165,7 +165,6 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   unit.type <- match.arg(unit.type)
   
   # Parse the unit string into numerator and denominator strings
-  library(unitted)
   unitpieces <- separate_units(unitbundle(unitstr))
   numerator <- get_units(unitbundle(unitpieces[which(unitpieces$Power > 0),]))
   denominator <- get_units(1/unitbundle(unitpieces[which(unitpieces$Power < 0),]))
@@ -201,7 +200,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' Convert units from a greater variety of forms, including rloadest form, to 
 #' unitted form
 #' 
-#' @import unitted
+#' @importFrom unitted unitbundle get_units
 #' @param freeform.units character string or list of character strings 
 #'   describing one or more sets of units. "Freeform" is an exaggeration but 
 #'   gets at the idea that these units can take a greater variety of forms than 
@@ -256,7 +255,7 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' function may also be used to convert from flux units to the units of the 
 #' product of flow and concentration.
 #' 
-#' @import unitted
+#' @importFrom unitted separate_units get_units unitbundle u
 #' @export flowconcToFluxConversion
 #' @param flow.units character. The units of flow.
 #' @param conc.units character. The units of concentration.

@@ -16,12 +16,12 @@ VignetteBuilder: knitr
 Depends:
     R(>= 3.0)
 Imports:
-    plyr,
     dplyr (>= 0.4.1),
     ggplot2,
     lubridate,
     smwrBase,
     rloadest,
+    Matrix,
     splines,
     stats,
     MASS,

@@ -8,7 +8,7 @@
 #' \code{hist=TRUE}), and a handling function is run (e.g., to produce an error 
 #' or warning, as specified by \code{handler}).
 #' 
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot
 #' @param dates A time series of dates in any format accepted by \code{diff}.
 #' @param hist logical. If the time series is found to be irregular, should this
 #'   function print a histogram of the observed time steps?
@@ -39,7 +39,6 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #' calibration data or for a new set of observations). Applies
 #' car::durbinWatsonTest to test for autocorrelation of those residuals.
 #' 
-#' @import car
 #' @param load.model a loadModel descendant
 #' @param flux.or.conc character. The format in which residuals should be 
 #'   calculated
@@ -54,6 +53,7 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #'   performed if \code{irregular.timesteps.ok} is TRUE.
 #'   
 #' @return A Durbin-Watson test statistic applied to residuals.
+#' @importFrom car durbinWatsonTest
 #' @export
 #' 
 #' @seealso car::durbinWatsonTest
@@ -92,7 +92,6 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
   # Use the car package to test for autocorrelation of the residuals. Because
   # load.model is not always a linear model, we'll simply pass in the residuals
   # and will accept the lack of p-values in the return value
-  library(car)
   durbinWatsonTest(model=resids$Resid)
 }
 

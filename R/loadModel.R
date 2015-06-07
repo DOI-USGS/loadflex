@@ -301,7 +301,6 @@ predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
-#' @import MASS
 #' @inheritParams simulateSolute
 #' @param load.model A loadModel object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names

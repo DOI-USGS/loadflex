@@ -36,6 +36,7 @@ getMetadata.loadReg <- function(fit) {
 #'   predConc or predLoad (corresponding to the value of \code{flux.or.conc}) 
 #'   will make predictions reflecting those new coefficients. No other 
 #'   properties of the returned model are guaranteed.
+#' @importFrom MASS mvrnorm
 #' @export
 resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   
@@ -119,7 +120,6 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   s.hat.sim <- s.hat*sqrt(n.minus.k/rchisq(1, n.minus.k))
   
   # Simulate regression coefficients
-  library(MASS)
   omega.sim <- mvrnorm(n=1, mu=coefs, Sigma=s.hat.sim^2*cov.unscaled)
   
   

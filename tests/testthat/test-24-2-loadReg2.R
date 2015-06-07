@@ -190,7 +190,6 @@ test_that("loadReg2 models can find and report their uncertainty", {
 
 test_that("simulateSolute.loadReg2 looks OK", {
   # libraries for %>% and gather
-  library(plyr) # should be loaded before dplyr
   library(dplyr)
   library(tidyr)
   

@@ -29,14 +29,8 @@ loadflex makes use of packages that are currently only available from
 GitHub. To install these packages, run the following lines:
    
 ```{r}
-library(devtools)
-   
 install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW"), 
 repos=c("http://owi.usgs.gov/R","http://usgs-r.github.com","http://cran.us.r-project.org"), dependencies=TRUE, type="both")
    
-install_github("USGS-R/rloadest")
-
-install_github("appling/unitted")
-
-install_github("mcdowelllab/loadflex")
+devtools::install_github(c("USGS-R/rloadest", "appling/unitted", "mcdowelllab/loadflex"))
 ```

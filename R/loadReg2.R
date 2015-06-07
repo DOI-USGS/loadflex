@@ -361,7 +361,6 @@ predictSolute.loadReg2 <- function(
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
-#' @import MASS
 #' @inheritParams simulateSolute
 #' @param load.model A loadReg2 object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names 
