@@ -20,6 +20,7 @@ Imports:
     dplyr (>= 0.4.1),
     ggplot2,
     lubridate,
+    smwrBase,
     rloadest,
     splines,
     stats,
