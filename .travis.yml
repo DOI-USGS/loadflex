@@ -13,7 +13,7 @@ r_github_packages:
  - USGS-R/rloadest
 
 after_success:
-  - Rscript -e 'covr::coveralls()'
+  - Rscript -e 'covr::codecov(); covr::coveralls()'
 
 notifications:
   email:
