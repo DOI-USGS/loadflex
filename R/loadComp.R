@@ -15,8 +15,8 @@
 #'   loadModelInterface.
 #' @slot resid.model The interpolation model - any model that implements the 
 #'   loadModelInterface.
-#' @slot var.pred.error The mean prediction error, stored as a variance (MSE) in
-#'   linear space.
+#' @slot log.resids Should residuals be computed in log space (TRUE) or 
+#'   linear space (FALSE)?
 #' @slot abs.or.rel.resids character specifying whether interpolation should be 
 #'   by absolute residuals (obs-pred) or relative residuals (obs/pred).
 #' @importFrom methods setClass
