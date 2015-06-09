@@ -5,11 +5,11 @@ Version: 1.0.0
 Date: 2015-06-04
 Author: Alison Appling, Miguel Leon
 Maintainer: Alison Appling <alison.appling@gmail.com>
-Description: This package implements several of the most common methods for
+Description: Implements several of the most common methods for
     modeling and predicting watershed solute fluxes and concentrations,
     including interpolation and regression models, period-weighted averaging,
-    and the composite method. loadflex integrates seamlessly with the USGS's
-    rloadest package and with native R regression models. It offers a uniform
+    and the composite method. Integrates seamlessly with the USGS's
+    rloadest package and with native R regression models. Offers a uniform
     interface for any model type, with which you can quickly fit models,
     generate predictions, and aggregate to monthly or annual values.
 VignetteBuilder: knitr
