@@ -14,6 +14,7 @@
 #' @include interpolations.R
 #' @rdname interpModel-class
 #' @name interpModel-class
+#' @slot dates.class Class of the dates.in. 
 #' @slot dates.in Dates of the y.in data.
 #' @slot y.in Data (usually fluxes, concentrations, or residuals) to 
 #'   interpolate.

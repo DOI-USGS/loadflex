@@ -16,7 +16,7 @@ accessed by \code{\link{getCol}}, \code{\link{getUnits}}, or
 \section{Slots}{
 
 \describe{
-\item{\code{constitutent}}{character. The name of the data.frame column describing
+\item{\code{constituent}}{character. The name of the data.frame column describing
 the concentration of the solute or material to be modeled.}
 
 \item{\code{flow}}{character. The name of the data.frame column describing flow

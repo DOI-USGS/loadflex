@@ -15,6 +15,8 @@ function stored in loadInterp.
 \section{Slots}{
 
 \describe{
+\item{\code{dates.class}}{Class of the dates.in.}
+
 \item{\code{dates.in}}{Dates of the y.in data.}
 
 \item{\code{y.in}}{Data (usually fluxes, concentrations, or residuals) to

@@ -7,6 +7,11 @@
 #' loadLms can take any lm formula.
 #' 
 #' @slot fit the interpolation model to be used.
+#' @slot ylog logical. If TRUE, this constitutes affirmation that the values 
+#'   passed to the left-hand side of the model formula will be in log space. If 
+#'   missing, the value of \code{ylog} will be inferred from the values of 
+#'   \code{formula} and \code{y.trans.function}, but be warned that this
+#'   inference is fallible.
 #' @importFrom methods setClass
 #' @exportClass loadLm
 #' @family load.model.classes

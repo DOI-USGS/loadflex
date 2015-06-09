@@ -10,7 +10,7 @@
 #' 
 #' @rdname metadata-class
 #' @name metadata-class
-#' @slot constitutent character. The name of the data.frame column describing 
+#' @slot constituent character. The name of the data.frame column describing 
 #'   the concentration of the solute or material to be modeled.
 #' @slot flow character. The name of the data.frame column describing flow 
 #'   (discharge)

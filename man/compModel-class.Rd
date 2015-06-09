@@ -21,8 +21,8 @@ loadModelInterface.}
 \item{\code{resid.model}}{The interpolation model - any model that implements the
 loadModelInterface.}
 
-\item{\code{var.pred.error}}{The mean prediction error, stored as a variance (MSE) in
-linear space.}
+\item{\code{log.resids}}{Should residuals be computed in log space (TRUE) or
+linear space (FALSE)?}
 
 \item{\code{abs.or.rel.resids}}{character specifying whether interpolation should be
 by absolute residuals (obs-pred) or relative residuals (obs/pred).}
