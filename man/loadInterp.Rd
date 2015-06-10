@@ -24,7 +24,14 @@ guidelines given there.}
 a minimum, \code{metadata} should correctly specify the date column and the
 column indicated by \code{interp.format}.}
 
-\item{retrans.function}{}
+\item{retrans.function}{function that accepts a vector of predictions
+straight from the fitted model and retransforms them, if appropriate, to
+predictions in linear space and with units of concentration*flow. Because
+load models are frequently fit to log(y) ~ ..., the default is
+retrans.function=exp. After retrans.function has been applied to the
+predictions, the retransformed predictions will automatically undergo
+further units conversion from conc*flow to load.rate, according to the
+metadata elements conc.units, flow.units, and load.rate.units.}
 
 \item{store}{One or more character strings specifying which information to
 write within the model. Options are 'data': the original fitting data;

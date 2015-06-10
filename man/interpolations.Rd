@@ -57,7 +57,6 @@ These functions may assume the following without checking:
 
 }
 
-\subsection{Interpolation Methods}{}
 
 \code{linearInterpolation} - straight lines from one point in y.in to the
 next.

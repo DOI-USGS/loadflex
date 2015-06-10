@@ -19,7 +19,27 @@ predictions when predict.lm() is called?}
 \item{metadata}{metadata, used to access the appropriate columns of data. At
 a minimum, \code{metadata} should correctly specify the date column.}
 
-\item{retrans.function}{}
+\item{fitting_function}{a fitting function that can produce a new loadComp
+object from new data (this currently uses the same new data for both
+regression calibration and interpolation)}
+
+\item{y.trans.function}{function that accepts a vector of predictions
+straight from the fitted model and retransforms them, if appropriate, to
+predictions in linear space and with units of concentration*flow. Because
+load models are frequently fit to log(y) ~ ..., the default is
+retrans.function=exp. After retrans.function has been applied to the
+predictions, the retransformed predictions will automatically undergo
+further units conversion from conc*flow to load.rate, according to the
+metadata elements conc.units, flow.units, and load.rate.units.}
+
+\item{retrans.function}{function that accepts a vector of predictions
+straight from the fitted model and retransforms them, if appropriate, to
+predictions in linear space and with units of concentration*flow. Because
+load models are frequently fit to log(y) ~ ..., the default is
+retrans.function=exp. After retrans.function has been applied to the
+predictions, the retransformed predictions will automatically undergo
+further units conversion from conc*flow to load.rate, according to the
+metadata elements conc.units, flow.units, and load.rate.units.}
 
 \item{store}{One or more character strings specifying which information to
 write within the model. Options are 'data': the original fitting data;

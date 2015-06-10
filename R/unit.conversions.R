@@ -152,6 +152,7 @@ generateUnitsData <- function() {
 #' 
 #' @importFrom unitted separate_units get_units unitbundle
 #' @param unitstr A string representing units (just one bundle at a time, please)
+#' @param unit.type string. accepts "ANY","flow.units","conc.units","load.units", or "load.rate.units"
 #' @param type A string describing the type of units desired
 #' @return logical. TRUE if valid for that unit type, FALSE otherwise
 #' @keywords units

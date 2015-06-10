@@ -65,6 +65,7 @@ setClass(
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
+#' @param ... Other arguments passed to this model. 
 #' @return A fitted loadReg2 model.
 #' 
 #' @importFrom rloadest loadReg

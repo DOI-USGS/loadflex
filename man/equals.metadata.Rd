@@ -2,6 +2,7 @@
 % Please edit documentation in R/metadata.R
 \docType{methods}
 \name{equals.metadata}
+\alias{==}
 \alias{equals.metadata}
 \title{Basic equality test for two metadata objects.}
 \usage{

@@ -13,6 +13,8 @@ isTimestepRegular(dates, hist = TRUE, tol = .Machine$double.eps^0.5,
 \item{hist}{logical. If the time series is found to be irregular, should this
 function print a histogram of the observed time steps?}
 
+\item{tol}{time step tolerance, the accepatable amount of difference between time steps to still consider them regular.}
+
 \item{handler}{A function, e.g., \code{stop} or \code{warning}, to be run if
 the time series is irregular.}
 }

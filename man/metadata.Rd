@@ -48,6 +48,8 @@ additional data the user wants to track.}
 \item{validate}{logical. If TRUE, validObject() must pass for the object to
 return.}
 
+\item{metadata}{the metadata object to update.}
+
 \item{new.metadata}{Optional object of class "metadata". If new.metadata is
 not NA, all elements of \code{...} will be ignored and metadata will be updated
 with any non-empty elements of new.metadata.}
@@ -191,8 +193,9 @@ ng, ug, mg, g, kg, Mg, tons, pounds, lbs, lb
 }
 }
 \seealso{
-Other metadata: \code{\link{equals.metadata}};
-  \code{\link{getCol}}, \code{\link{getInfo}},
-  \code{\link{getUnits}}, \code{\link{metadata-getters}}
+Other metadata: \code{\link{==}},
+  \code{\link{equals.metadata}}; \code{\link{getCol}},
+  \code{\link{getInfo}}, \code{\link{getUnits}},
+  \code{\link{metadata-getters}}
 }
 

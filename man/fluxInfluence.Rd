@@ -10,22 +10,27 @@ fluxInfluence(fit.function, obs.calib, obs.adjust, data.to.predict,
   "adjustment"))
 }
 \arguments{
-\item{fit.and.total.function}{function(...) that
-takes a training predictors matrix X.calib, an observation Y.calib, a
+\item{fit.function}{function(...) that
+takes a training predictors obs.calib X.calib, an observation Y.calib, a
 prediction matrix X.est, and a character or factor vector P.est that
 identifies the Period of each row of X.est. The function returns the
 aggregated flux predictions Fhat for the observations X.est given a model
 (in our case, usually a composite-method model) fitted to X.calib and
 Y.calib.}
 
-\item{X.calib}{a matrix of training predictors}
+\item{obs.calib}{a vector of concentration observations}
 
-\item{Y.calib}{a vector of concentration observations}
+\item{obs.adjust}{of concentrations less the observation(s) to be tested for influence.}
 
-\item{X.est}{a matrix of prediction predictors}
+\item{data.to.predict}{a vector of prediction predictors}
 
-\item{P.est}{a vector of period designations - fit.and.total.function should
-aggregate by these designations.}
+\item{correction.method}{default is linear, passed to predictSolute}
+
+\item{replace.negatives}{passed to predictSolute,}
+
+\item{aggregation.interval}{for the predictions}
+
+\item{influence.on}{calculate influence on regression, adjustment, or both}
 }
 \value{
 A vector of the same length as m with an influence measure for each

@@ -100,6 +100,11 @@ setClass(
 #'   values?
 #' @param use.log logical. Should residuals be computed in log space (TRUE) or 
 #'   linear space (FALSE)?
+#' @param MSE.method character. The method by which the model should be 
+#'   bootstrapped. "non-parametric": resample with replacement from the original
+#'   fitting data, refit the model, and make new predictions. "parametric":
+#'   resample the model coefficients based on the covariance matrix originally
+#'   estimated for those coefficients, then make new predictions.
 #' @param store One or more character strings specifying which information to 
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
@@ -381,6 +386,11 @@ predictSolute.loadComp <- function(
 #'   (for all interpolation data points)]. Each run through the process 
 #'   generates one estimate of the MSE, from which a mean and SD of the MSE 
 #'   estimates will be returned.
+#' @param method  character. The method by which the model should be 
+#'   bootstrapped. "non-parametric": resample with replacement from the original
+#'   fitting data, refit the model, and make new predictions. "parametric":
+#'   resample the model coefficients based on the covariance matrix originally
+#'   estimated for those coefficients, then make new predictions.
 #' @param rho The first-order autocorrelation coefficient to assume in 
 #'   simulateSolute(regression.model, interpolation.data). If missing, rho will 
 #'   be estimated from the interpolation data, but be warned that many data 

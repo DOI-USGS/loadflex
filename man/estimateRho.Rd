@@ -17,7 +17,18 @@ estimateRho(load.model, flux.or.conc = c("flux", "conc"),
 \item{abs.or.rel.resids}{Should residuals be computed as the difference or
 the ratio of the observed and predicted values?}
 
+\item{use.log}{use log residuals}
+
 \item{newdata}{prediction values}
+
+\item{plot.acf}{logical. Should the autocorrelation function be plotted?}
+
+\item{timestep.tol}{the acceptable tolerance for considering timesteps regular.}
+
+\item{irregular.timesteps.ok}{logical. By default, this function requires
+that the timesteps between observations are identical to one another, and
+an error is thrown if this requirement is not met. The check is not
+performed if \code{irregular.timesteps.ok} is TRUE.}
 }
 \value{
 Return the rho function and the fitted model.

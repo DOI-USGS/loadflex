@@ -51,7 +51,8 @@ make sure that the designated field or data column exists and return an
 informative error if it does not.
 }
 \seealso{
-Other metadata: \code{\link{equals.metadata}};
+Other metadata: \code{\link{==}},
+  \code{\link{equals.metadata}};
   \code{\link{exampleMetadata}}, \code{\link{metadata}},
   \code{\link{updateMetadata}}
 }

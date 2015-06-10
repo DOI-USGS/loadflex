@@ -100,18 +100,20 @@ generalizedLeverage <- function(b, m, fit.and.predict.function, X, Y) {
 #' observation on a flux estimate for a given period is the difference between 
 #' the flux estimate with that observation and the flux estimate without.
 #' 
-#' @param fit.and.total.function function(...) that 
-#'   takes a training predictors matrix X.calib, an observation Y.calib, a 
+#' @param fit.function function(...) that 
+#'   takes a training predictors obs.calib X.calib, an observation Y.calib, a 
 #'   prediction matrix X.est, and a character or factor vector P.est that 
 #'   identifies the Period of each row of X.est. The function returns the 
 #'   aggregated flux predictions Fhat for the observations X.est given a model
 #'   (in our case, usually a composite-method model) fitted to X.calib and
 #'   Y.calib.
-#' @param X.calib a matrix of training predictors
-#' @param Y.calib a vector of concentration observations
-#' @param X.est a matrix of prediction predictors
-#' @param P.est a vector of period designations - fit.and.total.function should 
-#'   aggregate by these designations.
+#' @param obs.calib a vector of concentration observations
+#' @param obs.adjust of concentrations less the observation(s) to be tested for influence.
+#' @param data.to.predict a vector of prediction predictors
+#' @param correction.method default is linear, passed to predictSolute
+#' @param replace.negatives passed to predictSolute, 
+#' @param aggregation.interval for the predictions
+#' @param influence.on calculate influence on regression, adjustment, or both
 #' @return A vector of the same length as m with an influence measure for each 
 #'   row index (of X and/or Y) in m.
 fluxInfluence <- function(
