@@ -456,12 +456,10 @@ getInfo <- function(metadata, field=c("station", "custom")) {
 #' Display a metadata object
 #' 
 #' @rdname show.metadata
-#' @name show.metadata
 #' @param object The metadata object to be displayed
-#' @usage object
-#' @aliases show.metadata
 #' @importFrom methods setMethod
 #' @exportMethod show
+#' @export
 setMethod(
   "show", "metadata", 
   function(object) {

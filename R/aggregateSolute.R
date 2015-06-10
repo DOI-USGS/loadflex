@@ -93,7 +93,8 @@
 #'                 agg.by="simple.season", custom=preds_regrouped)
 #' 
 #' # with a custom prediction error correlation matrix
-#' new_correlation_assumption <- getCormatFirstOrder(rho=0.9, time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
+#' new_correlation_assumption <- getCormatFirstOrder(rho=0.9, 
+#' time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
 #' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
 #'                 cormat.function=new_correlation_assumption)
 #' 
