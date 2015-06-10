@@ -53,11 +53,29 @@ setClass(
 #' @param data data.frame. The data to be interpolated
 #' @param metadata metadata, used to access the appropriate columns of data. At 
 #'   a minimum, \code{metadata} should correctly specify the date column.
-#' @param retrans.function
+#' @param retrans.function function that accepts a vector of predictions 
+#'   straight from the fitted model and retransforms them, if appropriate, to 
+#'   predictions in linear space and with units of concentration*flow. Because 
+#'   load models are frequently fit to log(y) ~ ..., the default is 
+#'   retrans.function=exp. After retrans.function has been applied to the 
+#'   predictions, the retransformed predictions will automatically undergo 
+#'   further units conversion from conc*flow to load.rate, according to the 
+#'   metadata elements conc.units, flow.units, and load.rate.units.
 #' @param store One or more character strings specifying which information to 
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
+#' @param fitting_function a fitting function that can produce a new loadComp 
+#'   object from new data (this currently uses the same new data for both
+#'   regression calibration and interpolation)
+#' @param y.trans.function function that accepts a vector of predictions 
+#'   straight from the fitted model and retransforms them, if appropriate, to 
+#'   predictions in linear space and with units of concentration*flow. Because 
+#'   load models are frequently fit to log(y) ~ ..., the default is 
+#'   retrans.function=exp. After retrans.function has been applied to the 
+#'   predictions, the retransformed predictions will automatically undergo 
+#'   further units conversion from conc*flow to load.rate, according to the 
+#'   metadata elements conc.units, flow.units, and load.rate.units.
 #' @param ylog logical. If TRUE, this constitutes affirmation that the values 
 #'   passed to the left-hand side of the model formula will be in log space. If 
 #'   missing, the value of \code{ylog} will be inferred from the values of 

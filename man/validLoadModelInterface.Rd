@@ -11,6 +11,8 @@ validLoadModelInterface(object, stop.on.error = TRUE, verbose = TRUE)
 
 \item{stop.on.error}{logical. If the interface is invalid, should the
 function throw an error (TRUE) or quietly return a warning object (FALSE)?}
+
+\item{verbose}{logical. turn on or off verbose messages.}
 }
 \value{
 TRUE if interface for given load.model is well defined; otherwise,

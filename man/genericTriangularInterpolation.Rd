@@ -25,7 +25,7 @@ residuals (again, log or linear space).}
 }
 \description{
 Does not strictly adhere to the guidelines in \link{interpolations}, but can
-be used by \code{\link{geTriangularInterpolation}} to produce a
+be used by \code{\link{getTriangularInterpolation}} to produce a
 function that does.
 }
 

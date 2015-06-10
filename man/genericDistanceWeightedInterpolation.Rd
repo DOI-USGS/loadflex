@@ -17,6 +17,10 @@ interpolate among.}
 \item{dates.out}{A numeric vector of dates for which the corresponding output
 values are to be produced. Dates are represented as the number of seconds
 since 1970.}
+
+\item{inv.dist.fun}{A function to calculate an inverse distance metric.
+Should be vectorized such that one of \code{a} or \code{b} may be a vector
+when the other is a scalar.}
 }
 \description{
 Does not strictly adhere to the guidelines in \link{interpolations}, but can

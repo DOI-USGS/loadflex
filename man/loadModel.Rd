@@ -19,6 +19,8 @@ do either!]}
 
 \item{data}{data.frame containing the initial training observations}
 
+\item{metadata}{An object of class \code{\link{metadata}}}
+
 \item{y.trans.function}{function that accepts a vector of observed response
 values (e.g., concentrations or flux rates) and transforms them into the
 values on the left-hand side of the calibration formula. Because load

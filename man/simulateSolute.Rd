@@ -35,6 +35,8 @@ of noise is added to those "confidence"-based predictions.}
 applicable when from.interval=="prediction". If rho is missing and
 interval=="prediction", rho will be estimated from the residuals calculated
 from newdata with the fitted (not yet resampled) load.model.}
+
+\item{...}{Other arguments passed to inheriting methods}
 }
 \value{
 A vector or data.frame of predictions, as for the generic

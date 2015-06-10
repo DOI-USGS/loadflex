@@ -78,6 +78,8 @@ setClass(
 #' @rdname show.loadModel
 #' @name show.loadModel
 #' @param object loadModel object to be displayed.
+#' @usage object
+#' @aliases show
 #' @importFrom methods setMethod
 #' @exportMethod show
 setMethod(
@@ -109,6 +111,7 @@ setMethod(
 #'   retrans.function(predict(fit)) [NOT of predictSolute.loadModel(), which can
 #'   do either!]
 #' @param data data.frame containing the initial training observations
+#' @param metadata An object of class \code{\link{metadata}}
 #' @param y.trans.function function that accepts a vector of observed response 
 #'   values (e.g., concentrations or flux rates) and transforms them into the 
 #'   values on the left-hand side of the calibration formula. Because load 
@@ -127,7 +130,6 @@ setMethod(
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
 #' @return A fitted loadModel.
-#'   
 #' @export
 #' @family load.model.inits
 loadModel <- function(inner.fit.function, pred.format, data, metadata, 

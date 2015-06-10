@@ -275,6 +275,7 @@ metadata <- function(constituent, flow, load.rate="", dates,
 #' \code{updateMetadata} modifies an existing metadata object.
 #' 
 #' @rdname metadata
+#' @param metadata the metadata object to update. 
 #' @param new.metadata Optional object of class "metadata". If new.metadata is 
 #'   not NA, all elements of \code{...} will be ignored and metadata will be updated 
 #'   with any non-empty elements of new.metadata.
@@ -457,6 +458,8 @@ getInfo <- function(metadata, field=c("station", "custom")) {
 #' @rdname show.metadata
 #' @name show.metadata
 #' @param object The metadata object to be displayed
+#' @usage object
+#' @aliases show.metadata
 #' @importFrom methods setMethod
 #' @exportMethod show
 setMethod(
@@ -475,20 +478,20 @@ setMethod(
   }
 )
 
-#### Equals ####
+#### Equals #### usage \\method== \\usage {==}(e1) == e2 
 
 #' Basic equality test for two metadata objects.
 #' 
 #' Compares the contents of each slot using the == operator.
 #' 
 #' @rdname equals.metadata
-#' @name equals.metadata
 #' @param e1 metadata object to be compared.
 #' @param e2 metadata object to be compared.
 #' @return logical value indicating whether the two metadata objects have
 #'   identical contents.
 #' @importFrom methods setMethod
 #' @exportMethod ==
+#' @export
 #' @family metadata
 setMethod(
   "==", c(e1="metadata", e2="metadata"),

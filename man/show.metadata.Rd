@@ -5,7 +5,7 @@
 \alias{show.metadata}
 \title{Display a metadata object}
 \usage{
-\S4method{show}{metadata}(object)
+object
 }
 \arguments{
 \item{object}{The metadata object to be displayed}

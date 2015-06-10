@@ -187,6 +187,7 @@ predictSolute <- function(
 #'   applicable when from.interval=="prediction". If rho is missing and 
 #'   interval=="prediction", rho will be estimated from the residuals calculated
 #'   from newdata with the fitted (not yet resampled) load.model.
+#' @param ... Other arguments passed to inheriting methods
 #' @return A vector or data.frame of predictions, as for the generic 
 #'   \code{\link{predictSolute}}. The simulated predictions are distributed 
 #'   according to the uncertainty of the coefficients (if 
@@ -230,6 +231,7 @@ estimateMSE <- function(load.model, ...) {
 #' @param object an object with a LoadModelInterface
 #' @param stop.on.error logical. If the interface is invalid, should the 
 #'   function throw an error (TRUE) or quietly return a warning object (FALSE)?
+#' @param verbose logical. turn on or off verbose messages. 
 #' @return TRUE if interface for given load.model is well defined; otherwise, 
 #'   either throws an error (if stop.on.error=TRUE) or returns a vector of 
 #'   character strings describing the errors (if stop.on.error=FALSE).

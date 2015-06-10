@@ -23,6 +23,8 @@ original fitting data for load.model will be used.}
 
 \item{plot.acf}{logical. Should the autocorrelation function be plotted?}
 
+\item{timestep.tol}{the acceptable tolerance for considering timesteps regular.}
+
 \item{irregular.timesteps.ok}{logical. By default, this function requires
   that the timesteps between observations are identical to one another, and
   an error is thrown if this requirement is not met. The check is not

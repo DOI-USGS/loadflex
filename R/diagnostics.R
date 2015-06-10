@@ -14,6 +14,7 @@
 #'   function print a histogram of the observed time steps?
 #' @param handler A function, e.g., \code{stop} or \code{warning}, to be run if
 #'   the time series is irregular.
+#' @param tol time step tolerance, the accepatable amount of difference between time steps to still consider them regular.
 #' @return TRUE if the time steps in \code{dates} are identical to within the 
 #'   tolerance set by {tol}, FALSE otherwise.
 #' @export
@@ -47,6 +48,7 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #' @param newdata The data from which to compute residuals; if NULL, the 
 #'   original fitting data for load.model will be used.
 #' @param plot.acf logical. Should the autocorrelation function be plotted?
+#' @param timestep.tol the acceptable tolerance for considering timesteps regular. 
 #' @param irregular.timesteps.ok logical. By default, this function requires 
 #'   that the timesteps between observations are identical to one another, and 
 #'   an error is thrown if this requirement is not met. The check is not 
@@ -119,7 +121,14 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
 #' @param flux.or.conc The format in which residuals should be calculated
 #' @param abs.or.rel.resids Should residuals be computed as the difference or 
 #'   the ratio of the observed and predicted values?
+#' @param use.log use log residuals 
 #' @param newdata prediction values
+#' @param plot.acf logical. Should the autocorrelation function be plotted?
+#' @param timestep.tol the acceptable tolerance for considering timesteps regular. 
+#' @param irregular.timesteps.ok logical. By default, this function requires 
+#'   that the timesteps between observations are identical to one another, and 
+#'   an error is thrown if this requirement is not met. The check is not 
+#'   performed if \code{irregular.timesteps.ok} is TRUE.
 #' @return Return the rho function and the fitted model.
 #' @export
 #' 

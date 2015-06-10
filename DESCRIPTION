@@ -40,7 +40,6 @@ Collate:
     'diagnostics.R'
     'getResiduals.R'
     'interpolations.R'
-    'leverage.R'
     'metadata.R'
     'loadModelInterface.R'
     'loadModel.R'

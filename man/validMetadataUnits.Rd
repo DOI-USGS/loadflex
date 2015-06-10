@@ -10,6 +10,8 @@ validMetadataUnits(unitstr, unit.type = c("ANY", "flow.units", "conc.units",
 \arguments{
 \item{unitstr}{A string representing units (just one bundle at a time, please)}
 
+\item{unit.type}{string. accepts "ANY","flow.units","conc.units","load.units", or "load.rate.units"}
+
 \item{type}{A string describing the type of units desired}
 }
 \value{

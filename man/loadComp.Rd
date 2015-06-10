@@ -45,6 +45,12 @@ predictions from the regression model and do leave-one-out cross validation
 (for all interpolation data points)]. Each run through the process
 generates one estimate of the MSE, from which a mean and SD of the MSE
 estimates will be returned.}
+
+\item{MSE.method}{character. The method by which the model should be
+bootstrapped. "non-parametric": resample with replacement from the original
+fitting data, refit the model, and make new predictions. "parametric":
+resample the model coefficients based on the covariance matrix originally
+estimated for those coefficients, then make new predictions.}
 }
 \value{
 A fitted loadComp model.

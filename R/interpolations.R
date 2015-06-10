@@ -19,7 +19,6 @@
 #' 
 #' }
 #' 
-#' \subsection{Interpolation Methods}{}
 #' 
 #' \code{linearInterpolation} - straight lines from one point in y.in to the 
 #' next.
@@ -91,7 +90,7 @@ getTriangularInterpolation <- function(y.mid=0) {
 #' A parameterizable triangular interpolation function.
 #' 
 #' Does not strictly adhere to the guidelines in \link{interpolations}, but can 
-#' be used by \code{\link{geTriangularInterpolation}} to produce a 
+#' be used by \code{\link{getTriangularInterpolation}} to produce a 
 #' function that does.
 #' 
 #' @inheritParams interpolations
@@ -247,7 +246,7 @@ getDistanceWeightedInterpolation <- function(inv.dist.fun=function(a,b) { 1 / ((
 #' function that does.
 #'   
 #' @inheritParams interpolations
-#' @inheritParams genericDistanceWeightedInterpolation
+#' @inheritParams getDistanceWeightedInterpolation
 genericDistanceWeightedInterpolation <- function(dates.in, y.in, dates.out, inv.dist.fun=function(a,b) { 1 / ((a-b)^2) }) {
 
   # Iterate over the dates.out to avoid creating a giant matrix of size

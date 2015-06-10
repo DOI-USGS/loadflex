@@ -2,10 +2,11 @@
 % Please edit documentation in R/loadModel.R
 \docType{methods}
 \name{show.loadModel}
+\alias{show}
 \alias{show.loadModel}
 \title{Display a loadModel object}
 \usage{
-\S4method{show}{loadModel}(object)
+object
 }
 \arguments{
 \item{object}{loadModel object to be displayed.}
