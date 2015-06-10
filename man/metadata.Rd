@@ -193,9 +193,8 @@ ng, ug, mg, g, kg, Mg, tons, pounds, lbs, lb
 }
 }
 \seealso{
-Other metadata: \code{\link{==}},
-  \code{\link{equals.metadata}}; \code{\link{getCol}},
-  \code{\link{getInfo}}, \code{\link{getUnits}},
-  \code{\link{metadata-getters}}
+Other metadata: \code{\link{==,metadata,metadata-method}};
+  \code{\link{getCol}}, \code{\link{getInfo}},
+  \code{\link{getUnits}}, \code{\link{metadata-getters}}
 }
 

@@ -485,15 +485,13 @@ setMethod(
 #' Compares the contents of each slot using the == operator.
 #' 
 #' @rdname equals.metadata
-#' @name equals.metadata
-#' @docType methods
 #' @param e1 metadata object to be compared.
 #' @param e2 metadata object to be compared.
 #' @return logical value indicating whether the two metadata objects have
 #'   identical contents.
 #' @importFrom methods setMethod
 #' @exportMethod ==
-#' @aliases ==
+#' @export
 #' @family metadata
 setMethod(
   "==", c(e1="metadata", e2="metadata"),
