@@ -267,7 +267,8 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' @examples
 #' flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
 #' flowconcToFluxConversion("cfs", "g/L", "kg/d") # 2446.589
-#' library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
+#' library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * 
+#' flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
 flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, attach.units=FALSE) {
   ## Code inspired by rloadest::loadConvFactor code by DLLorenz and ldecicco
   ## Makes heavy use of unitted package by A Appling
@@ -353,13 +354,16 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
 #' @export
 #' @keywords units
 #' @examples
-#' obs <- data.frame(MyConc=(1:10)/10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent between conc*flow and flux
-#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
-#'   flow.units="cms", conc.units="mg/l", load.units="g", load.rate.units="g/s", custom=NULL)
+#' obs <- data.frame(MyConc=(1:10)/10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent
+#' # between conc*flow and flux
+#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
+#' load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", 
+#' load.units="g", load.rate.units="g/s", custom=NULL)
 #'   
 #' observeSolute(obs, "flux", md, attach.units=TRUE) # calculate flux from conc & flow
 #' observeSolute(obs, "flux", md, calculate=FALSE, attach.units=TRUE) # read flux from data column
-#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate conc from flow & flux
+#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate conc 
+#' # from flow & flux
 observeSolute <- function(
   data, flux.or.conc=c("flux","conc"), metadata, 
   calculate=isTRUE(flux.or.conc=="flux"), 
@@ -437,14 +441,20 @@ observeSolute <- function(
 #' @export
 #' @keywords units
 #' @examples
-#' obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
-#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
-#'   flow.units="cms", conc.units="mg/l", load.units="kg", load.rate.units="kg/d", custom=NULL)
+#' obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), 
+#' MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
+#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
+#' load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", load.units="kg", 
+#' load.rate.units="kg/d", custom=NULL)
 #'   
-#' formatPreds(preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, metadata=md) # == obs$MyFlux
-#' formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=obs, metadata=md) # == obs$MyFlux
-#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md) # == obs$MyConc
-#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, attach.units=TRUE) # == u(obs$MyConc, "mg L^-1")
+#' formatPreds(preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, 
+#' metadata=md) # == obs$MyFlux
+#' formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=obs, 
+#' metadata=md) # == obs$MyFlux
+#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, 
+#' metadata=md) # == obs$MyConc
+#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, 
+#' attach.units=TRUE) # == u(obs$MyConc, "mg L^-1")
 formatPreds <- function(preds, 
                         from.format=c("flux","conc*flow","flux/flow","conc"), 
                         to.format=c("flux","conc"), 

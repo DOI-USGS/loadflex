@@ -75,13 +75,13 @@ setClass(
 #' This will print a loadModel object to the console and is the default method
 #' used for that process.
 #' 
+
 #' @rdname show.loadModel
-#' @name show.loadModel
 #' @param object loadModel object to be displayed.
-#' @usage object
-#' @aliases show
 #' @importFrom methods setMethod
 #' @exportMethod show
+#' @export
+
 setMethod(
   "show", "loadModel", 
   function(object) {

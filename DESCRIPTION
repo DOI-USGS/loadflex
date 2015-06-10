@@ -37,6 +37,7 @@ Collate:
     'aaa_onLoad.R'
     'aggregateSolute.R'
     'covariance.R'
+    'dataDocumentation.R'
     'diagnostics.R'
     'getResiduals.R'
     'interpolations.R'
