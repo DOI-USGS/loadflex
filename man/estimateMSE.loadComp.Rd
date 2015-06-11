@@ -4,12 +4,14 @@
 \alias{estimateMSE.loadComp}
 \title{Estimate uncertainty in a composite model.}
 \usage{
-\method{estimateMSE}{loadComp}(load.model, n.iter = 100,
+\method{estimateMSE}{loadComp}(load.model, ..., n.iter = 100,
   method = "parametric", rho)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
+
+\item{...}{Other arguments passed to inheriting methods for estimateMSE}
 
 \item{n.iter}{The number of times to repeat the COMPLETE process of [simulate
 predictions from the regression model and do leave-one-out cross validation

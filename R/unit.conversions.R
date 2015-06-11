@@ -46,6 +46,10 @@ NULL
 #' @keywords data units internal
 generateUnitsData <- function() {
   # valid.metadata.units
+  #silly thing needed to pass R CMD check
+  # from http://stackoverflow.com/questions/8096313/no-visible-binding-for-global-variable-note-in-r-cmd-check
+  numerator=denominator=value=NULL
+  
   valid.metadata.units <- rbind(
     data.frame(
       dimension="volume",
@@ -164,7 +168,7 @@ generateUnitsData <- function() {
 #' validMetadataUnits("g", unit.type="flow.units") # FALSE
 validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.units","load.units","load.rate.units")) {
   unit.type <- match.arg(unit.type)
-  
+  unit=NULL
   # Parse the unit string into numerator and denominator strings
   unitpieces <- separate_units(unitbundle(unitstr))
   numerator <- get_units(unitbundle(unitpieces[which(unitpieces$Power > 0),]))
@@ -217,6 +221,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' loadflex:::translateFreeformToUnitted("mg L^-1") # "mg L^-1"
 translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   # Quick escape if our work is already done.
+  old=NULL
   if(validMetadataUnits(freeform.units, "ANY")) {
     return(if(attach.units) unitbundle(freeform.units) else get_units(unitbundle(freeform.units)))
   }
@@ -272,6 +277,10 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, attach.units=FALSE) {
   ## Code inspired by rloadest::loadConvFactor code by DLLorenz and ldecicco
   ## Makes heavy use of unitted package by A Appling
+  
+  #silly thing needed to pass R CMD check
+  # from http://stackoverflow.com/questions/8096313/no-visible-binding-for-global-variable-note-in-r-cmd-check
+  numerator=denominator=NULL
   
   # Translate units - goes quickly if they're good already
   flow.units <- translateFreeformToUnitted(flow.units, TRUE)

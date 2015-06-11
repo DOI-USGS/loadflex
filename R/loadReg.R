@@ -20,23 +20,23 @@ checkRloadestStatus <- function() {
 #' #' 
 #' @inheritParams getMetadata 
 #' @importFrom rloadest loadReg
-#' @param fit a loadReg object
+#' @param load.model a loadReg object
 #' @export
 #' @return Object of class "metadata" with slots modified according to the
 #'   metadata contained in load.model
 #' @family getMetadata
-getMetadata.loadReg <- function(fit) {
+getMetadata.loadReg <- function(load.model) {
 
   metadata(
-    constituent=fit$constituent,
-    flow=fit$flow,
+    constituent=load.model$constituent,
+    flow=load.model$flow,
     load.rate="",
-    dates=fit$dates,
-    conc.units=fit$conc.units, 
-    flow.units=fit$flow.units, 
-    load.units=fit$load.units, 
-    load.rate.units=paste0(fit$load.units,"/day"),
-    station=fit$station)
+    dates=load.model$dates,
+    conc.units=load.model$conc.units, 
+    flow.units=load.model$flow.units, 
+    load.units=load.model$load.units, 
+    load.rate.units=paste0(load.model$load.units,"/day"),
+    station=load.model$station)
 
 }
 

@@ -88,7 +88,7 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
                    data, metadata, fitting_function=NULL, 
                    y.trans.function=NULL, retrans.function=exp,
                    store=c("data","fitting.function"), ylog) {
-  
+  s.hat=NULL
   # Validate arguments
   pred.format <- match.arg.loadflex(pred.format)
   store <- match.arg.loadflex(store, choices=c("data","fitting.function"), several.ok=TRUE)
@@ -361,7 +361,7 @@ resampleCoefficients.lm <- function(fit) {
 #' @family simulateSolute
 simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
                                   method=c("parametric", "non-parametric"), from.interval=c("confidence", "prediction"), rho, ...) {
-  
+  s.hat=NULL
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   from.interval <- match.arg.loadflex(from.interval, c("confidence","prediction"))
