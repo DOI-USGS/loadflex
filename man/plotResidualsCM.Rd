@@ -17,8 +17,7 @@ plotResidualsCM(type, load.model, observations, resids, dateField = "Date",
 
 \item{verbose}{debugging flag}
 
-\item{day.of.year}{flag if true will plot residuals by the day of year to,
-can help user look for seasonality}
+\item{day.of.year}{flag if true will plot residuals by the day of year to,}
 
 \item{residuals}{the observation residuals}
 }

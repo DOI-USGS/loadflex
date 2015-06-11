@@ -339,7 +339,7 @@ predictSolute.loadInterp <- function(
 #'   observations (TRUE) or without replacement (FALSE)?
 #' @export
 #' @family estimateMSE
-estimateMSE.loadInterp <- function(load.model,..., n.out, n.iter=floor(nrow(getFittingData(load.model))/n.out), replace) {
+estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFittingData(load.model))/n.out), replace, ...) {
   
   # Validate args
   replace <- match.arg.loadflex(replace, c(TRUE, FALSE))

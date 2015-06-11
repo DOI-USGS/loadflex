@@ -397,7 +397,7 @@ predictSolute.loadComp <- function(
 #'   points are needed to make this estimation with precision.
 #' @export
 #' @family estimateMSE
-estimateMSE.loadComp <- function(load.model,..., n.iter=100, method="parametric", rho) {
+estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rho, ...) {
   
   # Pull out the resid.model for easier access
   resid.model <- load.model@fit@resid.model

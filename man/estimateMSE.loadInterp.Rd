@@ -5,14 +5,12 @@
 \title{Estimate uncertainty in an interpolation using leave-one-out cross
 validation.}
 \usage{
-\method{estimateMSE}{loadInterp}(load.model, ..., n.out,
-  n.iter = floor(nrow(getFittingData(load.model))/n.out), replace)
+\method{estimateMSE}{loadInterp}(load.model, n.out,
+  n.iter = floor(nrow(getFittingData(load.model))/n.out), replace, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
-
-\item{...}{Other arguments passed to inheriting methods for estimateMSE}
 
 \item{n.out}{numeric. The number of observations in the fitting data to leave
 out in each iteration.}
@@ -22,6 +20,8 @@ out in each iteration.}
 \item{replace}{logical. In each iteration, should the n.out observations that
 are left out be sampled with replacement of any previous sets of n.out
 observations (TRUE) or without replacement (FALSE)?}
+
+\item{...}{Other arguments passed to inheriting methods for estimateMSE}
 }
 \description{
 Calculates and returns the mean squared errors (MSEs) in the units and

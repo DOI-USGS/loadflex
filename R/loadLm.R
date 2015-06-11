@@ -88,7 +88,6 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
                    data, metadata, fitting_function=NULL, 
                    y.trans.function=NULL, retrans.function=exp,
                    store=c("data","fitting.function"), ylog) {
-  s.hat=NULL
   # Validate arguments
   pred.format <- match.arg.loadflex(pred.format)
   store <- match.arg.loadflex(store, choices=c("data","fitting.function"), several.ok=TRUE)
@@ -361,7 +360,6 @@ resampleCoefficients.lm <- function(fit) {
 #' @family simulateSolute
 simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
                                   method=c("parametric", "non-parametric"), from.interval=c("confidence", "prediction"), rho, ...) {
-  s.hat=NULL
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   from.interval <- match.arg.loadflex(from.interval, c("confidence","prediction"))
@@ -404,6 +402,7 @@ simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), new
     # residuals to the original; it seems not to.
     noise <- as.numeric(arima.sim(model=list(order=c(1,0,0), ar=rho), n=nrow(newdata)))
     # Normalize the noise to have the same sd as the original residuals. Is that reasonable?
+    s.hat <- summary(load.model@fit)$sigma
     noise <- noise * s.hat/sd(noise)
     # Add the noise back into the predictions, first converting back to linear space
     fitting.preds <- exp(log(fitting.preds) + noise)

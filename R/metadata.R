@@ -287,7 +287,7 @@ metadata <- function(constituent, flow, load.rate="", dates,
 #'   whether \code{new.metadata} is provided.
 #' @export
 updateMetadata <- function(metadata, new.metadata=NA, ..., validate=TRUE) {
-  old=NULL
+  #old=NULL
   if(!is(metadata, "metadata")) {
     stop("metadata must be of class 'metadata'")
   }
