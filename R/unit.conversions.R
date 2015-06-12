@@ -221,7 +221,6 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' loadflex:::translateFreeformToUnitted("mg L^-1") # "mg L^-1"
 translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   # Quick escape if our work is already done.
-  #old=NULL
 
   if(validMetadataUnits(freeform.units, "ANY")) {
     return(if(attach.units) unitbundle(freeform.units) else get_units(unitbundle(freeform.units)))

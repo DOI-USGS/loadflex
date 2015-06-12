@@ -20,8 +20,6 @@
 #' @importFrom ggplot2 ggplot aes geom_histogram xlab
 #' @export
 isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, handler=stop) {
-  #silly thing needed to pass R CMD check
-  # from http://stackoverflow.com/questions/8096313/no-visible-binding-for-global-variable-note-in-r-cmd-check
   TimeInterval  <- '.ggplot.var'
   time_diffs <- diff(dates)
   is_irregular <- (length(unique(time_diffs)) > 1) & (diff(range(time_diffs)) > tol)

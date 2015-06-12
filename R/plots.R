@@ -61,8 +61,6 @@ plotObservationsCM <- function(...) {
 plotCM <- function(flux.or.conc, show.observations, load.model, finalloads, observations=NULL, 
                    composite=TRUE, linear.interpolation=FALSE, regression=TRUE,  xrange="none", 
                    dateField="Date", verbose=FALSE) {
-  #aes_string=geom_point=yday=xlab=NULL
-  #DATE=aes=value=variable=scale_colour_manual=scale_linetype_manual=scale_shape_manual=NULL
   value <- yday<- variable <- '.ggplot.var'
   # Check to make sure the argument is one of the two currently accepted choices
   match.arg.loadflex(flux.or.conc)

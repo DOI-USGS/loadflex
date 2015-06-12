@@ -60,8 +60,6 @@
 #' @importFrom lubridate is.POSIXt is.Date
 getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter","2p digital filter"), 
                              da, select, alpha, BFImax, ...) {
-  #silly thing needed to pass R CMD check
-  # from http://stackoverflow.com/questions/8096313/no-visible-binding-for-global-variable-note-in-r-cmd-check
   #hysep<- 'method.var'
   method <- match.arg(method)
   Flows <- getCol(metadata, data, "flow", FALSE)
