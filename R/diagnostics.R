@@ -17,8 +17,10 @@
 #' @param tol time step tolerance, the accepatable amount of difference between time steps to still consider them regular.
 #' @return TRUE if the time steps in \code{dates} are identical to within the 
 #'   tolerance set by {tol}, FALSE otherwise.
+#' @importFrom ggplot2 ggplot aes geom_histogram xlab
 #' @export
 isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, handler=stop) {
+  TimeInterval  <- '.ggplot.var'
   time_diffs <- diff(dates)
   is_irregular <- (length(unique(time_diffs)) > 1) & (diff(range(time_diffs)) > tol)
   if(is_irregular) {

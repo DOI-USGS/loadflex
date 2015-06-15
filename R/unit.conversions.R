@@ -46,6 +46,7 @@ NULL
 #' @keywords data units internal
 generateUnitsData <- function() {
   # valid.metadata.units
+  
   valid.metadata.units <- rbind(
     data.frame(
       dimension="volume",
@@ -126,6 +127,8 @@ generateUnitsData <- function() {
     ))
   ), c("numerator", "denominator", "value"))
   # Append the reverse conversions
+  numerator<-denominator<-value<-".transform.var"
+  
   unit.conversions <- rbind(
     unit.conversions,
     transform(unit.conversions, 
@@ -164,7 +167,7 @@ generateUnitsData <- function() {
 #' validMetadataUnits("g", unit.type="flow.units") # FALSE
 validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.units","load.units","load.rate.units")) {
   unit.type <- match.arg(unit.type)
-  
+
   # Parse the unit string into numerator and denominator strings
   unitpieces <- separate_units(unitbundle(unitstr))
   numerator <- get_units(unitbundle(unitpieces[which(unitpieces$Power > 0),]))
@@ -172,6 +175,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   
   # A useful helper function: returns TRUE iif oneunit is present in valid.metadata.units
   # and has a dimension that's in dims
+  unit <- "subset.var"
   hasDim <- function(oneunit, dims) {
     unit_row <- subset(valid.metadata.units, unit==oneunit)
     if(nrow(unit_row) != 1) {
@@ -182,7 +186,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
       return(TRUE)
     }
   }
-  
+
   # The numerator (and denominator if it exists) should have specific dimensions
   # for each units type. Check.
   switch(
@@ -217,6 +221,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
 #' loadflex:::translateFreeformToUnitted("mg L^-1") # "mg L^-1"
 translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   # Quick escape if our work is already done.
+
   if(validMetadataUnits(freeform.units, "ANY")) {
     return(if(attach.units) unitbundle(freeform.units) else get_units(unitbundle(freeform.units)))
   }
@@ -227,6 +232,7 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   unitslist <- strsplit(units, "/")
   # for each bundle of units, find each element in the dictionary and translate if needed
   #data(freeform.unit.translations)
+  old <- "tidyunit.var"
   units <- lapply(unitslist, function(units) {
     units <- lapply(units, function(unit) {
       tidyunit <- gsub("^ +| +$", "", unit) # strip surrounding spaces
@@ -273,6 +279,7 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   ## Code inspired by rloadest::loadConvFactor code by DLLorenz and ldecicco
   ## Makes heavy use of unitted package by A Appling
   
+  
   # Translate units - goes quickly if they're good already
   flow.units <- translateFreeformToUnitted(flow.units, TRUE)
   conc.units <- translateFreeformToUnitted(conc.units, TRUE)
@@ -292,6 +299,7 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   # Identify the right components of the multiplier. Components that are
   # unavailable will be omitted from the multipliers data.frame
   #data(unit.conversions)
+  numerator<-denominator<- "rbind.var"
   multipliers <- rbind(
     # Convert to mg/day
     numer_to_mg = subset(unit.conversions, numerator == "mg" & denominator %in% fcu_numerstrs),

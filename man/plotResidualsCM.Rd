@@ -4,7 +4,7 @@
 \alias{plotResidualsCM}
 \title{Plot concentration or flux residuals.}
 \usage{
-plotResidualsCM(type, load.model, observations, dateField = "Date",
+plotResidualsCM(type, load.model, observations, resids, dateField = "Date",
   verbose = FALSE, xObservations = FALSE, xFlow = FALSE,
   day.of.year = FALSE)
 }
@@ -17,8 +17,9 @@ plotResidualsCM(type, load.model, observations, dateField = "Date",
 
 \item{verbose}{debugging flag}
 
-\item{day.of.year}{flag if true will plot residuals by the day of year to,
-can help user look for seasonality}
+\item{day.of.year}{flag if true will plot residuals by the day of year to,}
+
+\item{residuals}{the observation residuals}
 }
 \description{
 Not sure we want to include this function in the official API, so keeping it

@@ -393,7 +393,6 @@ predictSolute.loadReg2 <- function(
 #' @family simulateSolute
 simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
                                     method=c("parametric", "non-parametric"), from.interval=c("confidence", "prediction"), rho, ...) {
-  
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   from.interval <- match.arg.loadflex(from.interval, c("confidence","prediction"))
@@ -439,7 +438,9 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
     # residuals to the original; it seems not to.
     noise <- as.numeric(arima.sim(model=list(order=c(1,0,0), ar=rho), n=nrow(newdata)))
     # Normalize the noise to have the same sd as the original residuals. Is that reasonable?
-    noise <- noise * s.hat/sd(noise)
+    error <- "print.function"
+    error("need to calculate s.hat")
+    #noise <- noise * s.hat/sd(noise)
     # Add the noise back into the predictions, first converting back to linear space
     fitting.preds <- exp(log(fitting.preds) + noise)
   }

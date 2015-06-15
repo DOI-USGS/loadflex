@@ -6,7 +6,7 @@
 validation.}
 \usage{
 \method{estimateMSE}{loadInterp}(load.model, n.out,
-  n.iter = floor(nrow(getFittingData(load.model))/n.out), replace)
+  n.iter = floor(nrow(getFittingData(load.model))/n.out), replace, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -20,6 +20,8 @@ out in each iteration.}
 \item{replace}{logical. In each iteration, should the n.out observations that
 are left out be sampled with replacement of any previous sets of n.out
 observations (TRUE) or without replacement (FALSE)?}
+
+\item{...}{Other arguments passed to inheriting methods for estimateMSE}
 }
 \description{
 Calculates and returns the mean squared errors (MSEs) in the units and

@@ -5,7 +5,7 @@
 \title{Estimate uncertainty in a composite model.}
 \usage{
 \method{estimateMSE}{loadComp}(load.model, n.iter = 100,
-  method = "parametric", rho)
+  method = "parametric", rho, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -27,6 +27,8 @@ estimated for those coefficients, then make new predictions.}
 simulateSolute(regression.model, interpolation.data). If missing, rho will
 be estimated from the interpolation data, but be warned that many data
 points are needed to make this estimation with precision.}
+
+\item{...}{Other arguments passed to inheriting methods for estimateMSE}
 }
 \description{
 Calculates and returns the mean squared errors (MSEs) in the units and

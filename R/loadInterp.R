@@ -339,7 +339,7 @@ predictSolute.loadInterp <- function(
 #'   observations (TRUE) or without replacement (FALSE)?
 #' @export
 #' @family estimateMSE
-estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFittingData(load.model))/n.out), replace) {
+estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFittingData(load.model))/n.out), replace, ...) {
   
   # Validate args
   replace <- match.arg.loadflex(replace, c(TRUE, FALSE))
@@ -365,11 +365,13 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
   is_flux_format <- load.model@pred.format == "flux"
   if(is_flux_format) {
     conc_factor <- tryCatch(
-      formatPreds(rep(1, nrow(load.model@data)), from=load.model@pred.format, to="conc", newdata=load.model@data, metadata=load.model@metadata, attach.units=FALSE),
+      formatPreds(rep(1, nrow(load.model@data)), from.format=load.model@pred.format, 
+                  to.format="conc", newdata=load.model@data, metadata=load.model@metadata, attach.units=FALSE),
       error=function(e) rep(NA, nrow(load.model@data)))
   } else {
     flux_factor <- tryCatch(
-      formatPreds(rep(1, nrow(load.model@data)), from=load.model@pred.format, to="flux", newdata=load.model@data, metadata=load.model@metadata, attach.units=FALSE),
+      formatPreds(rep(1, nrow(load.model@data)), from.format=load.model@pred.format, 
+                  to.format="flux", newdata=load.model@data, metadata=load.model@metadata, attach.units=FALSE),
       error=function(e) rep(NA, nrow(load.model@data)))
   }
   

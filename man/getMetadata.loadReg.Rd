@@ -6,10 +6,10 @@
 "metadata"
 #'}
 \usage{
-\method{getMetadata}{loadReg}(fit)
+\method{getMetadata}{loadReg}(load.model)
 }
 \arguments{
-\item{fit}{a loadReg object}
+\item{load.model}{a loadReg object}
 }
 \value{
 Object of class "metadata" with slots modified according to the

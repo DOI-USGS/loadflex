@@ -397,7 +397,7 @@ predictSolute.loadComp <- function(
 #'   points are needed to make this estimation with precision.
 #' @export
 #' @family estimateMSE
-estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rho) {
+estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rho, ...) {
   
   # Pull out the resid.model for easier access
   resid.model <- load.model@fit@resid.model
@@ -424,9 +424,11 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
   # Pre-calculate the conversion factors to make preds and obs in "conc" or "flux" format. Calls to formatPreds are expensive, so do them infrequently.
   is_flux_format <- resid.model@pred.format == "flux"
   if(is_flux_format) {
-    conc_factor <- formatPreds(rep(1, nrow(resid.model@data)), from=resid.model@pred.format, to="conc", newdata=resid.model@data, metadata=resid.model@metadata, attach.units=FALSE)
+    conc_factor <- formatPreds(rep(1, nrow(resid.model@data)), from.format=resid.model@pred.format, 
+                               to.format="conc", newdata=resid.model@data, metadata=resid.model@metadata, attach.units=FALSE)
   } else {
-    flux_factor <- formatPreds(rep(1, nrow(resid.model@data)), from=resid.model@pred.format, to="flux", newdata=resid.model@data, metadata=resid.model@metadata, attach.units=FALSE)
+    flux_factor <- formatPreds(rep(1, nrow(resid.model@data)), from.format=resid.model@pred.format, 
+                               to.format="flux", newdata=resid.model@data, metadata=resid.model@metadata, attach.units=FALSE)
   }
   
   # Loop, each time resampling coefficients and calculating the leave-n-out 
