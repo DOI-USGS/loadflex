@@ -1,6 +1,11 @@
-language: r
+language: objective-c
 sudo: required
 warnings_are_errors: true
+
+before_install:
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - ./travis-tool.sh bootstrap
 
 r_github_packages:
  - jimhester/covr
@@ -14,6 +19,9 @@ r_github_packages:
 
 after_success:
   - Rscript -e 'covr::codecov(); covr::coveralls()'
+
+after_failure:
+  - ./travis-tool.sh dump_logs
 
 notifications:
   email:
