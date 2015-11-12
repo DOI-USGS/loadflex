@@ -7,13 +7,13 @@ before_install:
 
 r_github_packages:
   - jimhester/covr
-  - appling/unitted
-  - USGS-R/smwrData
-  - USGS-R/smwrBase
-  - USGS-R/smwrGraphs
-  - USGS-R/smwrStats
-  - USGS-R/smwrQW
-  - USGS-R/rloadest
+  - appling/unitted@v0.2.4
+  - USGS-R/smwrData@v1.1.0
+  - USGS-R/smwrBase@v1.1.0
+  - USGS-R/smwrGraphs@v1.1.0
+  - USGS-R/smwrStats@v0.7.2
+  - USGS-R/smwrQW@v0.7.5
+  - USGS-R/rloadest@v0.4.2
 
 after_success:
   - Rscript -e 'covr::codecov(); covr::coveralls()'
