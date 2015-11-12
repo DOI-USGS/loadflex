@@ -3,7 +3,7 @@ sudo: required
 warnings_are_errors: true
 
 before_install:
-  cmd: echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
+  echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
 
 r_github_packages:
   - jimhester/covr
