@@ -7,7 +7,7 @@ before_install:
 
 r_github_packages:
   - jimhester/covr
-  - appling/unitted@v0.2.4
+  - appling/unitted@v0.2.5
   - USGS-R/smwrData@v1.1.0
   - USGS-R/smwrBase@v1.1.0
   - USGS-R/smwrGraphs@v1.1.0
