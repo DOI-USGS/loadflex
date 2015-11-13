@@ -43,13 +43,13 @@ Models and Tools for Watershed Flux Estimates
 
 
   loadflex makes use of packages that are currently only available from
-  GitHub. To install these packages, run the following lines:
+  GitHub or the USGS R package repository. To install these packages, run the
+  following lines:
 
   install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats",
-  "smwrQW"), repos=c("http://owi.usgs.gov/R", "http://usgs-r.github.com",
+  "smwrQW", "rloadest"), repos=c("http://owi.usgs.gov/R",
   "http://cran.us.r-project.org"), dependencies=TRUE, type="both")
 
-  devtools::install_github(c("USGS-R/rloadest", "appling/unitted",
-  "mcdowelllab/loadflex"))
+  devtools::install_github(c("appling/unitted", "mcdowelllab/loadflex"))
 }
 
