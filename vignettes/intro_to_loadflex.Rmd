@@ -94,7 +94,7 @@ Here are a few ways to inspect the models:
 
 ```{r fig_1D, eval=FALSE}
 summary(getFittedModel(no3_lm))
-qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
+ggplot2::qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
 residDurbinWatson(no3_lr, "conc", newdata=regdat, irreg=TRUE)
 residDurbinWatson(no3_lr, "conc", newdata=intdat, irreg=TRUE)
 estimateRho(no3_lr, "conc", newdata=regdat, irreg=TRUE)$rho
