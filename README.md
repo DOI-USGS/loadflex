@@ -36,5 +36,7 @@ install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats",
 "smwrQW", "rloadest"), repos=c("http://owi.usgs.gov/R", 
 "http://cran.us.r-project.org"), dependencies=TRUE, type="both")
 
+install.packages("devtools") # also see https://www.rstudio.com/products/rpackages/devtools/ for installation instructions
+
 devtools::install_github(c("appling/unitted", "mcdowelllab/loadflex"))
 ```
