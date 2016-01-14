@@ -1,6 +1,8 @@
 # loadflex
 ## Models and tools for watershed flux estimates
 
+Please don't worry: the following status patches are red, and we know it. This is a useful motivator for us but really shouldn't be a problem for you - the causes of these failures are minor and have more to do with building the package online than with installing the package on your computer. Still, we'll try to turn these green soon.
+
 | Name       | Status           |  
 | :------------ |:-------------|  
 | Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/8cjo5urmkv5sjd7v?svg=true)](https://ci.appveyor.com/project/appling/loadflex) |
