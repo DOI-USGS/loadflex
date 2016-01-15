@@ -42,3 +42,5 @@ install.packages("devtools") # also see https://www.rstudio.com/products/rpackag
 
 devtools::install_github(c("appling/unitted", "mcdowelllab/loadflex"))
 ```
+
+Also please see the installation FAQ on the wiki (https://github.com/McDowellLab/loadflex/wiki/Installation-FAQ) if you run into trouble.
