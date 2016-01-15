@@ -17,7 +17,7 @@ install:
 
 build_script:
   - R --version
-  - travis-tool.sh install_github appling/unitted@v0.2.5 USGS-R/smwrData@v1.1.0 USGS-R/smwrBase@v1.1.0 USGS-R/smwrGraphs@v1.1.0 USGS-R/smwrStats@v0.7.2 USGS-R/smwrQW@v0.7.5 USGS-R/rloadest@v0.4.2
+  - travis-tool.sh install_github appling/unitted@v0.2.4 USGS-R/smwrData@v1.1.0 USGS-R/smwrBase@v1.1.0 USGS-R/smwrGraphs@v1.1.0 USGS-R/smwrStats@v0.7.2 USGS-R/smwrQW@v0.7.5 USGS-R/rloadest@v0.4.2
   - travis-tool.sh install_deps
 
 test_script:
