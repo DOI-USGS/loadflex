@@ -3,7 +3,11 @@ sudo: required
 warnings_are_errors: true
 
 before_install:
-  echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
+  - echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
+
+before_script:
+  - Rscript -e "install.packages('knitr', repos='http://cran.cnr.Berkeley.edu/')"
+  - Rscript -e "install.packages('rmarkdown', repos='http://cran.cnr.Berkeley.edu/')"
 
 r_github_packages:
   - jimhester/covr
