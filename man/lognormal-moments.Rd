@@ -89,12 +89,12 @@ library(ggplot2)
 logparams <- list(meanlog = 1, sdlog = 0.5)
 loglin_data <- data.frame(rlnorm=rlnorm(1000, meanlog=logparams$meanlog, sdlog=logparams$sdlog))
 ggplot(loglin_data, aes(x=log(rlnorm))) + geom_density() +
-  geom_vline(x=logparams$meanlog, color="red") +
-  geom_vline(x=logparams$meanlog+c(-1,1)*logparams$sdlog, color="blue")
+  geom_vline(xintercept=logparams$meanlog, color="red") +
+  geom_vline(xintercept=logparams$meanlog+c(-1,1)*logparams$sdlog, color="blue")
 linparams <- logToLin(ms=logparams)
 ggplot(loglin_data, aes(x=rlnorm)) + geom_density() +
-  geom_vline(x=linparams$meanlin, color="red") +
-  geom_vline(x=linparams$meanlin+c(-1,1)*linparams$sdlin, color="blue")
+  geom_vline(xintercept=linparams$meanlin, color="red") +
+  geom_vline(xintercept=linparams$meanlin+c(-1,1)*linparams$sdlin, color="blue")
 #
 # logToLin
 logToLin(meanlog=1, sdlog=0.5)
