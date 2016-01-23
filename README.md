@@ -1,5 +1,4 @@
-# loadflex
-## Models and tools for watershed flux estimates
+## `loadflex`: Models and tools for watershed flux estimates
 
 This package implements several of the most common methods for 
 modeling and predicting watershed solute fluxes and concentrations, including
@@ -28,14 +27,15 @@ install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats",
 "smwrQW", "rloadest"), repos=c("http://owi.usgs.gov/R", 
 "http://cran.us.r-project.org"), dependencies=TRUE, type="both")
 
-install.packages("devtools") # also see https://www.rstudio.com/products/rpackages/devtools/ for installation instructions
+install.packages("devtools")
+# also see https://www.rstudio.com/products/rpackages/devtools/
 
 devtools::install_github(c("appling/unitted", "mcdowelllab/loadflex"))
 ```
 
 Also please see the installation FAQ on the wiki (https://github.com/McDowellLab/loadflex/wiki/Installation-FAQ) if you run into trouble.
 
-# Package status
+## Package status
 
 Please don't worry: yes, some of these status badges are red, but the reasons are minor. You can absolutely still install and run the package. We use the badges as a motivator for us - we're continously raising the bar and working to make `loadflex` even better.
 
