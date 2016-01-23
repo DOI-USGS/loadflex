@@ -25,21 +25,3 @@ citEntry(entry = "Article",
     "Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex.",
     "Ecosphere 6(12):269. http://dx.doi.org/10.1890/ES14-00517.1")
 )
-
-citEntry(entry = "Manual",
-  title = "{loadflex}: Models and Tools for Watershed Flux Estimates", 
-  author = personList(as.person("Alison P. Appling"), 
-                      as.person("Miguel C. Leon"), 
-                      as.person("William H. McDowell")), 
-  year = year, 
-  note = note, 
-  url = "https://github.com/McDowellLab/loadflex", 
-
-  textVersion = 
-  paste("Alison P. Appling, Miguel C. Leon, and William H. McDowell", 
-        sprintf("(%s).", year), 
-        "loadflex: Models and Tools for Watershed Flux Estimates.", 
-        paste(note, ".", sep = ""), 
-        "https://github.com/McDowellLab/loadflex.") 
-)
-
