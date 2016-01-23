@@ -7,6 +7,25 @@ if(!exists("meta") || is.null(meta)) meta <- packageDescription("heplots")
 year <- sub("-.*", "", meta$Date) 
 note <- sprintf("R package version %s", meta$Version) 
 
+citEntry(entry = "Article",
+  title = "Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex", 
+  author = personList(as.person("Alison P. Appling"), 
+                      as.person("Miguel C. Leon"), 
+                      as.person("William H. McDowell")), 
+  year = "2015", 
+  journal = "Ecosphere",
+  volume = "6",
+  number = "12",
+  pages = "art269",
+  doi = "10.1890/ES14-00517.1",
+  url = "http://www.esajournals.org/doi/full/10.1890/ES14-00517.1",
+ 
+  textVersion = paste(
+    "Appling, A. P., M. C. Leon, and W. H. McDowell. 2015.",
+    "Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex.",
+    "Ecosphere 6(12):269. http://dx.doi.org/10.1890/ES14-00517.1")
+)
+
 citEntry(entry = "Manual",
   title = "{loadflex}: Models and Tools for Watershed Flux Estimates", 
   author = personList(as.person("Alison P. Appling"), 
@@ -23,20 +42,4 @@ citEntry(entry = "Manual",
         paste(note, ".", sep = ""), 
         "https://github.com/McDowellLab/loadflex.") 
 )
-
-citEntry(entry = "Article",
-  title = "Reducing bias and quantifying uncertainty in watershed flux estimates: The R package loadflex", 
-  author = personList(as.person("Alison P. Appling"), 
-                      as.person("Miguel C. Leon"), 
-                      as.person("William H. McDowell")), 
-  year = "TBD (In review)", 
-  journal = "TBD (In review)",
-  volume = "TBD",
-  number = "TBD",
-  pages = "TBD-TBD",
- 
-  textVersion = "Alison P. Appling, Miguel C. Leon, and William H. McDowell (In review).
-    Reducing bias and quantifying uncertainty in watershed flux estimates: The R package loadflex." 
-)
-
 
