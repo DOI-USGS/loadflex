@@ -1,7 +1,7 @@
 # loadflex
 ## Models and tools for watershed flux estimates
 
-Please don't worry: the following status patches are red, and we know it. This is a useful motivator for us but really shouldn't be a problem for you - the causes of these failures are minor and have more to do with building the package online than with installing the package on your computer. Still, we'll try to turn these green soon.
+Please don't worry: yes, some of these status badges are red, but the reasons are minor. You can absolutely still install and run the package. We use the badges as a motivator for us - we're continously raising the bar and working to make `loadflex` even better.
 
 | Name       | Status           |  
 | :------------ |:-------------|  
