@@ -181,7 +181,7 @@ test_that("resampleCoefficients.lm looks OK", {
   
   # resample 1000 times and plot the resampled coefficients
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.lm(mylm))))), c("intercept","discharge","dtsimple"))
-  print(ggplot(new_coefs, aes(x=intercept, y=discharge, color=dtsimple)) + geom_point() + theme_bw())
+  #print(ggplot(new_coefs, aes(x=intercept, y=discharge, color=dtsimple)) + geom_point() + theme_bw())
   #   library(lattice)
   #   cloud(intercept ~ dtsimple * discharge, data=new_coefs, alpha=0.6)
   print(cov.scaled <- (summary(mylm)$sigma)^2*summary(mylm)$cov.unscaled)
@@ -221,17 +221,17 @@ test_that("simulateSolute.loadLm looks OK", {
   # PARAMETRIC: repeatedly simulate, then plot all the sims
   print(system.time(sims <- replicate(1000, simulateSolute(lmc, "conc", method="parametric", from.interval="confidence"))))
   sims <- data.frame(mydat, sims) %>% gather(iter, concentration, X1:X1000)
-  print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
-    geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
-    geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
+  #print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
+  #  geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
+  #  geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
   expect_manual_OK("parametric bootstrap: simulated values make a cloud of lines around the original predictions")
   
   # NONPARAMETRIC: repeatedly simulate, then plot all the sims
   print(system.time(sims <- replicate(1000, simulateSolute(lmc, "conc", method="non-parametric", from.interval="confidence"))))
   sims <- data.frame(mydat, sims) %>% gather(iter, concentration, X1:X1000)
-  print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
-          geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
-          geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
+  #print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
+  #        geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
+  #        geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
   expect_manual_OK("parametric bootstrap: simulated values make a cloud of lines around the original predictions")
   
   warning("prediction intervals remain untested")
