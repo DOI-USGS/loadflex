@@ -1,2 +1,2 @@
 library(testthat)
-#test_check('loadflex')
+test_check('loadflex')
