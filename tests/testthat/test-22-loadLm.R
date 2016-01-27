@@ -168,7 +168,7 @@ test_that("loadLm models can find and report their uncertainty", {
       # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) + 
       # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
       # theme_bw() + ggtitle("flux from lmf")
-  )
+  #)
   expect_manual_OK("lm predictions (green dots & bars) are on the same order as observations (pink X's)")
 })
 
