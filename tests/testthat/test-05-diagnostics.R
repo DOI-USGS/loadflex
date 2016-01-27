@@ -66,28 +66,28 @@ test_that("estimateRho works", {
   expect_is(rho.out$arima.model, "Arima") # the arima fit
   
   # Check the function for the regular time series to which it was fitted
-  plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue")
-  points(rho.out$rho.fun(simpledata$DATES[8], simpledata$DATES), x=simpledata$DATES, type="b", col="green")
-  points(rho.out$rho.fun(simpledata$DATES[14], simpledata$DATES), x=simpledata$DATES, type="b", col="gold")
-  points(rho.out$rho.fun(simpledata$DATES[21], simpledata$DATES), x=simpledata$DATES, type="b", col="red")
+  #plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue")
+  # points(rho.out$rho.fun(simpledata$DATES[8], simpledata$DATES), x=simpledata$DATES, type="b", col="green")
+  # points(rho.out$rho.fun(simpledata$DATES[14], simpledata$DATES), x=simpledata$DATES, type="b", col="gold")
+  # points(rho.out$rho.fun(simpledata$DATES[21], simpledata$DATES), x=simpledata$DATES, type="b", col="red")
   expect_manual_OK("correlations at dates #3, 8, 14, & 21 are OK for regular time series", "Look at the plot.")
   
   # Check the function for an irregular time series - correlation should be a
   # function of the distance in time rather than in the number of rows
   # separating two observations
   simpledata <- app2.calib[-which(diff(app2.calib$DATES) < 7),]
-  plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue", ylab="Cor from Dates")
-  points(rho.out$rho.fun(simpledata$DATES[8], simpledata$DATES), x=simpledata$DATES, type="b", col="green")
-  points(rho.out$rho.fun(simpledata$DATES[14], simpledata$DATES), x=simpledata$DATES, type="b", col="gold")
-  points(rho.out$rho.fun(simpledata$DATES[21], simpledata$DATES), x=simpledata$DATES, type="b", col="red")
+  #plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue", ylab="Cor from Dates")
+  # points(rho.out$rho.fun(simpledata$DATES[8], simpledata$DATES), x=simpledata$DATES, type="b", col="green")
+  # points(rho.out$rho.fun(simpledata$DATES[14], simpledata$DATES), x=simpledata$DATES, type="b", col="gold")
+  # points(rho.out$rho.fun(simpledata$DATES[21], simpledata$DATES), x=simpledata$DATES, type="b", col="red")
   expect_manual_OK("correlations at dates #3, 8, 14, & 21 are OK for irregular time series", "Look at the plot.")
   
   # Check that other date formats are also fine
   simpledata <- app2.calib[-which(diff(app2.calib$DATES) < 7),] # these DATES are in Date format
-  plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue", ylab="Cor from varied date formats")
-  points(rho.out$rho.fun(as.POSIXlt(simpledata$DATES[8]), as.POSIXlt(simpledata$DATES)), x=simpledata$DATES, type="b", col="green")
-  library(chron)
-  points(rho.out$rho.fun(as.chron(simpledata$DATES[14]), as.chron(simpledata$DATES)), x=simpledata$DATES, type="b", col="gold")
-  points(rho.out$rho.fun(as.POSIXct(simpledata$DATES[21]), as.POSIXct(simpledata$DATES)), x=simpledata$DATES, type="b", col="red")
-  expect_manual_OK("exact same plot when built from varying date formats", "Look at the plot.")
+  #plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue", ylab="Cor from varied date formats")
+  # points(rho.out$rho.fun(as.POSIXlt(simpledata$DATES[8]), as.POSIXlt(simpledata$DATES)), x=simpledata$DATES, type="b", col="green")
+  # library(chron)
+  # points(rho.out$rho.fun(as.chron(simpledata$DATES[14]), as.chron(simpledata$DATES)), x=simpledata$DATES, type="b", col="gold")
+  # points(rho.out$rho.fun(as.POSIXct(simpledata$DATES[21]), as.POSIXct(simpledata$DATES)), x=simpledata$DATES, type="b", col="red")
+  # expect_manual_OK("exact same plot when built from varying date formats", "Look at the plot.")
 })
