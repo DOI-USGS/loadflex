@@ -12,7 +12,6 @@ before_script:
 
 r_github_packages:
   - jimhester/covr
-  - hadley/testthat
   - appling/unitted@v0.2.5
   - USGS-R/smwrData@v1.1.0
   - USGS-R/smwrBase@v1.1.0
