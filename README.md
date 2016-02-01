@@ -44,5 +44,4 @@ Please don't worry: yes, some of these status badges are red, but the reasons ar
 | Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/8cjo5urmkv5sjd7v?svg=true)](https://ci.appveyor.com/project/appling/loadflex) |
 | Linux Build: | [![Linux Build Status](https://travis-ci.org/McDowellLab/loadflex.svg)](https://travis-ci.org/McDowellLab/loadflex)  |
 | Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/McDowellLab/loadflex/badge.svg?branch=master)](https://coveralls.io/r/McDowellLab/loadflex?branch=master) |
-| Codecov: | [![Codecov Coverage](https://img.shields.io/codecov/c/github/mcdowelllab/loadflex.svg)](https://codecov.io/github/mcdowelllab/loadflex) |
-
+| Codecov: | [![Codecov Coverage](https://codecov.io/github/McDowellLab/loadflex/coverage.svg?branch=master)](https://codecov.io/github/McDowellLab/loadflex?branch=master) |
