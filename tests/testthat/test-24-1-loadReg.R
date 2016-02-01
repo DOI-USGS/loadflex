@@ -1,3 +1,4 @@
+context("loadReg() is defined within rloadest. The functions required to implement loadModelInterface are defined in loadReg.R within the current package.")
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 #' loadReg() is defined within rloadest. The functions required to implement
@@ -49,10 +50,10 @@ test_that("resampleCoefficients.loadReg looks OK", {
   
   # resample 1000 times and plot the resampled coefficients
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.loadReg(load.model, "flux"))))), c("intercept","period","flow","periodflow"))
-  print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
+  #print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
   # repeat, but for flux
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.loadReg(load.model, "conc"), which="conc")))), c("intercept","period","flow","periodflow"))
-  print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
+  #print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
   #   library(lattice)
   #   cloud(intercept ~ dtsimple * discharge, data=new_coefs, alpha=0.6)
   
@@ -63,6 +64,6 @@ test_that("resampleCoefficients.loadReg looks OK", {
   C <- SCV[1:NPAR,1:NPAR] - SCV[NPAR+1,NPAR+1]*(GAMMA %*% t(GAMMA))
   dimnames(C) <- list(c("intercept","period","flow","periodflow"), c("intercept","period","flow","periodflow"))
   S2 <- load.model$cfit$PARMLE[NPAR+1]/(1+load.model$cfit$BIAS[NPAR+1])
-  print(cov.scaled <- S2*C)
-  expect_manual_OK("resampled coefficients follow the expected covariance structure")
+  #print(cov.scaled <- S2*C)
+  #expect_manual_OK("resampled coefficients follow the expected covariance structure")
 })

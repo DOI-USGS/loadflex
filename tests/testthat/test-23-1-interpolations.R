@@ -19,9 +19,9 @@ checkInterpPreds <- function(interp.fun) {
   preds <- data.frame(mydat2, conc=predictSolute(lic, "conc", newdata=mydat2))
   
   # Make and plot the predictions and the original data
-  print(ggplot(preds, aes(x=datetime, y=conc)) + 
-          geom_point(color="pink") + geom_line(color="pink") + 
-          geom_point(data=mydat, shape=2, size=3, color="blue") + theme_bw())
+  #print(ggplot(preds, aes(x=datetime, y=conc)) + 
+  #        geom_point(color="pink") + geom_line(color="pink") + 
+  #        geom_point(data=mydat, shape=2, size=3, color="blue") + theme_bw())
   
   # Get the tester's OK
   expect_manual_OK(paste0(as.character(substitute(interp.fun))[1],"s (pink) look good with respect to observations (blue)"))
