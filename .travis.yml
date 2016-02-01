@@ -26,7 +26,7 @@ r_github_packages:
   - USGS-R/rloadest@v0.4.2
 
 after_success:
-  - Rscript -e 'library(covr);covr::codecov(); covr::coveralls()'
+  - Rscript -e 'covr::codecov(); covr::coveralls()'
 
 after_failure:
   - ./travis-tool.sh dump_logs
