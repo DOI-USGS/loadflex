@@ -156,8 +156,8 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 #' @export
 #' @family predictSolute
 predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
-                                    interval=c("none","confidence","prediction"), level=0.95, 
-                                    se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+                                 interval=c("none","confidence","prediction"), level=0.95, 
+                                 se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -194,7 +194,8 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
     preds_log <- data.frame(fit=preds_log)
   }
 
-  # At least while loadLm only permits logged left-hand sides, we will always need se.pred
+  # Calculate se.pred if needed. At least while loadLm only permits logged
+  # left-hand sides, we will always need se.pred
   if(TRUE | se.pred) {
     # This calculation of se.pred is consistent with the predict.lm code.
     # Lines pulled & slightly modified from predict.lm:
@@ -221,9 +222,9 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
     #       colnames(predictor) <- c("fit", "lwr", "upr")
     # therefore, ip = SE_mean and ip+pred.var=SE_pred.
     
-    # The premise: se.pred^2 == se.fit^2 + pred.var, where pred.var == residual
-    # mean squared error (res.var/df) divided by weights, where we'll assume for
-    # loadLm that weights are all 1.
+    # Calculate se.pred^2 == se.fit^2 + pred.var, where pred.var == residual 
+    # mean squared error (res.var/df) divided by weights, where we'll
+    # assume/require for loadLm that weights are all 1.
     res.var <- sum(load.model@fit$residuals^2)/load.model@fit$df.residual
     if(!any(is.null(load.model@fit$weights))) stop("Weights must be null for now. Sorry.")
     weights <- 1
