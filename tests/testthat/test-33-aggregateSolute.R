@@ -86,23 +86,23 @@ test_that("Confidence intervals can be calculated with normal or lognormal assum
                                dates=reg.preds$DATES, agg.by="month", ci.distrib="lognormal")
   normpreds <- aggregateSolute(reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
-  #   
-  #   regbox.preds <- data.frame(
-  #     simpledata, FLUX=observeSolute(simpledata, "flux", getMetadata(reg.model)), 
-  #     conc=predictSolute(reg.model, "conc", newdata=simpledata, interval="prediction", se.pred=TRUE),
-  #     flux=predictSolute(reg.model, "flux", newdata=simpledata, interval="prediction", se.pred=TRUE))
-  #   
-  #   regbox2<- boxCox(regbox.preds$conc.fit)
-  #   normpredsbox <- aggregateSolute(regbox2, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
-  #                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
-  #   
+#   
+#   regbox.preds <- data.frame(
+#     simpledata, FLUX=observeSolute(simpledata, "flux", getMetadata(reg.model)), 
+#     conc=predictSolute(reg.model, "conc", newdata=simpledata, interval="prediction", se.pred=TRUE),
+#     flux=predictSolute(reg.model, "flux", newdata=simpledata, interval="prediction", se.pred=TRUE))
+#   
+#   regbox2<- boxCox(regbox.preds$conc.fit)
+#   normpredsbox <- aggregateSolute(regbox2, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
+#                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
+#   
   expect_equal(sum(lognpreds$Conc), sum(normpreds$Conc))
   
-  #   print(ggplot(lognpreds, aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + theme_bw() + 
-  #           geom_point(color="blue", shape=4, size=3) + geom_ribbon(aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
-  #           geom_point(data=normpreds, color="red", shape=3, size=3) + geom_ribbon(data=normpreds, aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
-  #   expect_manual_OK("Normal (red) and lognormal (blue) CIs make sense for monthly fluxes")
-  #   
+#   print(ggplot(lognpreds, aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + theme_bw() + 
+#           geom_point(color="blue", shape=4, size=3) + geom_ribbon(aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
+#           geom_point(data=normpreds, color="red", shape=3, size=3) + geom_ribbon(data=normpreds, aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
+#   expect_manual_OK("Normal (red) and lognormal (blue) CIs make sense for monthly fluxes")
+#   
 })
 
 

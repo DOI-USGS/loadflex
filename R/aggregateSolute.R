@@ -25,7 +25,7 @@
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
 #' @param preds Either a vector of predicted instantaneous fluxes or 
-#'   concentrations or a data.frame containing the columns "conc.fit", "se.pred", and
+#'   concentrations or a data.frame containing the columns "fit", "se.pred", and
 #'   "date"
 #' @param metadata A metadata object describing the model
 #' @param format character. The desired format of the aggregated values. If 
@@ -106,7 +106,6 @@ aggregateSolute <- function(
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
   na.rm=FALSE, attach.units=FALSE) {
-  
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
@@ -333,11 +332,9 @@ aggregateSolute <- function(
     # Shake off any pre-existing units - e.g., those attached to Duration
     agg_preds <- v(agg_preds)
   }
-  
   # Give the data.frame nice column names
   names(agg_preds)[1] <- .reSpace(.sentenceCase(names(agg_preds)[1]), "_")
   names(agg_preds)[match("Value", names(agg_preds))] <- .reSpace(.sentenceCase(format), "_")
-  
   # Return
   agg_preds
 }
