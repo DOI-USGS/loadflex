@@ -25,7 +25,7 @@
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
 #' @param preds Either a vector of predicted instantaneous fluxes or 
-#'   concentrations or a data.frame containing the columns "fit", "se.pred", and
+#'   concentrations or a data.frame containing the columns "conc.fit", "se.pred", and
 #'   "date"
 #' @param metadata A metadata object describing the model
 #' @param format character. The desired format of the aggregated values. If 
@@ -128,19 +128,15 @@ aggregateSolute <- function(
   ci.distrib <- match.arg.loadflex(ci.distrib, c("lognormal","normal"))
   if(is.data.frame(preds)) {
     dates <- preds[,eval(metadata@dates)] #this should be metadata@dates
-    if(format=="conc" & "conc.se.pred" %in% colnames(preds)) {#if("d" %in% colnames(dat))
-      se.preds <- preds$conc.se.pred
-    }else if(format=="flux" & "flux.se.pred" %in% colnames(preds)){
-      se.preds <- preds$flux.se.pred
+    if("se.pred" %in% colnames(preds)) {#if("d" %in% colnames(dat))
+      se.preds <- preds$se.pred
     }else{
-      stop("could not find a column named either conc.se.pred or flux.se.pred in the custom preds dataframe.")
+      stop("could not find a column named se.pred in the custom preds dataframe.")
       }
-    if(format=="conc" & "conc.fit" %in% colnames(preds)){ 
-      preds <- preds$conc.fit
-    }else if(format=="flux"& "flux.fit" %in% colnames(preds)){
-      preds <- preds$flux.fit
+    if("fit" %in% colnames(preds)){ 
+      preds <- preds$fit
     }else{
-      stop("could not find a column named either conc.fit or flux.fit in the custom preds dataframe.")
+      stop("could not find a column named fit in the custom preds dataframe.")
     }
   }
   
