@@ -41,8 +41,8 @@ Collate:
     'diagnostics.R'
     'getResiduals.R'
     'interpolations.R'
-    'metadata.R'
     'loadModelInterface.R'
+    'metadata.R'
     'loadModel.R'
     'loadComp.R'
     'loadInterp.R'
@@ -56,3 +56,4 @@ Collate:
     'text.R'
     'uncertainty.R'
     'unit.conversions.R'
+RoxygenNote: 5.0.1
