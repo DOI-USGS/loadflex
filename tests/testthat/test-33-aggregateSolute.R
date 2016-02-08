@@ -176,7 +176,7 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   reg.model <- loadReg2(loadReg(
     Atrazine ~ Period*center(log(FLOW)), 
     data = simpledata,
-    flow = "FLOW", dates = "DATES", conc.units="mg/L",
+    flow = "FLOW", dates = "DATES", load.units="kg", conc.units="mg/L",
     time.step="instantaneous"))
   
   # Generate point predictions again - this time challenge aggregateSolute more by using more than one point per day
@@ -185,32 +185,35 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
     conc=predictSolute(reg.model, "conc", newdata=simpledata_h_est, interval="prediction", se.pred=TRUE),
     flux=predictSolute(reg.model, "flux", newdata=simpledata_h_est, interval="prediction", se.pred=TRUE))
   #print(ggplot(reg.preds, aes(x=DATES, y=FLOW)) + geom_point() + theme_bw())
-  expect_manual_OK("Flows used for prediction")
+  #expect_manual_OK("Flows used for prediction")
   
   # Aggregate by day
   DF <- reg.model@fit$cfit$NOBSC - reg.model@fit$cfit$NPAR # calculate degrees of freedom as rloadest does
   expect_true(DF == reg.model@fit$lfit$NOBSC - reg.model@fit$lfit$NPAR) # check that DFs are the same for load and conc models
   agg_conc <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, agg.by="day", na.rm=TRUE, deg.free=DF)
-  agg_rate <- aggregateSolute(preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux rate", metadata=getMetadata(reg.model), dates=reg.preds$DATES, agg.by="day", na.rm=TRUE, deg.free=DF)
+  agg_rate <- aggregateSolute(preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred,  format="flux rate", metadata=getMetadata(reg.model), dates=reg.preds$DATES, agg.by="day", na.rm=TRUE, deg.free=DF)
   agg_flux <- aggregateSolute(preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, agg.by="day", na.rm=TRUE, deg.free=DF)
   
   # Make the comparable predictions using rloadest
   agg_c_rl <- predConc(reg.model@fit, newdata=simpledata_h_est, by="day")
   # Here, with time.step=="instantaneous", predLoad predicts all NAs. I think this is an rloadest bug. Or maybe it's user error...?
-  agg_l_rl <- predLoad(reg.model@fit, newdata=simpledata_h_est, by="day") 
+  #MCL - 2-8-16 Needed to define load.units in order for predLoad to give a result. would be nice to predLoad gave some kind of error message 
+  #if you don't.  also set allow.incomplete=TRUE
+  agg_l_rl <- predLoad(reg.model@fit, newdata=simpledata_h_est, allow.incomplete=TRUE, by="day") 
   
   # Compare the concentration predictions from our aggregation and predConc. 
   # Besides the first data row, the values are close to within 3%. Are the
   # remaining discrepancies simply machine precision differences?
-  agg_conc <- agg_conc[-c(1,2),]
-  agg_c_rl <- agg_c_rl[-c(1),]
+  #agg_conc <- agg_conc[-c(1,2),]
+  #agg_c_rl <- agg_c_rl[-c(1),]
   #print(ggplot(reg.preds, aes(x=DATES, y=conc.fit)) + geom_errorbar(aes(ymin=conc.lwr, ymax=conc.upr), alpha=0.1) + geom_point() + theme_bw())
-  expect_manual_OK("Point conc predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
+  #expect_manual_OK("Point conc predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
   #print(ggplot(agg_conc, aes(x=strptime(Day, format="%Y-%m-%d"), y=Conc)) + geom_point() + geom_errorbar(aes(ymin=CI_lower, ymax=CI_upper)) + theme_bw())
-  expect_manual_OK("Plot of agg_conc look OK?")
+  #expect_manual_OK("Plot of agg_conc look OK?")
   #print(ggplot(agg_c_rl, aes(x=strptime(Date, format="%Y-%m-%d"), y=Conc)) + geom_point() + geom_errorbar(aes(ymin=L95, ymax=U95)) + theme_bw())
-  expect_manual_OK("Plot of agg_c_rl look OK?")
+  #expect_manual_OK("Plot of agg_c_rl look OK?")
   # expect_equal(as.character(agg_conc$day), format(agg_c_rl$Date,"%Y-%m-%d")) # I blame predConc here, which lumps 3 hours from the first day into a second second day
+  #agg_c_rl <- agg_c_rl[2:59,]
   expect_equal(as.character(agg_conc$Day), format(agg_c_rl$Date,"%Y-%m-%d")) # evereything but the first element matches (predConc discarded one)
   tol <- 0.03
   expect_equal(agg_conc$Conc/agg_c_rl$Conc, rep(1, nrow(agg_conc)), tolerance=tol) # tolerance describes the max MEAN difference, not the max MIN.
@@ -225,19 +228,20 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   # Compare the load predictions from our aggregation and predLoad. I believe
   # the differences arise somewhere in estlday, but I'm not yet convinced that
   # it's worth tracking down for this first version of loadflex.
-  agg_rate <- agg_rate[-c(1,2),]
-  agg_l_rl <- agg_l_rl[-c(1),]
+  #agg_rate <- agg_rate[-c(1,2),]
+  #agg_l_rl <- agg_l_rl[-c(1),]
+  #agg_l_rl <- agg_l_rl[2:59,]
   expect_equal(as.character(agg_rate$Day), format(agg_l_rl$Date,"%Y-%m-%d"))
   # Comparing values further makes no sense; the loadflex predictions look fine, qualitatively, but predLoad has produced all NAs.
   #print(ggplot(reg.preds, aes(x=DATES, y=flux.fit)) + geom_errorbar(aes(ymin=flux.lwr, ymax=flux.upr), alpha=0.1) + geom_point() + theme_bw())
-  expect_manual_OK("Point flux predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
+  #expect_manual_OK("Point flux predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
   #print(ggplot(agg_rate, aes(x=strptime(Day, format="%Y-%m-%d"), y=Flux_Rate)) + geom_point() + geom_errorbar(aes(ymin=CI_lower, ymax=CI_upper)) + theme_bw())
-  expect_manual_OK("Plot look OK? Check back later to see if predLoad(by=day) starts working")
+  #expect_manual_OK("Plot look OK? Check back later to see if predLoad(by=day) starts working")
   #   tol <- 0.0005
-  #   expect_equal(agg_rate$Flux/agg_l_rl$Flux, rep(1, nrow(agg_rate)), tolerance=tol)
-  #   expect_equal(agg_rate$SE/agg_l_rl$SEP, rep(1, nrow(agg_rate)), tolerance=tol)
-  #   expect_equal(agg_rate$CI_lower/agg_l_rl$L95, rep(1, nrow(agg_rate)), tolerance=tol)
-  #   expect_equal(agg_rate$CI_upper/agg_l_rl$U95, rep(1, nrow(agg_rate)), tolerance=tol)
+  expect_equal(agg_rate$Flux/agg_l_rl$Flux, rep(1, nrow(agg_rate)), tolerance=tol)
+  expect_equal(agg_rate$SE/agg_l_rl$SEP, rep(1, nrow(agg_rate)), tolerance=tol)
+  expect_equal(agg_rate$CI_lower/agg_l_rl$L95, rep(1, nrow(agg_rate)), tolerance=tol)
+  expect_equal(agg_rate$CI_upper/agg_l_rl$U95, rep(1, nrow(agg_rate)), tolerance=tol)
   #   plot(x=log(agg_rate$Flux), y=log(agg_l_rl$Flux)); abline(0,1)
   #   plot(y=log(agg_rate$SE), x=log(agg_l_rl$SEP)); abline(a=0,b=1)
   #   plot(y=log(agg_rate$CI_lower), x=log(agg_l_rl$L95)); abline(a=0,b=1)
@@ -307,6 +311,6 @@ test_that("Aggregation can be done by day, month, year, water year, arbitrary co
   
   # Report on run times
   #print(do.call(data.frame, lapply(st, function(stset) { setNames(as.data.frame(do.call(rbind, lapply(stset, function(pt) { (as.numeric(pt)) })))[1:3], c("user","system","elapsed")) })))
-  expect_manual_OK(paste("Run times for aggregation of",nrow(reg.preds),"rows"))
+  #expect_manual_OK(paste("Run times for aggregation of",nrow(reg.preds),"rows"))
   
 })
