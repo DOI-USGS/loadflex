@@ -4,11 +4,11 @@ test_that("1D correlation functions work", {
   numdays <- 10
   egdates <- strptime(sprintf("2014-02-%02d %02d", rep(1:numdays, each=24), rep(0:23, numdays)), "%Y-%m-%d %H")
   
-  plot(rhoEqualDates(egdates[30], egdates))
+  #plot(rhoEqualDates(egdates[30], egdates))
   abline(v=30)
   expect_manual_OK("rhoEqualDates(dates[30], dates) makes sense")
   
-  plot(rho1DayBand(egdates[30], egdates))
+  #plot(rho1DayBand(egdates[30], egdates))
   abline(v=30)
   expect_manual_OK("rho1DayBand(dates[30], dates) makes sense")
 })
@@ -17,7 +17,7 @@ test_that("1D correlation function generators work", {
   numdays <- 10
   egdates <- strptime(sprintf("2014-02-%02d %02d", rep(1:numdays, each=24), rep(0:23, numdays)), "%Y-%m-%d %H")
   
-  plot(getRhoFirstOrderFun(rho=0.4, time.step=as.difftime(1, units="days"))(egdates[80], egdates))
+  #plot(getRhoFirstOrderFun(rho=0.4, time.step=as.difftime(1, units="days"))(egdates[80], egdates))
   abline(v=80)
   expect_manual_OK("getRhoFirstOrderFun(0.4, 1day)(dates[80], dates) makes sense")
 })
