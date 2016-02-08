@@ -1,7 +1,8 @@
+#just trigger travis. 
 library(testthat)
 library(loadflex)
 
-test_check('loadflex', filter='01|02|05|06|11|21|22|23|24|31|32|41|42')
+test_check('loadflex', filter='01|02|05|06|11|21|22|23|24|31|32|33|41|42')
 # 03 breaks
 # 04 takes forever & has interaction
 # 05 interaction removed
