@@ -86,23 +86,23 @@ test_that("Confidence intervals can be calculated with normal or lognormal assum
                                dates=reg.preds$DATES, agg.by="month", ci.distrib="lognormal")
   normpreds <- aggregateSolute(reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
-#   
-#   regbox.preds <- data.frame(
-#     simpledata, FLUX=observeSolute(simpledata, "flux", getMetadata(reg.model)), 
-#     conc=predictSolute(reg.model, "conc", newdata=simpledata, interval="prediction", se.pred=TRUE),
-#     flux=predictSolute(reg.model, "flux", newdata=simpledata, interval="prediction", se.pred=TRUE))
-#   
-#   regbox2<- boxCox(regbox.preds$conc.fit)
-#   normpredsbox <- aggregateSolute(regbox2, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
-#                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
-#   
+  #   
+  #   regbox.preds <- data.frame(
+  #     simpledata, FLUX=observeSolute(simpledata, "flux", getMetadata(reg.model)), 
+  #     conc=predictSolute(reg.model, "conc", newdata=simpledata, interval="prediction", se.pred=TRUE),
+  #     flux=predictSolute(reg.model, "flux", newdata=simpledata, interval="prediction", se.pred=TRUE))
+  #   
+  #   regbox2<- boxCox(regbox.preds$conc.fit)
+  #   normpredsbox <- aggregateSolute(regbox2, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), 
+  #                                dates=reg.preds$DATES, agg.by="month", ci.distrib="normal")
+  #   
   expect_equal(sum(lognpreds$Conc), sum(normpreds$Conc))
   
-#   print(ggplot(lognpreds, aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + theme_bw() + 
-#           geom_point(color="blue", shape=4, size=3) + geom_ribbon(aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
-#           geom_point(data=normpreds, color="red", shape=3, size=3) + geom_ribbon(data=normpreds, aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
-#   expect_manual_OK("Normal (red) and lognormal (blue) CIs make sense for monthly fluxes")
-#   
+  #   print(ggplot(lognpreds, aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + theme_bw() + 
+  #           geom_point(color="blue", shape=4, size=3) + geom_ribbon(aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
+  #           geom_point(data=normpreds, color="red", shape=3, size=3) + geom_ribbon(data=normpreds, aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
+  #   expect_manual_OK("Normal (red) and lognormal (blue) CIs make sense for monthly fluxes")
+  #   
 })
 
 
@@ -246,6 +246,47 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   #   plot(y=log(agg_rate$SE), x=log(agg_l_rl$SEP)); abline(a=0,b=1)
   #   plot(y=log(agg_rate$CI_lower), x=log(agg_l_rl$L95)); abline(a=0,b=1)
   #   plot(y=log(agg_rate$CI_upper), x=log(agg_l_rl$U95)); abline(a=0,b=1)
+  
+})
+
+test_that("Test custom An optional data.frame of one or more columns each containing factors or other labels on which to aggregate. Test se.preds as a dataframe.", {
+  # Define & munge dataset
+  #library(rloadest)
+  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
+                          Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  simpledata_est <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  
+  # Create the regression model
+  reg.model <- loadReg2(loadReg(
+    Atrazine ~ Period*center(log(FLOW)), 
+    data = simpledata,
+    flow = "FLOW", dates = "DATES", conc.units="mg/L"))
+  reg.preds <- data.frame(
+    simpledata_est,
+    conc=predictSolute(reg.model, "conc", newdata=simpledata_est, interval="prediction", se.pred=TRUE),
+    flux=predictSolute(reg.model, "flux", newdata=simpledata_est, interval="prediction", se.pred=TRUE))
+  reg.obs <- data.frame(
+    simpledata,
+    flux=observeSolute(simpledata, "flux", getMetadata(reg.model)),
+    conc=observeSolute(simpledata, "conc", getMetadata(reg.model)))
+  
+  # Aggregate by various options
+  st <- list()
+  #check that custom is a data.frame or NA
+  expect_error(aggregateSolute(agg.by="unit", custom="madeitup", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"Custom must be NA or a data.frame")
+  #custom check value count
+  expect_error(aggregateSolute(agg.by="unit", custom=reg.preds[1:10,], preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"When custom is a data.frame, it must have as many rows as there are values in preds, se.preds")
+  #pass preds as a data.frame
+  st <- list()
+  st[["cdf"]][["tot" ]]<- system.time({agg_conc__tot_preds_as_dataframe<- aggregateSolute(agg.by="total", preds=reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
+  st[["c"]][["tot" ]] <- system.time({agg_conc_tot  <- aggregateSolute(agg.by="total", preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
+  expect_equal(agg_conc__tot_preds_as_dataframe,agg_conc_tot)
+  drops <- c("conc.se.pred","flux.se.pred")
+  bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named either conc.se.pred or flux.se.pred in the custom preds dataframe.")
+  drops <- c("conc.fit","flux.fit")
+  bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named either conc.fit or flux.fit in the custom preds dataframe.")
   
 })
 

@@ -106,7 +106,7 @@ aggregateSolute <- function(
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
   na.rm=FALSE, attach.units=FALSE) {
-
+  
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
@@ -127,9 +127,21 @@ aggregateSolute <- function(
   }
   ci.distrib <- match.arg.loadflex(ci.distrib, c("lognormal","normal"))
   if(is.data.frame(preds)) {
-    dates <- preds$date
-    se.preds <- preds$se.pred
-    preds <- preds$fit
+    dates <- preds[,eval(metadata@dates)] #this should be metadata@dates
+    if(format=="conc" & "conc.se.pred" %in% colnames(preds)) {#if("d" %in% colnames(dat))
+      se.preds <- preds$conc.se.pred
+    }else if(format=="flux" & "flux.se.pred" %in% colnames(preds)){
+      se.preds <- preds$flux.se.pred
+    }else{
+      stop("could not find a column named either conc.se.pred or flux.se.pred in the custom preds dataframe.")
+      }
+    if(format=="conc" & "conc.fit" %in% colnames(preds)){ 
+      preds <- preds$conc.fit
+    }else if(format=="flux"& "flux.fit" %in% colnames(preds)){
+      preds <- preds$flux.fit
+    }else{
+      stop("could not find a column named either conc.fit or flux.fit in the custom preds dataframe.")
+    }
   }
   
   # Check that dates contains actual dates
@@ -325,11 +337,11 @@ aggregateSolute <- function(
     # Shake off any pre-existing units - e.g., those attached to Duration
     agg_preds <- v(agg_preds)
   }
-
+  
   # Give the data.frame nice column names
   names(agg_preds)[1] <- .reSpace(.sentenceCase(names(agg_preds)[1]), "_")
   names(agg_preds)[match("Value", names(agg_preds))] <- .reSpace(.sentenceCase(format), "_")
- 
+  
   # Return
   agg_preds
 }
