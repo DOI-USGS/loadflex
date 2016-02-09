@@ -249,9 +249,9 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   
 })
 
-test_that("Test custom An optional data.frame of one or more columns each containing factors or other labels on which to aggregate. Test se.preds as a dataframe.", {
+test_that("Test custom, An optional data.frame of one or more columns each containing factors or other labels on which to aggregate. Test se.preds as a dataframe.", {
   # Define & munge dataset
-  #library(rloadest)
+  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
   simpledata_est <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
