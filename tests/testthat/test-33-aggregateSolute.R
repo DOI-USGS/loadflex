@@ -276,14 +276,40 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
   expect_error(aggregateSolute(agg.by="unit", custom="madeitup", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"Custom must be NA or a data.frame")
   #custom check value count
   expect_error(aggregateSolute(agg.by="unit", custom=reg.preds[1:10,], preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"When custom is a data.frame, it must have as many rows as there are values in preds, se.preds")
-  #pass preds as a data.frame
+
+  #pass preds as a data.frame or as vectors; should be the same
   st <- list()
   reg.preds$fit <- reg.preds$flux.fit
   reg.preds$se.pred <- reg.preds$flux.se.pred
   drops <- c("flux.se.pred","flux.fit")
-  st[["cdf"]][["tot" ]]<- system.time({agg_flux__tot_preds_as_dataframe<- aggregateSolute(agg.by="total", preds=reg.preds, se.preds=reg.preds$conc.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
-  st[["c"]][["tot" ]] <- system.time({agg_flux_tot  <- aggregateSolute(agg.by="total", preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
-  expect_equal(agg_conc__tot_preds_as_dataframe,agg_conc_tot)
+  st[["fdf"]][["tot" ]]<- system.time({
+    agg_flux__tot_preds_as_dataframe<- aggregateSolute(
+      agg.by="total", preds=reg.preds, se.preds=reg.preds$flux.se.pred, 
+      format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+  })
+  st[["f"]][["tot" ]] <- system.time({
+    agg_flux_tot  <- aggregateSolute(
+      agg.by="total", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, 
+      format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+  })
+  expect_equal(agg_flux__tot_preds_as_dataframe,agg_flux_tot)
+  
+  reg.preds$fit <- reg.preds$conc.fit
+  reg.preds$se.pred <- reg.preds$conc.se.pred
+  drops <- c("conc.se.pred","conc.fit")
+  st[["cdf"]][["tot" ]]<- system.time({
+    agg_conc_mean__preds_as_dataframe <- aggregateSolute(
+      agg.by="total", preds=reg.preds, se.preds=reg.preds$conc.se.pred, 
+      format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+  })
+  st[["c"]][["tot" ]] <- system.time({
+    agg_conc_mean <- aggregateSolute(
+      agg.by="total", preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, 
+      format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+  })
+  expect_equal(agg_conc_mean__preds_as_dataframe, agg_conc_mean)
+  
+  # try passing incomplete data.frames
   drops <- c("se.pred")
   bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
   expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named se.pred in the custom preds dataframe.")

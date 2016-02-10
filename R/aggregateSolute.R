@@ -80,7 +80,7 @@
 #'   second column will be in the units specified by \code{metadata}.
 #'   
 #' @examples
-#' metadata_example <- exampleMetadata()
+#' metadata_example <- updateMetadata(exampleMetadata(), dates="date")
 #' preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
 #'   date=seq(as.Date("2018-05-15"), as.Date("2019-05-14"), by=as.difftime(1, units="days")))
 #' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month")
@@ -106,6 +106,7 @@ aggregateSolute <- function(
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
   na.rm=FALSE, attach.units=FALSE) {
+  
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
@@ -113,7 +114,7 @@ aggregateSolute <- function(
     agg.by[abi] <- match.arg.loadflex(agg.by[abi], c("unit", "day", "month", "water year", "calendar year", "total", colnames(custom)))
   }
   agg.by <- .reSpace(agg.by,"_") # replace spaces with underscores to use agg.by as a column name
-  if(!is(custom,"data.frame")) {
+  if(!is(custom, "data.frame")) {
     if(!is.na(custom)) {
       stop("Custom must be NA or a data.frame")
     }
