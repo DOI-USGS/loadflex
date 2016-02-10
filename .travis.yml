@@ -1,7 +1,14 @@
-#just a commit to trigger Travis. Just another one.  
+# Defines the options for building the project on linux with Travis-CI
+# For more configuration options, see the wiki:
+# https://github.com/craigcitro/r-travis/wiki/Porting-to-native-R-support-in-Travis
+
 language: r
 sudo: required
 warnings_are_errors: true
+
+repos:
+  CRAN: http://cran.rstudio.com
+  GRAN: http://owi.usgs.gov/R
 
 before_install:
   - echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
@@ -12,13 +19,6 @@ before_script:
 
 r_github_packages:
   - jimhester/covr
-  - appling/unitted@v0.2.5
-  - USGS-R/smwrData@v1.1.0
-  - USGS-R/smwrBase@v1.1.0
-  - USGS-R/smwrGraphs@v1.1.0
-  - USGS-R/smwrStats@v0.7.2
-  - USGS-R/smwrQW@v0.7.5
-  - USGS-R/rloadest@v0.4.2
 
 after_success:
   - Rscript -e 'covr::codecov(); covr::coveralls()'
