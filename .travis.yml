@@ -10,9 +10,6 @@ repos:
   CRAN: http://cran.rstudio.com
   GRAN: http://owi.usgs.gov/R
 
-before_install:
-  - echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
-
 before_script:
   - Rscript -e "install.packages('knitr')"
   - Rscript -e "install.packages('rmarkdown')"

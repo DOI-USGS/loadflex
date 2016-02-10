@@ -15,7 +15,6 @@ init:
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/USGS-R/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
-  cmd: echo "options(repos = c(CRAN='http://cran.r-project.org'))" > .Rprofile
 
 install:
   ps: Bootstrap
