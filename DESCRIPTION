@@ -1,8 +1,8 @@
 Package: loadflex
 Type: Package
 Title: Models and Tools for Watershed Flux Estimates
-Version: 1.0.2
-Date: 2016-02-01
+Version: 1.0.3
+Date: 2016-02-10
 Author: Alison Appling, Miguel Leon
 Maintainer: Alison Appling <alison.appling@gmail.com>
 Description: Implements several of the most common methods for
@@ -17,17 +17,17 @@ Depends:
     R(>= 3.0),
     methods
 Imports:
-    dplyr (>= 0.4.1),
+    smwrBase (>= 1.1.2),
+    rloadest (>= 0.4.3),
+    unitted (>= 0.2.5),
+    car,
+    dplyr,
     ggplot2,
     lubridate,
-    smwrBase,
-    rloadest,
+    MASS,
     Matrix,
     splines,
-    stats,
-    MASS,
-    car,
-    unitted (>= 0.2.1)
+    stats
 Suggests:
     knitr,
     testthat
