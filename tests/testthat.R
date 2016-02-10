@@ -1,4 +1,4 @@
-#just trigger travis. 
+#just trigger travis.
 library(testthat)
 library(loadflex)
 

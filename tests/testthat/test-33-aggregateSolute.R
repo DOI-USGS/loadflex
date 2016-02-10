@@ -249,6 +249,50 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   
 })
 
+test_that("Test custom, An optional data.frame of one or more columns each containing factors or other labels on which to aggregate. Test se.preds as a dataframe.", {
+  # Define & munge dataset
+  library(rloadest)
+  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
+                          Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  simpledata_est <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  
+  # Create the regression model
+  reg.model <- loadReg2(loadReg(
+    Atrazine ~ Period*center(log(FLOW)), 
+    data = simpledata,
+    flow = "FLOW", dates = "DATES", conc.units="mg/L"))
+  reg.preds <- data.frame(
+    simpledata_est,
+    conc=predictSolute(reg.model, "conc", newdata=simpledata_est, interval="prediction", se.pred=TRUE),
+    flux=predictSolute(reg.model, "flux", newdata=simpledata_est, interval="prediction", se.pred=TRUE))
+  reg.obs <- data.frame(
+    simpledata,
+    flux=observeSolute(simpledata, "flux", getMetadata(reg.model)),
+    conc=observeSolute(simpledata, "conc", getMetadata(reg.model)))
+  
+  # Aggregate by various options
+  st <- list()
+  #check that custom is a data.frame or NA
+  expect_error(aggregateSolute(agg.by="unit", custom="madeitup", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"Custom must be NA or a data.frame")
+  #custom check value count
+  expect_error(aggregateSolute(agg.by="unit", custom=reg.preds[1:10,], preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"When custom is a data.frame, it must have as many rows as there are values in preds, se.preds")
+  #pass preds as a data.frame
+  st <- list()
+  reg.preds$fit <- reg.preds$flux.fit
+  reg.preds$se.pred <- reg.preds$flux.se.pred
+  drops <- c("flux.se.pred","flux.fit")
+  st[["cdf"]][["tot" ]]<- system.time({agg_flux__tot_preds_as_dataframe<- aggregateSolute(agg.by="total", preds=reg.preds, se.preds=reg.preds$conc.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
+  st[["c"]][["tot" ]] <- system.time({agg_flux_tot  <- aggregateSolute(agg.by="total", preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)})
+  expect_equal(agg_conc__tot_preds_as_dataframe,agg_conc_tot)
+  drops <- c("se.pred")
+  bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named se.pred in the custom preds dataframe.")
+  drops <- c("fit")
+  bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named fit in the custom preds dataframe.")
+  
+})
+
 test_that("Aggregation can be done by day, month, year, water year, arbitrary columns, etc.", {
   # Define & munge dataset
   #library(rloadest)
