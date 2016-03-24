@@ -34,12 +34,12 @@ Load the data provided in this package.
 data(lamprey_nitrate)
 intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
 
-# Calibration data: Restrict to points separated by more than 6 days
+# Calibration data: Restrict to points separated by sufficient time
 regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
 
 # Estimation data: Packers Falls discharge
 data(lamprey_discharge)
-estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00"))
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
 estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
 ```
 

@@ -34,12 +34,12 @@ Load the data provided in this package.
 data(lamprey_nitrate)
 intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
 
-# Calibration data: Restrict to points separated by more than 6 days
+# Calibration data: Restrict to points separated by sufficient time
 regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
 
 # Estimation data: Packers Falls discharge
 data(lamprey_discharge)
-estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00"))
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
 estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
 ```
 
@@ -58,6 +58,7 @@ no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation,
   data=intdat, metadata=meta)
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
   data=regdat, metadata=meta, retrans=exp)
+library(rloadest)
 no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
   flow.units="cfs", conc.units="mg/L", load.units="kg"))
@@ -93,7 +94,7 @@ Here are a few ways to inspect the models:
 
 ```{r fig_1D, eval=FALSE}
 summary(getFittedModel(no3_lm))
-qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
+ggplot2::qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
 residDurbinWatson(no3_lr, "conc", newdata=regdat, irreg=TRUE)
 residDurbinWatson(no3_lr, "conc", newdata=intdat, irreg=TRUE)
 estimateRho(no3_lr, "conc", newdata=regdat, irreg=TRUE)$rho
@@ -104,6 +105,7 @@ getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 Aggregate from point predictions to monthly predictions from each model. You can also do this for mean concentration or total flux for the month, or for years or other time intervals.
 
 ```{r, fig_1E}
+meta@dates <- "date"
 aggs_li <- aggregateSolute(preds_li, meta, "flux rate", "month")
 aggs_lm <- aggregateSolute(preds_lm, meta, "flux rate", "month")
 aggs_lr <- aggregateSolute(preds_lr, meta, "flux rate", "month")

@@ -1,4 +1,4 @@
-## ----, echo=FALSE, message=FALSE-----------------------------------------
+## ---- echo=FALSE, message=FALSE------------------------------------------
 # Set options for producing the html file & figures
 library(knitr)
 opts_chunk$set(echo=TRUE, message=FALSE)
@@ -11,12 +11,12 @@ library(loadflex)
 data(lamprey_nitrate)
 intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
 
-# Calibration data: Restrict to points separated by more than 6 days
+# Calibration data: Restrict to points separated by sufficient time
 regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
 
 # Estimation data: Packers Falls discharge
 data(lamprey_discharge)
-estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00"))
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
 estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
 
 ## ----fig_1A--------------------------------------------------------------
@@ -29,13 +29,14 @@ no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation,
   data=intdat, metadata=meta)
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
   data=regdat, metadata=meta, retrans=exp)
+library(rloadest)
 no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
   flow.units="cfs", conc.units="mg/L", load.units="kg"))
 no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
   interp.data=intdat)
 
-## ----, eval=FALSE--------------------------------------------------------
+## ---- eval=FALSE---------------------------------------------------------
 #  print(no3_li)
 #  getFittingFunction(no3_lm)
 #  getFittedModel(no3_lr)
@@ -52,14 +53,15 @@ head(preds_lr)
 
 ## ----fig_1D, eval=FALSE--------------------------------------------------
 #  summary(getFittedModel(no3_lm))
-#  qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
+#  ggplot2::qplot(x=Date, y=Resid, data=getResiduals(no3_li, newdata=intdat))
 #  residDurbinWatson(no3_lr, "conc", newdata=regdat, irreg=TRUE)
 #  residDurbinWatson(no3_lr, "conc", newdata=intdat, irreg=TRUE)
 #  estimateRho(no3_lr, "conc", newdata=regdat, irreg=TRUE)$rho
 #  estimateRho(no3_lr, "conc", newdata=intdat, irreg=TRUE)$rho
 #  getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 
-## ----, fig_1E------------------------------------------------------------
+## ---- fig_1E-------------------------------------------------------------
+meta@dates <- "date"
 aggs_li <- aggregateSolute(preds_li, meta, "flux rate", "month")
 aggs_lm <- aggregateSolute(preds_lm, meta, "flux rate", "month")
 aggs_lr <- aggregateSolute(preds_lr, meta, "flux rate", "month")
