@@ -20,8 +20,7 @@ To see how to cite this package, type `citation("loadflex")`.
 
 ### First-time installation
 
-loadflex makes use of packages that are currently only available from 
-GitHub or the USGS R package repository. To install these packages, 
+loadflex makes use of other packages. To install those packages from scratch, 
 run the following lines:
 
 ```{r}
@@ -29,10 +28,13 @@ install.packages(
   c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"), 
   repos=c("http://owi.usgs.gov/R", "https://cran.rstudio.com"), 
   dependencies=TRUE, type="both")
+install.packages(
+  c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
+  dependencies=TRUE, type="both")
 ```
 
-you'll also need the `devtools` package; see 
-https://www.rstudio.com/products/rpackages/devtools/ for special instructions,
+You'll also need the `devtools` package; see 
+https://www.rstudio.com/products/rpackages/devtools/ for special instructions, 
 and also run this command:
 ```r
 install.packages("devtools")
@@ -43,15 +45,20 @@ and lastly run this call to actually install `loadflex`:
 devtools::install_github("mcdowelllab/loadflex")
 ```
 
-Also please see the installation FAQ on the wiki (https://github.com/McDowellLab/loadflex/wiki/Installation-FAQ) if you run into trouble.
+Also please see the installation FAQ on the wiki
+(https://github.com/McDowellLab/loadflex/wiki/Installation-FAQ) if you run into
+trouble.
 
 ### Updates
 
 After the first-time installation, you can update with these commands:
 ```r
 update.packages(
-  oldPkgs=  c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"),
+  oldPkgs=c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"),
   dependencies=TRUE, repos=c("http://owi.usgs.gov/R", "https://cran.rstudio.com"))
+update.packages(
+  oldPkgs=c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
+  dependencies=TRUE, type="both")
 devtools::install_github("mcdowelllab/loadflex")
 ```
 
