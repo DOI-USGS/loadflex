@@ -61,7 +61,6 @@ head(preds_lr)
 #  getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 
 ## ---- fig_1E-------------------------------------------------------------
-meta@dates <- "date"
 aggs_li <- aggregateSolute(preds_li, meta, "flux rate", "month")
 aggs_lm <- aggregateSolute(preds_lm, meta, "flux rate", "month")
 aggs_lr <- aggregateSolute(preds_lr, meta, "flux rate", "month")
