@@ -290,7 +290,7 @@ plotResidualsCM <- function(type, load.model, observations,resids, dateField="Da
     resids$Conc_Resid <- resids$Conc_Obs - resids$Conc_Est
     estName <- "Conc_Resid"
   }else{
-    loadResids <- residuals(load.model)
+    loadResids <- getResiduals(load.model)
     
     #this won't work unless the observations are identical to those passed into predLoad...but see getRegressionSoluteResiduals()
     
@@ -298,7 +298,7 @@ plotResidualsCM <- function(type, load.model, observations,resids, dateField="Da
     # adding to plotsols, we'll actually create the data.frame right here - it
     # will be a data.frame with only one column, called DATE.
     resids <- setNames(observations[date_col], "Date")
-    resids$Load_Est <- loadResids
+    resids$Load_Est <- loadResids$Resid
     resids$Flow <- observations[[flowName]]
     resids$Conc_Obs <- observations[[soluteName]]
     estName <- "Load_Est"
