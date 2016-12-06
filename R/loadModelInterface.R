@@ -228,6 +228,8 @@ estimateMSE <- function(load.model, ...) {
 #' \code{\link{loadModelInterface}} has been successfully implemented for the class of a
 #' provided object.
 #' 
+#' @importFrom methods is
+#' @importFrom utils methods
 #' @param object an object with a LoadModelInterface
 #' @param stop.on.error logical. If the interface is invalid, should the 
 #'   function throw an error (TRUE) or quietly return a warning object (FALSE)?

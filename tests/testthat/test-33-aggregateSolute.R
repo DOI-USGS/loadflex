@@ -262,7 +262,8 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
     data = simpledata,
     flow = "FLOW", dates = "DATES", conc.units="mg/L"))
   reg.preds <- data.frame(
-    simpledata_est,
+    date=simpledata_est$DATES,
+    simpledata_est[-1],
     conc=predictSolute(reg.model, "conc", newdata=simpledata_est, interval="prediction", se.pred=TRUE),
     flux=predictSolute(reg.model, "flux", newdata=simpledata_est, interval="prediction", se.pred=TRUE))
   reg.obs <- data.frame(
@@ -284,13 +285,13 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
   drops <- c("flux.se.pred","flux.fit")
   st[["fdf"]][["tot" ]]<- system.time({
     agg_flux__tot_preds_as_dataframe<- aggregateSolute(
-      agg.by="total", preds=reg.preds, se.preds=reg.preds$flux.se.pred, 
-      format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+      agg.by="total", preds=reg.preds,
+      format="flux total", metadata=getMetadata(reg.model), na.rm=TRUE)
   })
   st[["f"]][["tot" ]] <- system.time({
     agg_flux_tot  <- aggregateSolute(
-      agg.by="total", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, 
-      format="flux total", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+      agg.by="total", preds=reg.preds$flux.fit, se.preds=reg.preds$flux.se.pred, dates=reg.preds$date, 
+      format="flux total", metadata=getMetadata(reg.model), na.rm=TRUE)
   })
   expect_equal(agg_flux__tot_preds_as_dataframe,agg_flux_tot)
   
@@ -299,23 +300,23 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
   drops <- c("conc.se.pred","conc.fit")
   st[["cdf"]][["tot" ]]<- system.time({
     agg_conc_mean__preds_as_dataframe <- aggregateSolute(
-      agg.by="total", preds=reg.preds, se.preds=reg.preds$conc.se.pred, 
-      format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+      agg.by="total", preds=reg.preds,
+      format="conc", metadata=getMetadata(reg.model), na.rm=TRUE)
   })
   st[["c"]][["tot" ]] <- system.time({
     agg_conc_mean <- aggregateSolute(
       agg.by="total", preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, 
-      format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE)
+      format="conc", metadata=getMetadata(reg.model), dates=reg.preds$date, na.rm=TRUE)
   })
   expect_equal(agg_conc_mean__preds_as_dataframe, agg_conc_mean)
   
   # try passing incomplete data.frames
   drops <- c("se.pred")
   bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
-  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named se.pred in the custom preds dataframe.")
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"missing column")
   drops <- c("fit")
   bad.reg.preds <- reg.preds[,!(names(reg.preds) %in% drops)]
-  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"could not find a column named fit in the custom preds dataframe.")
+  expect_error(aggregateSolute(agg.by="total", preds=bad.reg.preds, se.preds=reg.preds$conc.se.pred, format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, na.rm=TRUE),"missing column")
   
 })
 

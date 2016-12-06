@@ -11,7 +11,7 @@ plotCM(flux.or.conc, show.observations, load.model, finalloads,
 }
 \arguments{
 \item{flux.or.conc}{character indicating whether the plots are of 
-concentrations or loads, this is used for string concatation to name the
+concentrations or loads, this is used for string concatation to name the 
 columns of data produced through composite method.}
 
 \item{show.observations}{true or false display observations or not.}
@@ -20,13 +20,13 @@ columns of data produced through composite method.}
 
 \item{finalloads}{these are the loads or concentrations to plot}
 
-\item{observations}{these are the observations to plot, if you are plotting
+\item{observations}{these are the observations to plot, if you are plotting 
 observations}
 
-\item{composite, }{TRUE or FALSE flag for whether or not to display the
+\item{composite, }{TRUE or FALSE flag for whether or not to display the 
 composite results}
 
-\item{linear.interpolation}{TRUE or FALSE flag for whether or not to display
+\item{linear.interpolation}{TRUE or FALSE flag for whether or not to display 
 linear interpolation of the observations}
 
 \item{regression}{TRUE or FALSE flag for whether or not to display the linear
@@ -37,7 +37,7 @@ regression results}
 \item{verbose}{flag for to print for debugging}
 }
 \description{
-Not sure we want to include this function in the official API, so keeping it
+Not sure we want to include this function in the official API, so keeping it 
 internal for now.
 }
 \keyword{internal}

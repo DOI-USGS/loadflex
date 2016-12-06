@@ -41,7 +41,7 @@ A vector of values (typically fluxes or concentrations), in the same
 \description{
 A set of functions that interpolate a y variable over time. See the 
 Interpolation Types section for details specific to each function. These 
-functions are intended for use within \code{\link{loadInterp}} and
+functions are intended for use within \code{\link{loadInterp}} and 
 \code{\link{loadComp}} models.
 }
 \details{

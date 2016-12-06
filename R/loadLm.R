@@ -47,6 +47,8 @@ setClass(
 #' can connect observations of concentration or flux using a linear regression 
 #' model.
 #' 
+#' @importFrom methods new
+#' @importFrom stats lm
 #' @param formula A formula specifying the linear model to fit.
 #' @param pred.format In what format (flux or conc) does the lm object make 
 #'   predictions when predict.lm() is called?
@@ -146,6 +148,7 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 #' \code{newdata}) from a fitted \code{\link{loadLm}} model. See 
 #' \code{\link{predictSolute}} for details.
 #' 
+#' @importFrom stats qnorm qt
 #' @inheritParams predictSolute
 #' @param load.model A loadLm object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names
@@ -303,11 +306,12 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
 #' (Although the name suggests otherwise, resampleCoefficients is not currently 
 #' an S3 generic. You should refer to this function by its complete name.)
 #' 
+#' @importFrom stats coef rchisq
+#' @importFrom MASS mvrnorm
 #' @param fit an lm object whose coefficients should be resampled
 #' @return A new lm object with resampled coefficients such that predict.lm()
 #'   will make predictions reflecting those new coefficients. No other
 #'   properties of the returned model are guaranteed.
-#' @importFrom MASS mvrnorm
 #' @export
 #' @references 
 #' http://www.clayford.net/statistics/simulation-to-represent-uncertainty-in-regression-coefficients/
@@ -347,6 +351,7 @@ resampleCoefficients.lm <- function(fit) {
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
+#' @importFrom stats arima.sim sd
 #' @inheritParams simulateSolute
 #' @param load.model A loadLm object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names
