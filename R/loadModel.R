@@ -78,7 +78,8 @@ setClass(
 
 #' @rdname show.loadModel
 #' @param object loadModel object to be displayed.
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod getSlots slot show
+#' @importFrom utils head
 #' @exportMethod show
 #' @export
 
@@ -104,6 +105,7 @@ setMethod(
 #' 
 #' Generates a new model of class loadModel (\code{\link{loadModel-class}}).
 #' 
+#' @importFrom methods new
 #' @param inner.fit.function function that accepts one argument, a training data 
 #'   frame, and returns a [re]fitted statistical model, such as an \code{lm},
 #'   relating flux or concentration to predictors in the training data.
@@ -204,6 +206,7 @@ getFittedModel.loadModel <- function(load.model) {
 #' \code{newdata}) from a fitted \code{\link{loadModel}} model. See 
 #' \code{\link{predictSolute}} for details.
 #' 
+#' @importFrom stats predict
 #' @inheritParams predictSolute
 #' @param load.model A loadModel object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names

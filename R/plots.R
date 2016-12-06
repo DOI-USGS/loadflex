@@ -36,28 +36,31 @@ plotObservationsCM <- function(...) {
 
 #' Create plots for examining the results from the composite method
 #' 
-#' Not sure we want to include this function in the official API, so keeping it
+#' Not sure we want to include this function in the official API, so keeping it 
 #' internal for now.
 #' 
 #' @keywords internal
-#' 
+#'   
+#' @importFrom ggplot2 ggplot aes aes_string xlab geom_point geom_line ylab 
+#'   theme_bw scale_colour_manual scale_linetype_manual scale_shape_manual
+#' @importFrom stats setNames
+#' @importFrom utils head
 #' @param flux.or.conc character indicating whether the plots are of 
-#'   concentrations or loads, this is used for string concatation to name the
+#'   concentrations or loads, this is used for string concatation to name the 
 #'   columns of data produced through composite method.
 #' @param show.observations true or false display observations or not.
 #' @param load.model use this to pull names of date column and constituent name
 #' @param finalloads these are the loads or concentrations to plot
-#' @param observations these are the observations to plot, if you are plotting
+#' @param observations these are the observations to plot, if you are plotting 
 #'   observations
-#' @param composite, TRUE or FALSE flag for whether or not to display the
+#' @param composite, TRUE or FALSE flag for whether or not to display the 
 #'   composite results
-#' @param linear.interpolation TRUE or FALSE flag for whether or not to display
+#' @param linear.interpolation TRUE or FALSE flag for whether or not to display 
 #'   linear interpolation of the observations
 #' @param regression TRUE or FALSE flag for whether or not to display the linear
 #'   regression results
 #' @param xrange, a user provded range for the xvalues (dates)
 #' @param verbose flag for to print for debugging
-#' @importFrom ggplot2 ggplot aes aes_string xlab geom_point geom_line ylab theme_bw scale_colour_manual scale_linetype_manual scale_shape_manual
 plotCM <- function(flux.or.conc, show.observations, load.model, finalloads, observations=NULL, 
                    composite=TRUE, linear.interpolation=FALSE, regression=TRUE,  xrange="none", 
                    dateField="Date", verbose=FALSE) {
@@ -267,14 +270,16 @@ plotLoadResidualsCM <- function(...){
 #' 
 #' @keywords internal
 #'   
+#' @importFrom stats setNames
+#' @importFrom utils head
+#' @importFrom ggplot2 ggplot aes_string geom_point xlab
 #' @param load.model use this to pull names of date column and constituent name
 #' @param observations these are the observations to plot the residuals for
 #' @param residuals the observation residuals 
 #' @param dateField name of the date field in observations
 #' @param verbose debugging flag
 #' @param day.of.year flag if true will plot residuals by the day of year to,
-#' @importFrom ggplot2 ggplot aes_string geom_point  xlab
-plotResidualsCM <- function(type, load.model, observations,resids, dateField="Date", verbose=FALSE,  xObservations=FALSE, xFlow=FALSE, day.of.year=FALSE){
+plotResidualsCM <- function(type, load.model, observations, resids, dateField="Date", verbose=FALSE, xObservations=FALSE, xFlow=FALSE, day.of.year=FALSE){
   yday<- '.ggplot.var'
   dateName <- load.model$dates
   soluteName <- load.model$constituent
@@ -290,7 +295,7 @@ plotResidualsCM <- function(type, load.model, observations,resids, dateField="Da
     resids$Conc_Resid <- resids$Conc_Obs - resids$Conc_Est
     estName <- "Conc_Resid"
   }else{
-    loadResids <- residuals(load.model)
+    loadResids <- getResiduals(load.model)
     
     #this won't work unless the observations are identical to those passed into predLoad...but see getRegressionSoluteResiduals()
     
@@ -298,7 +303,7 @@ plotResidualsCM <- function(type, load.model, observations,resids, dateField="Da
     # adding to plotsols, we'll actually create the data.frame right here - it
     # will be a data.frame with only one column, called DATE.
     resids <- setNames(observations[date_col], "Date")
-    resids$Load_Est <- loadResids
+    resids$Load_Est <- loadResids$Resid
     resids$Flow <- observations[[flowName]]
     resids$Conc_Obs <- observations[[soluteName]]
     estName <- "Load_Est"

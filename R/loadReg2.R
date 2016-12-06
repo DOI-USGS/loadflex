@@ -56,6 +56,7 @@ setClass(
 #' objects produced by the USGS \pkg{rloadest} package. \code{loadReg2}s can implement the 
 #' \code{\link{loadModelInterface}} more reliably than is possible for a \code{loadReg} object.
 #' 
+#' @importFrom methods is new
 #' @param load.reg An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
 #'   call will be parsed and evaluated within \code{loadReg2} to create a fully 
 #'   functional load model for use within \pkg{loadflex}.
@@ -381,6 +382,7 @@ predictSolute.loadReg2 <- function(
 #' makes predictions whose individual errors are sampled from a time series with
 #' the same first-order autocorrelation as the original series of errors.
 #' 
+#' @importFrom stats arima.sim
 #' @inheritParams simulateSolute
 #' @param load.model A loadReg2 object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names 

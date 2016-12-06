@@ -112,6 +112,7 @@ setClass(
 #' and loadLm will retransform predictions back into linear space, loadInterps
 #' will not.
 #' 
+#' @importFrom methods new
 #' @param interp.format character. Which sort of observation should the 
 #'   interpolations be done among?
 #' @param interp.function function. The function to use for interpolation. 
@@ -211,6 +212,7 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 #' and loadLm will retransform predictions back into linear space, loadInterps 
 #' will not.
 #' 
+#' @importFrom stats qnorm
 #' @inheritParams predictSolute
 #' @param load.model A loadInterp object.
 #' @param interval character. The type of interval desired. Confidence intervals
@@ -330,6 +332,7 @@ predictSolute.loadInterp <- function(
 #' method is k-fold cross validation when 
 #' n.out*n.iter==nrow(getFittingData(load.model)) and with.replacement==FALSE.
 #' 
+#' @importFrom stats sd
 #' @inheritParams estimateMSE
 #' @param n.out numeric. The number of observations in the fitting data to leave
 #'   out in each iteration.

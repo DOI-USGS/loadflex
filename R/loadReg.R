@@ -46,6 +46,8 @@ getMetadata.loadReg <- function(load.model) {
 #' Dives deep into loadReg objects to replace the coefficients for the purpose
 #' of simulating new predictions.
 #' 
+#' @importFrom stats rchisq
+#' @importFrom MASS mvrnorm
 #' @param fit a loadReg object
 #' @param flux.or.conc Should the resampling be done for the coefficients 
 #'   appropriate to flux or those for concentration?
@@ -53,7 +55,6 @@ getMetadata.loadReg <- function(load.model) {
 #'   predConc or predLoad (corresponding to the value of \code{flux.or.conc}) 
 #'   will make predictions reflecting those new coefficients. No other 
 #'   properties of the returned model are guaranteed.
-#' @importFrom MASS mvrnorm
 #' @export
 resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   

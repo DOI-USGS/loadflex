@@ -85,6 +85,7 @@ setClass(
 #' one for interpolation of the residuals of the regression predictions.
 #' 
 #' @include getResiduals.R
+#' @importFrom methods new
 #' @param reg.model The model, usually a regression model, to whose predictions 
 #'   the residuals corrections should be added.
 #' @param interp.format character specifying the load format in which residuals 
@@ -178,6 +179,7 @@ loadComp <- function(reg.model,
 #' \code{newdata}) from a fitted \code{\link{loadComp}} model. See 
 #' \code{\link{predictSolute}} for details.
 #' 
+#' @importFrom stats qnorm
 #' @inheritParams predictSolute
 #' @param load.model A loadComp object.
 #' @param newdata \code{data.frame}, optional. Predictor data, including any 
@@ -380,6 +382,7 @@ predictSolute.loadComp <- function(
 #' and involves repeated resampling of the coefficients from which the
 #' regression predictions and residuals are calculated.
 #' 
+#' @importFrom stats sd
 #' @inheritParams estimateMSE
 #' @param n.iter The number of times to repeat the COMPLETE process of [simulate
 #'   predictions from the regression model and do leave-one-out cross validation
@@ -562,10 +565,11 @@ getCorrectionFraction <- function(load.model, flux.or.conc=c("flux","conc"), new
 #' space) as \eqn{L}, and \eqn{\Delta t} is the vector of time periods 
 #' represented by the predictions.
 #' 
-#' @export
 #' @rdname getCorrectionFraction
+#' @importFrom stats complete.cases
 #' @inheritParams getCorrectionFraction
 #' @param na.rm logical. Should predictions with NA values be excluded?
+#' @export
 getCorrectionFraction.loadComp <- function(load.model, flux.or.conc=c("flux","conc"), newdata, na.rm=FALSE, ...) {
   preds <- predictSolute(load.model, flux.or.conc, newdata, fit.reg=TRUE, fit.resid=TRUE, date=TRUE)
   if(isTRUE(na.rm)) {

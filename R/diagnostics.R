@@ -42,6 +42,8 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #' calibration data or for a new set of observations). Applies
 #' car::durbinWatsonTest to test for autocorrelation of those residuals.
 #' 
+#' @importFrom car durbinWatsonTest
+#' @importFrom stats acf
 #' @param load.model a loadModel descendant
 #' @param flux.or.conc character. The format in which residuals should be 
 #'   calculated
@@ -55,9 +57,7 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #'   that the timesteps between observations are identical to one another, and 
 #'   an error is thrown if this requirement is not met. The check is not 
 #'   performed if \code{irregular.timesteps.ok} is TRUE.
-#'   
 #' @return A Durbin-Watson test statistic applied to residuals.
-#' @importFrom car durbinWatsonTest
 #' @export
 #' 
 #' @seealso car::durbinWatsonTest
@@ -119,6 +119,7 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
 #' functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}},
 #' or write your own assumptions.
 #' 
+#' @importFrom stats acf arima coef
 #' @param load.model a loadModel descendant
 #' @param flux.or.conc The format in which residuals should be calculated
 #' @param abs.or.rel.resids Should residuals be computed as the difference or 

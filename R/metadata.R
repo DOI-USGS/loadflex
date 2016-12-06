@@ -221,6 +221,7 @@ setClass(
 #' }
 #' 
 #' @rdname metadata
+#' @importFrom methods new
 #' @param constituent character. The name of the solute or suspended material 
 #'   whose load is to be modeled. Also the name of the data.frame column 
 #'   describing that solute or material.
@@ -275,6 +276,7 @@ metadata <- function(constituent, flow, load.rate="", dates,
 #' \code{updateMetadata} modifies an existing metadata object.
 #' 
 #' @rdname metadata
+#' @importFrom methods is getSlots slot slot<- validObject
 #' @param metadata the metadata object to update. 
 #' @param new.metadata Optional object of class "metadata". If new.metadata is 
 #'   not NA, all elements of \code{...} will be ignored and metadata will be updated 
@@ -358,6 +360,7 @@ exampleMetadata <- function() {
 #' 
 #' @rdname metadata-getters
 #' @name metadata-getters
+#' @importFrom methods slot
 #' @param metadata a metadata object from which the information will be 
 #'   retrieved
 #' @param data a data.frame from which the data column will be retrieved
@@ -411,6 +414,7 @@ getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"),
 #' flux, or flux rate).
 #' 
 #' @rdname metadata-getters
+#' @importFrom methods slot
 #' @return \code{getUnits} returns the specified units as a character string.
 #' @export
 getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
@@ -436,6 +440,7 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' model.
 #' 
 #' @rdname metadata-getters
+#' @importFrom methods slot
 #' @return \code{getInfo} returns the miscellaneous information specified by
 #'   \code{field}.
 #' @export
@@ -457,7 +462,7 @@ getInfo <- function(metadata, field=c("station", "custom")) {
 #' 
 #' @rdname show.metadata
 #' @param object The metadata object to be displayed
-#' @importFrom methods setMethod
+#' @importFrom methods setMethod getSlots slot show
 #' @exportMethod show
 #' @export
 setMethod(
@@ -483,11 +488,11 @@ setMethod(
 #' Compares the contents of each slot using the == operator.
 #' 
 #' @rdname equals.metadata
+#' @importFrom methods setMethod getSlots slot is
 #' @param e1 metadata object to be compared.
 #' @param e2 metadata object to be compared.
 #' @return logical value indicating whether the two metadata objects have
 #'   identical contents.
-#' @importFrom methods setMethod
 #' @exportMethod ==
 #' @export
 #' @family metadata

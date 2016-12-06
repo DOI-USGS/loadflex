@@ -43,6 +43,8 @@ NULL
 #' Generates the units data to be saved in data/valid.metadata.units, 
 #' data/freeform.unit.translations, data/unit.conversions, and (all three 
 #' combined) R/sysdata.rda. These are then saved with the package.
+#' 
+#' @importFrom stats setNames
 #' @keywords data units internal
 generateUnitsData <- function() {
   # valid.metadata.units

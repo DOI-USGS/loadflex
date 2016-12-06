@@ -2,7 +2,7 @@
 #' 
 #' A set of functions that interpolate a y variable over time. See the 
 #' Interpolation Types section for details specific to each function. These 
-#' functions are intended for use within \code{\link{loadInterp}} and
+#' functions are intended for use within \code{\link{loadInterp}} and 
 #' \code{\link{loadComp}} models.
 #' 
 #' @details
@@ -33,6 +33,7 @@
 #'   correction techniques for nitrate-N load estimation methods. Journal of 
 #'   Hydrology 432-433:12-25.
 #'   
+#' @importFrom stats approx
 #' @param dates.in A numeric vector desribing the dates for each of the values 
 #'   in \code{y.in}. Dates are represented as the number of seconds since 1970.
 #' @param y.in A vector of values (typically fluxes or concentrations) to 
@@ -93,6 +94,7 @@ getTriangularInterpolation <- function(y.mid=0) {
 #' be used by \code{\link{getTriangularInterpolation}} to produce a 
 #' function that does.
 #' 
+#' @importFrom stats approx
 #' @inheritParams interpolations
 #' @inheritParams getTriangularInterpolation
 genericTriangularInterpolation <- function(dates.in, y.in, dates.out, y.mid) {
@@ -119,6 +121,7 @@ genericTriangularInterpolation <- function(dates.in, y.in, dates.out, y.mid) {
 #' residuals interpolation with the composite method.
 #' 
 #' @rdname interpolations
+#' @importFrom stats approx
 #' @inheritParams interpolations
 #' @export
 rectangularInterpolation <- function(dates.in, y.in, dates.out) {
@@ -155,6 +158,7 @@ rectangularInterpolation <- function(dates.in, y.in, dates.out) {
 #' y.in.
 #' 
 #' @importFrom splines interpSpline
+#' @importFrom stats predict
 #' @rdname interpolations
 #' @inheritParams interpolations
 #' @export
@@ -201,7 +205,7 @@ getSmoothSplineInterpolation <- function(...) {
 #' be used by \code{\link{getSmoothSplineInterpolation}} to produce a 
 #' function that does.
 #' 
-#' @importFrom stats smooth.spline
+#' @importFrom stats predict smooth.spline
 #' @inheritParams interpolations
 #' @inheritParams getSmoothSplineInterpolation
 genericSmoothSplineInterpolation <- function(dates.in, y.in, dates.out, ...) {

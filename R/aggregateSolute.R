@@ -24,6 +24,8 @@
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
+#' @importFrom methods is
+#' @importFrom stats aggregate qt qnorm setNames
 #' @param preds Either a vector of predicted instantaneous fluxes or 
 #'   concentrations or a data.frame containing the columns "fit", "se.pred", and
 #'   "date"
