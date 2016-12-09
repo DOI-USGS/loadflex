@@ -59,11 +59,11 @@ install.packages("devtools")
 
 and lastly run this call to actually install `loadflex`:
 ```r
-devtools::install_github("mcdowelllab/loadflex")
+devtools::install_github("USGS-R/loadflex")
 ```
 
 Also please see the installation FAQ on the wiki
-(https://github.com/McDowellLab/loadflex/wiki/Installation-FAQ) if you run into
+(https://github.com/USGS-R/loadflex/wiki/Installation-FAQ) if you run into
 trouble.
 
 ### Updates
@@ -76,7 +76,7 @@ update.packages(
 update.packages(
   oldPkgs=c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
   dependencies=TRUE, type="both")
-devtools::install_github("mcdowelllab/loadflex")
+devtools::install_github("USGS-R/loadflex")
 ```
 
 ## Package status
@@ -86,6 +86,6 @@ Please don't worry: yes, some of these status badges are red, but the reasons ar
 | Name       | Status           |  
 | :------------ |:-------------|  
 | Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/8cjo5urmkv5sjd7v?svg=true)](https://ci.appveyor.com/project/appling/loadflex) |
-| Linux Build: | [![Linux Build Status](https://travis-ci.org/McDowellLab/loadflex.svg)](https://travis-ci.org/McDowellLab/loadflex)  |
-| Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/McDowellLab/loadflex/badge.svg?branch=master)](https://coveralls.io/r/McDowellLab/loadflex?branch=master) |
-| Codecov: | [![Codecov Coverage](https://codecov.io/github/McDowellLab/loadflex/coverage.svg?branch=master)](https://codecov.io/github/McDowellLab/loadflex?branch=master) |
+| Linux Build: | [![Linux Build Status](https://travis-ci.org/USGS-R/loadflex.svg)](https://travis-ci.org/USGS-R/loadflex)  |
+| Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/USGS-R/loadflex/badge.svg?branch=master)](https://coveralls.io/r/USGS-R/loadflex?branch=master) |
+| Codecov: | [![Codecov Coverage](https://codecov.io/github/USGS-R/loadflex/coverage.svg?branch=master)](https://codecov.io/github/USGS-R/loadflex?branch=master) |

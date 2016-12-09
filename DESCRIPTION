@@ -38,7 +38,7 @@ Suggests:
     knitr,
     testthat
 License: GPL (>= 2)
-URL: https://github.com/McDowellLab/loadflex
+URL: https://github.com/USGS-R/loadflex
 Collate:
     'aaa_onLoad.R'
     'aggregateSolute.R'
