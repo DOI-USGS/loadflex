@@ -33,11 +33,22 @@
 #'   GitHub or the USGS R package repository. To install these packages, run the
 #'   following lines:
 #'   
-#'   install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", 
-#'   "smwrQW", "rloadest"), repos=c("http://owi.usgs.gov/R", 
-#'   "http://cran.us.r-project.org"), dependencies=TRUE, type="both")
+#'   \code{install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", 
+#'   "smwrQW", "rloadest", "unitted"), repos=c("https://owi.usgs.gov/R", 
+#'   "https://cran.rstudio.com"), dependencies=TRUE, type="both")}
 #'   
-#'   devtools::install_github(c("appling/unitted", "mcdowelllab/loadflex"))
+#'   \code{install.packages(c("car", "dplyr", "ggplot2", "lubridate", "MASS", 
+#'   "Matrix"), dependencies=TRUE, type="both")}
+#'   
+#'   You'll also need the `devtools` package; see 
+#'   \url{https://www.rstudio.com/products/rpackages/devtools/} for special
+#'   instructions, and also run this command:
+#'   
+#'   \code{install.packages("devtools")}
+#'   
+#'   and lastly run this call to actually install `loadflex`:
+#'   
+#'   \code{devtools::install_github("USGS-R/loadflex")}
 #'   
 #' @name loadflex
 #' @docType package

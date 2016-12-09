@@ -35,7 +35,7 @@
 #'   baseflow in the output dataset. Must be one of "sliding," "local minimum," 
 #'   or "fixed." Onle the first letter is required.' See the HYSEP documentation
 #'   by Sloto and Crouse at 
-#'   http://water.usgs.gov/software/HYSEP/code/doc/hysep.pdf for method 
+#'   https://water.usgs.gov/software/HYSEP/code/doc/hysep.pdf for method 
 #'   descriptions.
 #' @param alpha numeric, required argument for \code{method \%in\% c("1p digital
 #'   filter","2p digital filter")}. Adjusts the strength of the filter, with 
@@ -47,14 +47,14 @@
 #'   classified as baseflow. Recommended values are 0.8 for perennial streams 
 #'   with porous aquifers, 0.50 for ephemeral streams with porous aquifers, and 
 #'   0.25 for perennial streams with hard rock aquifers. (Defaults from 
-#'   http://user.engineering.uiowa.edu/~flood/handouts/ 
+#'   https://user.engineering.uiowa.edu/~flood/handouts/ 
 #'   HO-L17-Baseflow-Separation.pdf)
 #' @param ... other arguments passed to the specified method (currently only 
 #'   'hysep' takes other arguments; see ?DVstats::hysep)
 #'   
 #' @references Implementation of the 1- and 2-parameter digital filters was 
 #'   aided by the online lecture notes of A. Allen Bradley, Jr. for his Fall 
-#'   2013 Hydrology course (http://user.engineering.uiowa.edu/~flood)
+#'   2013 Hydrology course (https://user.engineering.uiowa.edu/~flood)
 #' @family predictors
 #' @keywords internal
 #' @importFrom lubridate is.POSIXt is.Date
@@ -109,7 +109,7 @@ getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter
 #     },
     "1p digital filter"={
       # Implements the digital filter described at
-      # http://user.engineering.uiowa.edu/~flood/handouts/HO-L17-Baseflow-Separation.pdf
+      # https://user.engineering.uiowa.edu/~flood/handouts/HO-L17-Baseflow-Separation.pdf
       # and in Nathan, R.J. and T.A. McMahon, 1990. Evaluation of Automated
       # Techniques for Baseflow and Recession Analysis. Water Resources
       # Research, 26(7):1465-1473.
@@ -124,7 +124,7 @@ getPred_baseflow <- function(data, metadata, method=c("hysep","1p digital filter
     },
     "2p digital filter"={
       # Implements the 2-parameter digital fitler described at
-      # http://user.engineering.uiowa.edu/~flood/handouts/HO-L17-Baseflow-Separation.pdf
+      # https://user.engineering.uiowa.edu/~flood/handouts/HO-L17-Baseflow-Separation.pdf
       # and in Eckhardt, K., 2005. How to Construct Recursive Digital Filters
       # for Baseflow Separation. Hydrological Processes, 19(2):507-515.
       runoff <- baseflow <- rep(0, length(Flows))

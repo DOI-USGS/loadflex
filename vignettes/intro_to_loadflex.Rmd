@@ -11,14 +11,24 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-The `loadflex` package lets you quickly fit and compare concentrations and/or fluxes of solutes in watersheds. This vignette demonstrates the application of `loadflex` to fit four different model types to the same data, to assess and compare those models, and to estimate average solute concentrations and fluxes at both quarter-hourly and monthly scales.
+The `loadflex` package lets you quickly fit and compare concentrations and/or
+fluxes of solutes in watersheds. This vignette demonstrates the application of
+`loadflex` to fit four different model types to the same data, to assess and
+compare those models, and to estimate average solute concentrations and fluxes
+at both quarter-hourly and monthly scales.
 
-We will use the data supplied with the `loadflex` package. These include nitrate concentration observations from the Lamprey River in southeastern New Hampshire, where researchers in the NH Water Resources Research Center (University of New Hampshire; PI: William H. McDowell) have been monitoring water quality weekly since 1999. Discharge data are from the same location, Packers Falls, from a USGS gaging station (http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500).
+We will use the data supplied with the `loadflex` package. These include nitrate
+concentration observations from the Lamprey River in southeastern New Hampshire,
+where researchers in the NH Water Resources Research Center (University of New
+Hampshire; PI: William H. McDowell) have been monitoring water quality weekly
+since 1999. Discharge data are from the same location, Packers Falls, from a
+USGS gaging station (http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500).
 
 ```{r, echo=FALSE, message=FALSE}
 # Set options for producing the html file & figures
 library(knitr)
 opts_chunk$set(echo=TRUE, message=FALSE)
+set.seed(8437)
 ```
 
 Start by loading the package.

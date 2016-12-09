@@ -69,13 +69,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to loadflex</h1>
 <h4 class="author"><em>Alison Appling</em></h4>
-<h4 class="date"><em>05 December, 2016</em></h4>
+<h4 class="date"><em>09 December, 2016</em></h4>
 
 
 
 <p>The <code>loadflex</code> package lets you quickly fit and compare concentrations and/or fluxes of solutes in watersheds. This vignette demonstrates the application of <code>loadflex</code> to fit four different model types to the same data, to assess and compare those models, and to estimate average solute concentrations and fluxes at both quarter-hourly and monthly scales.</p>
 <p>We will use the data supplied with the <code>loadflex</code> package. These include nitrate concentration observations from the Lamprey River in southeastern New Hampshire, where researchers in the NH Water Resources Research Center (University of New Hampshire; PI: William H. McDowell) have been monitoring water quality weekly since 1999. Discharge data are from the same location, Packers Falls, from a USGS gaging station (<a href="http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500" class="uri">http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500</a>).</p>
-<pre><code>## Warning: package 'knitr' was built under R version 3.3.2</code></pre>
 <p>Start by loading the package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(loadflex)</code></pre></div>
 <p>Load the data provided in this package.</p>
@@ -99,9 +98,8 @@ estdat &lt;-<span class="st"> </span>estdat[<span class="kw">seq</span>(<span cl
   <span class="dt">data=</span>intdat, <span class="dt">metadata=</span>meta)
 no3_lm &lt;-<span class="st"> </span><span class="kw">loadLm</span>(<span class="dt">formula=</span><span class="kw">log</span>(NO3) ~<span class="st"> </span><span class="kw">log</span>(DISCHARGE), <span class="dt">pred.format=</span><span class="st">&quot;conc&quot;</span>, 
   <span class="dt">data=</span>regdat, <span class="dt">metadata=</span>meta, <span class="dt">retrans=</span>exp)
-<span class="kw">library</span>(rloadest)</code></pre></div>
-<pre><code>## Warning: package 'lubridate' was built under R version 3.3.2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">no3_lr &lt;-<span class="st"> </span><span class="kw">loadReg2</span>(<span class="kw">loadReg</span>(NO3 ~<span class="st"> </span><span class="kw">model</span>(<span class="dv">9</span>), <span class="dt">data=</span>regdat,
+<span class="kw">library</span>(rloadest)
+no3_lr &lt;-<span class="st"> </span><span class="kw">loadReg2</span>(<span class="kw">loadReg</span>(NO3 ~<span class="st"> </span><span class="kw">model</span>(<span class="dv">9</span>), <span class="dt">data=</span>regdat,
   <span class="dt">flow=</span><span class="st">&quot;DISCHARGE&quot;</span>, <span class="dt">dates=</span><span class="st">&quot;DATE&quot;</span>, <span class="dt">time.step=</span><span class="st">&quot;instantaneous&quot;</span>, 
   <span class="dt">flow.units=</span><span class="st">&quot;cfs&quot;</span>, <span class="dt">conc.units=</span><span class="st">&quot;mg/L&quot;</span>, <span class="dt">load.units=</span><span class="st">&quot;kg&quot;</span>))
 no3_lc &lt;-<span class="st"> </span><span class="kw">loadComp</span>(<span class="dt">reg.model=</span>no3_lr, <span class="dt">interp.format=</span><span class="st">&quot;conc&quot;</span>, 
@@ -141,12 +139,12 @@ aggs_lc &lt;-<span class="st"> </span><span class="kw">aggregateSolute</span>(pr
 <p>A few lines from one of the resulting aggregated flux data.frames (they’re all structured the same way):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(aggs_lc)</code></pre></div>
 <pre><code>##     Month Flux_Rate        SE  CI_lower  CI_upper
-## 1 1999-10  32.81057  2.463948  28.24623  37.89874
-## 2 1999-11  58.04889  3.919978  50.74469  66.10302
-## 3 1999-12  75.51838  4.960218  66.26271  85.69718
-## 4 2000-01  93.16276  6.351932  81.33299 106.21938
-## 5 2000-02 123.67410 10.063628 105.12254 144.54249
-## 6 2000-03 201.53798 13.977173 175.53058 230.29111</code></pre>
+## 1 1999-10  32.81057  2.467954  28.23924  37.90742
+## 2 1999-11  58.04889  3.926351  50.73343  66.11671
+## 3 1999-12  75.51838  4.968283  66.24842  85.71446
+## 4 2000-01  93.16276  6.362260  81.31477 106.24158
+## 5 2000-02 123.67410 10.079991 105.09429 144.57825
+## 6 2000-03 201.53798 13.999898 175.49056 230.34004</code></pre>
 
 
 
