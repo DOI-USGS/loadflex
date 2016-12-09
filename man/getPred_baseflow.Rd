@@ -25,7 +25,7 @@ description of each algorithm.}
 baseflow in the output dataset. Must be one of "sliding," "local minimum," 
 or "fixed." Onle the first letter is required.' See the HYSEP documentation
 by Sloto and Crouse at 
-http://water.usgs.gov/software/HYSEP/code/doc/hysep.pdf for method 
+https://water.usgs.gov/software/HYSEP/code/doc/hysep.pdf for method 
 descriptions.}
 
 \item{alpha}{numeric, required argument for \code{method \%in\% c("1p digital
@@ -39,7 +39,7 @@ filter"}. The maximum long-term fraction of total streamflow that may be
 classified as baseflow. Recommended values are 0.8 for perennial streams 
 with porous aquifers, 0.50 for ephemeral streams with porous aquifers, and 
 0.25 for perennial streams with hard rock aquifers. (Defaults from 
-http://user.engineering.uiowa.edu/~flood/handouts/ 
+https://user.engineering.uiowa.edu/~flood/handouts/ 
 HO-L17-Baseflow-Separation.pdf)}
 
 \item{...}{other arguments passed to the specified method (currently only 
@@ -69,7 +69,7 @@ requires specification of the \code{alpha} and \code{BFImax} parameters.
 \references{
 Implementation of the 1- and 2-parameter digital filters was 
   aided by the online lecture notes of A. Allen Bradley, Jr. for his Fall 
-  2013 Hydrology course (http://user.engineering.uiowa.edu/~flood)
+  2013 Hydrology course (https://user.engineering.uiowa.edu/~flood)
 }
 \seealso{
 Other predictors: \code{\link{getPred_isBaseflow}}

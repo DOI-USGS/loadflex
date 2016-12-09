@@ -7,8 +7,8 @@ sudo: required
 warnings_are_errors: true
 
 repos:
-  CRAN: http://cran.rstudio.com
-  GRAN: http://owi.usgs.gov/R
+  CRAN: https://cran.rstudio.com
+  GRAN: https://owi.usgs.gov/R
 
 before_script:
   - Rscript -e "install.packages('knitr')"

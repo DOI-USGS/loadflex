@@ -2,6 +2,7 @@
 # Set options for producing the html file & figures
 library(knitr)
 opts_chunk$set(echo=TRUE, message=FALSE)
+set.seed(8437)
 
 ## ------------------------------------------------------------------------
 library(loadflex)
