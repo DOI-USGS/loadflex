@@ -1,19 +1,36 @@
 ## `loadflex`: Models and tools for watershed flux estimates
 
-This package implements several of the most common methods for 
-modeling and predicting watershed solute fluxes and concentrations, including
-interpolation and regression models, period-weighted averaging, and the
-composite method. loadflex integrates seamlessly with the USGS's rloadest 
-package and with native R regression models. It offers a uniform interface
-for any model type, with which you can quickly fit models, generate
-predictions, and aggregate to monthly or annual values.
+This package implements several of the most common methods for modeling and
+predicting watershed solute fluxes and concentrations, including interpolation
+and regression models, period-weighted averaging, and the composite method.
+loadflex integrates seamlessly with the USGS's
+[rloadest](https://github.com/USGS-R/rloadest) package and with native R
+regression models. It offers a uniform interface for any model type, with which
+you can quickly fit models, generate predictions, and aggregate to monthly or
+annual values.
 
-The package was developed by Alison Appling and Miguel Leon with the support 
-of Bill McDowell at the University of New Hampshire.
+The package was created by [Alison Appling](https://github.com/aappling-usgs) 
+and [Miguel Leon](https://github.com/miguelcleon) with the support of [Bill 
+McDowell](https://colsa.unh.edu/faculty/mcdowell) and the [McDowell 
+lab](http://wrrc.unh.edu/mcdowell-lab-current) at the University of New 
+Hampshire, 2013-2015. Funding for the project was provided by the National 
+Science Foundation, USDA National Institute of Food and Agriculture, and the NH 
+Agricultural Experiment Station. Funding for the example dataset from the 
+Lamprey River was provied by the EPA, NH Water Resources Research Center, NH 
+Agricultural Experiment Station, NH Sea Grant, USGS, and NSF. This work is 
+described in
 
-To get started, load the package and type `?loadflex`.
+> Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex. Ecosphere 6(12):269. http://dx.doi.org/10.1890/ES14-00517.1
+
+Additional development and maintenance in 2016-present is being done by 
+[Alison Appling](https://github.com/aappling-usgs), [Lindsay
+Carr](https://github.com/lindsaycarr), and [David 
+Watkins](https://github.com/wdwatkins) of the [USGS Office of Water 
+Information](http://cida.usgs.gov/datascience.html).
 
 To see how to cite this package, type `citation("loadflex")`.
+
+To get started, load the package and type `?loadflex`.
 
 
 ## Installation
@@ -26,7 +43,7 @@ run the following lines:
 ```{r}
 install.packages(
   c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"), 
-  repos=c("http://owi.usgs.gov/R", "https://cran.rstudio.com"), 
+  repos=c("https://owi.usgs.gov/R", "https://cran.rstudio.com"), 
   dependencies=TRUE, type="both")
 install.packages(
   c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
@@ -55,7 +72,7 @@ After the first-time installation, you can update with these commands:
 ```r
 update.packages(
   oldPkgs=c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"),
-  dependencies=TRUE, repos=c("http://owi.usgs.gov/R", "https://cran.rstudio.com"))
+  dependencies=TRUE, repos=c("https://owi.usgs.gov/R", "https://cran.rstudio.com"))
 update.packages(
   oldPkgs=c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
   dependencies=TRUE, type="both")

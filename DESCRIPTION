@@ -3,6 +3,12 @@ Type: Package
 Title: Models and Tools for Watershed Flux Estimates
 Version: 1.0.3
 Date: 2016-02-10
+Authors@R: c(
+    person("Alison P.", "Appling", , "aappling@usgs.gov", c("aut", "cre")),
+    person("Miguel C.", "Leon", , , "aut"),
+    person("Lindsay R.", "Carr", , , "ctb"),
+    person("W. David", "Watkins", , , "ctb")
+    )
 Author: Alison Appling, Miguel Leon
 Maintainer: Alison Appling <alison.appling@gmail.com>
 Description: Implements several of the most common methods for
