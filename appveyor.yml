@@ -24,7 +24,7 @@ environment:
   R_BUILD_ARGS: --no-build-vignettes --no-manual
   R_INSTALL_ARGS: --no-multiarch
   GITHUB_PAT:
-    secure: lWDip/KqkDcRmLEPjvsVSpQ7HJcSmE5HwyQVzDBJetaUdaYI1Us5tAs6E9K8kpSj
+    secure: 03KIbW8uRiLt7B5/qFLzuKKx2t1ElXoZeFxuwVftpkzL4+A2cGPe4wTkKAwOOEb1
   global:
     WARNINGS_ARE_ERRORS: 1
 
