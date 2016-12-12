@@ -17,10 +17,10 @@ test_that("validLoadModelInterface reports validity for all base load model type
   expect_true(validLoadModelInterface(load.model, verbose=verbose))
   
   # loadLm
-  load.model <- loadLm(
+  load.lm <- loadLm(
     formula=log(conc) ~ discharge, 
     pred.format="conc", data=mydat, metadata=mymd)
-  expect_true(validLoadModelInterface(load.model, verbose=verbose))
+  expect_true(validLoadModelInterface(load.lm, verbose=verbose))
   
   # loadReg2 - segfaults on travis
   # library(rloadest)
@@ -37,8 +37,8 @@ test_that("validLoadModelInterface reports validity for all base load model type
   
   # loadComp
   load.comp <- loadComp(
-    reg.model=load.reg2, interp.format="flux", 
-    interp.data=mydat, interp.function=linearInterpolation)
+    reg.model=load.lm, interp.format="flux", 
+    interp.data=mydat, interp.function=linearInterpolation, n.iter = 0)
   expect_true(validLoadModelInterface(load.comp, verbose=verbose))
   
 })
