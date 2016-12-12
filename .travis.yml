@@ -3,8 +3,7 @@
 # https://github.com/craigcitro/r-travis/wiki/Porting-to-native-R-support-in-Travis
 
 language: r
-cache: packages
-sudo: false
+sudo: required
 warnings_are_errors: true
 
 r_build_args: --no-build-vignettes --no-manual --no-multiarch

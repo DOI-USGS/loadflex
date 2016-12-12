@@ -22,7 +22,7 @@ test_that("validLoadModelInterface reports validity for all base load model type
     pred.format="conc", data=mydat, metadata=mymd)
   expect_true(validLoadModelInterface(load.model, verbose=verbose))
   
-  # loadReg2
+  # loadReg2 - segfaults on travis
   library(rloadest)
   load.reg2 <- loadReg2(loadReg(
     conc ~ model(2), data = mydat,
