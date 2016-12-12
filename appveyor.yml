@@ -3,32 +3,40 @@
 # Note that we're calling a customized version of appveyor-tool.ps1 to get R-stable
 # and to call a customized version of travis-tool.sh which uses GRAN+CRAN by default.
 
+# DO NOT CHANGE the "init" and "install" sections below
+
+# Download script file from GitHub
+init:
+  ps: |
+        $ErrorActionPreference = "Stop"
+        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+        Import-Module '..\appveyor-tool.ps1'
+
+install:
+  ps: Bootstrap
+
+# Adapt as necessary starting from here
+
 environment:
   R_VERSION: stable
   R_CHECK_ARGS: --no-build-vignettes --no-manual --no-multiarch
   R_BUILD_ARGS: --no-build-vignettes --no-manual
   R_INSTALL_ARGS: --no-multiarch
   GITHUB_PAT:
-    secure: 24SWcdQAsXETCxsAk3+3WLiTpfGbibXXVlgHlDwd/XF+aoD9qyy+W1fEobhwqJdr 
-
-init:
-  ps: |
-        $ErrorActionPreference = "Stop"
-        Invoke-WebRequest https://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
-        Import-Module '..\appveyor-tool.ps1'
-
-install:
-  ps: Bootstrap
+    secure: lWDip/KqkDcRmLEPjvsVSpQ7HJcSmE5HwyQVzDBJetaUdaYI1Us5tAs6E9K8kpSj
 
 build_script:
   - R --version
+  - travis-tool.sh install_github USGS-R/smwrData USGS-R/smwrBase USGS-R/smwrGraphs USGS-R/smwrStats USGS-R/smwrQW USGS-R/rloadest 
+  - travis-tool.sh install_github appling/unitted
   - travis-tool.sh install_deps
 
 test_script:
   - travis-tool.sh run_tests
 
 on_failure:
-  - travis-tool.sh dump_logs
+  - 7z a failure.zip *.Rcheck\*
+  - appveyor PushArtifact failure.zip
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
