@@ -3,8 +3,12 @@
 # https://github.com/craigcitro/r-travis/wiki/Porting-to-native-R-support-in-Travis
 
 language: r
-sudo: required
+cache: packages
+sudo: false
 warnings_are_errors: true
+
+r_build_args: --no-build-vignettes --no-manual --no-multiarch
+r_check_args: --no-build-vignettes --no-manual
 
 repos:
   CRAN: https://cran.rstudio.com
@@ -18,7 +22,7 @@ r_github_packages:
   - jimhester/covr
 
 after_success:
-  - Rscript -e 'covr::codecov(); covr::coveralls()'
+  - Rscript -e 'covr::coveralls()'
 
 after_failure:
   - ./travis-tool.sh dump_logs
