@@ -85,6 +85,6 @@ Please don't worry: yes, some of these status badges are red, but the reasons ar
 
 | Name       | Status           |  
 | :------------ |:-------------|  
-| Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/github/aappling-usgs/loadflex?branch=master&svg=true)](https://ci.appveyor.com/project/aappling-usgs/loadflex) |
+| Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/764y0hsh5x3vhufx?svg=true)](https://ci.appveyor.com/project/aappling-usgs/loadflex) |
 | Linux Build: | [![Linux Build Status](https://travis-ci.org/USGS-R/loadflex.svg)](https://travis-ci.org/USGS-R/loadflex)  |
 | Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/USGS-R/loadflex/badge.svg?branch=master)](https://coveralls.io/r/USGS-R/loadflex?branch=master) |
