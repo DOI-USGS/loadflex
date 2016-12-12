@@ -81,8 +81,6 @@ devtools::install_github("USGS-R/loadflex")
 
 ## Package status
 
-Please don't worry: yes, some of these status badges are red, but the reasons are minor. You can absolutely still install and run the package. We use the badges as a motivator for us - we're continously raising the bar and working to make `loadflex` even better.
-
 | Name       | Status           |  
 | :------------ |:-------------|  
 | Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/764y0hsh5x3vhufx?svg=true)](https://ci.appveyor.com/project/aappling-usgs/loadflex) |
