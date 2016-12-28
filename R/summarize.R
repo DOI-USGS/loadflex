@@ -7,6 +7,7 @@
 #' @param nutriDF data frame record of nutrient measurements
 #' @importFrom dplyr filter 
 #' @importFrom dplyr mutate
+#' @importFrom dplyr bind_cols
 #' @examples
 #' 
 summarizeSites <- function(sites, siteInfo, nutriDF){
@@ -30,7 +31,7 @@ summarizeSites <- function(sites, siteInfo, nutriDF){
 #' Get various summary statistics on a date vector
 #'
 #' @param dateCol vector of dates
-#'
+#' 
 #' @return data frame of date statistics, including 
 #'
 #' @examples
@@ -38,6 +39,7 @@ getDateStats <- function(dateCol){
   #is there a function that could be used instead of this?
   start <- min(dateCol)
   end <- max(dateCol)
-  statDF <- data.frame(start, end, stringsAsFactors = FALSE)
+  n <- length(dateCol)
+  statDF <- data.frame(start, end, n, stringsAsFactors = FALSE)
   return(statDF)
 }
