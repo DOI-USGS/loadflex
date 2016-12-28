@@ -19,7 +19,4 @@ data frame of the following information:
 \description{
 summarize WQ site information
 }
-\examples{
-
-}
 

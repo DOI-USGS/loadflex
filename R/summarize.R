@@ -9,7 +9,6 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_cols
 #' @examples
-#' 
 summarizeSites <- function(sites, siteInfo, nutriDF){
   #get existing site metadata
   summaryDF <- filter(siteInfo, CODIGO_ESTACAO %in% sites)

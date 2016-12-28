@@ -42,7 +42,6 @@ URL: https://github.com/USGS-R/loadflex
 Collate:
     'aaa_onLoad.R'
     'aggregateSolute.R'
-    'batch.R'
     'covariance.R'
     'dataDocumentation.R'
     'diagnostics.R'
