@@ -42,3 +42,42 @@ getDateStats <- function(dateCol){
   statDF <- data.frame(start, end, n, stringsAsFactors = FALSE)
   return(statDF)
 }
+
+#' Extract various model summary statistics
+#' 
+#' @param model the input model object; will extend to several types
+#' @export
+summarizeModel <- function(model) UseMethod("summarizeModel")
+
+#' stats for rloadest loadReg2 model
+#' @rdname summarizeModel
+#' 
+summarizeModel.loadReg2 <- function(model){
+  
+}
+
+#' Summarize generated predictions 
+#' just take one site for now
+#'
+#' @param pred data frame input data frame of predicted solutes
+#'
+#' @return data frame containing various statistics
+#' @export
+#'
+#' @examples
+summarizePreds <- function(preds, meta, by, modelName){
+   station <- getInfo(siteMeta, field = c("station"))
+   if(by == "total"){
+    annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
+                               agg.by = "water year")
+    multiYear <- data.frame(CODIGO_ESTACAO = station, model = modelName,
+                            multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
+    retDF <- multiYear
+  }else if(by == "annual"){
+    annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
+                               agg.by = "water year")
+    retDF <- data.frame(CODIGO_ESTACAO = rep(station, nrow(annuals)), 
+                        model = rep(modelName, nrow(annuals)),annuals)
+  }
+  return(retDF)
+}

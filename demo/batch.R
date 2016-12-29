@@ -22,13 +22,14 @@ qDF$date <- as.Date(qDF$date)
 siteSummaries <- data.frame()
 modelSummaries <- data.frame()
 allModels <- list()
+annuals <- data.frame()
 
 #loop over unique sites
 for(site in unique(nutriDF$CODIGO_ESTACAO)){
   
   #pull out this site
   siteNutri <- filter(nutriDF, CODIGO_ESTACAO == site)
-  
+  siteQ <- filter(qDF, CODIGO_ESTACAO == site)
   #create metadata
   #not sure units etc are following the correct format
   siteMeta <- metadata(constituent = "NO3_mg_L", flow = "Q_m3s", dates = "date",
@@ -58,15 +59,28 @@ for(site in unique(nutriDF$CODIGO_ESTACAO)){
   allModels[[site]] <- siteModelList
   
   #make predictions
+  pred_rload <- predictSolute(rloadest5param, "flux", siteQ, 
+                              se.pred = TRUE, date = TRUE)
+  pred_interp <- predictSolute(interpRect, "flux", siteQ, 
+                               se.pred = TRUE, date = TRUE)
+  pred_comp <- predictSolute(comp, "flux", siteQ, se.pred = TRUE,
+                             date = TRUE)
   
+  #TODO: model metrics
+  annualSite <- bind_rows(summarizePreds(pred_rload, siteMeta, "total", modelName = "rloadest"),
+                      summarizePreds(pred_interp, siteMeta, "total", modelName = "interpolation"),
+                      summarizePreds(pred_comp, siteMeta, "total", modelName = "composite"))
   
-  #TODO: model metrics?
   
   #TODO: plots
   
-  #TODO: recombine into single df
+  #TODO: recombine into single dfs
    siteSummaries <- bind_rows(siteSummaries, siteMetrics)
+   annuals <- bind_rows(annuals, annualSite)
 }
 
 #TODO: write to csv
-
+print(siteSummaries)
+print(annuals)
+write.csv(x = siteSummaries, file = "siteSummaries.csv")
+write.csv(x = annuals, file = "annuals.csv")
