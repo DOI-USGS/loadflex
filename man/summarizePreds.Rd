@@ -8,7 +8,14 @@ just take one site for now}
 summarizePreds(preds, meta, by, modelName)
 }
 \arguments{
-\item{pred}{data frame input data frame of predicted solutes}
+\item{preds}{data frame input data frame of predicted solutes}
+
+\item{meta}{loadflex metadata object for the preds data frame}
+
+\item{by}{character "total" to return average flux over all years, "annual" to return 
+yearly (water year) averages}
+
+\item{modelName}{char name of model used to generate predictions}
 }
 \value{
 data frame containing various statistics

@@ -9,7 +9,8 @@ summarizeSites(sites, siteInfo, nutriDF)
 \arguments{
 \item{sites}{character ID(s) of sites to summarize}
 
-\item{siteInfo}{data frame containing site information}
+\item{siteInfo}{data frame containing site information, with column named CODIGO_ESTACAO 
+containing station id's}
 
 \item{nutriDF}{data frame record of nutrient measurements}
 }

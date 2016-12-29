@@ -3,12 +3,12 @@
 #' @return data frame of the following information:
 #' @export
 #' @param sites character ID(s) of sites to summarize
-#' @param siteInfo data frame containing site information
+#' @param siteInfo data frame containing site information, with column named CODIGO_ESTACAO 
+#' containing station id's
 #' @param nutriDF data frame record of nutrient measurements
 #' @importFrom dplyr filter 
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_cols
-#' @examples
 summarizeSites <- function(sites, siteInfo, nutriDF){
   #get existing site metadata
   summaryDF <- filter(siteInfo, CODIGO_ESTACAO %in% sites)
@@ -33,7 +33,6 @@ summarizeSites <- function(sites, siteInfo, nutriDF){
 #' 
 #' @return data frame of date statistics, including 
 #'
-#' @examples
 getDateStats <- function(dateCol){
   #is there a function that could be used instead of this?
   start <- min(dateCol)
@@ -59,14 +58,16 @@ summarizeModel.loadReg2 <- function(model){
 #' Summarize generated predictions 
 #' just take one site for now
 #'
-#' @param pred data frame input data frame of predicted solutes
-#'
+#' @param preds data frame input data frame of predicted solutes
+#' @param meta loadflex metadata object for the preds data frame
+#' @param by character "total" to return average flux over all years, "annual" to return 
+#' yearly (water year) averages
+#' @param modelName char name of model used to generate predictions
 #' @return data frame containing various statistics
 #' @export
 #'
-#' @examples
 summarizePreds <- function(preds, meta, by, modelName){
-   station <- getInfo(siteMeta, field = c("station"))
+   station <- getInfo(meta, field = c("station"))
    if(by == "total"){
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
