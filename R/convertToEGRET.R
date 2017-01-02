@@ -9,10 +9,10 @@
 #' flow, conc.units, custom (station abbreviation: staAbbr)
 #' 
 #' @importFrom dplyr left_join
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
+#' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom lubridate decimal_date
+#' @importFrom EGRET as.egret
 #' 
 #' @export
 convertToEGRET <- function(intdat, estdat, preds, meta){

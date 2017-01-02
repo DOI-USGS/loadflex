@@ -22,6 +22,7 @@ Imports:
     unitted (>= 0.2.5),
     car,
     dplyr,
+    EGRET,
     ggplot2,
     lubridate,
     MASS,

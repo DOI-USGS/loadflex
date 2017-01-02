@@ -11,6 +11,11 @@
 #' options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ.
 #' @param ... additional arguments to pass to the plot
 #'
+#' @importFrom EGRET plotConcTime
+#' @importFrom EGRET plotConcQ
+#' @importFrom EGRET plotFluxTimeDaily
+#' @importFrom EGRET plotFluxQ
+#'
 #' @export
 plotEGRET <- function(intdat, estdat, preds, meta, plotName, ...){
   
