@@ -14,7 +14,7 @@
 #' @importFrom lubridate decimal_date
 #' @importFrom EGRET as.egret
 #' 
-#' @export
+#' 
 convertToEGRET <- function(intdat, estdat, preds, meta) {
   
   # flow_col <- verify_meta(meta, 'flow')
