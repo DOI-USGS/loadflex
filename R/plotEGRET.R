@@ -21,7 +21,7 @@ plotEGRET <- function(intdat, estdat, preds, meta, plot.name, ...) {
   
   egretobj <- convertToEGRET(intdat, estdat, preds, meta)
   
-  switch(plotName,
+  switch(plot.name,
          ConcTime = plotConcTime(egretobj, ...),
          ConcQ = plotConcQ(egretobj, ...),
          FluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
