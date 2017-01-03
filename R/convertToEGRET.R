@@ -6,7 +6,7 @@
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: staAbbr)
+#' flow, conc.units, custom (station abbreviation: sta.abbr)
 #' 
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename_
@@ -15,13 +15,13 @@
 #' @importFrom EGRET as.egret
 #' 
 #' @export
-convertToEGRET <- function(intdat, estdat, preds, meta){
+convertToEGRET <- function(intdat, estdat, preds, meta) {
   
   # flow_col <- verify_meta(meta, 'flow')
   flow_col <- "DISCHARGE"
   info_df <- data.frame(shortName=verify_meta(meta, 'station'),
                         paramShortName='nitrate',
-                        staAbbrev=verify_meta(meta, c('custom', 'staAbbr')),
+                        staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
                         # constitAbbrev=verify_meta(meta, 'constituent'),
                         constitAbbrev='NO3',
                         # param.units=verify_meta(meta, 'conc.units'),
@@ -58,7 +58,7 @@ convertToEGRET <- function(intdat, estdat, preds, meta){
 #' 'custom' (e.g. nm = c('custom', 'staAbbr'))
 #' 
 #' @export
-verify_meta <- function(meta, nm){
+verify_meta <- function(meta, nm) {
 
   if("custom" %in% nm){
     meta_value <- loadflex::getInfo(meta, nm[1])

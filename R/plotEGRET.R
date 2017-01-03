@@ -6,7 +6,7 @@
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: staAbbr)
+#' flow, conc.units, custom (station abbreviation: sta.abbr)
 #' @param plotName the name of the plot the user wants to create. Current
 #' options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ.
 #' @param ... additional arguments to pass to the plot
@@ -17,7 +17,7 @@
 #' @importFrom EGRET plotFluxQ
 #'
 #' @export
-plotEGRET <- function(intdat, estdat, preds, meta, plotName, ...){
+plotEGRET <- function(intdat, estdat, preds, meta, plot.name, ...) {
   
   egretobj <- convertToEGRET(intdat, estdat, preds, meta)
   
