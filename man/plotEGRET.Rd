@@ -16,7 +16,8 @@ plotEGRET(intdat, estdat, preds, meta, plotName, ...)
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: staAbbr)}
+flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+name for the constituent: consti.name)}
 
 \item{plotName}{the name of the plot the user wants to create. Current
 options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ.}

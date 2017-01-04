@@ -16,7 +16,8 @@ convertToEGRET(intdat, estdat, preds, meta)
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: staAbbr)}
+flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+name for the constituent: consti.name)}
 }
 \description{
 Convert loadflex to EGRET object

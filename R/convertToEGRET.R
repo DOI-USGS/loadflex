@@ -6,7 +6,8 @@
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: sta.abbr)
+#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' name for the constituent: consti.name)
 #' 
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename_
@@ -19,7 +20,7 @@ convertToEGRET <- function(intdat, estdat, preds, meta) {
   
   flow_col <- verify_meta(meta, 'flow')
   info_df <- data.frame(shortName=verify_meta(meta, 'station'),
-                        paramShortName='nitrate',
+                        paramShortName=verify_meta(meta, c('custom', 'consti.name')),
                         staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
                         constitAbbrev=verify_meta(meta, 'constituent'),
                         param.units=verify_meta(meta, 'conc.units'),
