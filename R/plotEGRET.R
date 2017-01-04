@@ -8,7 +8,7 @@
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
-#' @param plotName the name of the plot the user wants to create. Current
+#' @param plot.name the name of the plot the user wants to create. Current
 #' options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ.
 #' @param ... additional arguments to pass to the plot
 #'
