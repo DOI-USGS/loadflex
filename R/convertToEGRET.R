@@ -9,42 +9,90 @@
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' 
-#' @importFrom dplyr left_join
+#' @importFrom EGRET as.egret
+#' 
+convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL) {
+  
+  info_df <- convertToEGRETInfo(meta)
+  sample_df <- convertToEGRETSample(intdat, meta)
+  daily_df <- convertToEGRETDaily(estdat, preds, meta)
+  
+  eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
+  return(eList)
+}
+
+#' Convert the interpolation data.frame into the EGRET Sample dataframe.
+#'
+#' @param intdat data.frame of interpolation data
+#' @param meta loadflex metadata object; it must include constituent,
+#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' name for the constituent: consti.name)
+#' 
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom lubridate decimal_date
-#' @importFrom EGRET as.egret
-#' 
-#' 
-convertToEGRET <- function(intdat, estdat, preds, meta) {
+convertToEGRETSample <- function(intdat, meta){
+  if(any(is.null(intdat), is.null(meta))){
+    return(NA)
+  }
   
   flow_col <- verify_meta(meta, 'flow')
-  info_df <- data.frame(shortName=verify_meta(meta, 'station'),
-                        paramShortName=verify_meta(meta, c('custom', 'consti.name')),
-                        staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
-                        constitAbbrev=verify_meta(meta, 'constituent'),
-                        param.units=verify_meta(meta, 'conc.units'),
-                        stringsAsFactors = F)
-  
-  discharge_df <- estdat %>% 
-    left_join(preds, by=c("DATE" = "date")) %>% 
-    rename_(.dots = setNames(c("DATE", flow_col, "fit"),
-                            c("Date", "Q", "ConcDay"))) %>% 
-    mutate(LogQ=log(Q))
-  
+  constituent <- verify_meta(meta, 'constituent')
   sample_df <- intdat %>% 
-    rename_(.dots=setNames(c("DATE", info_df$constitAbbrev, flow_col), 
+    rename_(.dots=setNames(c("DATE", constituent, flow_col), 
                            c("Date", "ConcLow", "Q")))  %>% 
     mutate(ConcHigh=ConcLow, 
            ConcAve=mean(c(ConcLow, ConcHigh)), 
            Uncen=rep(1, nrow(intdat)), 
            LogQ=log(Q),
            DecYear=lubridate::decimal_date(Date))
-  
-  eList <- as.egret(INFO=info_df, Daily=discharge_df, Sample=sample_df)
-  return(eList)
+  return(sample_df)
 }
 
+#' Convert a loadflex metadata object into the EGRET INFO dataframe.
+#' 
+#' @param meta loadflex metadata object; it must include constituent,
+#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' name for the constituent: consti.name)
+#' 
+convertToEGRETInfo <- function(meta){
+  if(is.null(meta)){
+    stop("metadata is required to create an EGRET eList")
+  }
+  
+  info_df <- data.frame(shortName=verify_meta(meta, 'station'),
+                        paramShortName=verify_meta(meta, c('custom', 'consti.name')),
+                        staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
+                        constitAbbrev=verify_meta(meta, 'constituent'),
+                        param.units=verify_meta(meta, 'conc.units'),
+                        stringsAsFactors = F)
+  return(info_df)
+}
+
+#' Convert estimation and load prediction data into the EGRET Daily data.frame
+#' 
+#' @param estdat data.frame of estimation data
+#' @param preds data.frame of load predictions
+#' @param meta loadflex metadata object; it must include constituent,
+#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' name for the constituent: consti.name)
+#' 
+#' @importFrom dplyr left_join
+#' @importFrom dplyr rename_
+#' @improtFrom dplyr mutate 
+convertToEGRETDaily <- function(estdat, preds, meta){
+  if(any(is.null(estdat), is.null(preds), is.null(meta))){
+    return(NA)
+  }
+  
+  flow_col <- verify_meta(meta, 'flow')
+  daily_df <- estdat %>% 
+    left_join(preds, by=c("DATE" = "date")) %>% 
+    rename_(.dots = setNames(c("DATE", flow_col, "fit"),
+                             c("Date", "Q", "ConcDay"))) %>% 
+    mutate(LogQ=log(Q))
+  return(daily_df)
+}
 
 #' Verify metadata object
 #'  

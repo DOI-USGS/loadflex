@@ -6,9 +6,14 @@
  
 Use a loadflex object, but create an EGRET plot.}
 \usage{
-plotEGRET(intdat, estdat, preds, meta, plot.name, ...)
+plotEGRET(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
+  meta = NULL, ...)
 }
 \arguments{
+\item{plot.name}{the name of the plot the user wants to create. Current
+options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ. Each require different
+data, see Details.}
+
 \item{intdat}{data.frame of interpolation data}
 
 \item{estdat}{data.frame of estimation data}
@@ -19,14 +24,15 @@ plotEGRET(intdat, estdat, preds, meta, plot.name, ...)
 flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
 
-\item{plot.name}{the name of the plot the user wants to create. Current
-options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ.}
-
 \item{...}{additional arguments to pass to the plot}
 }
 \description{
 Create an EGRET-style plot
  
 Use a loadflex object, but create an EGRET plot.
+}
+\details{
+ConcTime, ConcQ, and FluxQ require \code{intdat, meta}. FluxTimeDaily
+requires \code{intdat, estdat, preds, meta}.
 }
 
