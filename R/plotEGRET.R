@@ -26,6 +26,7 @@ plotEGRET <- function(intdat, estdat, preds, meta, plot.name, ...) {
          ConcTime = plotConcTime(egretobj, ...),
          ConcQ = plotConcQ(egretobj, ...),
          FluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
-         FluxQ = plotFluxQ(egretobj, ...))
+         FluxQ = plotFluxQ(egretobj, ...),
+         stop(paste('unrecognized plot.name:', plot.name)))
   
 }
