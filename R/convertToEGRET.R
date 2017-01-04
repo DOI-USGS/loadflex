@@ -17,15 +17,12 @@
 #' 
 convertToEGRET <- function(intdat, estdat, preds, meta) {
   
-  # flow_col <- verify_meta(meta, 'flow')
-  flow_col <- "DISCHARGE"
+  flow_col <- verify_meta(meta, 'flow')
   info_df <- data.frame(shortName=verify_meta(meta, 'station'),
                         paramShortName='nitrate',
                         staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
-                        # constitAbbrev=verify_meta(meta, 'constituent'),
-                        constitAbbrev='NO3',
-                        # param.units=verify_meta(meta, 'conc.units'),
-                        param.units='mg L^-1',
+                        constitAbbrev=verify_meta(meta, 'constituent'),
+                        param.units=verify_meta(meta, 'conc.units'),
                         stringsAsFactors = F)
   
   discharge_df <- estdat %>% 
