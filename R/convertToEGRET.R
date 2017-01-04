@@ -31,8 +31,8 @@ convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NU
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom lubridate decimal_date
-convertToEGRETSample <- function(intdat, meta){
-  if(any(is.null(intdat), is.null(meta))){
+convertToEGRETSample <- function(intdat, meta) {
+  if(any(is.null(intdat), is.null(meta))) {
     return(NA)
   }
   
@@ -55,8 +55,8 @@ convertToEGRETSample <- function(intdat, meta){
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' 
-convertToEGRETInfo <- function(meta){
-  if(is.null(meta)){
+convertToEGRETInfo <- function(meta) {
+  if(is.null(meta)) {
     stop("metadata is required to create an EGRET eList")
   }
   
@@ -79,9 +79,10 @@ convertToEGRETInfo <- function(meta){
 #' 
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename_
-#' @improtFrom dplyr mutate 
-convertToEGRETDaily <- function(estdat, preds, meta){
-  if(any(is.null(estdat), is.null(preds), is.null(meta))){
+#' @importFrom dplyr mutate 
+#' 
+convertToEGRETDaily <- function(estdat, preds, meta) {
+  if(any(is.null(estdat), is.null(preds), is.null(meta))) {
     return(NA)
   }
   
@@ -106,14 +107,14 @@ convertToEGRETDaily <- function(estdat, preds, meta){
 #' @export
 verify_meta <- function(meta, nm) {
 
-  if("custom" %in% nm){
+  if("custom" %in% nm) {
     meta_value <- loadflex::getInfo(meta, nm[1])
     meta_value <- meta_value[[nm[2]]]
   } else {
     meta_value <- loadflex::getInfo(meta, nm)
   }
   
-  if(nchar(meta_value) == 0){
+  if(nchar(meta_value) == 0) {
     stop(paste0("metadata item `", nm, "` must exist"))
   }
   

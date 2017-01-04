@@ -32,7 +32,7 @@ plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL, met
                         FluxQ = missing(intdat) | missing(meta),
                         FALSE)
   
-  if(req_missing){
+  if(req_missing) {
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
