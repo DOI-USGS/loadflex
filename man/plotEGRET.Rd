@@ -7,7 +7,7 @@
 Use a loadflex object, but create an EGRET plot.}
 \usage{
 plotEGRET(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
-  meta = NULL, ...)
+  meta = NULL, preds.type = "Conc", ...)
 }
 \arguments{
 \item{plot.name}{the name of the plot the user wants to create. Current
@@ -23,6 +23,9 @@ data, see Details.}
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
+
+\item{preds.type}{character specifying if the predictions being used are
+concentrations ("Conc") or fluxes ("Flux").}
 
 \item{...}{additional arguments to pass to the plot}
 }

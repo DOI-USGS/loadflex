@@ -11,6 +11,8 @@
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
+#' @param preds.type character specifying if the predictions being used are
+#' concentrations ("Conc") or fluxes ("Flux").
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details ConcTime, ConcQ, and FluxQ require \code{intdat, meta}. FluxTimeDaily
@@ -22,7 +24,8 @@
 #' @importFrom EGRET plotFluxQ
 #'
 #' @export
-plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL, meta = NULL, ...) {
+plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL, 
+                      meta = NULL, preds.type = "Conc", ...) {
   
   req_missing <- switch(plot.name,
                         ConcTime = missing(intdat) | missing(meta),
@@ -36,7 +39,7 @@ plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL, met
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
-  egretobj <- convertToEGRET(intdat, estdat, preds, meta)
+  egretobj <- convertToEGRET(intdat, estdat, preds, meta, preds.type)
   
   switch(plot.name,
          ConcTime = plotConcTime(egretobj, ...),

@@ -6,7 +6,8 @@
  
 Convert a loadflex object into an EGRET object for plotting.}
 \usage{
-convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL)
+convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
+  preds.type = "Conc")
 }
 \arguments{
 \item{intdat}{data.frame of interpolation data}
@@ -18,6 +19,9 @@ convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL)
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
+
+\item{preds.type}{character specifying if the predictions being used are
+concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
 Convert loadflex to EGRET object

@@ -4,7 +4,7 @@
 \alias{convertToEGRETDaily}
 \title{Convert estimation and load prediction data into the EGRET Daily data.frame}
 \usage{
-convertToEGRETDaily(estdat, preds, meta)
+convertToEGRETDaily(estdat, preds, meta, preds.type = "Conc")
 }
 \arguments{
 \item{estdat}{data.frame of estimation data}
@@ -14,6 +14,9 @@ convertToEGRETDaily(estdat, preds, meta)
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
+
+\item{preds.type}{character specifying if the predictions being used are
+concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
 Convert estimation and load prediction data into the EGRET Daily data.frame

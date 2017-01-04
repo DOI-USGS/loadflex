@@ -8,14 +8,16 @@
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
+#' @param preds.type character specifying if the predictions being used are
+#' concentrations ("Conc") or fluxes ("Flux").
 #' 
 #' @importFrom EGRET as.egret
 #' 
-convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL) {
+convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   info_df <- convertToEGRETInfo(meta)
   sample_df <- convertToEGRETSample(intdat, meta)
-  daily_df <- convertToEGRETDaily(estdat, preds, meta)
+  daily_df <- convertToEGRETDaily(estdat, preds, meta, preds.type)
   
   eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
   return(eList)
@@ -76,21 +78,25 @@ convertToEGRETInfo <- function(meta) {
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
+#' @param preds.type character specifying if the predictions being used are
+#' concentrations ("Conc") or fluxes ("Flux").
 #' 
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate 
 #' 
-convertToEGRETDaily <- function(estdat, preds, meta) {
+convertToEGRETDaily <- function(estdat, preds, meta, preds.type = "Conc") {
   if(any(is.null(estdat), is.null(preds), is.null(meta))) {
     return(NA)
   }
+  
+  stopifnot(preds.type %in% c('Conc', 'Flux'))
   
   flow_col <- verify_meta(meta, 'flow')
   daily_df <- estdat %>% 
     left_join(preds, by=c("DATE" = "date")) %>% 
     rename_(.dots = setNames(c("DATE", flow_col, "fit"),
-                             c("Date", "Q", "ConcDay"))) %>% 
+                             c("Date", "Q", paste0(preds.type, "Day")))) %>% 
     mutate(LogQ=log(Q))
   return(daily_df)
 }
