@@ -4,12 +4,15 @@
 \alias{convertToEGRETInfo}
 \title{Convert a loadflex metadata object into the EGRET INFO dataframe.}
 \usage{
-convertToEGRETInfo(meta)
+convertToEGRETInfo(meta, preds.type = "Conc")
 }
 \arguments{
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
+
+\item{preds.type}{character specifying if the predictions being used are
+concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
 Convert a loadflex metadata object into the EGRET INFO dataframe.
