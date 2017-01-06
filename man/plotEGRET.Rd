@@ -58,6 +58,7 @@ EGRET plots that require \code{intdat, estdat, preds, meta}:
 
 # Load necessary data + create the appropriate metadata
 data(lamprey_nitrate) # interpolation data (grab sample obs)
+intdat <- lamprey_nitrate
 
 data("lamprey_discharge")
 estdat <- lamprey_discharge # estimation data (15 min interval)
