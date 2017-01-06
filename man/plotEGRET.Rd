@@ -10,9 +10,8 @@ plotEGRET(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
   meta = NULL, preds.type = "Conc", ...)
 }
 \arguments{
-\item{plot.name}{the name of the plot the user wants to create. Current
-options: ConcTime, ConcQ, FluxTimeDaily, and FluxQ. Each require different
-data, see Details.}
+\item{plot.name}{the name of the plot the user wants to create. See 
+Details for current options. For now, only one allowed at time.}
 
 \item{intdat}{data.frame of interpolation data}
 
@@ -35,7 +34,28 @@ Create an EGRET-style plot
 Use a loadflex object, but create an EGRET plot.
 }
 \details{
-ConcTime, ConcQ, and FluxQ require \code{intdat, meta}. FluxTimeDaily
-requires \code{intdat, estdat, preds, meta}.
+EGRET plots that require \code{intdat, meta}:
+\itemize{
+  \item boxConcMonth
+  \item plotConcTime
+  \item plotConcQ
+  \item plotFluxQ
+}
+EGRET plots that require \code{intdat, estdat, preds, meta}:
+\itemize{
+  \item boxQTwice
+  \item multiPlotDataOverview
+  \item plotConcTimeDaily
+  \item plotFluxTimeDaily
+  \item plotConcPred 
+  \item plotFluxPred 
+  \item plotResidPred
+  \item plotResidQ  
+  \item plotResidTime
+  \item boxResidMonth
+  \item boxConcThree 
+  \item plotConcHist 
+  \item plotFluxHist 
+}
 }
 
