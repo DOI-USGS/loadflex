@@ -67,7 +67,7 @@ convertToEGRETInfo <- function(meta) {
                         staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
                         constitAbbrev=verify_meta(meta, 'constituent'),
                         param.units=verify_meta(meta, 'conc.units'),
-                        stringsAsFactors = F)
+                        stringsAsFactors = FALSE)
   return(info_df)
 }
 
