@@ -1,4 +1,3 @@
-#TODO: functionalize this? and break out some sections?
 #TODO: tests!
 
 library(dplyr)
@@ -7,16 +6,18 @@ library(rloadest)
 
 #run loadflex over multiple sites
 
+#TODO: implement this
 outputFormat <- "simple" #or "complex"
 
 #TODO: read-in function
 load('data/ana_test.Rdata')
 qDF <- ana_discharge
-nutriDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
+constitDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
 siteDF <- test_sites
+
 #one function/format for now
 #needs to convert dates
-nutriDF$date <- as.Date(nutriDF$date)
+constitDF$date <- as.Date(constitDF$date)
 qDF$date <- as.Date(qDF$date)
 
 siteSummaries <- data.frame()
@@ -25,10 +26,10 @@ allModels <- list()
 annuals <- data.frame()
 
 #loop over unique sites
-for(site in unique(nutriDF$CODIGO_ESTACAO)){
-  
+for(site in unique(constitDF$CODIGO_ESTACAO)) {
+  message(paste('processing site', site))
   #pull out this site
-  siteNutri <- filter(nutriDF, CODIGO_ESTACAO == site)
+  siteConstit <- filter(constitDF, CODIGO_ESTACAO == site)
   siteQ <- filter(qDF, CODIGO_ESTACAO == site)
   #create metadata
   #not sure units etc are following the correct format
@@ -37,26 +38,23 @@ for(site in unique(nutriDF$CODIGO_ESTACAO)){
                        load.rate.units = "kg/d", station = site)
     
   #TODO: site metrics
-  siteMetrics <- summarizeSites(site, siteDF, siteNutri)
+  siteMetrics <- summarizeSites(site, siteDF, siteConstit)
   
   #fit models
   #can we expand getInfo to access the column names in the metadata object?
   #TODO: why are the "-3900 days between daily loads" warnings happening?
-  rloadest5param <- loadReg2(loadReg(NO3_mg_L ~ model(7), data = nutriDF[1:3], 
+  rloadest5param <- loadReg2(loadReg(NO3_mg_L ~ model(7), data = siteConstit[1:3], 
                                      flow = "Q_m3s", dates = "date", time.step = "day",
                                      flow.units = "cms", conc.units = "mg/L", load.units = "kg"))
    
   interpRect <- loadInterp(interp.format = "conc", interp.function = rectangularInterpolation,
-                           data = siteNutri, metadata = siteMeta)
+                           data = siteConstit, metadata = siteMeta)
   comp <- loadComp(reg.model = rloadest5param, interp.format = "conc", interp.function = rectangularInterpolation, 
-                   interp.data = nutriDF)
-  siteModelList <- list()
-  siteModelList[['comp']] <- comp
-  siteModelList[['interpRect']] <- interpRect
-  siteModelList[['rloadest5param']] <- rloadest5param
-  
+                   interp.data = constitDF)
+ 
   #list of all model objects
-  allModels[[site]] <- siteModelList
+  allModels[[site]] <- list(comp = comp, interpRect = interpRect, 
+                            rloadest5param = rloadest5param)
   
   #make predictions
   pred_rload <- predictSolute(rloadest5param, "flux", siteQ, 
@@ -67,9 +65,9 @@ for(site in unique(nutriDF$CODIGO_ESTACAO)){
                              date = TRUE)
   
   #TODO: model metrics
-  annualSite <- bind_rows(summarizePreds(pred_rload, siteMeta, "total", modelName = "rloadest"),
-                      summarizePreds(pred_interp, siteMeta, "total", modelName = "interpolation"),
-                      summarizePreds(pred_comp, siteMeta, "total", modelName = "composite"))
+  annualSite <- bind_rows(summarizePreds(pred_rload, siteMeta, "total", model.name = "rloadest"),
+                      summarizePreds(pred_interp, siteMeta, "total", model.name = "interpolation"),
+                      summarizePreds(pred_comp, siteMeta, "total", model.name = "composite"))
   
   
   #TODO: plots
@@ -79,7 +77,7 @@ for(site in unique(nutriDF$CODIGO_ESTACAO)){
    annuals <- bind_rows(annuals, annualSite)
 }
 
-#TODO: write to csv
+#TODO: write to csv separate file per site
 print(siteSummaries)
 print(annuals)
 write.csv(x = siteSummaries, file = "siteSummaries.csv")

@@ -3,24 +3,24 @@
 #' @return data frame of the following information:
 #' @export
 #' @param sites character ID(s) of sites to summarize
-#' @param siteInfo data frame containing site information, with column named CODIGO_ESTACAO 
+#' @param site.info data frame containing site information, with column named CODIGO_ESTACAO 
 #' containing station id's
-#' @param nutriDF data frame record of nutrient measurements
+#' @param nutri.df data frame record of nutrient measurements
 #' @importFrom dplyr filter 
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_cols
-summarizeSites <- function(sites, siteInfo, nutriDF){
+summarizeSites <- function(sites, site.info, nutri.df) {
   #get existing site metadata
-  summaryDF <- filter(siteInfo, CODIGO_ESTACAO %in% sites)
+  summaryDF <- filter(site.info, CODIGO_ESTACAO %in% sites)
   
   #add metrics that have to be calculated
-  if(!is.Date(nutriDF$date)){
-    nutriDF <- mutate(nutriDF, date = as.Date(date))
+  if(!is.Date(nutri.df$date)) {
+    nutri.df <- mutate(nutri.df, date = as.Date(date))
   }
   
   #will need work if summarizeSites will deal with multiple sites
   #could be useful as a stand-alone function?
-  dateStats <- getDateStats(nutriDF$date)
+  dateStats <- getDateStats(nutri.df$date)
   
   summaryDF <- bind_cols(summaryDF, dateStats)
   
@@ -29,15 +29,15 @@ summarizeSites <- function(sites, siteInfo, nutriDF){
 
 #' Get various summary statistics on a date vector
 #'
-#' @param dateCol vector of dates
+#' @param date.col vector of dates
 #' 
 #' @return data frame of date statistics, including 
 #'
-getDateStats <- function(dateCol){
+getDateStats <- function(date.col) {
   #is there a function that could be used instead of this?
-  start <- min(dateCol)
-  end <- max(dateCol)
-  n <- length(dateCol)
+  start <- min(date.col)
+  end <- max(date.col)
+  n <- length(date.col)
   statDF <- data.frame(start, end, n, stringsAsFactors = FALSE)
   return(statDF)
 }
@@ -51,7 +51,7 @@ summarizeModel <- function(model) UseMethod("summarizeModel")
 #' stats for rloadest loadReg2 model
 #' @rdname summarizeModel
 #' 
-summarizeModel.loadReg2 <- function(model){
+summarizeModel.loadReg2 <- function(model) {
   
 }
 
@@ -62,23 +62,23 @@ summarizeModel.loadReg2 <- function(model){
 #' @param meta loadflex metadata object for the preds data frame
 #' @param by character "total" to return average flux over all years, "annual" to return 
 #' yearly (water year) averages
-#' @param modelName char name of model used to generate predictions
+#' @param model.name char name of model used to generate predictions
 #' @return data frame containing various statistics
 #' @export
 #'
-summarizePreds <- function(preds, meta, by, modelName){
+summarizePreds <- function(preds, meta, by, model.name) {
    station <- getInfo(meta, field = c("station"))
-   if(by == "total"){
+   if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
-    multiYear <- data.frame(CODIGO_ESTACAO = station, model = modelName,
+    multiYear <- data.frame(CODIGO_ESTACAO = station, model = model.name,
                             multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
     retDF <- multiYear
-  }else if(by == "annual"){
+  }else if(by == "annual") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
     retDF <- data.frame(CODIGO_ESTACAO = rep(station, nrow(annuals)), 
-                        model = rep(modelName, nrow(annuals)),annuals)
+                        model = rep(model.name, nrow(annuals)),annuals)
   }
   return(retDF)
 }
