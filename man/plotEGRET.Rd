@@ -54,4 +54,35 @@ EGRET plots that require \code{intdat, estdat, preds, meta}:
   \item plotFluxHist 
 }
 }
+\examples{
+
+# Load necessary data + create the appropriate metadata
+data(lamprey_nitrate) # interpolation data (grab sample obs)
+
+data("lamprey_discharge")
+estdat <- lamprey_discharge # estimation data (15 min interval)
+estdat <- subset(estdat, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT")) 
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
+
+meta <- metadata(constituent="NO3", 
+                 flow="DISCHARGE",
+                 dates="DATE", 
+                 conc.units="mg L^-1", 
+                 flow.units="cfs", 
+                 load.units="kg",
+                 load.rate.units="kg d^-1", 
+                 station="Lamprey River, NH",
+                 custom=list(sta.abbr = "lamp",
+                             consti.name = "nitrate"))
+
+# Run your model and get your predictions
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+                 data=intdat, metadata=meta, retrans=exp)
+preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+
+# Now you can plot
+plotEGRET("boxConcMonth", intdat = lamprey_nitrate, meta = meta)
+plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
+
+}
 
