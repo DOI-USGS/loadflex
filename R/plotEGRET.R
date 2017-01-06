@@ -35,7 +35,8 @@
 #'   \item boxResidMonth
 #'   \item boxConcThree 
 #'   \item plotConcHist 
-#'   \item plotFluxHist 
+#'   \item plotFluxHist
+#'   \item fluxBiasMulti 
 #' }
 #'
 #' @importFrom EGRET boxConcMonth 
@@ -54,7 +55,8 @@
 #' @importFrom EGRET boxResidMonth 
 #' @importFrom EGRET boxConcThree 
 #' @importFrom EGRET plotConcHist  
-#' @importFrom EGRET plotFluxHist 
+#' @importFrom EGRET plotFluxHist
+#' @importFrom EGRET fluxBiasMulti
 #'
 #' @export
 #' 
@@ -113,7 +115,8 @@ plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
                         boxResidMonth = ,
                         boxConcThree = , 
                         plotConcHist = , 
-                        plotFluxHist = missing(intdat) | missing(meta) |
+                        plotFluxHist = ,
+                        fluxBiasMulti = missing(intdat) | missing(meta) |
                           missing(estdat) | missing(preds),
                         
                         # default if no name matches
@@ -138,15 +141,16 @@ plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
          multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
          plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),
          plotFluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
-         plotConcPred =  plotConcPred(egretobj, ...), 
+         plotConcPred = plotConcPred(egretobj, ...), 
          plotFluxPred = plotFluxPred(egretobj, ...), 
          plotResidPred = plotResidPred(egretobj, ...),
-         plotResidQ =  plotResidQ(egretobj, ...),  
+         plotResidQ = plotResidQ(egretobj, ...),  
          plotResidTime = plotResidTime(egretobj, ...),
          boxResidMonth = boxResidMonth(egretobj, ...),
          boxConcThree = boxConcThree(egretobj, ...), 
-         plotConcHist =  plotConcHist(egretobj, ...), 
-         plotFluxHist =plotFluxHist(egretobj, ...),
+         plotConcHist = plotConcHist(egretobj, ...), 
+         plotFluxHist = plotFluxHist(egretobj, ...),
+         fluxBiasMulti = fluxBiasMulti(egretobj, ...),
          
          # default if no name matches
          stop(paste('unrecognized plot.name:', plot.name)))

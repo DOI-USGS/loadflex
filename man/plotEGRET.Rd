@@ -51,7 +51,8 @@ EGRET plots that require \code{intdat, estdat, preds, meta}:
   \item boxResidMonth
   \item boxConcThree 
   \item plotConcHist 
-  \item plotFluxHist 
+  \item plotFluxHist
+  \item fluxBiasMulti 
 }
 }
 \examples{
