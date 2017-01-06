@@ -9,16 +9,43 @@ library(rloadest)
 #TODO: implement this
 outputFormat <- "simple" #or "complex"
 
-#TODO: read-in function
-#will generate df of corresponding files, constituents?
-#or just list?
-#loop over those instead of unique sites
-load('data/ana_test.Rdata')
-qDF <- ana_discharge
-constitDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
-siteDF <- test_sites
+#input constituents
+#script will look for folders with this name, and use in site metadata
+constituents <- c("NO3", "PT")
+inputFolder <- "three_ANA_sites"
+discharge <- "discharge"
 
-#one function/format for now
+#read-in function
+readFiles <- function(input.folder, constits, discharge) {
+  #check that all constituent files have matching discharge records
+  #will generate df of corresponding files, constituents?
+  #or just list?
+  #loop over those instead of unique sites
+  allFolders <- file.path(input.folder, c(constits, discharge))
+  if(!all(dir.exists(paths))) {
+    stop("Input or constituent folder does not exist")
+  }
+  
+  #get all constituent files
+  constitFiles <- list.files(file.path(input.folder,constits))
+  constitNameOnly <- basename(constitFiles)
+  qFiles <- file.path(input.folder, discharge, constitNameOnly)
+  #TODO: warning if not matching discharge, will be skipped
+  #deal with if a discharge file doesn't exist
+  
+  fileDF <- data.frame(constitFile = constitFiles, qFile=qFiles)
+  return(fileDF)
+}
+
+# load('data/ana_test.Rdata')
+# qDF <- ana_discharge
+# constitDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
+# siteDF <- test_sites
+
+fileDF <- readFiles(inputFolder, constits = constituents, discharge = discharge)
+
+
+
 #needs to convert dates
 constitDF$date <- as.Date(constitDF$date)
 qDF$date <- as.Date(qDF$date)
@@ -29,11 +56,12 @@ allModels <- list()
 annuals <- data.frame()
 
 #loop over unique sites
-for(site in unique(constitDF$CODIGO_ESTACAO)) {
+for(i in 1:nrow(fileDF)) {
   message(paste('processing site', site))
-  #pull out this site
-  siteConstit <- filter(constitDF, CODIGO_ESTACAO == site)
-  siteQ <- filter(qDF, CODIGO_ESTACAO == site)
+  #read in appropriate files
+  
+  
+  
   #create metadata
   #not sure units etc are following the correct format
   siteMeta <- metadata(constituent = "NO3_mg_L", flow = "Q_m3s", dates = "date",
