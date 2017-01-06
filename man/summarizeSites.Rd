@@ -4,15 +4,15 @@
 \alias{summarizeSites}
 \title{summarize WQ site information}
 \usage{
-summarizeSites(sites, siteInfo, nutriDF)
+summarizeSites(sites, site.info, nutri.df)
 }
 \arguments{
 \item{sites}{character ID(s) of sites to summarize}
 
-\item{siteInfo}{data frame containing site information, with column named CODIGO_ESTACAO 
+\item{site.info}{data frame containing site information, with column named CODIGO_ESTACAO 
 containing station id's}
 
-\item{nutriDF}{data frame record of nutrient measurements}
+\item{nutri.df}{data frame record of nutrient measurements}
 }
 \value{
 data frame of the following information:

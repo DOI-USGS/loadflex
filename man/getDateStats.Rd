@@ -4,10 +4,10 @@
 \alias{getDateStats}
 \title{Get various summary statistics on a date vector}
 \usage{
-getDateStats(dateCol)
+getDateStats(date.col)
 }
 \arguments{
-\item{dateCol}{vector of dates}
+\item{date.col}{vector of dates}
 }
 \value{
 data frame of date statistics, including

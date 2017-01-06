@@ -5,7 +5,7 @@
 \title{Summarize generated predictions 
 just take one site for now}
 \usage{
-summarizePreds(preds, meta, by, modelName)
+summarizePreds(preds, meta, by, model.name)
 }
 \arguments{
 \item{preds}{data frame input data frame of predicted solutes}
@@ -15,7 +15,7 @@ summarizePreds(preds, meta, by, modelName)
 \item{by}{character "total" to return average flux over all years, "annual" to return 
 yearly (water year) averages}
 
-\item{modelName}{char name of model used to generate predictions}
+\item{model.name}{char name of model used to generate predictions}
 }
 \value{
 data frame containing various statistics
