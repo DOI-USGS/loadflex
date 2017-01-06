@@ -4,12 +4,14 @@
 \alias{flowCorrectionEGRET}
 \title{Use EGRET functions to correct flow values}
 \usage{
-flowCorrectionEGRET(flowdat, flow.colname, qconvert = 35.314667)
+flowCorrectionEGRET(flowdat, flow.colname, date.colname, qconvert = 35.314667)
 }
 \arguments{
 \item{flowdat}{data frame with discharge values to convert}
 
 \item{flow.colname}{character string giving the column name that corresponds to flow}
+
+\item{date.colname}{character string giving the column name that corresponds to dates}
 
 \item{qconvert}{numeric conversion factor to get flow into cubic meters per second. Default
 conversion factor is for cubic feet per second.}

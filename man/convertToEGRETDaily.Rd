@@ -11,7 +11,7 @@ convertToEGRETDaily(estdat, meta, preds, preds.type = "Conc",
 \item{estdat}{data.frame of estimation data}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
 
 \item{preds}{data.frame of load predictions}

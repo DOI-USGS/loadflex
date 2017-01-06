@@ -15,7 +15,7 @@ convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
 
 \item{preds.type}{character specifying if the predictions being used are

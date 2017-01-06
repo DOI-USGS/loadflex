@@ -10,7 +10,7 @@ convertToEGRETSample(intdat, meta, qconvert = 35.314667, dailydat = NULL)
 \item{intdat}{data.frame of interpolation data}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 name for the constituent: consti.name)}
 
 \item{qconvert}{numeric conversion factor to get flow into cubic meters per second. Default

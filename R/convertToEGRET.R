@@ -6,7 +6,7 @@
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
@@ -38,7 +38,7 @@ convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NU
 #'
 #' @param intdat data.frame of interpolation data
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
 #' conversion factor is for cubic feet per second.
@@ -56,19 +56,21 @@ convertToEGRETSample <- function(intdat, meta, qconvert = 35.314667, dailydat = 
   }
   
   flow_col <- verify_meta(meta, 'flow')
+  date_col <- verify_meta(meta, 'dates')
   constituent <- verify_meta(meta, 'constituent')
   sample_df1 <- intdat %>% 
     rename_("value" = constituent,
-            "dateTime" = "DATE")  %>%
+            "dateTime" = date_col)  %>%
     select(dateTime, ConcHigh = value) %>% 
     mutate(ConcLow = ConcHigh, 
            Uncen=as.numeric(ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
-    mutate(dateTime = intdat$DATE,
+    mutate(dateTime = intdat[[date_col]],
            Date = as.Date(Date))
   
   flow_data <- flowCorrectionEGRET(flowdat = intdat, 
                                    flow.colname = flow_col,
+                                   date.colname = date_col,
                                    qconvert = qconvert) %>% 
     select(Date, Q, dateTime)
   
@@ -89,7 +91,7 @@ convertToEGRETSample <- function(intdat, meta, qconvert = 35.314667, dailydat = 
 #' Convert a loadflex metadata object into the EGRET INFO dataframe.
 #' 
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
@@ -112,7 +114,7 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
 #' 
 #' @param estdat data.frame of estimation data
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, custom (station abbreviation: sta.abbr, and a short
+#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
 #' name for the constituent: consti.name)
 #' @param preds data.frame of load predictions
 #' @param preds.type character specifying if the predictions being used are
@@ -132,10 +134,9 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   
   stopifnot(preds.type %in% c('Conc', 'Flux'))
 
-  flow_col <- verify_meta(meta, 'flow')
-  
   daily_df <- flowCorrectionEGRET(flowdat = estdat, 
-                                  flow.colname = flow_col,
+                                  flow.colname = verify_meta(meta, 'flow'),
+                                  date.colname = verify_meta(meta, 'dates'),
                                   qconvert = qconvert)
   
   if(!is.null(preds)){
@@ -193,18 +194,19 @@ verify_meta <- function(meta, nm) {
 #' 
 #' @param flowdat data frame with discharge values to convert
 #' @param flow.colname character string giving the column name that corresponds to flow
+#' @param date.colname character string giving the column name that corresponds to dates
 #' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
 #' conversion factor is for cubic feet per second.
 #' 
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
-flowCorrectionEGRET <- function(flowdat, flow.colname, qconvert = 35.314667){
+flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, qconvert = 35.314667){
   flowdat_corrected <- flowdat %>% 
     rename_("value" = flow.colname,
-            "dateTime" = "DATE") %>% 
+            "dateTime" = date.colname) %>% 
     mutate(code = "") %>% 
     populateDaily(qConvert = qconvert, interactive = FALSE) %>%
-    mutate(dateTime = flowdat$DATE)
+    mutate(dateTime = flowdat[[date.colname]])
   return(flowdat_corrected)
 }
