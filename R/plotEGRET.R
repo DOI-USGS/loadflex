@@ -38,10 +38,23 @@
 #'   \item plotFluxHist 
 #' }
 #'
-#' @importFrom EGRET plotConcTime
-#' @importFrom EGRET plotConcQ
-#' @importFrom EGRET plotFluxTimeDaily
-#' @importFrom EGRET plotFluxQ
+#' @importFrom EGRET boxConcMonth 
+#' @importFrom EGRET plotConcTime 
+#' @importFrom EGRET plotConcQ 
+#' @importFrom EGRET plotFluxQ 
+#' @importFrom EGRET boxQTwice 
+#' @importFrom EGRET multiPlotDataOverview 
+#' @importFrom EGRET plotConcTimeDaily 
+#' @importFrom EGRET plotFluxTimeDaily 
+#' @importFrom EGRET plotConcPred  
+#' @importFrom EGRET plotFluxPred  
+#' @importFrom EGRET plotResidPred 
+#' @importFrom EGRET plotResidQ   
+#' @importFrom EGRET plotResidTime 
+#' @importFrom EGRET boxResidMonth 
+#' @importFrom EGRET boxConcThree 
+#' @importFrom EGRET plotConcHist  
+#' @importFrom EGRET plotFluxHist 
 #'
 #' @export
 #' 
