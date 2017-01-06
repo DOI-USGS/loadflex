@@ -2,29 +2,26 @@
 #'
 #' @return data frame of the following information:
 #' @export
-#' @param sites character ID(s) of sites to summarize
-#' @param site.info data frame containing site information, with column named CODIGO_ESTACAO 
-#' containing station id's
-#' @param nutri.df data frame record of nutrient measurements
-#' @importFrom dplyr filter 
+#' @param site.info data frame containing site information, with column for station id
+#' @param constit.df data frame record of constituent measurements
 #' @importFrom dplyr mutate
 #' @importFrom dplyr bind_cols
-summarizeSites <- function(sites, site.info, nutri.df) {
-  #get existing site metadata
-  summaryDF <- filter(site.info, CODIGO_ESTACAO %in% sites)
+summarizeSite <- function(site.info, constit.df) {
+  #get existing site metadata?
+ 
   
   #add metrics that have to be calculated
-  if(!is.Date(nutri.df$date)) {
-    nutri.df <- mutate(nutri.df, date = as.Date(date))
+  if(!is.Date(constit.df$date)) {
+    constit.df <- mutate(constit.df, date = as.Date(date))
   }
   
   #will need work if summarizeSites will deal with multiple sites
   #could be useful as a stand-alone function?
-  dateStats <- getDateStats(nutri.df$date)
+  dateStats <- getDateStats(constit.df$date)
   
-  summaryDF <- bind_cols(summaryDF, dateStats)
+  site.info <- bind_cols(site.info, dateStats)
   
-  return(summaryDF)
+  return(site.info)
 }
 
 #' Get various summary statistics on a date vector
@@ -71,13 +68,13 @@ summarizePreds <- function(preds, meta, by, model.name) {
    if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
-    multiYear <- data.frame(CODIGO_ESTACAO = station, model = model.name,
+    multiYear <- data.frame(station = station, model = model.name,
                             multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
     retDF <- multiYear
   }else if(by == "annual") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
-    retDF <- data.frame(CODIGO_ESTACAO = rep(station, nrow(annuals)), 
+    retDF <- data.frame(station = rep(station, nrow(annuals)), 
                         model = rep(model.name, nrow(annuals)),annuals)
   }
   return(retDF)

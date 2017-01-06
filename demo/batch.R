@@ -10,6 +10,9 @@ library(rloadest)
 outputFormat <- "simple" #or "complex"
 
 #TODO: read-in function
+#will generate df of corresponding files, constituents?
+#or just list?
+#loop over those instead of unique sites
 load('data/ana_test.Rdata')
 qDF <- ana_discharge
 constitDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
@@ -38,7 +41,7 @@ for(site in unique(constitDF$CODIGO_ESTACAO)) {
                        load.rate.units = "kg/d", station = site)
     
   #TODO: site metrics
-  siteMetrics <- summarizeSites(site, siteDF, siteConstit)
+  siteMetrics <- summarizeSite(siteDF, siteConstit)
   
   #fit models
   #can we expand getInfo to access the column names in the metadata object?
