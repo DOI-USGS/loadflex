@@ -1,6 +1,6 @@
 #' Convert loadflex to EGRET object
 #'  
-#' Convert a loadflex object into an EGRET object for plotting.
+#' @description Convert a loadflex object into an EGRET object for plotting.
 #' 
 #' @param intdat data.frame of interpolation data
 #' @param estdat data.frame of estimation data
@@ -162,7 +162,7 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
 
 #' Verify metadata object
 #'  
-#' Verify that the loadflex metadata object has everything it needs.
+#' @description Verify that the loadflex metadata object has everything it needs.
 #' 
 #' @param meta loadflex metadata object
 #' @param nm character name of the metadata item to check. If it is a 

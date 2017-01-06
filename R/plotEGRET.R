@@ -1,6 +1,6 @@
 #' Create an EGRET-style plot
 #'  
-#' Use a loadflex object, but create an EGRET plot.
+#' @description Use loadflex data frames, but create an EGRET plot.
 #' 
 #' @param plot.name the name of the plot the user wants to create. See 
 #' Details for current options. For now, only one allowed at time.

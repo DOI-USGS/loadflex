@@ -2,9 +2,7 @@
 % Please edit documentation in R/convertToEGRET.R
 \name{verify_meta}
 \alias{verify_meta}
-\title{Verify metadata object
- 
-Verify that the loadflex metadata object has everything it needs.}
+\title{Verify metadata object}
 \usage{
 verify_meta(meta, nm)
 }
@@ -16,8 +14,6 @@ custom name, this would be a character vector with the first name as
 'custom' (e.g. nm = c('custom', 'staAbbr'))}
 }
 \description{
-Verify metadata object
- 
 Verify that the loadflex metadata object has everything it needs.
 }
 

@@ -2,9 +2,7 @@
 % Please edit documentation in R/convertToEGRET.R
 \name{convertToEGRET}
 \alias{convertToEGRET}
-\title{Convert loadflex to EGRET object
- 
-Convert a loadflex object into an EGRET object for plotting.}
+\title{Convert loadflex to EGRET object}
 \usage{
 convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
   preds.type = "Conc")
@@ -24,8 +22,6 @@ name for the constituent: consti.name)}
 concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
-Convert loadflex to EGRET object
- 
 Convert a loadflex object into an EGRET object for plotting.
 }
 

@@ -2,9 +2,7 @@
 % Please edit documentation in R/plotEGRET.R
 \name{plotEGRET}
 \alias{plotEGRET}
-\title{Create an EGRET-style plot
- 
-Use a loadflex object, but create an EGRET plot.}
+\title{Create an EGRET-style plot}
 \usage{
 plotEGRET(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
   meta = NULL, preds.type = "Conc", ...)
@@ -29,9 +27,7 @@ concentrations ("Conc") or fluxes ("Flux").}
 \item{...}{additional arguments to pass to the plot}
 }
 \description{
-Create an EGRET-style plot
- 
-Use a loadflex object, but create an EGRET plot.
+Use loadflex data frames, but create an EGRET plot.
 }
 \details{
 EGRET plots that require \code{intdat, meta}:
