@@ -6,6 +6,8 @@ library(rloadest)
 
 #run loadflex over multiple sites
 
+#------------------User Inputs--------------------#
+
 #TODO: implement this
 outputFormat <- "simple" #or "complex"
 
@@ -13,10 +15,13 @@ outputFormat <- "simple" #or "complex"
 #script will look for folders with this name, and use in site metadata
 constituents <- c("NO3", "PT")
 inputFolder <- "three_ANA_sites"
+outputFolder <- "output"
 discharge <- "discharge"
+siteInfo <- "siteInfo.csv"
 
+#-------------------------Check files, set up directories-----------------------# 
 #read-in function
-readFiles <- function(input.folder, constits, discharge) {
+makeFileDF <- function(input.folder, constits, discharge) {
   #check that all constituent files have matching discharge records
   #will generate df of corresponding files, constituents?
   #or just list?
@@ -37,18 +42,16 @@ readFiles <- function(input.folder, constits, discharge) {
   return(fileDF)
 }
 
-# load('data/ana_test.Rdata')
-# qDF <- ana_discharge
-# constitDF <- as.data.frame(ana_no3, stringsAsFactors = FALSE)
-# siteDF <- test_sites
-
 fileDF <- readFiles(inputFolder, constits = constituents, discharge = discharge)
+allSiteInfo <- read.csv(file.path(inputFolder, siteInfo), stringsAsFactors = FALSE)
 
+#setup output directories
+nConstits <- length(constituents)
+outConstit <- file.path(rep(outputFolder, nConstits), constituents)
+dir.create(outConstit, recursive = TRUE)
+dir.create(file.path(rep(outConstit,2), c(rep("annual", nConstits), rep("multiYear", nConstits))))
 
-
-#needs to convert dates
-constitDF$date <- as.Date(constitDF$date)
-qDF$date <- as.Date(qDF$date)
+#-----------------loadflex--------------#
 
 siteSummaries <- data.frame()
 modelSummaries <- data.frame()
@@ -57,26 +60,42 @@ annuals <- data.frame()
 
 #loop over unique sites
 for(i in 1:nrow(fileDF)) {
-  message(paste('processing site', site))
+  message(paste('processing constituent file', fileDF$constitFile[i]))
+  
   #read in appropriate files
+  siteQ <- read.csv(fileDF$qFile[i], stringsAsFactors = FALSE)
+  siteConstit <- read.csv(fileDF$constitFile[i], stringsAsFactors = FALSE)
   
+  #needs to convert dates 
+  siteConstit$date <- as.Date(constitDF$date)
+  siteQ$date <- as.Date(qDF$date)
   
+  #pull out appropriate rows of allSiteInfo for Q and constit
+  #need to extract constit and stations from file paths, so we know 
+  #what row of site info to look at
+  #TODO: deal with different discharge/consituent drainage areas here?
+  constitStation <- basename(file_path_sans_ext(fileDF$constitFile[i])) 
+  constitName <- basename(dirname(fileDF$constitFile[i]))
+  
+  constitSiteInfo <- filter(allSiteInfo, station == constitStation, constituent == constitStation)
+  qSiteInfo <- filter(allSiteInfo, station = constitStation, constituent == 'Q')
   
   #create metadata
   #not sure units etc are following the correct format
   siteMeta <- metadata(constituent = "NO3_mg_L", flow = "Q_m3s", dates = "date",
-                       conc.units = "mg/L", flow.units = "m^3/s", load.units = "kg",
-                       load.rate.units = "kg/d", station = site)
+                       conc.units = constitSiteInfo$units, flow.units = qSiteInfo$units, load.units = "kg",
+                       load.rate.units = "kg/d", station = constitStation)
     
   #TODO: site metrics
   siteMetrics <- summarizeSite(siteDF, siteConstit)
   
   #fit models
-  #can we expand getInfo to access the column names in the metadata object?
-  #TODO: why are the "-3900 days between daily loads" warnings happening?
+  #TODO: decide on standard column names?  user input timestep above?
   rloadest5param <- loadReg2(loadReg(NO3_mg_L ~ model(7), data = siteConstit[1:3], 
                                      flow = "Q_m3s", dates = "date", time.step = "day",
-                                     flow.units = "cms", conc.units = "mg/L", load.units = "kg"))
+                                     flow.units = getInfo(siteMeta, 'flow.units'), 
+                                     conc.units = getInfo(siteMeta, 'conc.units'),
+                                     load.units = getInfo(siteMeta, 'load.units')))
    
   interpRect <- loadInterp(interp.format = "conc", interp.function = rectangularInterpolation,
                            data = siteConstit, metadata = siteMeta)
@@ -106,10 +125,14 @@ for(i in 1:nrow(fileDF)) {
   #TODO: recombine into single dfs
    siteSummaries <- bind_rows(siteSummaries, siteMetrics)
    annuals <- bind_rows(annuals, annualSite)
+   
+   #TODO: write to csv separate file per site
+   #use output file user variable at top
+   #inside loop
+   print(siteSummaries)
+   print(annuals)
+   write.csv(x = siteMetrics, file = file.path(outputFolder, "multiYear", constitStation))
+   write.csv(x = annuals, file = "annuals.csv")
+   message(paste('Finished processing constituent file', fileDF$constitFile[i]))
 }
 
-#TODO: write to csv separate file per site
-print(siteSummaries)
-print(annuals)
-write.csv(x = siteSummaries, file = "siteSummaries.csv")
-write.csv(x = annuals, file = "annuals.csv")

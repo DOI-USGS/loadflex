@@ -68,10 +68,12 @@ summarizePreds <- function(preds, meta, by, model.name) {
    if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
+    #TODO: what happens with partial years? want to leave them out
+    
     multiYear <- data.frame(station = station, model = model.name,
                             multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
     retDF <- multiYear
-  }else if(by == "annual") {
+  } else if(by == "annual") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
     retDF <- data.frame(station = rep(station, nrow(annuals)), 
