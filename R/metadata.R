@@ -441,13 +441,14 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' 
 #' @rdname metadata-getters
 #' @importFrom methods slot
+#' @importFrom methods formalArgs
 #' @return \code{getInfo} returns the miscellaneous information specified by
 #'   \code{field}.
 #' @export
 getInfo <- function(metadata, field=c("station", "custom")) {
   
   # Standardize the field input; match.arg allows partial matching for lazy typers
-  field <- match.arg.loadflex(field, c("station", "custom"))
+  field <- match.arg.loadflex(field, formalArgs(loadflex::metadata))
   
   # Identify the corresponding slot
   slotname <- field

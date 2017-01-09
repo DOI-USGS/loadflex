@@ -28,6 +28,7 @@ Imports:
     unitted (>= 0.2.5),
     car,
     dplyr,
+    EGRET,
     ggplot2,
     lubridate,
     MASS,
@@ -42,6 +43,7 @@ URL: https://github.com/USGS-R/loadflex
 Collate:
     'aaa_onLoad.R'
     'aggregateSolute.R'
+    'convertToEGRET.R'
     'covariance.R'
     'dataDocumentation.R'
     'diagnostics.R'
@@ -57,6 +59,7 @@ Collate:
     'loadReg2.R'
     'loadflex.R'
     'match.arg.loadflex.R'
+    'plotEGRET.R'
     'plots.R'
     'predictors.R'
     'summarize.R'
