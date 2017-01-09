@@ -62,6 +62,7 @@ Collate:
     'plotEGRET.R'
     'plots.R'
     'predictors.R'
+    'summarize.R'
     'text.R'
     'uncertainty.R'
     'unit.conversions.R'
