@@ -357,6 +357,10 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
 #' flowUnitsConversion(old.units='cfs', new.units='cms')
 #' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1')
 #' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1', attach.units=TRUE)
+#' 
+#' # use this multiplier to convert a vector
+#' Q_cfs <- seq(10, 12, length.out=10) # example data
+#' Q_cms <- Q_cfs * flowUnitsConversion(old.units='cfs', new.units='cms')
 flowUnitsConversion <- function(old.units, new.units, attach.units=FALSE) {
   # Translate units - goes quickly if they're good already
   old.units <- translateFreeformToUnitted(old.units, TRUE)
