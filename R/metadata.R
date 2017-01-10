@@ -27,6 +27,13 @@
 #' @slot load.rate.units character. The units in which load (flux) is reported 
 #'   by predict.loadModel().
 #' @slot station character. A description of the sampling station or site.
+#' @slot wq.sta.id character Station ID for the constituent
+#' @slot station.lat numeric Station latitude
+#' @slot station.lon numeric Station longitude
+#' @slot disch.sta.id character Station ID for discharge
+#' @slot disch.basin.area numeric Drainage basin area for discharge station
+#' @slot wq.basin.area numeric Drainage basin area for water quality station
+#' @slot consti.name character Consituent long name
 #' @slot custom ANY. Empty by default, but may be modified to store any 
 #'   additional data the user wants to track.
 #' @importFrom methods setClass
@@ -34,8 +41,9 @@
 setClass(
   "metadata",
   slots=c(
-    # Column names
+    # Column names (except consti.name)
     constituent="character",
+    consti.name="character",
     flow="character",
     load.rate="character",
     dates="character",
@@ -46,10 +54,17 @@ setClass(
     load.rate.units="character",
     # Other
     station="character",
+    wq.sta.id="character",
+    station.lat="ANY",
+    station.lon="ANY",
+    disch.sta.id="character",
+    disch.basin.area="ANY",
+    wq.basin.area="ANY",
     custom="ANY"),
   
   prototype=list(
     constituent="",
+    consti.name="",
     flow="",
     load.rate="",
     dates="",
@@ -58,6 +73,12 @@ setClass(
     load.units="",
     load.rate.units="",
     station="",
+    wq.sta.id="",
+    station.lat=NULL,
+    station.lon=NULL,
+    disch.sta.id="",
+    disch.basin.area=NULL,
+    wq.basin.area=NULL,
     custom=NULL),
   
   # from the setClass documentation: "a validity-checking method for objects
@@ -248,27 +269,36 @@ setClass(
 #'   entries.
 #' @export
 #' @family metadata
-metadata <- function(constituent, flow, load.rate="", dates, 
+metadata <- function(constituent, consti.name="", flow, load.rate="", dates, 
                      conc.units, flow.units, load.units, load.rate.units, 
-                     station="", custom=NULL, validate=TRUE) {
+                     station="", wq.sta.id="", station.lat=NA, station.lon=NA,
+                     disch.sta.id="", disch.basin.area=NA, wq.basin.area=NA,
+                     custom=NULL, validate=TRUE) {
+  
+  call <- match.call()
   
   # Create a list of non-missing args
-  slotvals <- c(
-    if(!missing(constituent)) list(constituent=constituent) else NULL,
-    if(!missing(flow)) list(flow=flow) else NULL,
-    if(!missing(load.rate)) list(load.rate=load.rate) else NULL,
-    if(!missing(dates)) list(dates=dates) else NULL, 
-    if(!missing(conc.units)) list(conc.units=conc.units) else NULL, 
-    if(!missing(flow.units)) list(flow.units=flow.units) else NULL, 
-    if(!missing(load.units)) list(load.units=load.units) else NULL, 
-    if(!missing(load.rate.units)) list(load.rate.units=load.rate.units) else NULL, 
-    if(!missing(station)) list(station=station) else NULL, 
-    if(!missing(custom)) list(custom=custom) else NULL)
-  
+  #Does this list need to be hard coded??? 
+  vals <- c("constituent", "consti.name", "flow", "load.rate", "dates", "conc.units",
+            "flow.units", "load.units", "load.rate.units", "station", "wq.sta.id",
+            "station.lat", "station.lon", "disch.sta.id", "disch.basin.area", "wq.basin.area","custom")
+  slotvals <- fillSlots(vals = vals, call = call)
   # Create the object by updating a prototype object
   metadata <- do.call(updateMetadata, c(list(new("metadata")), slotvals, list(validate=validate)))
   
   return(metadata)
+}
+
+#helper to fill slotvals
+fillSlots <- function(vals, call) {
+  if(!is.null(vals) && length(vals) > 0) {
+    slotvals <- vector(mode = "list", length = length(vals))
+    names(slotvals) <- vals
+    for(v in vals) {
+      slotvals[[v]] <- call[[v]]
+    }
+    return(slotvals)
+  }
 }
 
 
