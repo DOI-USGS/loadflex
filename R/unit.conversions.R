@@ -301,7 +301,7 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   # Identify the right components of the multiplier. Components that are
   # unavailable will be omitted from the multipliers data.frame
   #data(unit.conversions)
-  numerator<-denominator<- "rbind.var"
+  numerator <- denominator <- "rbind.var"
   multipliers <- rbind(
     # Convert to mg/day
     numer_to_mg = subset(unit.conversions, numerator == "mg" & denominator %in% fcu_numerstrs),
@@ -375,6 +375,7 @@ flowUnitsConversion <- function(old.units, new.units, attach.units=FALSE) {
   new_denomstrs <- strsplit(get_units(1/unitbundle(new_separated[which(new_separated$Power < 0),])), " ")[[1]]
   
   # Identify the volumetric pieces of the conversion from the units table
+  numerator <- denominator <- "subset.var"
   toL <- subset(unit.conversions, denominator == old_numerstrs & numerator == 'L')
   fromL <- subset(unit.conversions, denominator == 'L' & numerator == new_numerstrs)
   if(nrow(toL) != 1 || nrow(fromL) != 1) {
