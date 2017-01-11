@@ -445,7 +445,7 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' @return \code{getInfo} returns the miscellaneous information specified by
 #'   \code{field}.
 #' @export
-getInfo <- function(metadata, field=c("station", "custom")) {
+getInfo <- function(metadata, field=c("station", "custom"), unit.format = NULL) {
   
   # Standardize the field input; match.arg allows partial matching for lazy typers
   field <- match.arg.loadflex(field, formalArgs(loadflex::metadata))
@@ -454,7 +454,18 @@ getInfo <- function(metadata, field=c("station", "custom")) {
   slotname <- field
   
   # Return the metadata stored in that slot
-  slot(metadata, slotname)
+  retVal <- slot(metadata, slotname)
+  #rloadest doesn't accept the default output format
+  #could break this out to a new function
+  if(!is.null(unit.format) && unit.format == "rloadest") {
+    if(retVal == "m^3 s^-1") {
+      retVal <- "cms"
+    } else if(retVal == "mg L^-1") {
+      retVal <- "mg/L"
+    }
+  }
+  
+  return(retVal)
 }
 
 #### Show ####
