@@ -30,7 +30,7 @@ environment:
 
 build_script:
   - R --version
-  - Rscript -e 'install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"), repos=c("https://owi.usgs.gov/R", "https://cran.rstudio.com"))'
+  - Rscript -e "install.packages(c('smwrData', 'smwrBase', 'smwrGraphs', 'smwrStats', 'smwrQW', 'rloadest', 'unitted'), repos=c('https://owi.usgs.gov/R', 'https://cran.rstudio.com'))"
   - travis-tool.sh install_deps
 
 test_script:
