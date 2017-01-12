@@ -269,11 +269,11 @@ setClass(
 #'   entries.
 #' @export
 #' @family metadata
-metadata <- function(constituent, consti.name="", flow, load.rate="", dates, 
+metadata <- function(constituent, flow, load.rate="", dates, 
                      conc.units, flow.units, load.units, load.rate.units, 
-                     station="", wq.sta.id="", station.lat=NA, station.lon=NA,
-                     disch.sta.id="", disch.basin.area=NA, wq.basin.area=NA,
-                     custom=NULL, validate=TRUE) {
+                     station="", custom=NULL, validate=TRUE, consti.name="",
+                     wq.sta.id="", station.lat=NA, station.lon=NA,
+                     disch.sta.id="", disch.basin.area=NA, wq.basin.area=NA) {
   
   call <- match.call()
   
@@ -470,6 +470,8 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' model.
 #' 
 #' @rdname metadata-getters
+#' @param unit.format character defaults to NULL. Set to 'rloadest' to output units in the correct
+#' \code{rloadest} format
 #' @importFrom methods slot
 #' @importFrom methods formalArgs
 #' @return \code{getInfo} returns the miscellaneous information specified by
