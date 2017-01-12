@@ -50,6 +50,21 @@ additional data the user wants to track.}
 \item{validate}{logical. If TRUE, validObject() must pass for the object to 
 return.}
 
+\item{consti.name}{character. Long name of constituent}
+
+\item{wq.sta.id}{character. Water quality station ID}
+
+\item{station.lat}{numeric Water quality station latitude}
+
+\item{station.lon}{numeric Water quality station longitude}
+
+\item{disch.sta.id}{character. Discharge station ID, defaults to value of wq.sta.id}
+
+\item{wq.basin.area}{numeric Drainage basin area for water quality station}
+
+\item{disch.basin.area}{numeric Drainage basin area for discharge station, defaults to value of 
+wq.basin.area}
+
 \item{metadata}{the metadata object to update.}
 
 \item{new.metadata}{Optional object of class "metadata". If new.metadata is 

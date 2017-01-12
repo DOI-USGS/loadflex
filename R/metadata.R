@@ -266,6 +266,14 @@ setClass(
 #'   additional data the user wants to track.
 #' @param validate logical. If TRUE, validObject() must pass for the object to 
 #'   return.
+#' @param consti.name character. Long name of constituent
+#' @param wq.sta.id character. Water quality station ID
+#' @param disch.sta.id character. Discharge station ID, defaults to value of wq.sta.id
+#' @param station.lat numeric Water quality station latitude
+#' @param station.lon numeric Water quality station longitude
+#' @param wq.basin.area numeric Drainage basin area for water quality station
+#' @param disch.basin.area numeric Drainage basin area for discharge station, defaults to value of 
+#' wq.basin.area
 #' @return \code{metadata} returns a new metadata object with the specified 
 #'   entries.
 #' @export
