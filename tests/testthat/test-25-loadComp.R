@@ -119,7 +119,7 @@ test_that("loadComp models can estimate their uncertainty", {
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], Period=seasons(DATES,breaks=c("Apr", "Jul")))
   estdata <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
   rl.model <- loadReg2(loadReg(Atrazine ~ center(log(FLOW)), data = simpledata, flow = "FLOW", dates = "DATES", conc.units="mg/L"))
-  atra_meta <- metadata(const="Atrazine", flow="FLOW", dates="DATES", conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1")
+  atra_meta <- metadata(constituent="Atrazine", flow="FLOW", dates="DATES", conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1")
   lm.model <- loadLm(log(Atrazine) ~ center(log(FLOW)), data=simpledata, metadata=atra_meta)
   
   # Fit the loadComp with store=c("data","uncertainty") (to calculate uncertainty) for many

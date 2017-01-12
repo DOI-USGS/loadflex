@@ -79,6 +79,7 @@ setClass(
     disch.sta.id="",
     disch.basin.area=NULL,
     wq.basin.area=NULL,
+    basin.area.units=NULL,
     custom=NULL),
   
   # from the setClass documentation: "a validity-checking method for objects
@@ -273,16 +274,13 @@ metadata <- function(constituent, flow, load.rate="", dates,
                      conc.units, flow.units, load.units, load.rate.units, 
                      station="", custom=NULL, validate=TRUE, consti.name="",
                      wq.sta.id="", station.lat=NA, station.lon=NA,
-                     disch.sta.id="", disch.basin.area=NA, wq.basin.area=NA) {
-  
-  call <- match.call()
+                     disch.sta.id=wq.sta.id, wq.basin.area=NA, disch.basin.area=wq.basin.area ) {
   
   # Create a list of non-missing args
-  #Does this list need to be hard coded??? 
-  vals <- c("constituent", "consti.name", "flow", "load.rate", "dates", "conc.units",
-            "flow.units", "load.units", "load.rate.units", "station", "wq.sta.id",
-            "station.lat", "station.lon", "disch.sta.id", "disch.basin.area", "wq.basin.area","custom")
-  slotvals <- fillSlots(vals = vals, call = call)
+  all_possible <- names(formals(metadata))
+  not_missing <- setdiff(names(as.list(match.call())[-1]), 'validate') # the arguments besides 'validate' that were given explicitly
+  slotvals <- lapply(setNames(nm=not_missing), function(val) get(val, envir=as.environment(-1)))
+  
   # Create the object by updating a prototype object
   metadata <- do.call(updateMetadata, c(list(new("metadata")), slotvals, list(validate=validate)))
   
