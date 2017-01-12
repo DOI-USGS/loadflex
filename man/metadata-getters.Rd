@@ -12,7 +12,7 @@ getCol(metadata, data, field = c("conc", "flow", "flux rate", "date"),
 
 getUnits(metadata, field = c("conc", "flow", "flux", "flux rate"))
 
-getInfo(metadata, field = c("station", "custom"))
+getInfo(metadata, field = c("station", "custom"), unit.format = NULL)
 }
 \arguments{
 \item{metadata}{a metadata object from which the information will be 
@@ -25,6 +25,9 @@ matching is allowed.}
 
 \item{attach.units}{logical. If TRUE, the return value will be a
 \pkg{\link{unitted}} vector.}
+
+\item{unit.format}{character defaults to NULL. Set to 'rloadest' to output units in the correct
+\code{rloadest} format}
 }
 \value{
 \code{getCol} returns the specified column of data as a vector.

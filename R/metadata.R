@@ -55,11 +55,11 @@ setClass(
     # Other
     station="character",
     wq.sta.id="character",
-    station.lat="ANY",
-    station.lon="ANY",
+    station.lat="numeric",
+    station.lon="numeric",
     disch.sta.id="character",
-    disch.basin.area="ANY",
-    wq.basin.area="ANY",
+    disch.basin.area="numeric",
+    wq.basin.area="numeric",
     custom="ANY"),
   
   prototype=list(
@@ -74,12 +74,12 @@ setClass(
     load.rate.units="",
     station="",
     wq.sta.id="",
-    station.lat=NULL,
-    station.lon=NULL,
+    station.lat=as.numeric(NA),
+    station.lon=as.numeric(NA),
     disch.sta.id="",
-    disch.basin.area=NULL,
-    wq.basin.area=NULL,
-    basin.area.units=NULL,
+    disch.basin.area=as.numeric(NA),
+    wq.basin.area=as.numeric(NA),
+    basin.area.units="",
     custom=NULL),
   
   # from the setClass documentation: "a validity-checking method for objects
@@ -270,6 +270,11 @@ setClass(
 #'   entries.
 #' @export
 #' @family metadata
+#' @examples 
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", station="Lamprey River, NH")
+#'   
 metadata <- function(constituent, flow, load.rate="", dates, 
                      conc.units, flow.units, load.units, load.rate.units, 
                      station="", custom=NULL, validate=TRUE, consti.name="",

@@ -8,7 +8,9 @@
 \usage{
 metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
   load.units, load.rate.units, station = "", custom = NULL,
-  validate = TRUE)
+  validate = TRUE, consti.name = "", wq.sta.id = "", station.lat = NA,
+  station.lon = NA, disch.sta.id = wq.sta.id, wq.basin.area = NA,
+  disch.basin.area = wq.basin.area)
 
 updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
 
@@ -191,6 +193,12 @@ ng, ug, mg, g, kg, Mg, tons, pounds, lbs, lb
 \code{load.rate.units} are derived as \code{load.units} per day.
 
 }
+}
+\examples{
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", station="Lamprey River, NH")
+  
 }
 \seealso{
 Other metadata: \code{\link{==,metadata,metadata-method}},
