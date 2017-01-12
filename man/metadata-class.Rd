@@ -42,6 +42,20 @@ by predict.loadModel().}
 
 \item{\code{station}}{character. A description of the sampling station or site.}
 
+\item{\code{wq.sta.id}}{character Station ID for the constituent}
+
+\item{\code{station.lat}}{numeric Station latitude}
+
+\item{\code{station.lon}}{numeric Station longitude}
+
+\item{\code{disch.sta.id}}{character Station ID for discharge}
+
+\item{\code{disch.basin.area}}{numeric Drainage basin area for discharge station}
+
+\item{\code{wq.basin.area}}{numeric Drainage basin area for water quality station}
+
+\item{\code{consti.name}}{character Consituent long name}
+
 \item{\code{custom}}{ANY. Empty by default, but may be modified to store any 
 additional data the user wants to track.}
 }}

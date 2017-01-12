@@ -8,7 +8,9 @@
 \usage{
 metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
   load.units, load.rate.units, station = "", custom = NULL,
-  validate = TRUE)
+  validate = TRUE, consti.name = "", wq.sta.id = "", station.lat = NA,
+  station.lon = NA, disch.sta.id = wq.sta.id, wq.basin.area = NA,
+  disch.basin.area = wq.basin.area)
 
 updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
 
@@ -47,6 +49,21 @@ additional data the user wants to track.}
 
 \item{validate}{logical. If TRUE, validObject() must pass for the object to 
 return.}
+
+\item{consti.name}{character. Long name of constituent}
+
+\item{wq.sta.id}{character. Water quality station ID}
+
+\item{station.lat}{numeric Water quality station latitude}
+
+\item{station.lon}{numeric Water quality station longitude}
+
+\item{disch.sta.id}{character. Discharge station ID, defaults to value of wq.sta.id}
+
+\item{wq.basin.area}{numeric Drainage basin area for water quality station}
+
+\item{disch.basin.area}{numeric Drainage basin area for discharge station, defaults to value of 
+wq.basin.area}
 
 \item{metadata}{the metadata object to update.}
 
@@ -191,6 +208,12 @@ ng, ug, mg, g, kg, Mg, tons, pounds, lbs, lb
 \code{load.rate.units} are derived as \code{load.units} per day.
 
 }
+}
+\examples{
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", station="Lamprey River, NH")
+  
 }
 \seealso{
 Other metadata: \code{\link{==,metadata,metadata-method}},

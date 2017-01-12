@@ -32,7 +32,7 @@ test_that("metadata can be extracted from loadReg models", {
     flow = "FLOW", dates = "DATES", conc.units="mg/L")
   
   expect_equal(getMetadata(load.model), 
-               metadata(const="Atrazine", flow="FLOW", load.rate="", dates="DATES", conc.units="mg L^-1", 
+               metadata(constituent = "Atrazine", flow="FLOW", load.rate="", dates="DATES", conc.units="mg L^-1", 
                         flow.units="s^-1 ft^3", load.units="kg", load.rate.units="kg/day", station=""))
   
 })
