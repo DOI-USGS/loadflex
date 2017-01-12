@@ -32,6 +32,13 @@ test_that("translateFreeformToUnitted works", {
   
 })
 
+test_that("flowUnitsConversion works",m {
+  expect_silent(verify_units(
+    flowUnitsConversion(old.units='ft^3 s^-1', new.units='dL d^-1', attach.units = TRUE),
+    expected.units = 'dL d^-1 ft^-3 s'))
+  expect_error(flowUnitsConversion(old.units='g m^-3', new.units='mg L^-1')) # error because not flow
+})
+
 test_that("flowconcToFluxConversion works", {
   cf1 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = TRUE)
   expect_equivalent(v(cf1), 2.8317e-05)

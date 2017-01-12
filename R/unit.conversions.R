@@ -265,7 +265,7 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' product of flow and concentration.
 #' 
 #' @importFrom unitted separate_units get_units unitbundle u
-#' @export flowconcToFluxConversion
+#' @export
 #' @param flow.units character. The units of flow.
 #' @param conc.units character. The units of concentration.
 #' @param load.rate.units character. The units of flux.
@@ -301,7 +301,7 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   # Identify the right components of the multiplier. Components that are
   # unavailable will be omitted from the multipliers data.frame
   #data(unit.conversions)
-  numerator<-denominator<- "rbind.var"
+  numerator <- denominator <- "rbind.var"
   multipliers <- rbind(
     # Convert to mg/day
     numer_to_mg = subset(unit.conversions, numerator == "mg" & denominator %in% fcu_numerstrs),
@@ -343,6 +343,61 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   return(if(attach.units) multiplier else v(multiplier))
 }
 
+#' Get a conversion factor to convert between flow units
+#' 
+#' @importFrom unitted separate_units unitbundle get_units u v
+#' @export
+#' @param old.units character. The current units of flow.
+#' @param new.units character. The desired units of flow.
+#' @param attach.units logical. If TRUE, the conversion factor is returned with 
+#'   units attached.
+#' @return numeric conversion factor, to be multiplied by values in old units to
+#'   determine the values in new units.
+#' @examples 
+#' flowUnitsConversion(old.units='cfs', new.units='cms')
+#' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1')
+#' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1', attach.units=TRUE)
+#' 
+#' # use this multiplier to convert a vector
+#' Q_cfs <- seq(10, 12, length.out=10) # example data
+#' Q_cms <- Q_cfs * flowUnitsConversion(old.units='cfs', new.units='cms')
+flowUnitsConversion <- function(old.units, new.units, attach.units=FALSE) {
+  # Translate units - goes quickly if they're good already
+  old.units <- translateFreeformToUnitted(old.units, TRUE)
+  new.units <- translateFreeformToUnitted(new.units, TRUE)
+  
+  # Separate the units into numerator and denominator
+  old_separated <- separate_units(old.units)
+  old_numerstrs <- strsplit(get_units(unitbundle(old_separated[which(old_separated$Power > 0),])), " ")[[1]]
+  old_denomstrs <- strsplit(get_units(1/unitbundle(old_separated[which(old_separated$Power < 0),])), " ")[[1]]
+  new_separated <- separate_units(new.units)
+  new_numerstrs <- strsplit(get_units(unitbundle(new_separated[which(new_separated$Power > 0),])), " ")[[1]]
+  new_denomstrs <- strsplit(get_units(1/unitbundle(new_separated[which(new_separated$Power < 0),])), " ")[[1]]
+  
+  # Identify the volumetric pieces of the conversion from the units table
+  numerator <- denominator <- "subset.var"
+  toL <- subset(unit.conversions, denominator == old_numerstrs & numerator == 'L')
+  fromL <- subset(unit.conversions, denominator == 'L' & numerator == new_numerstrs)
+  if(nrow(toL) != 1 || nrow(fromL) != 1) {
+    stop("couldn't find a path between the volume units")
+  }
+  volConv <- u(toL$value, toL$numerator) / u(1, toL$denominator) *
+    u(fromL$value, fromL$numerator) / u(1, fromL$denominator)
+  
+  # Identify the time pieces of the conversion from the units table
+  tod <- subset(unit.conversions, numerator == old_denomstrs & denominator == 'd')
+  fromd <- subset(unit.conversions, numerator == 'd' & denominator == new_denomstrs)
+  if(nrow(tod) != 1 || nrow(fromd) != 1) {
+    stop("couldn't find a path between the time units")
+  }
+  timeConv <- u(tod$value, tod$numerator) / u(1, tod$denominator) *
+    u(fromd$value, fromd$numerator) / u(1, fromd$denominator)
+
+  # For now, just require that the old.units are cfs and the new ones are cms
+  conv <- volConv*timeConv
+  if(!attach.units) conv <- v(conv)
+  return(conv)
+}
 
 #' observeSolute - instantaneous loads or concentrations
 #' 
