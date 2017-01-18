@@ -80,7 +80,7 @@ convertToEGRETSample <- function(intdat, meta, qconvert = 35.314667, dailydat = 
   if(!is.null(dailydat)){
     subDaily <- select(sample_df, dateTime) %>%
       left_join(select(dailydat, dateTime, SE, yHat), by="dateTime") %>%
-      mutate(ConcHat = yHat*exp((SE^2)/2)) 
+      mutate(ConcHat = exp(yHat)*exp((SE^2)/2)) 
     
     sample_df <- bind_cols(sample_df, subDaily)
   }
