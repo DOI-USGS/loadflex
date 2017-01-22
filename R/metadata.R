@@ -145,6 +145,9 @@ setClass(
     if(!validMetadataUnits(object@load.rate.units, "load.rate.units")) {
       errorstrs <- c(errorstrs, "load.rate.units are invalid. See 'Valid units options' in ?metadata")
     }
+    if(!validMetadataUnits(object@basin.area.units, "basin.area.units")) {
+      errorstrs <- c(errorstrs, "basin.area.units are invalid. See 'Valid units options' in ?metadata")
+    }
     
     if(length(errorstrs) == 0) {
       return(TRUE)
@@ -414,10 +417,13 @@ updateMetadata <- function(metadata, new.metadata=NA, ..., validate=TRUE) {
     # Amend the existing metadata as specified in ...
     metaargs <- list(...)
     for(i in seq_len(length(metaargs))) {
-      if(names(metaargs[i]) %in% c("conc.units","flow.units","load.units","load.rate.units")) {
+      if(names(metaargs[i]) %in% c("conc.units","flow.units","load.units","load.rate.units","basin.area.units")) {
         # Make sure units are in an accepted form
         slot(metadata, names(metaargs[i])) <- translateFreeformToUnitted(metaargs[[i]], attach.units=FALSE)
       } else if(names(metaargs[i]) %in% slotNames) {
+        if(names(metaargs[i]) == 'station') {
+          message("'station' has been deprecated; 'site.name' and 'site.id' are recommended instead")
+        } # if station is provided, give the above message, but then proceed anyway
         slot(metadata, names(metaargs[i])) <- metaargs[[i]]
       } else {
         stop("unrecognized metadata element: ",names(metaargs[i]))
