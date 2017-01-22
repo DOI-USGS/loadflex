@@ -13,4 +13,10 @@
 \description{
 Display a metadata object
 }
+\examples{
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+show(md) # or just md at the command prompt
+}
 

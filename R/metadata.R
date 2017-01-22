@@ -391,6 +391,12 @@ metadata <- function(constituent, flow, load.rate="", dates,
 #'   \code{new.metadata} OR the elements specified in \code{...}, depending on
 #'   whether \code{new.metadata} is provided.
 #' @export
+#' @examples
+#' md1 <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' md2 <- updateMetadata(md1, site.id="1073500", 
+#'   custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
 updateMetadata <- function(metadata, new.metadata=NA, ..., validate=TRUE) {
   if(!is(metadata, "metadata")) {
     stop("metadata must be of class 'metadata'")
@@ -479,6 +485,13 @@ exampleMetadata <- function() {
 #' @return \code{getCol} returns the specified column of data as a vector.
 #' @export
 #' @family metadata
+#' @examples 
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' data(lamprey_nitrate)
+#' head(getCol(md, lamprey_nitrate, 'date'))
+#' head(getCol(md, lamprey_nitrate, 'conc'))
 getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"), attach.units=FALSE) {
   
   # Standardize the field input; match.arg allows partial matching for lazy typers
@@ -525,6 +538,11 @@ getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"),
 #' @importFrom methods slot
 #' @return \code{getUnits} returns the specified units as a character string.
 #' @export
+#' @examples 
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' getUnits(md, 'flow')
 getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
   
   # Standardize the field input; match.arg allows partial matching for lazy typers
@@ -554,6 +572,11 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' @return \code{getInfo} returns the miscellaneous information specified by
 #'   \code{field}.
 #' @export
+#' @examples 
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' getInfo(md, 'site.name')
 getInfo <- function(metadata, 
                     # field: cat('c(', paste0('"', names(getSlots('metadata')), '"', collapse=', '), ')', sep='')
                     field=c("constituent", "consti.name", "flow", "load.rate", "dates", 
@@ -590,6 +613,11 @@ getInfo <- function(metadata,
 #' @importFrom methods setMethod getSlots slot show
 #' @exportMethod show
 #' @export
+#' @examples
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' show(md) # or just md at the command prompt
 setMethod(
   "show", "metadata", 
   function(object) {
@@ -621,6 +649,12 @@ setMethod(
 #' @exportMethod ==
 #' @export
 #' @family metadata
+#' md1 <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+#' md2 <- updateMetadata(md1, site.id="1073500", 
+#'   custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
+#' md1 == md2
 setMethod(
   "==", c(e1="metadata", e2="metadata"),
   function(e1, e2) {
