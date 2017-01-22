@@ -9,15 +9,18 @@
 \code{\link{loadModel}}, \code{\link{loadInterp}}, \code{\link{loadReg2}}, or
 \code{\link{loadComp}}). Metadata can be created and modified by calls to 
 \code{\link{metadata}}, \code{\link{updateMetadata}}, or 
-\code{\link{exampleMetadata}}. Values and relevant information can be
-accessed by \code{\link{getCol}}, \code{\link{getUnits}}, or
+\code{\link{exampleMetadata}}. Values and relevant information can be 
+accessed by \code{\link{getCol}}, \code{\link{getUnits}}, or 
 \code{\link{getInfo}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{constituent}}{character. The name of the data.frame column describing 
-the concentration of the solute or material to be modeled.}
+\item{\code{constituent}}{character. The name of the data.frame column describing the
+concentration of the solute or material to be modeled.}
+
+\item{\code{consti.name}}{character. Consituent long name, for use in plots and 
+reports}
 
 \item{\code{flow}}{character. The name of the data.frame column describing flow 
 (discharge)}
@@ -40,21 +43,46 @@ exported.}
 \item{\code{load.rate.units}}{character. The units in which load (flux) is reported 
 by predict.loadModel().}
 
-\item{\code{station}}{character. A description of the sampling station or site.}
+\item{\code{station}}{deprecated. character. A description of the sampling station or
+site. It's now recommended to use \code{site.name} and/or \code{site.id} 
+instead.}
 
-\item{\code{wq.sta.id}}{character Station ID for the constituent}
+\item{\code{site.name}}{character. A description of the sampling station or site. 
+Formerly named \code{station}.}
 
-\item{\code{station.lat}}{numeric Station latitude}
+\item{\code{site.id}}{character Station ID for the site where the concentration of 
+the constituent was measured.}
 
-\item{\code{station.lon}}{numeric Station longitude}
+\item{\code{lat}}{numeric Station latitude where concentration (and possibly also 
+discharge) was measured.}
 
-\item{\code{disch.sta.id}}{character Station ID for discharge}
+\item{\code{lon}}{numeric Station longitude where concentration (and possibly also 
+discharge) was measured.}
 
-\item{\code{disch.basin.area}}{numeric Drainage basin area for discharge station}
+\item{\code{basin.area}}{numeric Area of the drainage basin contributing water to the
+site where concentrations were measured.}
 
-\item{\code{wq.basin.area}}{numeric Drainage basin area for water quality station}
+\item{\code{flow.site.name}}{character Long name of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.name}).}
 
-\item{\code{consti.name}}{character Consituent long name}
+\item{\code{flow.site.id}}{character Station ID of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.id}).}
+
+\item{\code{flow.lat}}{numeric Latitude of the station where flow was monitored, if 
+different from where concentration was monitored (as in \code{site.lat}).}
+
+\item{\code{flow.lon}}{numeric Longitude of the station where flow was monitored, if 
+different from where concentration was monitored (as in \code{site.lon}).}
+
+\item{\code{flow.basin.area}}{numeric Area of the drainage basin contributing water 
+to the site where flow was monitored, if different from where concentration
+was monitored (as in \code{basin.area}).}
+
+\item{\code{basin.area.units}}{character Units of the values in \code{basin.area} and
+\code{flow.basin.area} (must be the same for both). Basin areas are used to
+compute yields as loads per contributing (basin) area.}
 
 \item{\code{custom}}{ANY. Empty by default, but may be modified to store any 
 additional data the user wants to track.}
