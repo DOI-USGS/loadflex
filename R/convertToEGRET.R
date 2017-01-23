@@ -16,11 +16,9 @@
 convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   info_df <- convertToEGRETInfo(meta, preds.type)
-  
-  # TO DO: automate the conversion factor calculation using the units 
-  # given in info_df for param.units. EGRET expects cms.
-  # qconvert <- getConversionFactor(info_df)
-  qconvert <- 35.314667
+
+  # EGRET expects cms.
+  qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
   
   daily_df <- convertToEGRETDaily(estdat, meta, preds, preds.type, qconvert)
   
