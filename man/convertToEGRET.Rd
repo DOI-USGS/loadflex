@@ -15,13 +15,26 @@ convertToEGRET(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-name for the constituent: consti.name)}
+flow, dates, conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying if the predictions being used are
 concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
 Convert a loadflex object into an EGRET object for plotting.
+}
+\examples{
+data(lamprey_nitrate)
+fitdat <- lamprey_nitrate
+data(lamprey_discharge)
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT")) 
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
+meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE", 
+  conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1", 
+  site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+  data=fitdat, metadata=meta, retrans=exp)
+preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+loadflex:::convertToEGRET(fitdat, estdat, preds, meta)
 }
 

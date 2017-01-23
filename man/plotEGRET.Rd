@@ -18,8 +18,7 @@ Details for current options. For now, only one allowed at time.}
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: sta.abbr, and a short
-name for the constituent: consti.name)}
+flow, conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying if the predictions being used are
 concentrations ("Conc") or fluxes ("Flux").}
@@ -73,9 +72,9 @@ meta <- metadata(constituent="NO3",
                  flow.units="cfs", 
                  load.units="kg",
                  load.rate.units="kg d^-1", 
-                 station="Lamprey River, NH",
-                 custom=list(sta.abbr = "lamp",
-                             consti.name = "nitrate"))
+                 site.name="Lamprey River, NH",
+                 site.id="01073500",
+                 consti.name="Nitrate")
 
 # Run your model and get your predictions
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 

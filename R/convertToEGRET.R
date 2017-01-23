@@ -6,13 +6,23 @@
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-#' name for the constituent: consti.name)
+#' flow, dates, conc.units, site.id, and consti.name
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
-#' 
 #' @importFrom EGRET as.egret
-#' 
+#' @examples
+#' data(lamprey_nitrate)
+#' fitdat <- lamprey_nitrate
+#' data(lamprey_discharge)
+#' estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT")) 
+#' estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
+#' meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE", 
+#'   conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1", 
+#'   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
+#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+#'   data=fitdat, metadata=meta, retrans=exp)
+#' preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+#' loadflex:::convertToEGRET(fitdat, estdat, preds, meta)
 convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   info_df <- convertToEGRETInfo(meta, preds.type)
@@ -38,8 +48,7 @@ convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NU
 #'
 #' @param fitdat data.frame of data used to fit a model
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-#' name for the constituent: consti.name)
+#' flow, dates, conc.units, site.id, and consti.name
 #' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
 #' conversion factor is for cubic feet per second.
 #' @param dailydat an EGRET Daily data.frame of flow values
@@ -91,8 +100,7 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
 #' Convert a loadflex metadata object into the EGRET INFO dataframe.
 #' 
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-#' name for the constituent: consti.name)
+#' flow, dates, conc.units, site.id, and consti.name
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
 #' 
@@ -101,9 +109,9 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
     stop("metadata is required to create an EGRET eList")
   }
   
-  info_df <- data.frame(shortName=verify_meta(meta, 'station'),
-                        paramShortName=verify_meta(meta, c('custom', 'consti.name')),
-                        staAbbrev=verify_meta(meta, c('custom', 'sta.abbr')),
+  info_df <- data.frame(shortName=verify_meta(meta, 'site.name'),
+                        paramShortName=verify_meta(meta, 'consti.name'),
+                        staAbbrev=verify_meta(meta, 'site.id'),
                         constitAbbrev=verify_meta(meta, 'constituent'),
                         param.units=verify_meta(meta, paste0(tolower(preds.type), '.units')),
                         stringsAsFactors = FALSE)
@@ -114,8 +122,7 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
 #' 
 #' @param estdat data.frame of estimation data
 #' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-#' name for the constituent: consti.name)
+#' flow, dates, conc.units, site.id, and consti.name
 #' @param preds data.frame of load predictions
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
@@ -202,7 +209,7 @@ verify_meta <- function(meta, nm) {
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
-flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, qconvert = 35.314667){
+flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, qconvert = 35.314667) {
   flowdat_corrected <- flowdat %>% 
     rename_("value" = flow.colname,
             "dateTime" = date.colname) %>% 

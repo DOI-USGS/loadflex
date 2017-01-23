@@ -8,8 +8,7 @@ convertToEGRETInfo(meta, preds.type = "Conc")
 }
 \arguments{
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, custom (station abbreviation: sta.abbr, and a short
-name for the constituent: consti.name)}
+flow, dates, conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying if the predictions being used are
 concentrations ("Conc") or fluxes ("Flux").}
