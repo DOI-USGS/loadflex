@@ -9,9 +9,8 @@ estdat <- data.frame(
   datetime=strptime(paste0("2000-05-",1:30),format="%Y-%m-%d"))
 meta <- metadata(constituent="conc", flow="discharge", dates="datetime", 
                  conc.units="mg L^-1", flow.units="cfs", load.units="kg",
-                 load.rate.units="kg d^-1", station="Example Station",
-                 custom=list(sta.abbr = "examp",
-                             consti.name = "nitrate"))
+                 load.rate.units="kg d^-1", site.name="Example Station",
+                 site.id="examp", consti.name="nitrate")
 conc_lm <- loadLm(formula=log(conc) ~ log(discharge), pred.format="conc", 
                   data=fitdat, metadata=meta, retrans=exp)
 preds <- suppressWarnings(predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE))
@@ -129,7 +128,8 @@ test_that("verify_meta fails when the item you requested is empty", {
 })
 
 test_that("verify_meta works for custom metadata fields", {
-  expect_equal(loadflex:::verify_meta(meta, c('custom', 'sta.abbr')), 'examp')
+  mu <- updateMetadata(meta, custom=list('fieldA'=7:10, 'B'='wahoo'))
+  expect_equal(loadflex:::verify_meta(mu, c('custom', 'B')), 'wahoo')
 })
 
 test_that("verify_meta works for regular fields", {
@@ -141,8 +141,8 @@ context("flowCorrectionEGRET")
 
 test_that("flowCorrectionEGRET returns correct columns", {
   corrected_flow_df <- loadflex:::flowCorrectionEGRET(estdat, 'discharge', 'datetime', 35.314667)
-  expect_equal(nrow(Daily_flux), 30)
-  expect_equal(ncol(Daily_flux), 14)
+  expect_equal(nrow(corrected_flow_df), 30)
+  expect_equal(ncol(corrected_flow_df), 14)
   expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",
                      "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime")
   expect_false(any(is.na(match(names(corrected_flow_df), expected_cols))))
