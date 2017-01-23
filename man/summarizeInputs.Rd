@@ -31,7 +31,7 @@ md <- metadata(constituent="NO3", flow="DISCHARGE",
   load.rate.units="kg d^-1", site.name="Lamprey River, NH",
   basin.area=50, flow.basin.area=65, basin.area.units='ha',
   site.id="1073500", custom=list(data.source="USGS NWIS, waterdata.usgs.gov"))
-sitesum <- summarizeInputs(metadata=md, fitdat=select(lamprey_nitrate, -REGR), 
+sitesum <- summarizeInputs(metadata=md, fitdat=lamprey_nitrate[,1:3], 
   estdat=lamprey_discharge)
 }
 
