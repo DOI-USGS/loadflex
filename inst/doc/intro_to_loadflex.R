@@ -23,7 +23,7 @@ estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
 ## ----fig_1A--------------------------------------------------------------
 meta <- metadata(constituent="NO3", flow="DISCHARGE", 
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-  load.rate.units="kg d^-1", station="Lamprey River, NH")
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 
 ## ----fig_1B--------------------------------------------------------------
 no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation, 
@@ -33,12 +33,13 @@ no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
 library(rloadest)
 no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
-  flow.units="cfs", conc.units="mg/L", load.units="kg"))
+  flow.units="cfs", conc.units="mg/L", load.units="kg",
+  station='Lamprey River, NH'))
 no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
   interp.data=intdat)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  print(no3_li)
+#  getMetadata(no3_li)
 #  getFittingFunction(no3_lm)
 #  getFittedModel(no3_lr)
 #  getFittingData(no3_lc)

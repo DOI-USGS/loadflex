@@ -19,6 +19,7 @@ test_check('loadflex', filter='31') # loadReg() call is commented out
 # test_check('loadflex', filter='33') # loadReg() calls are integral to test, probably cause segfault on travis
 test_check('loadflex', filter='41')
 # test_check('loadflex', filter='42') # empty test
-# test_check('loadflex', filter='44') # test is empty
+test_check('loadflex', filter='44')
+test_check('loadflex', filter='51')
 
 # test_check('loadflex', filter='01|02|05|06|11|21|22|23|31|32|33|41|42')

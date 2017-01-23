@@ -4,22 +4,21 @@
 \alias{plotEGRET}
 \title{Create an EGRET-style plot}
 \usage{
-plotEGRET(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
+plotEGRET(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
   meta = NULL, preds.type = "Conc", ...)
 }
 \arguments{
 \item{plot.name}{the name of the plot the user wants to create. See 
 Details for current options. For now, only one allowed at time.}
 
-\item{intdat}{data.frame of interpolation data}
+\item{fitdat}{data.frame of model fitting data}
 
 \item{estdat}{data.frame of estimation data}
 
 \item{preds}{data.frame of load predictions}
 
 \item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, custom (station abbreviation: sta.abbr, and a short
-name for the constituent: consti.name)}
+flow, conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying if the predictions being used are
 concentrations ("Conc") or fluxes ("Flux").}
@@ -30,14 +29,14 @@ concentrations ("Conc") or fluxes ("Flux").}
 Use loadflex data frames, but create an EGRET plot.
 }
 \details{
-EGRET plots that require \code{intdat, meta}:
+EGRET plots that require \code{fitdat, meta}:
 \itemize{
   \item boxConcMonth
   \item plotConcTime
   \item plotConcQ
   \item plotFluxQ
 }
-EGRET plots that require \code{intdat, estdat, preds, meta}:
+EGRET plots that require \code{fitdat, estdat, preds, meta}:
 \itemize{
   \item boxQTwice
   \item multiPlotDataOverview
@@ -59,7 +58,7 @@ EGRET plots that require \code{intdat, estdat, preds, meta}:
 
 # Load necessary data + create the appropriate metadata
 data(lamprey_nitrate) # interpolation data (grab sample obs)
-intdat <- lamprey_nitrate
+fitdat <- lamprey_nitrate
 
 data("lamprey_discharge")
 estdat <- lamprey_discharge # estimation data (15 min interval)
@@ -73,17 +72,17 @@ meta <- metadata(constituent="NO3",
                  flow.units="cfs", 
                  load.units="kg",
                  load.rate.units="kg d^-1", 
-                 station="Lamprey River, NH",
-                 custom=list(sta.abbr = "lamp",
-                             consti.name = "nitrate"))
+                 site.name="Lamprey River, NH",
+                 site.id="01073500",
+                 consti.name="Nitrate")
 
 # Run your model and get your predictions
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
-                 data=intdat, metadata=meta, retrans=exp)
+                 data=fitdat, metadata=meta, retrans=exp)
 preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 
 # Now you can plot
-plotEGRET("boxConcMonth", intdat = lamprey_nitrate, meta = meta)
+plotEGRET("boxConcMonth", fitdat = lamprey_nitrate, meta = meta)
 plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
 
 }

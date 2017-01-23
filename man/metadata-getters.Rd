@@ -12,7 +12,11 @@ getCol(metadata, data, field = c("conc", "flow", "flux rate", "date"),
 
 getUnits(metadata, field = c("conc", "flow", "flux", "flux rate"))
 
-getInfo(metadata, field = c("station", "custom"), unit.format = NULL)
+getInfo(metadata, field = c("constituent", "consti.name", "flow", "load.rate",
+  "dates", "conc.units", "flow.units", "load.units", "load.rate.units",
+  "station", "site.name", "site.id", "lat", "lon", "basin.area",
+  "flow.site.name", "flow.site.id", "flow.lat", "flow.lon", "flow.basin.area",
+  "basin.area.units", "custom"), unit.format = NULL)
 }
 \arguments{
 \item{metadata}{a metadata object from which the information will be 
@@ -53,8 +57,23 @@ and clients of the metadata; more importantly, they do the error checking to
 make sure that the designated field or data column exists and return an 
 informative error if it does not.
 }
+\examples{
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+data(lamprey_nitrate)
+head(getCol(md, lamprey_nitrate, 'date'))
+head(getCol(md, lamprey_nitrate, 'conc'))
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+getUnits(md, 'flow')
+md <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+getInfo(md, 'site.name')
+}
 \seealso{
-Other metadata: \code{\link{==,metadata,metadata-method}},
-  \code{\link{metadata}}
+Other metadata: \code{\link{metadata}}
 }
 

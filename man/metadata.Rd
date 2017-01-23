@@ -8,9 +8,10 @@
 \usage{
 metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
   load.units, load.rate.units, station = "", custom = NULL,
-  validate = TRUE, consti.name = "", wq.sta.id = "", station.lat = NA,
-  station.lon = NA, disch.sta.id = wq.sta.id, wq.basin.area = NA,
-  disch.basin.area = wq.basin.area)
+  validate = TRUE, consti.name = "", site.name = "", site.id = "",
+  lat = NA, lon = NA, basin.area = NA, flow.site.name = site.name,
+  flow.site.id = site.id, flow.lat = lat, flow.lon = lon,
+  flow.basin.area = basin.area, basin.area.units = "km^2")
 
 updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
 
@@ -42,7 +43,9 @@ exported.}
 \item{load.rate.units}{character. The units in which load (flux) is reported 
 by predict.loadModel().}
 
-\item{station}{character. A description of the sampling station or site.}
+\item{station}{deprecated. character. A description of the sampling station 
+or site. It's now recommended to use \code{site.name} and/or \code{site.id}
+instead.}
 
 \item{custom}{ANY. Empty by default, but may be modified to store any 
 additional data the user wants to track.}
@@ -50,20 +53,47 @@ additional data the user wants to track.}
 \item{validate}{logical. If TRUE, validObject() must pass for the object to 
 return.}
 
-\item{consti.name}{character. Long name of constituent}
+\item{consti.name}{character. Consituent long name, for use in plots and 
+reports}
 
-\item{wq.sta.id}{character. Water quality station ID}
+\item{site.name}{character. A description of the station or site where the 
+concentration of the constituent was measured. This argument or
+\code{site.id} is a better place for a site identifier than the
+\code{station} argument, which is deprecated.}
 
-\item{station.lat}{numeric Water quality station latitude}
+\item{site.id}{character Station ID for the site where the concentration of 
+the constituent was measured.}
 
-\item{station.lon}{numeric Water quality station longitude}
+\item{lat}{numeric Station latitude where concentration (and possibly also 
+discharge) was measured.}
 
-\item{disch.sta.id}{character. Discharge station ID, defaults to value of wq.sta.id}
+\item{lon}{numeric Station longitude where concentration (and possibly also 
+discharge) was measured.}
 
-\item{wq.basin.area}{numeric Drainage basin area for water quality station}
+\item{basin.area}{numeric Area of the drainage basin contributing water to 
+the site where concentrations were measured.}
 
-\item{disch.basin.area}{numeric Drainage basin area for discharge station, defaults to value of 
-wq.basin.area}
+\item{flow.site.name}{character Long name of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.name}).}
+
+\item{flow.site.id}{character Station ID of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.id}).}
+
+\item{flow.lat}{numeric Latitude of the station where flow was monitored, if 
+different from where concentration was monitored (as in \code{site.lat}).}
+
+\item{flow.lon}{numeric Longitude of the station where flow was monitored, if
+different from where concentration was monitored (as in \code{site.lon}).}
+
+\item{flow.basin.area}{numeric Area of the drainage basin contributing water 
+to the site where flow was monitored, if different from where concentration
+was monitored (as in \code{basin.area}).}
+
+\item{basin.area.units}{character Units of the values in \code{basin.area} 
+and \code{flow.basin.area} (must be the same for both). Basin areas are 
+used to compute yields as loads per contributing (basin) area.}
 
 \item{metadata}{the metadata object to update.}
 
@@ -86,7 +116,7 @@ names may be any of those accepted by \code{metadata()}.}
 \code{exampleMetadata} returns a metadata object with example entries.
 }
 \description{
-\code{metadata} creates a new metadata object (see \link{metadata-class})
+\code{metadata} creates a new metadata object (see \link{metadata-class}) 
 from scratch.
 
 \code{updateMetadata} modifies an existing metadata object.
@@ -104,8 +134,8 @@ outside a load model), this option will rarely be appropriate.
 
 Models used in \pkg{\link{loadflex}} require metadata with units in a 
 standardized form. For any model not produced using \pkg{rloadest} functions,
-this standardized format is a space-separated list of text units with
-exponents denoted with "^". Valid examples include "mg L^-1", "ft^3 s^-1",
+this standardized format is a space-separated list of text units with 
+exponents denoted with "^". Valid examples include "mg L^-1", "ft^3 s^-1", 
 "kg", and "colonies d^-1". Here is the full set of possibilites, separated by
 units type:
 
@@ -153,6 +183,14 @@ units type:
 
 }
 
+#' \code{basin.area.units} take the form AREA.
+
+\itemize{
+
+\item AREA: m^2, ha, km^2, ft^2, ac, mi^2
+
+}
+
 For compatibility with \pkg{rloadest} models, \code{metadata} and 
 \code{updateMetadata} also accept all those units accepted by \pkg{rloadest} 
 (see next section).
@@ -163,7 +201,7 @@ For compatibility with \pkg{rloadest} models, \code{metadata} and
 
 Units passed to \pkg{rloadest} take the form "X/Y" or "X per Y" or an 
 abbreviation and accept a limited number of numerators and denominators. Any 
-valid \pkg{rloadest} units will be translated to valid \pkg{\link{loadflex}}
+valid \pkg{rloadest} units will be translated to valid \pkg{\link{loadflex}} 
 units when supplied to \code{\link{loadReg2}}, \code{metadata} or 
 \code{updateMetadata}. These rloadest-style units are currently accepted:
 
@@ -212,11 +250,16 @@ ng, ug, mg, g, kg, Mg, tons, pounds, lbs, lb
 \examples{
 md <- metadata(constituent="NO3", flow="DISCHARGE", 
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-  load.rate.units="kg d^-1", station="Lamprey River, NH")
-  
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH",
+  site.id="1073500", custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
+md1 <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+md2 <- updateMetadata(md1, site.id="1073500", 
+  custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
+exampleMetadata()
 }
 \seealso{
-Other metadata: \code{\link{==,metadata,metadata-method}},
-  \code{\link{metadata-getters}}
+Other metadata: \code{\link{metadata-getters}}
 }
 

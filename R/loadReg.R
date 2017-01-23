@@ -36,7 +36,7 @@ getMetadata.loadReg <- function(load.model) {
     flow.units=load.model$flow.units, 
     load.units=load.model$load.units, 
     load.rate.units=paste0(load.model$load.units,"/day"),
-    station=load.model$station)
+    site.name=load.model$station)
 
 }
 

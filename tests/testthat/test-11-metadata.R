@@ -101,7 +101,7 @@ test_that("metadata can be accessed by getInfo", {
   
   # Confirm partial matching and case insensitivity
   expect_equal(getInfo(md, "cu"), getInfo(md, "custom"))
-  expect_equal(getInfo(md, "disch.basin"), getInfo(md, "disch.basin.area"))
+  expect_equal(getInfo(md, "flow.basin"), getInfo(md, "flow.basin.area"))
   
   # Confirm error checking for ambiguity and non-matches
   expect_error(getInfo(md, "fl"))

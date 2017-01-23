@@ -61,7 +61,11 @@ generateUnitsData <- function() {
       unit=c("lb", "ton", "ng", "ug", "mg", "g", "kg", "Mg")),
     data.frame(
       dimension="count",
-      unit=c("colonies", "million_colonies"))
+      unit=c("colonies", "million_colonies")),
+    data.frame(
+      dimension="area",
+      unit=c("m^2", "ha", "km^2", "ft^2", "ac", "mi^2")
+    )
   )
   save(valid.metadata.units, file="data/valid.metadata.units.RData")
 
@@ -126,7 +130,17 @@ generateUnitsData <- function() {
     data.frame(num="million_colonies", rbind(
       data.frame(den="colonies", val=1.0e-6),
       data.frame(den="million_colonies", val=1)
-    ))
+    )),
+    
+    # Areas
+    data.frame(num="km^2", rbind(
+      data.frame(den="ft^2", val=9.290304e-8),
+      data.frame(den="ac", val=0.0040468564224),
+      data.frame(den="mi^2", val=2.589988110336),
+      data.frame(den="m^2", val=1e-6),
+      data.frame(den="ha", val=0.01),
+      data.frame(den="km^2", val=1))
+    )
   ), c("numerator", "denominator", "value"))
   # Append the reverse conversions
   numerator<-denominator<-value<-".transform.var"
@@ -167,7 +181,7 @@ generateUnitsData <- function() {
 #' validMetadataUnits("nonsensical") # FALSE
 #' validMetadataUnits("g", unit.type="load.units") # TRUE
 #' validMetadataUnits("g", unit.type="flow.units") # FALSE
-validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.units","load.units","load.rate.units")) {
+validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.units","load.units","load.rate.units","basin.area.units")) {
   unit.type <- match.arg(unit.type)
 
   # Parse the unit string into numerator and denominator strings
@@ -193,13 +207,14 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   # for each units type. Check.
   switch(
     unit.type,
-    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units"), function(eachtype) {
+    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
         validMetadataUnits(unitstr, eachtype)
       })),
     flow.units = hasDim(numerator, "volume") & hasDim(denominator, "time"),
     conc.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, "volume"),
     load.units = hasDim(numerator, c("mass","count")) & denominator=="",
-    load.rate.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, c("time"))
+    load.rate.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, c("time")),
+    basin.area.units = hasDim(numerator, c("area")) & denominator==""
   )
 }
 
