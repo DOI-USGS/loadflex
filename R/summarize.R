@@ -9,7 +9,7 @@
 #'   fitting a model
 #' @param estdat data frame record of discharge measurements, for making
 #'   predictions from a model
-#' @importFrom dplyr mutate bind_cols select %>%
+#' @importFrom dplyr mutate bind_cols select %>% everything
 #' @examples
 #' data(lamprey_nitrate)
 #' data(lamprey_discharge)
@@ -21,6 +21,10 @@
 #' sitesum <- summarizeInputs(metadata=md, fitdat=select(lamprey_nitrate, -REGR), 
 #'   estdat=lamprey_discharge)
 summarizeInputs <- function(metadata, fitdat, estdat) {
+  
+  constituent <- flow <- load.rate <- dates <- station <- site.name <- 
+    site.id <- consti.name <- flow.basin.area <- basin.area <- '.dplyr.var'
+  
   # convert metadata into data.frame and add a statistic or two
   site.info <- 
     as.data.frame(metadata) %>%
@@ -48,6 +52,7 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
 #' @param data data.frame of input data, either for model fitting (concentration
 #'   and discharge) or prediction (discharge only)
 #' @return data frame of statistics about the input data
+#' @importFrom stats median
 #' @keywords internal
 summarizeInput <- function(metadata, data) {
   date.col <- getInfo(metadata, 'date')
