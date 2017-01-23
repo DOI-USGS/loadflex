@@ -56,8 +56,10 @@ return.}
 \item{consti.name}{character. Consituent long name, for use in plots and 
 reports}
 
-\item{site.name}{character. A description of the sampling station or site. 
-Formerly named \code{station}.}
+\item{site.name}{character. A description of the station or site where the 
+concentration of the constituent was measured. This argument or
+\code{site.id} is a better place for a site identifier than the
+\code{station} argument, which is deprecated.}
 
 \item{site.id}{character Station ID for the site where the concentration of 
 the constituent was measured.}

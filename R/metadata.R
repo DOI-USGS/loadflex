@@ -31,8 +31,10 @@
 #' @slot station deprecated. character. A description of the sampling station or
 #'   site. It's now recommended to use \code{site.name} and/or \code{site.id} 
 #'   instead.
-#' @slot site.name character. A description of the sampling station or site. 
-#'   Formerly named \code{station}.
+#' @slot site.name character. A description of the station or site where the 
+#'   concentration of the constituent was measured. This slot or \code{site.id} 
+#'   is a better place for a site identifier than the \code{station} slot, which
+#'   is deprecated.
 #' @slot site.id character Station ID for the site where the concentration of 
 #'   the constituent was measured.
 #' @slot lat numeric Station latitude where concentration (and possibly also 
@@ -316,8 +318,10 @@ setClass(
 #'   return.
 #' @param consti.name character. Consituent long name, for use in plots and 
 #'   reports
-#' @param site.name character. A description of the sampling station or site. 
-#'   Formerly named \code{station}.
+#' @param site.name character. A description of the station or site where the 
+#'   concentration of the constituent was measured. This argument or
+#'   \code{site.id} is a better place for a site identifier than the
+#'   \code{station} argument, which is deprecated.
 #' @param site.id character Station ID for the site where the concentration of 
 #'   the constituent was measured.
 #' @param lat numeric Station latitude where concentration (and possibly also 

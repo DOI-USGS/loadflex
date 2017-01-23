@@ -47,8 +47,10 @@ by predict.loadModel().}
 site. It's now recommended to use \code{site.name} and/or \code{site.id} 
 instead.}
 
-\item{\code{site.name}}{character. A description of the sampling station or site. 
-Formerly named \code{station}.}
+\item{\code{site.name}}{character. A description of the station or site where the 
+concentration of the constituent was measured. This slot or \code{site.id} 
+is a better place for a site identifier than the \code{station} slot, which
+is deprecated.}
 
 \item{\code{site.id}}{character Station ID for the site where the concentration of 
 the constituent was measured.}
