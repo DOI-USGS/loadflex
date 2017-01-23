@@ -92,19 +92,19 @@ summarizeModel.loadReg2 <- function(model) {
 #' @export
 #'
 summarizePreds <- function(preds, meta, by, model.name) {
-   station <- getInfo(meta, field = c("station"))
+   site.id <- getInfo(meta, "site.id")
    if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
     #TODO: what happens with partial years? want to leave them out
     
-    multiYear <- data.frame(station = station, model = model.name,
+    multiYear <- data.frame(site.id = site.id, model = model.name,
                             multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
     retDF <- multiYear
   } else if(by == "annual") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
-    retDF <- data.frame(station = rep(station, nrow(annuals)), 
+    retDF <- data.frame(site.id = rep(site.id, nrow(annuals)), 
                         model = rep(model.name, nrow(annuals)),annuals)
   }
   return(retDF)
