@@ -324,7 +324,7 @@ setClass(
 #'   discharge) was measured.
 #' @param lon numeric Station longitude where concentration (and possibly also 
 #'   discharge) was measured.
-#' @param basin.area numeric Area of the drainage basin contributing water to
+#' @param basin.area numeric Area of the drainage basin contributing water to 
 #'   the site where concentrations were measured.
 #' @param flow.site.name character Long name of the station where flow was 
 #'   monitored, if different from where concentration was monitored (as in 
@@ -339,8 +339,8 @@ setClass(
 #' @param flow.basin.area numeric Area of the drainage basin contributing water 
 #'   to the site where flow was monitored, if different from where concentration
 #'   was monitored (as in \code{basin.area}).
-#' @param basin.area.units character Units of the values in \code{basin.area}
-#'   and \code{flow.basin.area} (must be the same for both). Basin areas are
+#' @param basin.area.units character Units of the values in \code{basin.area} 
+#'   and \code{flow.basin.area} (must be the same for both). Basin areas are 
 #'   used to compute yields as loads per contributing (basin) area.
 #' @return \code{metadata} returns a new metadata object with the specified 
 #'   entries.
@@ -687,13 +687,13 @@ setMethod(
 #' @param x a loadflex metadata object
 #' @param row.names NULL or a character vector giving the row names for the data
 #'   frame. Missing values are not allowed.
-#' @param optional logical. If TRUE, setting row names and converting column
-#'   names (to syntactic names: see make.names) is optional. Note that all of
+#' @param optional logical. If TRUE, setting row names and converting column 
+#'   names (to syntactic names: see make.names) is optional. Note that all of 
 #'   R's base package as.data.frame() methods use optional only for column names
-#'   treatment, basically with the meaning of data.frame(*, check.names =
+#'   treatment, basically with the meaning of data.frame(*, check.names = 
 #'   !optional).
 #' @param ... additional arguments to be passed to or from methods.
-#' @param stringsAsFactors logical: should the character vector be converted to
+#' @param stringsAsFactors logical: should the character vector be converted to 
 #'   a factor?
 #' @importFrom dplyr bind_cols
 as.data.frame.metadata <- function(x, row.names=NULL, optional=FALSE, ..., stringsAsFactors=FALSE) {

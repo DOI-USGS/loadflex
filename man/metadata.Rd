@@ -68,7 +68,7 @@ discharge) was measured.}
 \item{lon}{numeric Station longitude where concentration (and possibly also 
 discharge) was measured.}
 
-\item{basin.area}{numeric Area of the drainage basin contributing water to
+\item{basin.area}{numeric Area of the drainage basin contributing water to 
 the site where concentrations were measured.}
 
 \item{flow.site.name}{character Long name of the station where flow was 
@@ -89,8 +89,8 @@ different from where concentration was monitored (as in \code{site.lon}).}
 to the site where flow was monitored, if different from where concentration
 was monitored (as in \code{basin.area}).}
 
-\item{basin.area.units}{character Units of the values in \code{basin.area}
-and \code{flow.basin.area} (must be the same for both). Basin areas are
+\item{basin.area.units}{character Units of the values in \code{basin.area} 
+and \code{flow.basin.area} (must be the same for both). Basin areas are 
 used to compute yields as loads per contributing (basin) area.}
 
 \item{metadata}{the metadata object to update.}
