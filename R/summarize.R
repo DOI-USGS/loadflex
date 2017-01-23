@@ -24,19 +24,29 @@ summarizeSite <- function(site.info, constit.df) {
   return(site.info)
 }
 
-#' Get various summary statistics on a date vector
-#'
-#' @param date.col vector of dates
+#' Get summary statistics for a single input data.frame
 #' 
-#' @return data frame of date statistics, including 
-#'
-getDateStats <- function(date.col) {
-  #is there a function that could be used instead of this?
-  start <- min(date.col)
-  end <- max(date.col)
-  n <- length(date.col)
-  statDF <- data.frame(start, end, n, stringsAsFactors = FALSE)
-  return(statDF)
+#' @param metadata object of class metadata, describing the site and data
+#' @param data data.frame of input data, either for model fitting (concentration
+#'   and discharge) or prediction (discharge only)
+#' @return data frame of statistics about the input data
+#' @keywords internal
+summarizeInput <- function(metadata, data) {
+  date.col <- getInfo(metadata, 'date')
+  ccdata <- data[complete.cases(data), ]
+  
+  input.info <- data.frame(
+    start = min(ccdata[[date.col]]), # true start (first non-NA)
+    end = max(ccdata[[date.col]]), # true end (last non-NA)
+    num.total = nrow(data),
+    num.incomplete = nrow(data) - nrow(ccdata),
+    num.censored = 'TBD', # placeholder; need to decide how we're storing censored data first
+    min.gap.days = min(as.numeric(diff(ccdata[[date.col]]), units='days')),
+    max.gap.days = max(as.numeric(diff(ccdata[[date.col]]), units='days')),
+    median.gap.days = median(as.numeric(diff(ccdata[[date.col]]), units='days')),
+    stringsAsFactors = FALSE)
+  
+  return(input.info)
 }
 
 #' Extract various model summary statistics
