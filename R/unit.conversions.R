@@ -207,7 +207,7 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   # for each units type. Check.
   switch(
     unit.type,
-    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units"), function(eachtype) {
+    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
         validMetadataUnits(unitstr, eachtype)
       })),
     flow.units = hasDim(numerator, "volume") & hasDim(denominator, "time"),
