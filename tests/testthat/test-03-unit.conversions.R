@@ -37,6 +37,9 @@ test_that("flowUnitsConversion works",m {
     flowUnitsConversion(old.units='ft^3 s^-1', new.units='dL d^-1', attach.units = TRUE),
     expected.units = 'dL d^-1 ft^-3 s'))
   expect_error(flowUnitsConversion(old.units='g m^-3', new.units='mg L^-1')) # error because not flow
+  
+  qConvert <- flowUnitsConversion('cfs', 'cms')
+  expect_true(qConvert < 0.03 & qConvert > 0.01)
 })
 
 test_that("flowconcToFluxConversion works", {
