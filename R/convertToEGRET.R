@@ -178,7 +178,7 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
 #'   name, this would be a character vector with the first name as 'custom'
 #'   (e.g. nm = c('custom', 'staAbbr'))
 #'   
-#' @export
+#' @keywords internal
 verify_meta <- function(meta, nm) {
 
   if("custom" %in% nm) {

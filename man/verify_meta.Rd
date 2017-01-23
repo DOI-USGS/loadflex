@@ -17,4 +17,5 @@ name, this would be a character vector with the first name as 'custom'
 Verify that the loadflex metadata object has everything EGRET
   needs.
 }
+\keyword{internal}
 
