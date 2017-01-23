@@ -18,7 +18,7 @@ convertToEGRET <- function(intdat = NULL, estdat = NULL, preds = NULL, meta = NU
   info_df <- convertToEGRETInfo(meta, preds.type)
 
   # EGRET expects cms.
-  qconvert <- 1/flowUnitsConversion(info_df$param.units, 'cms')
+  qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
   
   daily_df <- convertToEGRETDaily(estdat, meta, preds, preds.type, qconvert)
   
