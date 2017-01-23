@@ -4,11 +4,11 @@
 \alias{convertToEGRET}
 \title{Convert loadflex to EGRET object}
 \usage{
-convertToEGRET(intdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
+convertToEGRET(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
   preds.type = "Conc")
 }
 \arguments{
-\item{intdat}{data.frame of interpolation data}
+\item{fitdat}{data.frame of data used to fit a model}
 
 \item{estdat}{data.frame of estimation data}
 

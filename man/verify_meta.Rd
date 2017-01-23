@@ -9,11 +9,12 @@ verify_meta(meta, nm)
 \arguments{
 \item{meta}{loadflex metadata object}
 
-\item{nm}{character name of the metadata item to check. If it is a 
-custom name, this would be a character vector with the first name as
-'custom' (e.g. nm = c('custom', 'staAbbr'))}
+\item{nm}{character name of the metadata item to check. If it is a custom
+name, this would be a character vector with the first name as 'custom'
+(e.g. nm = c('custom', 'staAbbr'))}
 }
 \description{
-Verify that the loadflex metadata object has everything it needs.
+Verify that the loadflex metadata object has everything EGRET
+  needs.
 }
 
