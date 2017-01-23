@@ -33,8 +33,8 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
     mutate(basin.area.ratio.QC = flow.basin.area / basin.area)
   
   # compute date statistcs for both input datasets
-  fitdat.stats <- summarizeInput(metadata, fitdat)
-  estdat.stats <- summarizeInput(metadata, estdat)
+  fitdat.stats <- summarizeTimeseries(metadata, fitdat)
+  estdat.stats <- summarizeTimeseries(metadata, estdat)
   
   # combine all info into a single data.frame row
   all.info <- data.frame(
@@ -54,7 +54,7 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
 #' @return data frame of statistics about the input data
 #' @importFrom stats median
 #' @keywords internal
-summarizeInput <- function(metadata, data) {
+summarizeTimeseries <- function(metadata, data) {
   date.col <- getInfo(metadata, 'date')
   ccdata <- data[complete.cases(data), ]
   
