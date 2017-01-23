@@ -99,7 +99,7 @@ plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
                         boxConcMonth = ,
                         plotConcTime = ,
                         plotConcQ = ,
-                        plotFluxQ = missing(intdat) | missing(meta),
+                        plotFluxQ = is.null(fitdat) | is.null(meta),
                         
                         # require fitdat, meta, estdat, and preds
                         boxQTwice = ,
@@ -115,8 +115,8 @@ plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
                         boxConcThree = , 
                         plotConcHist = , 
                         plotFluxHist = ,
-                        fluxBiasMulti = missing(intdat) | missing(meta) |
-                          missing(estdat) | missing(preds),
+                        fluxBiasMulti = is.null(fitdat) | is.null(meta) |
+                          is.null(estdat) | is.null(preds),
                         
                         # default if no name matches
                         FALSE)
