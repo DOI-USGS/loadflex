@@ -26,6 +26,8 @@ a factor?}
 }
 \description{
 Organize the fields of a metadata object into a 1-row data.frame. If there is
-a custom field, this will
+a custom field, attempt to coerce that field into 1-row data.frame columns 
+using \code{as.data.frame}; if that effort fails, the custom field will be 
+excluded.
 }
 
