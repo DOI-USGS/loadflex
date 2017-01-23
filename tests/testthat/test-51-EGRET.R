@@ -1,6 +1,6 @@
 # Setup of data to use in tests
 
-intdat <- data.frame(
+fitdat <- data.frame(
   conc=c(5,4,2,6,9,8),
   discharge=10,
   datetime=strptime(paste0("2000-05-",c(2,5,13,15,23,31)),format="%Y-%m-%d"))
@@ -13,24 +13,24 @@ meta <- metadata(constituent="conc", flow="discharge", dates="datetime",
                  custom=list(sta.abbr = "examp",
                              consti.name = "nitrate"))
 conc_lm <- loadLm(formula=log(conc) ~ log(discharge), pred.format="conc", 
-                  data=intdat, metadata=meta, retrans=exp)
-preds <- predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
-preds_flux <- predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
+                  data=fitdat, metadata=meta, retrans=exp)
+preds <- suppressWarnings(predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE))
+preds_flux <- suppressWarnings(predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE))
 
 context("convertToEGRET")
 
 test_that("convertToEGRET fails when missing metadata", {
-  expect_error(loadflex:::convertToEGRET(intdat = intdat),
+  expect_error(loadflex:::convertToEGRET(fitdat = fitdat),
                'metadata is required to create an EGRET eList')
 })
 
-test_that("convertToEGRET creates EGRET object without intdat", {
+test_that("convertToEGRET creates EGRET object without fitdat", {
   eList <- loadflex:::convertToEGRET(meta = meta, estdat = estdat, preds = preds)
   expect_true(is.na(eList$Sample))
 })
 
 test_that("convertToEGRET creates EGRET object without estdat & preds", {
-  eList <- loadflex:::convertToEGRET(meta = meta, intdat = intdat)
+  eList <- loadflex:::convertToEGRET(meta = meta, fitdat = fitdat)
   expect_true(is.na(eList$Daily))
 })
 
@@ -68,12 +68,12 @@ test_that("convertToEGRETInfo correctly converts metadata", {
 
 context("convertToEGRETSample")
 
-test_that("convertToEGRETSample returns NA without intdat", {
-  expect_equal(loadflex:::convertToEGRETSample(meta = meta, intdat = NULL), NA)
+test_that("convertToEGRETSample returns NA without fitdat", {
+  expect_equal(loadflex:::convertToEGRETSample(meta = meta, fitdat = NULL), NA)
 })
 
 test_that("convertToEGRETSample correctly converts", {
-  Sample <- loadflex:::convertToEGRETSample(meta = meta, intdat = intdat)
+  Sample <- loadflex:::convertToEGRETSample(meta = meta, fitdat = fitdat)
   expect_equal(nrow(Sample), 6)
   expect_equal(ncol(Sample), 15)
   
