@@ -150,7 +150,7 @@ plotEGRET <- function(plot.name, intdat = NULL, estdat = NULL, preds = NULL,
          boxConcThree = boxConcThree(egretobj, ...), 
          plotConcHist = plotConcHist(egretobj, ...), 
          plotFluxHist = plotFluxHist(egretobj, ...),
-         fluxBiasMulti = fluxBiasMulti(egretobj, ...),
+         fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = NULL, ...),
          
          # default if no name matches
          stop(paste('unrecognized plot.name:', plot.name)))
