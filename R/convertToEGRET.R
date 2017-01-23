@@ -64,6 +64,8 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
     return(NA)
   }
   
+  dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- '.dplyr.var'
+  
   flow_col <- verify_meta(meta, 'flow')
   date_col <- verify_meta(meta, 'dates')
   constituent <- verify_meta(meta, 'constituent')
@@ -147,6 +149,8 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
                                   qconvert = qconvert)
   
   if(!is.null(preds)) {
+    
+    se.pred <- ConcDay <- FluxDay <- '.dplyr.var'
   
     daily_df <- daily_df %>% 
       left_join(preds, by=c("dateTime" = "date")) %>% 
