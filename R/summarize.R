@@ -1,27 +1,45 @@
-#' summarize WQ site information
-#'
+#' Summarize the site and input data
+#' 
 #' @return data frame of the following information:
 #' @export
-#' @param site.info data frame containing site information, with column for station id
-#' @param constit.df data frame record of constituent measurements
-#' @importFrom dplyr mutate
-#' @importFrom dplyr bind_cols
-summarizeSite <- function(site.info, constit.df) {
-  #get existing site metadata?
- 
+#' @param metadata metadata, used to access the appropriate columns of data. At 
+#'   a minimum, \code{metadata} should correctly specify the date column and the
+#'   column indicated by \code{interp.format}.
+#' @param fitdat data frame record of constituent+discharge measurements, for
+#'   fitting a model
+#' @param estdat data frame record of discharge measurements, for making
+#'   predictions from a model
+#' @importFrom dplyr mutate bind_cols select %>%
+#' @examples
+#' data(lamprey_nitrate)
+#' data(lamprey_discharge)
+#' md <- metadata(constituent="NO3", flow="DISCHARGE", 
+#'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+#'   load.rate.units="kg d^-1", site.name="Lamprey River, NH",
+#'   basin.area=50, flow.basin.area=65, basin.area.units='ha',
+#'   site.id="1073500", custom=list(data.source="USGS NWIS, waterdata.usgs.gov"))
+#' sitesum <- summarizeInputs(metadata=md, fitdat=select(lamprey_nitrate, -REGR), 
+#'   estdat=lamprey_discharge)
+summarizeInputs <- function(metadata, fitdat, estdat) {
+  # convert metadata into data.frame and add a statistic or two
+  site.info <- 
+    as.data.frame(metadata) %>%
+    select(-constituent, -flow, -load.rate, -dates, -station) %>%
+    select(site.name, site.id, consti.name, everything()) %>%
+    mutate(basin.area.ratio.QC = flow.basin.area / basin.area)
   
-  #add metrics that have to be calculated
-  if(!is.Date(constit.df$date)) {
-    constit.df <- mutate(constit.df, date = as.Date(date))
-  }
+  # compute date statistcs for both input datasets
+  fitdat.stats <- summarizeInput(metadata, fitdat)
+  estdat.stats <- summarizeInput(metadata, estdat)
   
-  #will need work if summarizeSites will deal with multiple sites
-  #could be useful as a stand-alone function?
-  dateStats <- getDateStats(constit.df$date)
+  # combine all info into a single data.frame row
+  all.info <- data.frame(
+    site.info, 
+    fitdat=fitdat.stats, 
+    estdat=estdat.stats, 
+    stringsAsFactors=FALSE)
   
-  site.info <- bind_cols(site.info, dateStats)
-  
-  return(site.info)
+  return(all.info)
 }
 
 #' Get summary statistics for a single input data.frame
