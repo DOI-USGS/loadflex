@@ -58,7 +58,7 @@ Create a metadata description of the dataset & desired output.
 ```{r fig_1A}
 meta <- metadata(constituent="NO3", flow="DISCHARGE", 
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-  load.rate.units="kg d^-1", station="Lamprey River, NH")
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 ```
 
 Fit four models: interpolation, linear, rloadest, and composite. Many variants on these models are possible. For example: `loadInterp` models may use any of several interp.fun options; see `?interpolations`. `loadLm` accepts any linear model acceptable to `lm()`, not just the very simple formula we have used here. `loadReg2` functions are also flexible as specified in the documentation for \pkg{rloadest}. `loadComp` models accept a linear model as fit by either `loadLm` or `loadReg2` and any of the interp.fun options available to `loadInterp`.
@@ -71,7 +71,8 @@ no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
 library(rloadest)
 no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
-  flow.units="cfs", conc.units="mg/L", load.units="kg"))
+  flow.units="cfs", conc.units="mg/L", load.units="kg",
+  station='Lamprey River, NH'))
 no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
   interp.data=intdat)
 ```
@@ -79,7 +80,7 @@ no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc",
 You can inspect these models in a variety of model-specific ways. Here are some commands to try (we won't print them here because the output can be lengthy):
 
 ```{r, eval=FALSE}
-print(no3_li)
+getMetadata(no3_li)
 getFittingFunction(no3_lm)
 getFittedModel(no3_lr)
 getFittingData(no3_lc)
