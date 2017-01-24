@@ -62,6 +62,9 @@ test_that("convertToEGRETInfo correctly converts metadata", {
   expect_equal(INFO$staAbbrev, "examp")
   expect_equal(INFO$param.units, "mg L^-1")
   expect_equal(INFO$shortName, "Example Station")
+  
+  INFO <- loadflex:::convertToEGRETInfo(meta = meta, preds.type = 'Flux')
+  expect_equal(INFO$param.units, "kg d^-1")
 })
 
 

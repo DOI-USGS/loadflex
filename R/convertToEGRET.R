@@ -99,11 +99,12 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
 
 #' Convert a loadflex metadata object into the EGRET INFO dataframe.
 #' 
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, site.id, and consti.name
-#' @param preds.type character specifying if the predictions being used are
-#' concentrations ("Conc") or fluxes ("Flux").
-#' 
+#' @param meta loadflex metadata object; it must include site.name, consti.name,
+#'   site.id, constituent, and the relevant type of units (conc.units or
+#'   load.units, depending on preds.type)
+#' @param preds.type character specifying if the predictions being used are 
+#'   concentrations ("Conc") or fluxes ("Flux").
+#'   
 convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
   if(is.null(meta)) {
     stop("metadata is required to create an EGRET eList")
@@ -113,7 +114,7 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
                         paramShortName=verify_meta(meta, 'consti.name'),
                         staAbbrev=verify_meta(meta, 'site.id'),
                         constitAbbrev=verify_meta(meta, 'constituent'),
-                        param.units=verify_meta(meta, paste0(tolower(preds.type), '.units')),
+                        param.units=verify_meta(meta, c('Conc'='conc.units', 'Flux'='load.rate.units')[[preds.type]]),
                         stringsAsFactors = FALSE)
   return(info_df)
 }
