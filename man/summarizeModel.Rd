@@ -14,10 +14,6 @@ summarizeModel(model)
 }
 \arguments{
 \item{model}{the input model object; will extend to several types}
-
-\item{model}{loadReg2 model object to summarize}
-
-\item{model}{loadReg model object to summarize}
 }
 \description{
 Extract various model summary statistics

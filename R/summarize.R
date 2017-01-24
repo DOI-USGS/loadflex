@@ -80,14 +80,12 @@ summarizeModel <- function(model) UseMethod("summarizeModel")
 
 #' stats for loadflex loadReg2 model
 #' @rdname summarizeModel
-#' @param model loadReg2 model object to summarize
 #' 
 summarizeModel.loadReg2 <- function(model) {
 }
 
 #' stats for rloadest loadReg model
 #' @rdname summarizeModel
-#' @param model loadReg model object to summarize
 #' @export
 #' 
 summarizeModel.loadReg <- function(model) {
