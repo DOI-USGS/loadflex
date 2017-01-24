@@ -171,14 +171,15 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   return(daily_df)
 }
 
-#' Verify metadata object
+#' Return a value from metadata or throw error if invalid request
 #' 
-#' @description Verify that the loadflex metadata object has everything EGRET
-#'   needs.
+#' @description Try to get a value of name \code{nm} from the regular or custom
+#'   slots in a metadata object. If the named value is unavailable or "", throw
+#'   an error.
 #'   
 #' @param meta loadflex metadata object
-#' @param nm character name of the metadata item to check. If it is a custom
-#'   name, this would be a character vector with the first name as 'custom'
+#' @param nm character name of the metadata item to check. If it is a custom 
+#'   name, this would be a character vector with the first name as 'custom' 
 #'   (e.g. nm = c('custom', 'staAbbr'))
 #'   
 #' @keywords internal
