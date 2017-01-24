@@ -21,12 +21,13 @@
 #'   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 #' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
 #'   data=fitdat, metadata=meta, retrans=exp)
-#' preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
-#' loadflex:::convertToEGRET(fitdat, estdat, preds, meta)
+#' preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+#' preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
+#' loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
 convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   info_df <- convertToEGRETInfo(meta, preds.type)
-
+  
   # EGRET expects cms.
   qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
   
@@ -89,6 +90,9 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
   if(!is.null(dailydat)) {
     subDaily <- select(sample_df, dateTime) %>%
       left_join(select(dailydat, dateTime, SE, yHat), by="dateTime") %>%
+      # the following line suggests to me that SE is in log space in EGRET, but
+      # in convertToEGRETDaily we're currently passing in the retransformed SE
+      # for the predictions. One or the other of these needs to get fixed.
       mutate(ConcHat = exp(yHat)*exp((SE^2)/2)) 
     
     sample_df <- bind_cols(sample_df, subDaily)
@@ -140,8 +144,9 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
     return(NA)
   }
   
-  stopifnot(preds.type %in% c('Conc', 'Flux'))
-
+  #stopifnot(preds.type %in% c('Conc', 'Flux'))
+  stopifnot(preds.type=='Conc') # we need it to be Conc so we can get the SE for conc below
+  
   daily_df <- flowCorrectionEGRET(flowdat = estdat, 
                                   flow.colname = verify_meta(meta, 'flow'),
                                   date.colname = verify_meta(meta, 'dates'),
@@ -150,21 +155,26 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   if(!is.null(preds)) {
     
     se.pred <- ConcDay <- FluxDay <- '.dplyr.var'
-  
+    
+    # merge daily_df with preds
     daily_df <- daily_df %>% 
       left_join(preds, by=c("dateTime" = "date")) %>% 
       rename_(.dots = setNames("fit",paste0(preds.type, "Day"))) %>% 
-      rename(SE = se.pred)
-  
+      rename(SE = se.pred) # in EGRET, the SE always describes the SE in ConcDay. So we should be converting it here if preds.type="Flux"
+    if(preds.type=='Flux') warning("convertToEGRETDaily is probably not handling preds.type=='Flux' correctly yet")
+    
+    # fill in whichever preds weren't given
     if(preds.type == "Conc") {
-      daily_df <- mutate(daily_df, FluxDay = ConcDay*daily_df$Q * 86.4)
+      meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
+      daily_df <- mutate(daily_df, FluxDay = formatPreds(daily_df$ConcDay, 'conc', 'flux', newdata=daily_df, metadata=meta.conv))
+      # daily_df <- mutate(daily_df, FluxDay = ConcDay*daily_df$Q * 86.4)
     } else {
-      daily_df <- mutate(daily_df, ConcDay = FluxDay/(daily_df$Q * 86.4))
+      meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', conc.units='mg L^-1')
+      daily_df <- mutate(daily_df, ConcDay = formatPreds(daily_df$FluxDay, 'flux', 'conc', newdata=daily_df, metadata=meta.conv))
+      # daily_df <- mutate(daily_df, ConcDay = FluxDay/(daily_df$Q * 86.4))
     }
-      
-    # TO DO: explore issues with bias
-    # ldecicco "In EGRET, it's a little more complicated than just 
-    # log(C) (there's various bias correction things going on)"
+    
+    # TO DO: explore issues with bias. See GitHub issue #134
     daily_df <- daily_df %>% mutate(yHat = log(ConcDay))
   }
   
@@ -184,7 +194,7 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
 #'   
 #' @keywords internal
 verify_meta <- function(meta, nm) {
-
+  
   if("custom" %in% nm) {
     meta_value <- loadflex::getInfo(meta, nm[1])
     meta_value <- meta_value[[nm[2]]]
@@ -199,17 +209,22 @@ verify_meta <- function(meta, nm) {
   return(meta_value)
 }
 
-#' Use EGRET functions to correct flow values
+#' Convert a date and discharge data.frame into EGRET format
 #' 
-#' @description Uses the EGRET function populateDaily to convert values 
-#' into cubic meters per second.
-#' 
+#' @description Use EGRET functions to convert a data.frame of date and 
+#'   discharge columns into "the basic Daily data frame used in WRTDS", i.e., a 
+#'   13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day
+#'   smoothed Q, plus a column for dateTime. See 
+#'   \code{\link[EGRET]{populateDaily}}
+#'   
 #' @param flowdat data frame with discharge values to convert
-#' @param flow.colname character string giving the column name that corresponds to flow
-#' @param date.colname character string giving the column name that corresponds to dates
-#' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
-#' conversion factor is for cubic feet per second.
-#' 
+#' @param flow.colname character string giving the column name that corresponds 
+#'   to flow
+#' @param date.colname character string giving the column name that corresponds 
+#'   to dates
+#' @param qconvert numeric conversion factor to get flow into cubic meters per 
+#'   second. Default conversion factor is for cubic feet per second.
+#'   
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
