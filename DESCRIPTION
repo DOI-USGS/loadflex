@@ -24,7 +24,7 @@ Depends:
     methods
 Imports:
     smwrBase (>= 1.1.2),
-    rloadest (>= 0.4.3),
+    rloadest (>= 0.4.4),
     unitted (>= 0.2.5),
     car,
     dplyr,
