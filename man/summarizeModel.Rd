@@ -2,19 +2,28 @@
 % Please edit documentation in R/summarize.R
 \name{summarizeModel}
 \alias{summarizeModel}
+\alias{summarizeModel.loadReg}
 \alias{summarizeModel.loadReg2}
 \title{Extract various model summary statistics}
 \usage{
 summarizeModel(model)
 
 \method{summarizeModel}{loadReg2}(model)
+
+\method{summarizeModel}{loadReg}(model)
 }
 \arguments{
 \item{model}{the input model object; will extend to several types}
+
+\item{model}{loadReg2 model object to summarize}
+
+\item{model}{loadReg model object to summarize}
 }
 \description{
 Extract various model summary statistics
 
-stats for rloadest loadReg2 model
+stats for loadflex loadReg2 model
+
+stats for rloadest loadReg model
 }
 

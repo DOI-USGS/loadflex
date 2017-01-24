@@ -2,8 +2,7 @@
 % Please edit documentation in R/summarize.R
 \name{summarizePreds}
 \alias{summarizePreds}
-\title{Summarize generated predictions 
-just take one site for now}
+\title{Summarize generated predictions}
 \usage{
 summarizePreds(preds, meta, by, model.name)
 }
@@ -21,7 +20,6 @@ yearly (water year) averages}
 data frame containing various statistics
 }
 \description{
-Summarize generated predictions 
-just take one site for now
+Summarize generated predictions
 }
 
