@@ -32,7 +32,7 @@ test_that("translateFreeformToUnitted works", {
   
 })
 
-test_that("flowUnitsConversion works",m {
+test_that("flowUnitsConversion works", {
   expect_silent(verify_units(
     flowUnitsConversion(old.units='ft^3 s^-1', new.units='dL d^-1', attach.units = TRUE),
     expected.units = 'dL d^-1 ft^-3 s'))
