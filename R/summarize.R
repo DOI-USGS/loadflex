@@ -83,7 +83,6 @@ summarizeModel <- function(model) UseMethod("summarizeModel")
 #' @param model loadReg2 model object to summarize
 #' 
 summarizeModel.loadReg2 <- function(model) {
-  rmse <- sqrt(mean(residuals(model)^2))
 }
 
 #' stats for rloadest loadReg model
@@ -96,7 +95,7 @@ summarizeModel.loadReg <- function(model) {
   #### NOTE ####
   ##   R-square needs to change when censored values are present!!
   #  see print.loadReg.R line 131 in rloadest
-  retDF <- data.frame(t(rloadest:::coef(model)), 
+  retDF <- data.frame(t(rloadest:::coef.loadReg(model)), 
                       RMSE = rloadest:::rmse.loadReg(model),
                       R_Square = model$lfit$RSQ,
                       P_value = getPVal(model))
@@ -135,6 +134,7 @@ summarizePreds <- function(preds, meta, by, model.name) {
 
 #' helper function to compute the p-value like rloadest does in 
 #' print.loadReg
+#' @importFrom stats pchisq
 #' @param model the loadReg model object
 #'  
 getPVal <- function(model) {
