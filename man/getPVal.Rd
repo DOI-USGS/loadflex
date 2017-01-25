@@ -5,10 +5,10 @@
 \title{helper function to compute the p-value like rloadest does in 
 print.loadReg}
 \usage{
-getPVal(load.model)
+getPVal(fit)
 }
 \arguments{
-\item{load.model}{the loadReg load.model object}
+\item{fit}{the loadReg lfit or cfit object}
 }
 \description{
 helper function to compute the p-value like rloadest does in 

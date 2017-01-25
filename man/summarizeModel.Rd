@@ -4,15 +4,17 @@
 \alias{summarizeModel}
 \title{Extract model summary statistics}
 \usage{
-summarizeModel(load.model)
+summarizeModel(load.model, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
+
+\item{...}{Other arguments passed to model-specific methods}
 }
 \description{
-summarizeModel produces a 1-row data.frame of model metrics. The relevant
-metrics vary by model type; only the relevant metrics are reported for each
+summarizeModel produces a 1-row data.frame of model metrics. The relevant 
+metrics vary by model type; only the relevant metrics are reported for each 
 model.
 }
 \seealso{

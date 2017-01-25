@@ -201,34 +201,42 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   }
 #' @rdname summarizeModel.loadReg2
 #' @export
-summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc")) {
+summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
   
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   loadReg.model <- c("flux"="load","conc"="concentration")[[flux.or.conc]]
   loadReg.fit <- load.model[[c(flux='lfit',conc='cfit')[[flux.or.conc]]]]
   
-  #### NOTE ####
-  ##   R-square needs to change when censored values are present!!
-  #  see print.loadReg.R line 131 in rloadest
-  
+  # summarize the coefficient estimates, standard errors, and p-values
   coefs <- coef(load.model, summary=TRUE, which=loadReg.model)
+  coefsDF <- setNames(
+    data.frame(
+      t(coefs[,'Estimate']),
+      SE=t(coefs[,'Std. Error']),
+      pval=t(coefs[,'p-value'])
+    ),
+    nm = paste0(
+      rep(gsub('(Intercept)', 'Intercept', row.names(coefs), fixed=TRUE), 3), # coefficient names
+      rep(c('', '.SE', '.p.value'), each=nrow(coefs))) # aspect of coefficient being described
+  )
   
-  # package into a single 1-row data.frame
-  retDF <- data.frame(t(coef(load.model)), 
-                      RMSE = rmse(load.model, model=loadReg.model),
-                      R_Square = loadReg.fit$RSQ,
-                      P_value = getPVal(load.model))
-  names(retDF)[1] <- "Intercept" #gets an X added for some reason
+  # package coefs and other overall statistics into a single 1-row data.frame
+  retDF <- data.frame(
+    RMSE = rmse(load.model, model=loadReg.model),
+    r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest
+    p.value = getPVal(loadReg.fit),
+    coefsDF
+  )
   return(retDF)
 }
 
 #' helper function to compute the p-value like rloadest does in 
 #' print.loadReg
 #' @importFrom stats pchisq
-#' @param load.model the loadReg load.model object
+#' @param fit the loadReg lfit or cfit object
 #' @keywords internal
-getPVal <- function(load.model) {
-  G2 <- signif(2*(load.model$lfit$LLR - load.model$lfit$LLR1), 4)
-  pval <- 1 - pchisq(G2, load.model$lfit$NPAR - 1)
+getPVal <- function(fit) {
+  G2 <- signif(2*(fit$LLR - fit$LLR1), 4)
+  pval <- 1 - pchisq(G2, fit$NPAR - 1)
   return(pval)
 }

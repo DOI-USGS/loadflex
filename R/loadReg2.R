@@ -465,8 +465,17 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' 
 #' @inheritParams summarizeModel
 #' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel
-summarizeModel.loadReg2 <- function(load.model) {
-  summarizeModel(getFittedModel(load.model))
+summarizeModel.loadReg2 <- function(load.model, ...) {
+  out <- summarizeModel(getFittedModel(load.model), ...)
+  
+  # add the site.id as the leftmost column
+  out$site.id <- getMetadata(load.model)@site.id
+  site.id <- '.dplyr.var'
+  out <- select(out, site.id, everything())
+  
+  # return
+  return(out)
 }

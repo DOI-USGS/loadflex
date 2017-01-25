@@ -5,13 +5,16 @@
 \alias{summarizeModel.loadReg2}
 \title{Extract model summary statistics from a loadReg2 model}
 \usage{
-\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux", "conc"))
+\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux", "conc"),
+  ...)
 
-\method{summarizeModel}{loadReg2}(load.model)
+\method{summarizeModel}{loadReg2}(load.model, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
+
+\item{...}{Other arguments passed to model-specific methods}
 }
 \value{
 A 1-row data.frame of model metrics
