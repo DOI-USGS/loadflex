@@ -14,6 +14,14 @@
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
 
+\item{flux.or.conc}{character. Which internal model (the flux model or the 
+concentration model) should be summarized? A \pkg{rloadest} model, and 
+therefore also a \code{loadReg2} model, is actually two different models 
+for (1) flux and (2) concentration, each fitted to the same data and with 
+the same model structure except for whether the left-hand side of the model
+formula is flux or concentration. Some of the model metrics differ between 
+these two internal models.}
+
 \item{...}{Other arguments passed to model-specific methods}
 }
 \value{
@@ -39,13 +47,17 @@ instead, call \code{summarizeModel()} on a \code{loadReg2} object.
   \item{\code{RMSE}}{The root mean squared error of the difference between 
   observed and predicted values of concentration.}
   
-  \item{\code{r.squared}}{}
+  \item{\code{r.squared}}{The proportion of variation explained by the 
+  model.}
   
   \item{\code{p.value}}{}
   
   }
 }
 \seealso{
-Other summarizeModel: \code{\link{summarizeModel}}
+Other summarizeModel: \code{\link{summarizeModel.loadComp}},
+  \code{\link{summarizeModel.loadInterp}},
+  \code{\link{summarizeModel.loadLm}},
+  \code{\link{summarizeModel}}
 }
 

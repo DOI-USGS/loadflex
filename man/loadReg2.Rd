@@ -13,11 +13,11 @@ call will be parsed and evaluated within \code{loadReg2} to create a fully
 functional load model for use within \pkg{loadflex}.}
 
 \item{pred.format}{character. Should predictions be made for 'flux' (load 
-rate) or 'conc' (concentration)? rloadest, and therefore loadReg2, uses 
-different models for flux and concentration, though fitted to the same data
-and with the same model structure except for whether the left-hand side of 
-the model formula is load rate or concentration. The model specific to
-\code{pred.format} will be used to generate predictions.}
+rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2,
+uses different models for flux and concentration, though fitted to the same
+data and with the same model structure except for whether the left-hand
+side of the model formula is load rate or concentration. The model specific
+to \code{pred.format} will be used to generate predictions.}
 
 \item{store}{One or more character strings specifying which information to 
 write within the model. Options are 'data': the original fitting data; 

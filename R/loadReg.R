@@ -194,12 +194,22 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   \item{\code{RMSE}}{The root mean squared error of the difference between 
 #'   observed and predicted values of concentration.}
 #'   
-#'   \item{\code{r.squared}}{}
+#'   \item{\code{r.squared}}{The proportion of variation explained by the 
+#'   model.}
 #'   
 #'   \item{\code{p.value}}{}
 #'   
 #'   }
 #' @rdname summarizeModel.loadReg2
+#' @param flux.or.conc character. Which internal model (the flux model or the 
+#'   concentration model) should be summarized? A \pkg{rloadest} model, and 
+#'   therefore also a \code{loadReg2} model, is actually two different models 
+#'   for (1) flux and (2) concentration, each fitted to the same data and with 
+#'   the same model structure except for whether the left-hand side of the model
+#'   formula is flux or concentration. Some of the model metrics differ between 
+#'   these two internal models.
+#' @importFrom smwrStats rmse
+#' @importFrom stats coef
 #' @export
 summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
   
@@ -223,7 +233,7 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
   # package coefs and other overall statistics into a single 1-row data.frame
   retDF <- data.frame(
     RMSE = rmse(load.model, model=loadReg.model),
-    r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest
+    r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
     p.value = getPVal(loadReg.fit),
     coefsDF
   )

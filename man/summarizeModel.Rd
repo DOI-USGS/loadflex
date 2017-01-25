@@ -26,6 +26,9 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{simulateSolute}},
   \code{\link{validLoadModelInterface}}
 
-Other summarizeModel: \code{\link{summarizeModel.loadReg}}
+Other summarizeModel: \code{\link{summarizeModel.loadComp}},
+  \code{\link{summarizeModel.loadInterp}},
+  \code{\link{summarizeModel.loadLm}},
+  \code{\link{summarizeModel.loadReg}}
 }
 
