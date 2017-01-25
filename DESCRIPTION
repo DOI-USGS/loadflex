@@ -21,10 +21,11 @@ Description: Implements several of the most common methods for
 VignetteBuilder: knitr
 Depends:
     R(>= 3.0),
-    methods
+    methods,
+    rloadest (>= 0.4.4)
 Imports:
     smwrBase (>= 1.1.2),
-    rloadest (>= 0.4.4),
+    smwrStats,
     unitted (>= 0.2.5),
     car,
     dplyr,

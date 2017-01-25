@@ -327,3 +327,20 @@ simulateSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), 
   stop("simulateSolute.loadModel is unimplemented; use a descendant such as loadLm")
 
 }
+
+#' Extract model summary statistics from a loadModel model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadModel models include two sets of statistics about autocorrelation (one for
+#' the regression residuals, one for the 'residuals' used to do the composite
+#' correction).
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
+#' @export
+#' @family summarizeModel
+summarizeModel.loadModel <- function(load.model, ...) {
+  warning("summarizeModel.loadModel is unimplemented; use a descendant such as loadLm")
+  data.frame(site.id=getMetadata(load.model)@site.id)
+}
