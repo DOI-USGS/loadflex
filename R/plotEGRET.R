@@ -13,6 +13,9 @@
 #' concentrations ("Conc") or fluxes ("Flux").
 #' @param moreTitle additional text to include in the fluxBiasMulti plot 
 #' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
+#' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
+#' lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
+#' in plotFluxHist and plotConcHist.
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details EGRET plots that require \code{fitdat, meta}:
@@ -93,7 +96,8 @@
 #' plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
 #' 
 plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL, 
-                      meta = NULL, preds.type = "Conc", moreTitle = "loadflex", ...) {
+                      meta = NULL, preds.type = "Conc", moreTitle = "loadflex", 
+                      plotFlowNorm = FALSE, ...) {
   
   req_missing <- switch(plot.name,
                         
@@ -149,8 +153,8 @@ plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
          plotResidTime = plotResidTime(egretobj, ...),
          boxResidMonth = boxResidMonth(egretobj, ...),
          boxConcThree = boxConcThree(egretobj, ...), 
-         plotConcHist = plotConcHist(egretobj, ...), 
-         plotFluxHist = plotFluxHist(egretobj, ...),
+         plotConcHist = plotConcHist(egretobj, plotFlowNorm = plotFlowNorm, ...), 
+         plotFluxHist = plotFluxHist(egretobj, plotFlowNorm = plotFlowNorm, ...),
          fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = moreTitle, ...),
          
          # default if no name matches
