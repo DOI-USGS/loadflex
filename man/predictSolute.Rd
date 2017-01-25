@@ -77,6 +77,7 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittingData}},
   \code{\link{getFittingFunction}},
   \code{\link{getMetadata}}, \code{\link{simulateSolute}},
+  \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
 
 Other predictSolute: \code{\link{predictSolute.loadComp}},

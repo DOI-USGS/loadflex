@@ -372,9 +372,6 @@ predictSolute.loadReg2 <- function(
   return(preds)
 }
 
-
-
-
 #' Produce a set of predictions that reflect the coefficient uncertainty and
 #' possibly also natural variation.
 #' 
@@ -448,4 +445,22 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
   }
   
   return(fitting.preds)
+}
+
+
+
+#' Extract model summary statistics from a loadReg2 model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadReg2 models are largely the same as those reported by the \code{rloadest}
+#' package, though reported in this streamlined data.frame format for bulk 
+#' reporting. \code{summarizeModel.loadReg} should rarely be accessed directly;
+#' instead, call \code{summarizeModel()} on a \code{loadReg2} object.
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @export
+#' @family summarizeModel
+summarizeModel.loadReg2 <- function(load.model) {
+  summarizeModel(getFittedModel(load.model))
 }

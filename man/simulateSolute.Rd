@@ -57,6 +57,7 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittingData}},
   \code{\link{getFittingFunction}},
   \code{\link{getMetadata}}, \code{\link{predictSolute}},
+  \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
 
 Other simulateSolute: \code{\link{simulateSolute.loadLm}},

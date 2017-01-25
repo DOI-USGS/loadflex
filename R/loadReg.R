@@ -181,3 +181,54 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   fit
   
 }
+
+#' @section Metrics:
+#'   
+#'   \describe{
+#'   
+#'   \item{\code{Intercept}, \code{lnQ}, \code{DECTIME}, \code{sin.DECTIME}, 
+#'   \code{cos.DECTIME}, etc.}{Coefficient estimates for the named terms. The 
+#'   model formula determines which terms are included. Recall that log(Q) was 
+#'   centered before the coefficients were fit.}
+#'   
+#'   \item{\code{RMSE}}{The root mean squared error of the difference between 
+#'   observed and predicted values of concentration.}
+#'   
+#'   \item{\code{r.squared}}{}
+#'   
+#'   \item{\code{p.value}}{}
+#'   
+#'   }
+#' @rdname summarizeModel.loadReg2
+#' @export
+summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc")) {
+  
+  flux.or.conc <- match.arg.loadflex(flux.or.conc)
+  loadReg.model <- c("flux"="load","conc"="concentration")[[flux.or.conc]]
+  loadReg.fit <- load.model[[c(flux='lfit',conc='cfit')[[flux.or.conc]]]]
+  
+  #### NOTE ####
+  ##   R-square needs to change when censored values are present!!
+  #  see print.loadReg.R line 131 in rloadest
+  
+  coefs <- coef(load.model, summary=TRUE, which=loadReg.model)
+  
+  # package into a single 1-row data.frame
+  retDF <- data.frame(t(coef(load.model)), 
+                      RMSE = rmse(load.model, model=loadReg.model),
+                      R_Square = loadReg.fit$RSQ,
+                      P_value = getPVal(load.model))
+  names(retDF)[1] <- "Intercept" #gets an X added for some reason
+  return(retDF)
+}
+
+#' helper function to compute the p-value like rloadest does in 
+#' print.loadReg
+#' @importFrom stats pchisq
+#' @param load.model the loadReg load.model object
+#' @keywords internal
+getPVal <- function(load.model) {
+  G2 <- signif(2*(load.model$lfit$LLR - load.model$lfit$LLR1), 4)
+  pval <- 1 - pchisq(G2, load.model$lfit$NPAR - 1)
+  return(pval)
+}

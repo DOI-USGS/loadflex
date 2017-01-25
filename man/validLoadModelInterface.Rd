@@ -30,6 +30,7 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittingData}},
   \code{\link{getFittingFunction}},
   \code{\link{getMetadata}}, \code{\link{predictSolute}},
-  \code{\link{simulateSolute}}
+  \code{\link{simulateSolute}},
+  \code{\link{summarizeModel}}
 }
 
