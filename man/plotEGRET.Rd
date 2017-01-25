@@ -5,7 +5,7 @@
 \title{Create an EGRET-style plot}
 \usage{
 plotEGRET(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
-  meta = NULL, preds.type = "Conc", moreTitle = NULL, ...)
+  meta = NULL, preds.type = "Conc", moreTitle = "loadflex", ...)
 }
 \arguments{
 \item{plot.name}{the name of the plot the user wants to create. See 
@@ -24,7 +24,7 @@ flow, conc.units, site.id, and consti.name}
 concentrations ("Conc") or fluxes ("Flux").}
 
 \item{moreTitle}{additional text to include in the fluxBiasMulti plot 
-title. The EGRET default is "WRTDS", so this changes the default to NULL.}
+title. The EGRET default is "WRTDS", so this changes the default to "loadflex".}
 
 \item{...}{additional arguments to pass to the plot}
 }

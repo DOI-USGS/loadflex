@@ -12,7 +12,7 @@
 #' @param preds.type character specifying if the predictions being used are
 #' concentrations ("Conc") or fluxes ("Flux").
 #' @param moreTitle additional text to include in the fluxBiasMulti plot 
-#' title. The EGRET default is "WRTDS", so this changes the default to NULL.
+#' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details EGRET plots that require \code{fitdat, meta}:
@@ -93,7 +93,7 @@
 #' plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
 #' 
 plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL, 
-                      meta = NULL, preds.type = "Conc", moreTitle = NULL, ...) {
+                      meta = NULL, preds.type = "Conc", moreTitle = "loadflex", ...) {
   
   req_missing <- switch(plot.name,
                         
