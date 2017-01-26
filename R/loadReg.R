@@ -181,3 +181,72 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   fit
   
 }
+
+#' @section Metrics:
+#'   
+#'   \describe{
+#'   
+#'   \item{\code{Intercept}, \code{lnQ}, \code{DECTIME}, \code{sin.DECTIME}, 
+#'   \code{cos.DECTIME}, etc.}{Coefficient estimates for the named terms. The 
+#'   model formula determines which terms are included. Recall that log(Q) was 
+#'   centered before the coefficients were fit.}
+#'   
+#'   \item{\code{RMSE}}{The root mean squared error of the difference between 
+#'   observed and predicted values of concentration.}
+#'   
+#'   \item{\code{r.squared}}{The proportion of variation explained by the 
+#'   model.}
+#'   
+#'   \item{\code{p.value}}{}
+#'   
+#'   }
+#' @rdname summarizeModel.loadReg2
+#' @param flux.or.conc character. Which internal model (the flux model or the 
+#'   concentration model) should be summarized? A \pkg{rloadest} model, and 
+#'   therefore also a \code{loadReg2} model, is actually two different models 
+#'   for (1) flux and (2) concentration, each fitted to the same data and with 
+#'   the same model structure except for whether the left-hand side of the model
+#'   formula is flux or concentration. Some of the model metrics differ between 
+#'   these two internal models.
+#' @importFrom smwrStats rmse
+#' @importFrom stats coef
+#' @export
+summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
+  
+  flux.or.conc <- match.arg.loadflex(flux.or.conc)
+  loadReg.model <- c("flux"="load","conc"="concentration")[[flux.or.conc]]
+  loadReg.fit <- load.model[[c(flux='lfit',conc='cfit')[[flux.or.conc]]]]
+  
+  # summarize the coefficient estimates, standard errors, and p-values
+  coefs <- coef(load.model, summary=TRUE, which=loadReg.model)
+  coefsDF <- setNames(
+    data.frame(
+      t(coefs[,'Estimate']),
+      SE=t(coefs[,'Std. Error']),
+      pval=t(coefs[,'p-value'])
+    ),
+    nm = paste0(
+      rep(gsub('(Intercept)', 'Intercept', row.names(coefs), fixed=TRUE), 3), # coefficient names
+      rep(c('', '.SE', '.p.value'), each=nrow(coefs))) # aspect of coefficient being described
+  )
+  
+  # package coefs and other overall statistics into a single 1-row data.frame
+  retDF <- data.frame(
+    RMSE = rmse(load.model, model=loadReg.model),
+    r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
+    p.value = getPVal(loadReg.fit),
+    coefsDF
+  )
+  return(retDF)
+}
+
+#' helper function to compute the p-value like rloadest does in 
+#' print.loadReg
+#' @importFrom stats pchisq
+#' @param fit the loadReg lfit or cfit object
+#' @keywords internal
+getPVal <- function(fit) {
+  G2 <- signif(2*(fit$LLR - fit$LLR1), 4)
+  pval <- 1 - pchisq(G2, fit$NPAR - 1)
+  return(pval)
+}

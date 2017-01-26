@@ -72,35 +72,6 @@ summarizeTimeseries <- function(metadata, data) {
   return(input.info)
 }
 
-#' Extract various model summary statistics
-#' 
-#' @param model the input model object; will extend to several types
-#' @export
-summarizeModel <- function(model) UseMethod("summarizeModel")
-
-#' stats for loadflex loadReg2 model
-#' @rdname summarizeModel
-#' 
-summarizeModel.loadReg2 <- function(model) {
-}
-
-#' stats for rloadest loadReg model
-#' @rdname summarizeModel
-#' @export
-#' 
-summarizeModel.loadReg <- function(model) {
-  #use rloadest funcs to get info
-  #### NOTE ####
-  ##   R-square needs to change when censored values are present!!
-  #  see print.loadReg.R line 131 in rloadest
-  retDF <- data.frame(t(rloadest:::coef.loadReg(model)), 
-                      RMSE = rloadest:::rmse.loadReg(model),
-                      R_Square = model$lfit$RSQ,
-                      P_value = getPVal(model))
-  names(retDF)[1] <- "Intercept" #gets an X added for some reason
-  return(retDF)
-}
-
 #' Summarize generated predictions 
 #'
 #' @param preds data frame input data frame of predicted solutes
@@ -130,13 +101,4 @@ summarizePreds <- function(preds, meta, by, model.name) {
   return(retDF)
 }
 
-#' helper function to compute the p-value like rloadest does in 
-#' print.loadReg
-#' @importFrom stats pchisq
-#' @param model the loadReg model object
-#'  
-getPVal <- function(model) {
-  G2 <- signif(2*(model$lfit$LLR - model$lfit$LLR1), 4)
-  pval <- 1 - pchisq(G2, model$lfit$NPAR - 1)
-  return(pval)
-}
+## see also summarizeModel in loadModelInterface.R

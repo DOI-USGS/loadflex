@@ -529,6 +529,23 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
   MSEs
 }
 
+#' Extract model summary statistics from a loadComp model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadComp models include two sets of statistics about autocorrelation (one for
+#' the regression residuals, one for the 'residuals' used to do the composite
+#' correction).
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
+#' @export
+#' @family summarizeModel
+summarizeModel.loadComp <- function(load.model, ...) {
+  warning("summarizeModel.loadComp isn't implemented yet")
+  data.frame(site.id=getMetadata(load.model)@site.id)
+}
+
 #' The fraction of prediction that is due to a correction.
 #' 
 #' Computes the fraction of total concentration or flux prediction that is 

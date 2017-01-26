@@ -409,3 +409,18 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
   rbind(mean=apply(residuals_MSE, 2, mean), sd=apply(residuals_MSE, 2, sd))
   
 }
+
+#' Extract model summary statistics from a loadInterp model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadInterp models include RMSE, p-values, and others TBD.
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
+#' @export
+#' @family summarizeModel
+summarizeModel.loadInterp <- function(load.model, ...) {
+  warning("summarizeModel.loadInterp isn't implemented yet")
+  data.frame(site.id=getMetadata(load.model)@site.id)
+}

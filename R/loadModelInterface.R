@@ -222,6 +222,22 @@ estimateMSE <- function(load.model, ...) {
   UseMethod("estimateMSE")
 }
 
+
+#' Extract model summary statistics
+#' 
+#' summarizeModel produces a 1-row data.frame of model metrics. The relevant 
+#' metrics vary by model type; only the relevant metrics are reported for each 
+#' model.
+#' 
+#' @param load.model A load model object, typically inheriting from loadModel 
+#'   and always implementing the loadModelInterface.
+#' @param ... Other arguments passed to model-specific methods
+#' @export
+#' @family loadModelInterface
+#' @family summarizeModel
+summarizeModel <- function(load.model, ...) UseMethod("summarizeModel")
+
+
 #' Test whether a class implements the loadModelInterface
 #' 
 #' \code{validLoadModelInterface} can be used to test whether the
@@ -296,6 +312,14 @@ validLoadModelInterface <- function(object, stop.on.error=TRUE, verbose=TRUE) {
     msgstrs <- paste0(msgstrs, "\n  - predictSolute")
   } else {
     msgstrs <- paste0(msgstrs, "\n  + predictSolute")
+  }
+  
+  ms <- summarizeModel(object)
+  if(!is(ms, "data.frame") || nrow(ms) != 1) {
+    errorstrs <- c(errorstrs, "summarizeModel should return a 1-row data.frame")
+    msgstrs <- paste0(msgstrs, "\n  - summarizeModel")
+  } else {
+    msgstrs <- paste0(msgstrs, "\n  + summarizeModel")
   }
   
   # Optional functions

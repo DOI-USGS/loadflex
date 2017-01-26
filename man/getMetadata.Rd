@@ -28,6 +28,7 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittingFunction}},
   \code{\link{predictSolute}},
   \code{\link{simulateSolute}},
+  \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
 }
 
