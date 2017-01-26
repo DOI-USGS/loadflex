@@ -1,8 +1,8 @@
 Package: loadflex
 Type: Package
 Title: Models and Tools for Watershed Flux Estimates
-Version: 1.1.1
-Date: 2017-01-22
+Version: 1.1.2
+Date: 2017-01-26
 Authors@R: c(
     person("Alison P.", "Appling", , "aappling@usgs.gov", c("aut", "cre")),
     person("Miguel C.", "Leon", , , "aut"),
@@ -63,7 +63,7 @@ Collate:
     'plotEGRET.R'
     'plots.R'
     'predictors.R'
-    'summarize.R'
+    'summarizeData.R'
     'text.R'
     'uncertainty.R'
     'unit.conversions.R'
