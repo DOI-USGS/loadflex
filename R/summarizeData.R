@@ -101,8 +101,7 @@ summarizePreds <- function(preds, meta, by, model.name) {
     retDF <- data.frame(site.id = rep(site.id, nrow(annuals)), 
                         constituent = rep(getInfo(meta, 'constituent'), nrow(annuals)),
                         model = rep(model.name, nrow(annuals)),
-                        annuals
-                        )
+                        annuals, stringsAsFactors = FALSE)
   }
   return(retDF)
 }
