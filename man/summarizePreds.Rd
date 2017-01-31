@@ -4,7 +4,7 @@
 \alias{summarizePreds}
 \title{Summarize generated predictions}
 \usage{
-summarizePreds(preds, meta, by, model.name)
+summarizePreds(preds, meta, by, model.name, level = 0.95)
 }
 \arguments{
 \item{preds}{data frame input data frame of predicted solutes}
@@ -15,6 +15,8 @@ summarizePreds(preds, meta, by, model.name)
 yearly (water year) averages}
 
 \item{model.name}{char name of model used to generate predictions}
+
+\item{level}{numeric level of confidence interval to return}
 }
 \value{
 data frame containing various statistics
