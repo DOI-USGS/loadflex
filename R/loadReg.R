@@ -208,10 +208,13 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   the same model structure except for whether the left-hand side of the model
 #'   formula is flux or concentration. Some of the model metrics differ between 
 #'   these two internal models.
+#' @param constituent char the constituent being predicted
+#' @param site char Site ID water quality measurements
 #' @importFrom smwrStats rmse
 #' @importFrom stats coef
 #' @export
-summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
+summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"),
+                                   site = NULL, constituent = NULL, ...) {
   
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   loadReg.model <- c("flux"="load","conc"="concentration")[[flux.or.conc]]
@@ -232,6 +235,9 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
   
   # package coefs and other overall statistics into a single 1-row data.frame
   retDF <- data.frame(
+    site = site,
+    model = paste('rloadest', load.model$model.no, sep = "_"),
+    constituent = constituent, #could use load.model$constituent, but that is the long name
     RMSE = rmse(load.model, model=loadReg.model),
     r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
     p.value = getPVal(loadReg.fit),
