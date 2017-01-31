@@ -28,8 +28,8 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
   # convert metadata into data.frame and add a statistic or two
   site.info <- 
     as.data.frame(metadata) %>%
-    select(-constituent, -flow, -load.rate, -dates, -station) %>%
-    select(site.name, site.id, consti.name, everything()) %>%
+    select(-flow, -load.rate, -dates, -station) %>%
+    select(site.name, site.id, constituent, consti.name, everything()) %>%
     mutate(basin.area.ratio.QC = flow.basin.area / basin.area)
   
   # compute date statistcs for both input datasets
