@@ -79,6 +79,7 @@ summarizeTimeseries <- function(metadata, data) {
 #' @param by character "total" to return average flux over all years, "annual" to return 
 #' yearly (water year) averages
 #' @param model.name char name of model used to generate predictions
+#' @param level numeric level of confidence interval to return
 #' @return data frame containing various statistics
 #' @export
 #'
