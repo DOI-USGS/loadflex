@@ -82,20 +82,21 @@ summarizeTimeseries <- function(metadata, data) {
 #' @return data frame containing various statistics
 #' @export
 #'
-summarizePreds <- function(preds, meta, by, model.name) {
+summarizePreds <- function(preds, meta, by, model.name, level = 0.95) {
    match.arg(by, c("total", "annual"))
    site.id <- getInfo(meta, "site.id")
    if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
-                               agg.by = "water year")
+                               agg.by = "water year", level = level)
     #TODO: what happens with partial years? want to leave them out
-    SE <- sqrt((1/nrow(annuals)) * sum(annuals$SE ^ 2))
+    SE <- 1/nrow(annuals)*sqrt(sum(annuals$SE ^ 2))
     multiYear <- data.frame(site.id = site.id, 
                             constituent = getInfo(meta, 'constituent'),
                             model = model.name,
                             multi_year_avg = mean(annuals$Flux_Rate),
-                            SE, CI_lower = mean(annuals$Flux_Rate) - 2*SE,
-                            CI_upper = mean(annuals$Flux_Rate) + 2*SE,
+                            SE, 
+                            CI_lower = mean(annuals$Flux_Rate) - qnorm(1 - (1-level)/2)*SE,
+                            CI_upper = mean(annuals$Flux_Rate) + qnorm(1 - (1-level)/2)*SE,
                             stringsAsFactors = FALSE)
     retDF <- multiYear
   } else if(by == "annual") {
