@@ -52,23 +52,29 @@ setClass(
 
 #' Create a fitted loadReg2 object.
 #' 
-#' Generates a new model of class loadReg2 (\code{\link{loadReg2-class}}). loadReg2s are wrappers for loadReg 
-#' objects produced by the USGS \pkg{rloadest} package. \code{loadReg2}s can implement the 
-#' \code{\link{loadModelInterface}} more reliably than is possible for a \code{loadReg} object.
+#' Generates a new model of class loadReg2 (\code{\link{loadReg2-class}}). 
+#' loadReg2s are wrappers for loadReg objects produced by the USGS 
+#' \pkg{rloadest} package. \code{loadReg2}s can implement the 
+#' \code{\link{loadModelInterface}} more reliably than is possible for a 
+#' \code{loadReg} object.
 #' 
 #' @importFrom methods is new
 #' @param load.reg An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
 #'   call will be parsed and evaluated within \code{loadReg2} to create a fully 
 #'   functional load model for use within \pkg{loadflex}.
-#' @param pred.format character is the model for flux or concentration can 
-#'   be "flux" or "Conc"
+#' @param pred.format character. Should predictions be made for 'flux' (load 
+#'   rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2,
+#'   uses different models for flux and concentration, though fitted to the same
+#'   data and with the same model structure except for whether the left-hand
+#'   side of the model formula is load rate or concentration. The model specific
+#'   to \code{pred.format} will be used to generate predictions.
 #' @param store One or more character strings specifying which information to 
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
-#' @param ... Other arguments passed to this model. 
+#' @param ... Other arguments passed to this model.
 #' @return A fitted loadReg2 model.
-#' 
+#'   
 #' @importFrom rloadest loadReg
 #' @export
 #' @family load.model.inits
@@ -372,9 +378,6 @@ predictSolute.loadReg2 <- function(
   return(preds)
 }
 
-
-
-
 #' Produce a set of predictions that reflect the coefficient uncertainty and
 #' possibly also natural variation.
 #' 
@@ -448,4 +451,31 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
   }
   
   return(fitting.preds)
+}
+
+
+
+#' Extract model summary statistics from a loadReg2 model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadReg2 models are largely the same as those reported by the \code{rloadest}
+#' package, though reported in this streamlined data.frame format for bulk 
+#' reporting. \code{summarizeModel.loadReg} should rarely be accessed directly;
+#' instead, call \code{summarizeModel()} on a \code{loadReg2} object.
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
+#' @export
+#' @family summarizeModel
+summarizeModel.loadReg2 <- function(load.model, ...) {
+  out <- summarizeModel(getFittedModel(load.model), ...)
+  
+  # add the site.id as the leftmost column
+  out$site.id <- getMetadata(load.model)@site.id
+  site.id <- '.dplyr.var'
+  out <- select(out, site.id, everything())
+  
+  # return
+  return(out)
 }

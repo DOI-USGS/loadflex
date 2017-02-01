@@ -28,8 +28,8 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
   # convert metadata into data.frame and add a statistic or two
   site.info <- 
     as.data.frame(metadata) %>%
-    select(-constituent, -flow, -load.rate, -dates, -station) %>%
-    select(site.name, site.id, consti.name, everything()) %>%
+    select(-flow, -load.rate, -dates, -station) %>%
+    select(site.name, site.id, constituent, consti.name, everything()) %>%
     mutate(basin.area.ratio.QC = flow.basin.area / basin.area)
   
   # compute date statistcs for both input datasets
@@ -72,45 +72,43 @@ summarizeTimeseries <- function(metadata, data) {
   return(input.info)
 }
 
-#' Extract various model summary statistics
-#' 
-#' @param model the input model object; will extend to several types
-#' @export
-summarizeModel <- function(model) UseMethod("summarizeModel")
-
-#' stats for rloadest loadReg2 model
-#' @rdname summarizeModel
-#' 
-summarizeModel.loadReg2 <- function(model) {
-  
-}
-
 #' Summarize generated predictions 
-#' just take one site for now
 #'
 #' @param preds data frame input data frame of predicted solutes
 #' @param meta loadflex metadata object for the preds data frame
 #' @param by character "total" to return average flux over all years, "annual" to return 
 #' yearly (water year) averages
 #' @param model.name char name of model used to generate predictions
+#' @param level numeric level of confidence interval to return
 #' @return data frame containing various statistics
 #' @export
 #'
-summarizePreds <- function(preds, meta, by, model.name) {
+summarizePreds <- function(preds, meta, by, model.name, level = 0.95) {
+   match.arg(by, c("total", "annual"))
    site.id <- getInfo(meta, "site.id")
    if(by == "total") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
-                               agg.by = "water year")
+                               agg.by = "water year", level = level)
     #TODO: what happens with partial years? want to leave them out
-    
-    multiYear <- data.frame(site.id = site.id, model = model.name,
-                            multi_year_avg = mean(annuals$Flux_Rate), stringsAsFactors = FALSE)
+    SE <- 1/nrow(annuals)*sqrt(sum(annuals$SE ^ 2))
+    multiYear <- data.frame(site.id = site.id, 
+                            constituent = getInfo(meta, 'constituent'),
+                            model = model.name,
+                            multi_year_avg = mean(annuals$Flux_Rate),
+                            SE, 
+                            CI_lower = mean(annuals$Flux_Rate) - qnorm(1 - (1-level)/2)*SE,
+                            CI_upper = mean(annuals$Flux_Rate) + qnorm(1 - (1-level)/2)*SE,
+                            stringsAsFactors = FALSE)
     retDF <- multiYear
   } else if(by == "annual") {
     annuals <- aggregateSolute(preds, metadata = meta, format = "flux rate",
                                agg.by = "water year")
     retDF <- data.frame(site.id = rep(site.id, nrow(annuals)), 
-                        model = rep(model.name, nrow(annuals)),annuals)
+                        constituent = rep(getInfo(meta, 'constituent'), nrow(annuals)),
+                        model = rep(model.name, nrow(annuals)),
+                        annuals, stringsAsFactors = FALSE)
   }
   return(retDF)
 }
+
+## see also summarizeModel in loadModelInterface.R

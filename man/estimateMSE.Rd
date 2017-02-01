@@ -28,6 +28,7 @@ Other loadModelInterface: \code{\link{getFittedModel}},
   \code{\link{getFittingFunction}},
   \code{\link{getMetadata}}, \code{\link{predictSolute}},
   \code{\link{simulateSolute}},
+  \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
 }
 

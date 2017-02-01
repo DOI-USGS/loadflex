@@ -416,3 +416,18 @@ simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), new
   
   return(fitting.preds)
 }
+
+#' Extract model summary statistics from a loadLm model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
+#' loadLm models include RMSE, p-values, and others TBD.
+#' 
+#' @inheritParams summarizeModel
+#' @return A 1-row data.frame of model metrics
+#' @importFrom dplyr select everything
+#' @export
+#' @family summarizeModel
+summarizeModel.loadLm <- function(load.model, ...) {
+  warning("summarizeModel.loadLm isn't implemented yet")
+  data.frame(site.id=getMetadata(load.model)@site.id)
+}
