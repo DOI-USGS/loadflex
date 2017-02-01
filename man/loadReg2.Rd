@@ -24,6 +24,9 @@ write within the model. Options are 'data': the original fitting data;
 'fitting.function': a fitting function that can produce a new loadComp 
 object from new data}
 
+\item{site.id}{char Fills the site.id field the loadReg2 metadata, since it does not 
+have a loadReg equivalent}
+
 \item{...}{Other arguments passed to this model.}
 }
 \value{

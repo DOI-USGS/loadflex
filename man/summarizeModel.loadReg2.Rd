@@ -23,10 +23,6 @@ formula is flux or concentration. Some of the model metrics differ between
 these two internal models.}
 
 \item{...}{Other arguments passed to model-specific methods}
-
-\item{constituent}{char the constituent being predicted}
-
-\item{site}{char Site ID water quality measurements}
 }
 \value{
 A 1-row data.frame of model metrics

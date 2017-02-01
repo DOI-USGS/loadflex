@@ -73,6 +73,8 @@ setClass(
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
 #' @param ... Other arguments passed to this model.
+#' @param site.id char Fills the site.id field the loadReg2 metadata, since it does not 
+#' have a loadReg equivalent
 #' @return A fitted loadReg2 model.
 #'   
 #' @importFrom rloadest loadReg
@@ -477,6 +479,7 @@ summarizeModel.loadReg2 <- function(load.model, ...) {
   out$site.id <- getMetadata(load.model)@site.id
   out$constituent <- getMetadata(load.model)@constituent
   site.id <- '.dplyr.var'
+  constituent <- 'dplyr.var'
   out <- select(out, site.id, constituent, everything())
   
   # return

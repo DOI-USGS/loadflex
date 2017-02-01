@@ -208,8 +208,6 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   the same model structure except for whether the left-hand side of the model
 #'   formula is flux or concentration. Some of the model metrics differ between 
 #'   these two internal models.
-#' @param constituent char the constituent being predicted
-#' @param site char Site ID water quality measurements
 #' @importFrom smwrStats rmse
 #' @importFrom stats coef
 #' @export
