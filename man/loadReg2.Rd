@@ -5,7 +5,7 @@
 \title{Create a fitted loadReg2 object.}
 \usage{
 loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
-  "fitting.function"), ...)
+  "fitting.function"), site.id, ...)
 }
 \arguments{
 \item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
@@ -23,6 +23,9 @@ to \code{pred.format} will be used to generate predictions.}
 write within the model. Options are 'data': the original fitting data; 
 'fitting.function': a fitting function that can produce a new loadComp 
 object from new data}
+
+\item{site.id}{char Fills the site.id field the loadReg2 metadata, since it does not 
+have a loadReg equivalent}
 
 \item{...}{Other arguments passed to this model.}
 }
