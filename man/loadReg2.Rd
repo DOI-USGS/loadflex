@@ -5,7 +5,7 @@
 \title{Create a fitted loadReg2 object.}
 \usage{
 loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
-  "fitting.function"), site.id = NULL, ...)
+  "fitting.function"), site.id, ...)
 }
 \arguments{
 \item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This 

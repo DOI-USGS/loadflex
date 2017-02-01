@@ -83,7 +83,7 @@ setClass(
 loadReg2 <- function(load.reg,
                      pred.format=c("flux","conc"),
                      store=c("data","fitting.function"),
-                     site.id = NULL, 
+                     site.id, 
                      ...) {
   
   # Validate arguments
@@ -150,8 +150,12 @@ loadReg2 <- function(load.reg,
   }
   
   # Get the metadata, which we'll need to do the following data checks
+  meta <- getMetadata(load.reg)
   #fill the site.id field, since rloadest only has a site.name equivalent
-  meta <- updateMetadata(getMetadata(load.reg), site.id = site.id)
+  if(!missing(site.id)) {
+    meta <- updateMetadata(meta, site.id = site.id)
+  }
+  
   
   # Parse the loadReg call, attaching argument names as needed. This will be
   # useful both for the refitting function and for saving the original data.
