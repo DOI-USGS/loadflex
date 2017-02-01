@@ -6,7 +6,7 @@
 \title{Extract model summary statistics from a loadReg2 model}
 \usage{
 \method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux", "conc"),
-  site = NULL, constituent = NULL, ...)
+  ...)
 
 \method{summarizeModel}{loadReg2}(load.model, ...)
 }
@@ -22,11 +22,11 @@ the same model structure except for whether the left-hand side of the model
 formula is flux or concentration. Some of the model metrics differ between 
 these two internal models.}
 
-\item{site}{char Site ID water quality measurements}
+\item{...}{Other arguments passed to model-specific methods}
 
 \item{constituent}{char the constituent being predicted}
 
-\item{...}{Other arguments passed to model-specific methods}
+\item{site}{char Site ID water quality measurements}
 }
 \value{
 A 1-row data.frame of model metrics

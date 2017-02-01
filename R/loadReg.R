@@ -213,8 +213,7 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #' @importFrom smwrStats rmse
 #' @importFrom stats coef
 #' @export
-summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"),
-                                   site = NULL, constituent = NULL, ...) {
+summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
   
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   loadReg.model <- c("flux"="load","conc"="concentration")[[flux.or.conc]]
@@ -235,9 +234,7 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"),
   
   # package coefs and other overall statistics into a single 1-row data.frame
   retDF <- data.frame(
-    site = site,
     model = paste('rloadest', load.model$model.no, sep = "_"),
-    constituent = constituent, #could use load.model$constituent, but that is the long name
     RMSE = rmse(load.model, model=loadReg.model),
     r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
     p.value = getPVal(loadReg.fit),
