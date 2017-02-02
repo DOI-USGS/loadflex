@@ -26,9 +26,12 @@
 #' loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
 convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
+  # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
+  # combined with predictions for those time points)
+  
   info_df <- convertToEGRETInfo(meta, preds.type)
   
-  # EGRET expects cms.
+  # EGRET expects cms for all flow values; get the conversion factor
   qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
   
   daily_df <- convertToEGRETDaily(estdat, meta, preds, preds.type, qconvert)
@@ -71,9 +74,10 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
   sample_df1 <- fitdat %>% 
     rename_("value" = constituent,
             "dateTime" = date_col)  %>%
-    select(dateTime, ConcHigh = value) %>% 
+    select(dateTime, 
+           ConcHigh = value) %>% 
     mutate(ConcLow = ConcHigh, 
-           Uncen=as.numeric(ConcHigh == ConcLow)) %>% 
+           Uncen = as.numeric(ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
     mutate(dateTime = fitdat[[date_col]],
            Date = as.Date(Date))
