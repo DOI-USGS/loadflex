@@ -17,8 +17,9 @@ convertToEGRET(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, dates, conc.units, site.id, and consti.name}
 
-\item{preds.type}{character specifying if the predictions being used are
-concentrations ("Conc") or fluxes ("Flux").}
+\item{preds.type}{character specifying if the predictions being used are 
+concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
+"Conc", and this argument will be leaving soon.}
 }
 \description{
 Convert a loadflex object into an EGRET object for plotting.

@@ -7,8 +7,9 @@
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
-#' @param preds.type character specifying if the predictions being used are
-#' concentrations ("Conc") or fluxes ("Flux").
+#' @param preds.type character specifying if the predictions being used are 
+#'   concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
+#'   "Conc", and this argument will be leaving soon.
 #' @importFrom EGRET as.egret
 #' @examples
 #' data(lamprey_nitrate)
