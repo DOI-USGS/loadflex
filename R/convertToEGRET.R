@@ -152,6 +152,12 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
     return(NA)
   }
   
+  # from https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
+  # the EGRET surfaces/columns are:
+  #   (1) is the estimated log concentration (yHat), 
+  #   (2) is the estimated standard error (SE), 
+  #   (3) is the estimated concentration (ConcHat). 
+  
   #stopifnot(preds.type %in% c('Conc', 'Flux'))
   stopifnot(preds.type=='Conc') # we need it to be Conc so we can get the SE for conc below
   
