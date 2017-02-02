@@ -34,7 +34,8 @@ meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE",
   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
   data=fitdat, metadata=meta, retrans=exp)
-preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
-loadflex:::convertToEGRET(fitdat, estdat, preds, meta)
+preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
+loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
 }
 

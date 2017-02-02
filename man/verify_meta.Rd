@@ -2,20 +2,21 @@
 % Please edit documentation in R/convertToEGRET.R
 \name{verify_meta}
 \alias{verify_meta}
-\title{Verify metadata object}
+\title{Return a value from metadata or throw error if invalid request}
 \usage{
 verify_meta(meta, nm)
 }
 \arguments{
 \item{meta}{loadflex metadata object}
 
-\item{nm}{character name of the metadata item to check. If it is a custom
-name, this would be a character vector with the first name as 'custom'
+\item{nm}{character name of the metadata item to check. If it is a custom 
+name, this would be a character vector with the first name as 'custom' 
 (e.g. nm = c('custom', 'staAbbr'))}
 }
 \description{
-Verify that the loadflex metadata object has everything EGRET
-  needs.
+Try to get a value of name \code{nm} from the regular or custom
+  slots in a metadata object. If the named value is unavailable or "", throw
+  an error.
 }
 \keyword{internal}
 
