@@ -121,12 +121,13 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
   if(is.null(meta)) {
     stop("metadata is required to create an EGRET eList")
   }
+  match.arg(preds.type)
   
   info_df <- data.frame(shortName=verify_meta(meta, 'site.name'),
                         paramShortName=verify_meta(meta, 'consti.name'),
                         staAbbrev=verify_meta(meta, 'site.id'),
                         constitAbbrev=verify_meta(meta, 'constituent'),
-                        param.units=verify_meta(meta, c('Conc'='conc.units', 'Flux'='load.rate.units')[[preds.type]]),
+                        param.units=verify_meta(meta, 'conc.units'),
                         stringsAsFactors = FALSE)
   return(info_df)
 }
