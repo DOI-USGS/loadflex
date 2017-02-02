@@ -232,6 +232,7 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
   
   # package coefs and other overall statistics into a single 1-row data.frame
   retDF <- data.frame(
+    model = paste('rloadest', load.model$model.no, sep = "_"),
     RMSE = rmse(load.model, model=loadReg.model),
     r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
     p.value = getPVal(loadReg.fit),
