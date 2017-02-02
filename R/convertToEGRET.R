@@ -66,7 +66,7 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
     return(NA)
   }
   
-  dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- '.dplyr.var'
+  dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- ConcDay <- '.dplyr.var'
   
   flow_col <- verify_meta(meta, 'flow')
   date_col <- verify_meta(meta, 'dates')
