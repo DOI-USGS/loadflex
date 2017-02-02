@@ -1,12 +1,18 @@
 #' Convert loadflex to EGRET object
-#'  
-#' @description Convert a loadflex object into an EGRET object for plotting.
 #' 
-#' @param fitdat data.frame of data used to fit a model
+#' @description Convert a loadflex object into an EGRET object for plotting.
+#'   
+#' @param load.model a loadflex model object. If this is provided, the only 
+#'   other necessary argument is \code{estdat}, and even \code{estdat} is 
+#'   optional for some plots (boxConcMonth, plotConcTime, plotConcQ, and 
+#'   plotFluxQ). If this is not provided, then at least \code{fitdat} and 
+#'   \code{meta} must be provided; \code{estdat} and \code{preds} are also 
+#'   necessary for many plots.
 #' @param estdat data.frame of estimation data
-#' @param preds data.frame of load predictions
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, site.id, and consti.name
+#' @param fitdat data.frame of data used to fit a model
+#' @param preds data.frame of concentration predictions
+#' @param meta loadflex metadata object; it must include constituent, flow, 
+#'   dates, conc.units, site.id, and consti.name
 #' @param preds.type character specifying if the predictions being used are 
 #'   concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
 #'   "Conc", and this argument will be leaving soon.
@@ -25,7 +31,7 @@
 #' preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 #' preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
 #' loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
-convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
+convertToEGRET <- function(load.model, estdat = NULL, fitdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
   # combined with predictions for those time points)
@@ -149,7 +155,12 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename
-convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconvert = 35.314667) {
+convertToEGRETDaily <- function(load.model, estdat, meta, preds, preds.type = "Conc", qconvert = 35.314667) {
+  
+  # If load.model was provided, unpack it into meta and preds
+  predsLog <- predictSolute(load.model, flux.or.conc="conc", newdata=estdat, se.pred=TRUE, date=TRUE, log=TRUE)
+  predsLin <- predictSolute(load.model, flux.or.conc="conc", newdata=estdat, se.pred=TRUE, date=TRUE, log=FALSE)
+  
   if(any(is.null(estdat), is.null(preds), is.null(meta))) {
     return(NA)
   }

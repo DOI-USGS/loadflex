@@ -1,21 +1,21 @@
 #' Create an EGRET-style plot
-#'  
-#' @description Use loadflex data frames, but create an EGRET plot.
 #' 
-#' @param plot.name the name of the plot the user wants to create. See 
-#' Details for current options. For now, only one allowed at time.
+#' @description Use loadflex data frames, but create an EGRET plot.
+#'   
+#' @param plot.name the name of the plot the user wants to create. See Details
+#'   for current options. For now, only one allowed at time.
 #' @param fitdat data.frame of model fitting data
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, site.id, and consti.name
-#' @param moreTitle additional text to include in the fluxBiasMulti plot 
-#' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
-#' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
-#' lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
-#' in plotFluxHist and plotConcHist.
+#' @param meta loadflex metadata object; it must include constituent, flow,
+#'   conc.units, site.id, and consti.name
 #' @param preds.type character specifying the format of the predictions in
 #'   \code{preds}. Must be concentrations ("Conc").
+#' @param moreTitle additional text to include in the fluxBiasMulti plot title.
+#'   The EGRET default is "WRTDS", so this changes the default to "loadflex".
+#' @param plotFlowNorm logical indicating whether or not to plot the normalized
+#'   flow lines. This defaults to FALSE, which overrides the EGRET default TRUE.
+#'   Applicable in plotFluxHist and plotConcHist.
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details EGRET plots that require \code{fitdat, meta}:

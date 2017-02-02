@@ -4,7 +4,7 @@
 \alias{convertToEGRETDaily}
 \title{Convert estimation and load prediction data into the EGRET Daily data.frame}
 \usage{
-convertToEGRETDaily(estdat, meta, preds, preds.type = "Conc",
+convertToEGRETDaily(load.model, estdat, meta, preds, preds.type = "Conc",
   qconvert = 35.314667)
 }
 \arguments{
