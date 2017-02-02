@@ -158,8 +158,7 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   #   (2) is the estimated standard error (SE), 
   #   (3) is the estimated concentration (ConcHat). 
   
-  #stopifnot(preds.type %in% c('Conc', 'Flux'))
-  stopifnot(preds.type=='Conc') # we need it to be Conc so we can get the SE for conc below
+  stopifnot(preds.type == 'Conc') # We need it to be Conc to work with EGRET. No choice.
   
   daily_df <- flowCorrectionEGRET(flowdat = estdat, 
                                   flow.colname = verify_meta(meta, 'flow'),
@@ -168,28 +167,20 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   
   if(!is.null(preds)) {
     
-    se.pred <- ConcDay <- FluxDay <- '.dplyr.var'
+    fit <- se.pred <- ConcDay <- FluxDay <- '.dplyr.var'
     
     # merge daily_df with preds
     daily_df <- daily_df %>% 
       left_join(preds, by=c("dateTime" = "date")) %>% 
-      rename_(.dots = setNames("fit",paste0(preds.type, "Day"))) %>% 
-      rename(SE = se.pred) # in EGRET, the SE always describes the SE in ConcDay. So we should be converting it here if preds.type="Flux"
-    if(preds.type=='Flux') warning("convertToEGRETDaily is probably not handling preds.type=='Flux' correctly yet")
+      rename(
+        ConcDay = fit,
+        SE = se.pred) %>% # in EGRET, the SE always describes the SE of yHat, so this is wrong. see #172
+      mutate(
+        yHat = log(ConcDay)) # yHat should differ from log(ConcDay) by a model-specific bias correction factor. see #134
     
-    # fill in whichever preds weren't given
-    if(preds.type == "Conc") {
-      meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
-      daily_df <- mutate(daily_df, FluxDay = formatPreds(daily_df$ConcDay, 'conc', 'flux', newdata=daily_df, metadata=meta.conv))
-      # daily_df <- mutate(daily_df, FluxDay = ConcDay*daily_df$Q * 86.4)
-    } else {
-      meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', conc.units='mg L^-1')
-      daily_df <- mutate(daily_df, ConcDay = formatPreds(daily_df$FluxDay, 'flux', 'conc', newdata=daily_df, metadata=meta.conv))
-      # daily_df <- mutate(daily_df, ConcDay = FluxDay/(daily_df$Q * 86.4))
-    }
-    
-    # TO DO: explore issues with bias. See GitHub issue #134
-    daily_df <- daily_df %>% mutate(yHat = log(ConcDay))
+    # fill in the Flux preds based on the Conc preds
+    meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
+    daily_df <- mutate(daily_df, FluxDay = formatPreds(daily_df$ConcDay, 'conc', 'flux', newdata=daily_df, metadata=meta.conv))
   }
   
   return(daily_df)
