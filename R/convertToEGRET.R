@@ -89,13 +89,17 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
   
   if(!is.null(dailydat)) {
     subDaily <- select(sample_df, dateTime) %>%
-      left_join(select(dailydat, dateTime, SE, yHat), by="dateTime") %>%
-      # the following line suggests to me that SE is in log space in EGRET, but
-      # in convertToEGRETDaily we're currently passing in the retransformed SE
-      # for the predictions. One or the other of these needs to get fixed.
-      mutate(ConcHat = exp(yHat)*exp((SE^2)/2)) 
+      left_join(select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay), by='dateTime')
+    # The sample-specific model predictions created by EGRET are actually 
+    # leave-one-out estimates where yHat, SE, and ConcHat are the predictions 
+    # from a model fit without the given observation. For the time being, we'll 
+    # stick to the simpler approach of using the same model for every row in the
+    # subDaily dataset. But LOOCV is the uncertainty estimation method for 
+    # loadInterp and half of the method for loadComp, so it would be appropriate
+    # for at least those models to use an approach like the EGRET approach here
+    # someday.
     
-    sample_df <- bind_cols(sample_df, subDaily)
+    sample_df <- left_join(sample_df, subDaily, by='dateTime')
   }
   
   return(sample_df)
