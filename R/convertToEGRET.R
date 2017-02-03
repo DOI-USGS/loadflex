@@ -168,7 +168,7 @@ convertToEGRETDaily <- function(load.model, estdat, meta, preds, preds.type = "C
   # from https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
   # the EGRET surfaces/columns are:
   #   (1) is the estimated log concentration (yHat), 
-  #   (2) is the estimated standard error (SE), 
+  #   (2) is the estimated standard error [in log space] (SE), 
   #   (3) is the estimated concentration (ConcHat). 
   
   stopifnot(preds.type == 'Conc') # We need it to be Conc to work with EGRET. No choice.
