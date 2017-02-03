@@ -543,7 +543,14 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
 #' @family summarizeModel
 summarizeModel.loadComp <- function(load.model, ...) {
   warning("summarizeModel.loadComp isn't implemented yet")
-  data.frame(site.id=getMetadata(load.model)@site.id)
+
+  # create a data.frame of model metrics
+  out <- data.frame(
+    site.id=getMetadata(load.model)@site.id
+  )
+  
+  # return
+  return(out)
 }
 
 #' The fraction of prediction that is due to a correction.
