@@ -7,7 +7,8 @@
 \method{predictSolute}{loadComp}(load.model, flux.or.conc, newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
   se.fit = FALSE, se.pred = FALSE, date = FALSE, attach.units = FALSE,
-  fit.reg = FALSE, fit.resid = FALSE, fit.resid.raw = FALSE, ...)
+  log.or.lin = c("linear", "log"), fit.reg = FALSE, fit.resid = FALSE,
+  fit.resid.raw = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadComp object.}

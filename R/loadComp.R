@@ -207,7 +207,7 @@ loadComp <- function(reg.model,
 predictSolute.loadComp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
   level=0.95, se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, 
-  fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
+  log.or.lin=c("linear","log"), fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)

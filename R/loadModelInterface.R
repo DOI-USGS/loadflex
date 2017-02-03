@@ -153,7 +153,8 @@ getFittedModel <- function(load.model) {
 predictSolute <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata, 
   interval=c("none","confidence","prediction"), level=0.95,   
-  se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, 
+  log.or.lin=c("linear","log"), ...) {
 
   UseMethod("predictSolute")
 }

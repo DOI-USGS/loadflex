@@ -9,8 +9,8 @@ plotEGRET(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
   plotFlowNorm = FALSE, ...)
 }
 \arguments{
-\item{plot.name}{the name of the plot the user wants to create. See 
-Details for current options. For now, only one allowed at time.}
+\item{plot.name}{the name of the plot the user wants to create. See Details
+for current options. For now, only one allowed at time.}
 
 \item{fitdat}{data.frame of model fitting data}
 
@@ -18,18 +18,18 @@ Details for current options. For now, only one allowed at time.}
 
 \item{preds}{data.frame of load predictions}
 
-\item{meta}{loadflex metadata object; it must include constituent,
-flow, conc.units, site.id, and consti.name}
+\item{meta}{loadflex metadata object; it must include constituent, flow,
+conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying the format of the predictions in
 \code{preds}. Must be concentrations ("Conc").}
 
-\item{moreTitle}{additional text to include in the fluxBiasMulti plot 
-title. The EGRET default is "WRTDS", so this changes the default to "loadflex".}
+\item{moreTitle}{additional text to include in the fluxBiasMulti plot title.
+The EGRET default is "WRTDS", so this changes the default to "loadflex".}
 
-\item{plotFlowNorm}{logical indicating whether or not to plot the normalized flow
-lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
-in plotFluxHist and plotConcHist.}
+\item{plotFlowNorm}{logical indicating whether or not to plot the normalized
+flow lines. This defaults to FALSE, which overrides the EGRET default TRUE.
+Applicable in plotFluxHist and plotConcHist.}
 
 \item{...}{additional arguments to pass to the plot}
 }

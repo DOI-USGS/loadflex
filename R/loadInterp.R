@@ -231,7 +231,8 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 #' @family predictSolute
 predictSolute.loadInterp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+  level=0.95, se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE,
+  log.or.lin=c("linear","log"), ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -312,6 +313,21 @@ predictSolute.loadInterp <- function(
     # prepend the date column
     preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
+  
+  # If requested, convert to log-space estimates
+  # if(log.or.lin == 'log') {
+  #   # if we think there should be a bias correction:
+  #   linpreds <- linToLog(preds$fit, preds$se.pred)
+  #   preds$fit <- linpreds$meanlog
+  #   preds$se.pred <- linpreds$sdlog
+  #   
+  #   # if we think there should be:
+  #   preds$fit <- log(preds$fit)
+  #   if(exists('se.pred', preds)) {
+  #     warning("???")
+  #     preds$se.pred <- preds$se.pred # some function of se.pred?
+  #   }
+  # }
   
   preds
 }

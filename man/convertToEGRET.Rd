@@ -4,18 +4,25 @@
 \alias{convertToEGRET}
 \title{Convert loadflex to EGRET object}
 \usage{
-convertToEGRET(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
-  preds.type = "Conc")
+convertToEGRET(load.model, estdat = NULL, fitdat = NULL, preds = NULL,
+  meta = NULL, preds.type = "Conc")
 }
 \arguments{
-\item{fitdat}{data.frame of data used to fit a model}
+\item{load.model}{a loadflex model object. If this is provided, the only 
+other necessary argument is \code{estdat}, and even \code{estdat} is 
+optional for some plots (boxConcMonth, plotConcTime, plotConcQ, and 
+plotFluxQ). If this is not provided, then at least \code{fitdat} and 
+\code{meta} must be provided; \code{estdat} and \code{preds} are also 
+necessary for many plots.}
 
 \item{estdat}{data.frame of estimation data}
 
-\item{preds}{data.frame of load predictions}
+\item{fitdat}{data.frame of data used to fit a model}
 
-\item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, site.id, and consti.name}
+\item{preds}{data.frame of concentration predictions}
+
+\item{meta}{loadflex metadata object; it must include constituent, flow, 
+dates, conc.units, site.id, and consti.name}
 
 \item{preds.type}{character specifying if the predictions being used are 
 concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
