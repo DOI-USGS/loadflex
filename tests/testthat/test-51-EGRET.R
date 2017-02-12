@@ -104,19 +104,7 @@ test_that("convertToEGRETDaily correctly converts", {
 test_that("convertToEGRETDaily fails with an incorrect preds.type", {
   expect_error(loadflex:::convertToEGRETDaily(meta = meta, estdat = estdat, 
                                               preds = preds, preds.type = "nonsense"),
-               'preds.type %in%')
-})
-
-test_that("convertToEGRETDaily works with preds.type = 'Flux'", {
-  Daily_flux <- loadflex:::convertToEGRETDaily(meta = meta, estdat = estdat,
-                                               preds = preds_flux, preds.type = "Flux")
-  expect_equal(nrow(Daily_flux), 30)
-  expect_equal(ncol(Daily_flux), 18)
-  
-  expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",  
-                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime",
-                     "ConcDay", "SE", "FluxDay", "yHat")
-  expect_false(any(is.na(match(names(Daily_flux), expected_cols))))
+               'preds.type == "Conc" is not TRUE')
 })
 
 

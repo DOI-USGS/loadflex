@@ -9,13 +9,13 @@
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, conc.units, site.id, and consti.name
-#' @param preds.type character specifying if the predictions being used are
-#' concentrations ("Conc") or fluxes ("Flux").
 #' @param moreTitle additional text to include in the fluxBiasMulti plot 
 #' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
 #' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
 #' lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
 #' in plotFluxHist and plotConcHist.
+#' @param preds.type character specifying the format of the predictions in
+#'   \code{preds}. Must be concentrations ("Conc").
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details EGRET plots that require \code{fitdat, meta}:

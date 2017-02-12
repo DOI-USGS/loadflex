@@ -21,8 +21,8 @@ Details for current options. For now, only one allowed at time.}
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, conc.units, site.id, and consti.name}
 
-\item{preds.type}{character specifying if the predictions being used are
-concentrations ("Conc") or fluxes ("Flux").}
+\item{preds.type}{character specifying the format of the predictions in
+\code{preds}. Must be concentrations ("Conc").}
 
 \item{moreTitle}{additional text to include in the fluxBiasMulti plot 
 title. The EGRET default is "WRTDS", so this changes the default to "loadflex".}
