@@ -41,4 +41,3 @@ attach.units=TRUE; attach.units <- loadflex:::match.arg.loadflex(attach.units)
 # you can also pass in custom choices. as always, partial matching is available
 ci.distrib="log"; ci.distrib <- loadflex:::match.arg.loadflex(ci.distrib, c("lognormal","normal"))
 }
-

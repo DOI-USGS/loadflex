@@ -25,7 +25,7 @@ interpolate.}
 \item{\code{interp.function}}{Function that accepts arguments \code{dates.in}, 
 \code{y.in}, and \code{dates.out}, then returns predictions \code{y.out}}
 }}
+
 \seealso{
 Other load.model.fits: \code{\link{compModel-class}}
 }
-

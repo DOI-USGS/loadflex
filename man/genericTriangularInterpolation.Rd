@@ -28,4 +28,3 @@ Does not strictly adhere to the guidelines in \link{interpolations}, but can
 be used by \code{\link{getTriangularInterpolation}} to produce a 
 function that does.
 }
-

@@ -42,4 +42,3 @@ observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate co
 # from flow & flux
 }
 \keyword{units}
-

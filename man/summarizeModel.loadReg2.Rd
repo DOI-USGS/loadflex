@@ -54,6 +54,7 @@ instead, call \code{summarizeModel()} on a \code{loadReg2} object.
   
   }
 }
+
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadInterp}},
@@ -61,4 +62,3 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadModel}},
   \code{\link{summarizeModel}}
 }
-

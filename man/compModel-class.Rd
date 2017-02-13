@@ -27,7 +27,7 @@ linear space (FALSE)?}
 \item{\code{abs.or.rel.resids}}{character specifying whether interpolation should be 
 by absolute residuals (obs-pred) or relative residuals (obs/pred).}
 }}
+
 \seealso{
 Other load.model.fits: \code{\link{interpModel-class}}
 }
-

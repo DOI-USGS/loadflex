@@ -17,8 +17,6 @@ data.frame containing the original fitting data
 A function in the loadModelInterface.
 }
 \seealso{
-Other getFittingData: \code{\link{getFittingData.loadModel}}
-
 Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittedModel}},
   \code{\link{getFittingFunction}},
@@ -26,5 +24,6 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{simulateSolute}},
   \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
-}
 
+Other getFittingData: \code{\link{getFittingData.loadModel}}
+}

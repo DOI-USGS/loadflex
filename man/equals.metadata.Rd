@@ -19,4 +19,3 @@ logical value indicating whether the two metadata objects have
 \description{
 Compares the contents of each slot using the == operator.
 }
-

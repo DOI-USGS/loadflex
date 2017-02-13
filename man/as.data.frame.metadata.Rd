@@ -30,4 +30,3 @@ a custom field, attempt to coerce that field into 1-row data.frame columns
 using \code{as.data.frame}; if that effort fails, the custom field will be 
 excluded.
 }
-

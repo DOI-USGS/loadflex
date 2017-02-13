@@ -2,22 +2,26 @@
 % Please edit documentation in R/convertToEGRET.R
 \name{flowCorrectionEGRET}
 \alias{flowCorrectionEGRET}
-\title{Use EGRET functions to correct flow values}
+\title{Convert a date and discharge data.frame into EGRET format}
 \usage{
 flowCorrectionEGRET(flowdat, flow.colname, date.colname, qconvert = 35.314667)
 }
 \arguments{
 \item{flowdat}{data frame with discharge values to convert}
 
-\item{flow.colname}{character string giving the column name that corresponds to flow}
+\item{flow.colname}{character string giving the column name that corresponds 
+to flow}
 
-\item{date.colname}{character string giving the column name that corresponds to dates}
+\item{date.colname}{character string giving the column name that corresponds 
+to dates}
 
-\item{qconvert}{numeric conversion factor to get flow into cubic meters per second. Default
-conversion factor is for cubic feet per second.}
+\item{qconvert}{numeric conversion factor to get flow into cubic meters per 
+second. Default conversion factor is for cubic feet per second.}
 }
 \description{
-Uses the EGRET function populateDaily to convert values 
-into cubic meters per second.
+Use EGRET functions to convert a data.frame of date and 
+  discharge columns into "the basic Daily data frame used in WRTDS", i.e., a 
+  13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day
+  smoothed Q, plus a column for dateTime. See 
+  \code{\link[EGRET]{populateDaily}}
 }
-

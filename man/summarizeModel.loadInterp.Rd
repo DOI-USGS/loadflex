@@ -26,4 +26,3 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadReg}},
   \code{\link{summarizeModel}}
 }
-

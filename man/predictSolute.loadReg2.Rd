@@ -67,4 +67,3 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadModel}},
   \code{\link{predictSolute}}
 }
-

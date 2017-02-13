@@ -27,4 +27,3 @@ validMetadataUnits("g", unit.type="load.units") # TRUE
 validMetadataUnits("g", unit.type="flow.units") # FALSE
 }
 \keyword{units}
-

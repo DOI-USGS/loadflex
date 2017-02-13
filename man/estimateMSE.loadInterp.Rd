@@ -38,4 +38,3 @@ n.out*n.iter==nrow(getFittingData(load.model)) and with.replacement==FALSE.
 Other estimateMSE: \code{\link{estimateMSE.loadComp}},
   \code{\link{estimateMSE}}
 }
-

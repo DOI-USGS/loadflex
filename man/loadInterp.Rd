@@ -67,4 +67,3 @@ Other load.model.inits: \code{\link{loadComp}},
   \code{\link{loadLm}}, \code{\link{loadModel}},
   \code{\link{loadReg2}}
 }
-

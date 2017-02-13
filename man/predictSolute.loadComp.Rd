@@ -85,4 +85,3 @@ Other predictSolute: \code{\link{predictSolute.loadInterp}},
   \code{\link{predictSolute.loadReg2}},
   \code{\link{predictSolute}}
 }
-

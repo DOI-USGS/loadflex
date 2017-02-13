@@ -53,4 +53,3 @@ formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs,
 attach.units=TRUE) # == u(obs$MyConc, "mg L^-1")
 }
 \keyword{units}
-

@@ -75,4 +75,3 @@ Implementation of the 1- and 2-parameter digital filters was
 Other predictors: \code{\link{getPred_isBaseflow}}
 }
 \keyword{internal}
-

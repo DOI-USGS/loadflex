@@ -12,4 +12,3 @@ Contains a dictionary of valid units and their dimensions
 \examples{
 data(valid.metadata.units); valid.metadata.units
 }
-

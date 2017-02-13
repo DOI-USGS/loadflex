@@ -48,4 +48,3 @@ represented by the predictions.
 Other diagnostics: \code{\link{estimateRho}},
   \code{\link{residDurbinWatson}}
 }
-

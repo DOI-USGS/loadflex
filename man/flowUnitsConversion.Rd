@@ -30,4 +30,3 @@ flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1', attach.units=TR
 Q_cfs <- seq(10, 12, length.out=10) # example data
 Q_cms <- Q_cfs * flowUnitsConversion(old.units='cfs', new.units='cms')
 }
-

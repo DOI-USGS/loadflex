@@ -19,10 +19,10 @@ missing, the value of \code{ylog} will be inferred from the values of
 \code{formula} and \code{y.trans.function}, but be warned that this
 inference is fallible.}
 }}
+
 \seealso{
 Other load.model.classes: \code{\link{loadComp-class}},
   \code{\link{loadInterp-class}},
   \code{\link{loadModel-class}},
   \code{\link{loadReg2-class}}
 }
-

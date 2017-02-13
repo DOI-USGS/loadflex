@@ -29,4 +29,3 @@ tolerance. If spacing is uneven, a histogram is immediately produced (if
 \code{hist=TRUE}), and a handling function is run (e.g., to produce an error 
 or warning, as specified by \code{handler}).
 }
-

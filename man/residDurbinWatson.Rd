@@ -44,4 +44,3 @@ car::durbinWatsonTest
 Other diagnostics: \code{\link{estimateRho}},
   \code{\link{getCorrectionFraction}}
 }
-

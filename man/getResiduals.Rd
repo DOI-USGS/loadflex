@@ -34,4 +34,3 @@ return The residuals between model predictions and the observations
 \description{
 getResiduals return the residuals of the load.model
 }
-

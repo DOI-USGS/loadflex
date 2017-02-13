@@ -24,4 +24,3 @@ an S3 generic. You should refer to this function by its complete name.)
 \references{
 http://www.clayford.net/statistics/simulation-to-represent-uncertainty-in-regression-coefficients/
 }
-

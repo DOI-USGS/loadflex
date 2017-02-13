@@ -39,7 +39,7 @@ setClass(
   
   validity=function(object) {
     errorstrs <- character()
-        
+    
     if(length(errorstrs) > 0) {
       errorstrs
     } else {
@@ -303,7 +303,7 @@ predictSolute.loadComp <- function(
       se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
       preds_lin <- data.frame(meanlin=predvec_lin, sdlin=se_lin)
       #preds_log <- linToLog(mslist=preds_lin) # we don't actually need preds_log at all in this case
-
+      
       # The intervals:
       if(interval == "prediction") {
         # degrees of freedom are not straightforward for the interpolation part of
@@ -423,7 +423,7 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
   } else {
     interp_obs_resids <- interp_obs
   }
-
+  
   # Pre-calculate the conversion factors to make preds and obs in "conc" or "flux" format. Calls to formatPreds are expensive, so do them infrequently.
   is_flux_format <- resid.model@pred.format == "flux"
   if(is_flux_format) {
@@ -436,7 +436,8 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
   
   # Loop, each time resampling coefficients and calculating the leave-n-out 
   # (probably LOO) uncertainty for the interpolation.
-  complete_MSE <- do.call("rbind", #dimnames=list(NULL, c("conc","flux")), 
+  complete_MSE <- do.call(
+    "rbind", #dimnames=list(NULL, c("conc","flux")), 
     lapply(1:n.iter, function(i) {
       
       # Simulate values from the regression, putting them into interpolation format (flux or conc) and linear space
@@ -481,7 +482,7 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
       # interpolation model with new y.obs values but we'd rather not reconvert
       # the dates all over again
       resid_preds <- sapply(1:length(y.obs), function(left.out) {
-          interpfun(dates.numeric[-left.out], y.obs[-left.out], dates.numeric[left.out])
+        interpfun(dates.numeric[-left.out], y.obs[-left.out], dates.numeric[left.out])
       })
       
       # resid_preds may be logged or not; sim_preds has already been converted
@@ -491,7 +492,7 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
         load.model@fit@abs.or.rel.resids,
         "absolute"=sim_preds + resid_preds,
         "relative"=sim_preds * resid_preds)
-
+      
       # Compute and package the residuals for return as a chunk in the
       # completeMSE sapply loop. Compute the residuals in linear space when
       # log.resids is FALSE - otherwise, we'll sometimes run into problems with
@@ -519,7 +520,7 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
       }
       
     }))
-
+  
   # Return the distribution of the MSE from all those leave-n-out interations
   # in a 2x2 matrix. The errors have have been calculated are already in the
   # right log/linear space and flux/conc format, so our only remaining job is
@@ -543,7 +544,14 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
 #' @family summarizeModel
 summarizeModel.loadComp <- function(load.model, ...) {
   warning("summarizeModel.loadComp isn't implemented yet")
-  data.frame(site.id=getMetadata(load.model)@site.id)
+
+  # create a data.frame of model metrics
+  out <- data.frame(
+    site.id=getMetadata(load.model)@site.id
+  )
+  
+  # return
+  return(out)
 }
 
 #' The fraction of prediction that is due to a correction.

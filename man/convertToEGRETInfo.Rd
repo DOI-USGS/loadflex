@@ -7,13 +7,13 @@
 convertToEGRETInfo(meta, preds.type = "Conc")
 }
 \arguments{
-\item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, site.id, and consti.name}
+\item{meta}{loadflex metadata object; it must include site.name, consti.name,
+site.id, constituent, and the relevant type of units (conc.units or
+load.units, depending on preds.type)}
 
-\item{preds.type}{character specifying if the predictions being used are
+\item{preds.type}{character specifying if the predictions being used are 
 concentrations ("Conc") or fluxes ("Flux").}
 }
 \description{
 Convert a loadflex metadata object into the EGRET INFO dataframe.
 }
-

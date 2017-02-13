@@ -24,4 +24,3 @@ data frame containing various statistics
 \description{
 Summarize generated predictions
 }
-

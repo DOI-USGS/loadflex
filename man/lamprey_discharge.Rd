@@ -11,4 +11,3 @@ Discharge in CFS measured every  15 minutes and collected by the US Geological
 flowing through southeastern New Hampshire. Its 548-km2 watershed empties into 
 the Great Bay estuary.
 }
-
