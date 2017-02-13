@@ -14,4 +14,3 @@
 This will print a loadModel object to the console and is the default method
 used for that process.
 }
-

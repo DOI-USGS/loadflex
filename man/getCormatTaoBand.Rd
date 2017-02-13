@@ -20,4 +20,3 @@ calculate the covariance  1 if dates are within the tao band, 0 if they are
 not Same idea as cormatrix(rho1DayBand, dates) but runs in linear instead of 
 quadratic time - a big and much-needed improvement.
 }
-

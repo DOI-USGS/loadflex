@@ -27,4 +27,3 @@ Does not strictly adhere to the guidelines in \link{interpolations}, but can
 be used by \code{\link{getDistanceWeightedInterpolation}} to produce a 
 function that does.
 }
-

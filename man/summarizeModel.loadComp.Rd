@@ -28,4 +28,3 @@ Other summarizeModel: \code{\link{summarizeModel.loadInterp}},
   \code{\link{summarizeModel.loadReg}},
   \code{\link{summarizeModel}}
 }
-

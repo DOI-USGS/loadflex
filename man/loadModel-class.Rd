@@ -32,9 +32,9 @@ fitting the model.}
 \item{\code{retrans.function}}{A function to be applied to the y predictions before
 returning their values from \code{predictSolute()}.}
 }}
+
 \seealso{
 Other load.model.classes: \code{\link{loadComp-class}},
   \code{\link{loadInterp-class}},
   \code{\link{loadLm-class}}, \code{\link{loadReg2-class}}
 }
-

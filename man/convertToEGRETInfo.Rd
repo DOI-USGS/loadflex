@@ -17,4 +17,3 @@ concentrations ("Conc") or fluxes ("Flux").}
 \description{
 Convert a loadflex metadata object into the EGRET INFO dataframe.
 }
-

@@ -19,9 +19,6 @@ A function in the loadModelInterface. Returns a load model's metadata,
 encapsulated as a \code{metadata} object.
 }
 \seealso{
-Other getMetadata: \code{\link{getMetadata.loadModel}},
-  \code{\link{getMetadata.loadReg}}
-
 Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittedModel}},
   \code{\link{getFittingData}},
@@ -30,5 +27,7 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{simulateSolute}},
   \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
-}
 
+Other getMetadata: \code{\link{getMetadata.loadModel}},
+  \code{\link{getMetadata.loadReg}}
+}

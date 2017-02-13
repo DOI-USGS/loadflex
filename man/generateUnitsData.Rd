@@ -15,4 +15,3 @@ combined) R/sysdata.rda. These are then saved with the package.
 \keyword{data}
 \keyword{internal}
 \keyword{units}
-

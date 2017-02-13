@@ -19,4 +19,3 @@ md <- metadata(constituent="NO3", flow="DISCHARGE",
   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 show(md) # or just md at the command prompt
 }
-

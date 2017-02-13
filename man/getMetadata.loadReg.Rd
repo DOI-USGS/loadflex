@@ -24,4 +24,3 @@ Extracts and imports metadata from an rloadest loadReg model into an object of c
 Other getMetadata: \code{\link{getMetadata.loadModel}},
   \code{\link{getMetadata}}
 }
-

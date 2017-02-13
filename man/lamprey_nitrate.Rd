@@ -13,4 +13,3 @@ Nitrate concentrations have been monitored with weekly and event-based grab
 samples at Packers Falls on the Lamprey since 10 September 1999 and are
 measured by SmartChem discrete analyzer (Westco, Brookfield, CT).
 }
-

@@ -56,4 +56,3 @@ or write your own assumptions.
 Other diagnostics: \code{\link{getCorrectionFraction}},
   \code{\link{residDurbinWatson}}
 }
-

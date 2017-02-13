@@ -15,4 +15,3 @@ Retrieve a fitting function from a loadModel load model
 \seealso{
 Other getFittingFunction: \code{\link{getFittingFunction}}
 }
-

@@ -19,4 +19,3 @@ A function of the form described in \link{interpolations}, i.e.,
 \description{
 Produces an interpolation function of the form described in \link{interpolations}.
 }
-

@@ -19,4 +19,3 @@ data frame of statistics about the input data
 Get summary statistics for a single input data.frame
 }
 \keyword{internal}
-

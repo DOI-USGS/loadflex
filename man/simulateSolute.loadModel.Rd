@@ -56,4 +56,3 @@ Other simulateSolute: \code{\link{simulateSolute.loadLm}},
   \code{\link{simulateSolute.loadReg2}},
   \code{\link{simulateSolute}}
 }
-

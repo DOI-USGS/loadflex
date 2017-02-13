@@ -24,4 +24,3 @@ conversion factor is for cubic feet per second.}
 \description{
 Convert estimation and load prediction data into the EGRET Daily data.frame
 }
-

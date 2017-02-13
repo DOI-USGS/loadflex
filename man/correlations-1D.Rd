@@ -2,8 +2,8 @@
 % Please edit documentation in R/covariance.R
 \name{correlations-1D}
 \alias{correlations-1D}
-\alias{rho1DayBand}
 \alias{rhoEqualDates}
+\alias{rho1DayBand}
 \title{Get the assumed correlation between residuals or predictions at pairs of 
 dates.}
 \usage{
@@ -43,4 +43,3 @@ their errors) is set to 1, and otherwise rho = 0.
 (86400 seconds) of each other, or 0 for pairs that are not. This is a comparable
 but smoother assumption than \code{rhoEqualDates}.
 }
-

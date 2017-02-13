@@ -25,4 +25,3 @@ A function of the form described in \link{interpolations}, i.e.,
 Produces an interpolation function of the form described in 
 \link{interpolations}.
 }
-

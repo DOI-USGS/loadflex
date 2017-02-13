@@ -34,4 +34,3 @@ md <- metadata(constituent="NO3", flow="DISCHARGE",
 sitesum <- summarizeInputs(metadata=md, fitdat=lamprey_nitrate[,1:3], 
   estdat=lamprey_discharge)
 }
-

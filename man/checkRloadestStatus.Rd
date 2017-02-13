@@ -11,4 +11,3 @@ Require that the user has loaded rloadest. Also give the user a message about
 rloadest if appropriate.
 }
 \keyword{internal}
-

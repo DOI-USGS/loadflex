@@ -15,4 +15,3 @@ when the other is a scalar.}
 \description{
 Produces an interpolation function of the form described in \link{interpolations}.
 }
-

@@ -44,4 +44,3 @@ Other load.model.inits: \code{\link{loadComp}},
   \code{\link{loadInterp}}, \code{\link{loadLm}},
   \code{\link{loadModel}}
 }
-

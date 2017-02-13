@@ -39,4 +39,3 @@ preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
 loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
 }
-

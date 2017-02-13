@@ -20,9 +20,6 @@ in conjunction with the composite method (i.e., within a
 MSE cannot be known without some estimation procedure.
 }
 \seealso{
-Other estimateMSE: \code{\link{estimateMSE.loadComp}},
-  \code{\link{estimateMSE.loadInterp}}
-
 Other loadModelInterface: \code{\link{getFittedModel}},
   \code{\link{getFittingData}},
   \code{\link{getFittingFunction}},
@@ -30,5 +27,7 @@ Other loadModelInterface: \code{\link{getFittedModel}},
   \code{\link{simulateSolute}},
   \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
-}
 
+Other estimateMSE: \code{\link{estimateMSE.loadComp}},
+  \code{\link{estimateMSE.loadInterp}}
+}
