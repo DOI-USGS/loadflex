@@ -14,4 +14,3 @@ data(freeform.unit.translations); freeform.unit.translations
 }
 \keyword{data}
 \keyword{units}
-

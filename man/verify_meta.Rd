@@ -19,4 +19,3 @@ Try to get a value of name \code{nm} from the regular or custom
   an error.
 }
 \keyword{internal}
-

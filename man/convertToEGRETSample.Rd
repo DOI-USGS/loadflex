@@ -20,4 +20,3 @@ conversion factor is for cubic feet per second.}
 \description{
 Convert the interpolation data.frame into the EGRET Sample dataframe.
 }
-

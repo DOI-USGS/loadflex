@@ -17,4 +17,3 @@ We definitely don't want to include this function in the official API, so
 keeping it internal.
 }
 \keyword{internal}
-

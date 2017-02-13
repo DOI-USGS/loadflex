@@ -21,4 +21,3 @@ covariance defined as difference between the times divided by the time step don'
 \description{
 get rho matrix first order
 }
-

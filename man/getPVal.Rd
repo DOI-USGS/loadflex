@@ -15,4 +15,3 @@ helper function to compute the p-value like rloadest does in
 print.loadReg
 }
 \keyword{internal}
-

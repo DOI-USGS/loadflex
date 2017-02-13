@@ -68,4 +68,3 @@ These are functions that produce functions that produce 2D correlation matrices.
 
 }
 }
-

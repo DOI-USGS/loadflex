@@ -25,4 +25,3 @@ Use EGRET functions to convert a data.frame of date and
   smoothed Q, plus a column for dateTime. See 
   \code{\link[EGRET]{populateDaily}}
 }
-

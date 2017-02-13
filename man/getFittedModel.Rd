@@ -20,8 +20,6 @@ returned function should accept exactly one argument, the training data, and
 should return an object of the same class as load.model.
 }
 \seealso{
-Other getFittedModel: \code{\link{getFittedModel.loadModel}}
-
 Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{getFittingData}},
   \code{\link{getFittingFunction}},
@@ -29,5 +27,6 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{simulateSolute}},
   \code{\link{summarizeModel}},
   \code{\link{validLoadModelInterface}}
-}
 
+Other getFittedModel: \code{\link{getFittedModel.loadModel}}
+}

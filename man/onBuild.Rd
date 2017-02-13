@@ -10,4 +10,3 @@ onBuild()
 Should not be run except on building the package.
 }
 \keyword{internal}
-

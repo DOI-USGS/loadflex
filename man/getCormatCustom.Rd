@@ -35,4 +35,3 @@ generates a matrix of correlations for all possible pairs of those dates (a
 function of the form described in \link{correlations-2D}. The matrix returned
 by that second function will be sparse if it is at least half zeros.
 }
-

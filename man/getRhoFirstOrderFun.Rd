@@ -44,4 +44,3 @@ successive values in the time series used to estimate \eqn{\rho}
 responsibility for matching the units of \code{date1} and \code{date2} to 
 those of \code{rho}.
 }
-

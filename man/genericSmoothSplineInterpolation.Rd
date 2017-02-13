@@ -25,4 +25,3 @@ Does not strictly adhere to the guidelines in \link{interpolations}, but can
 be used by \code{\link{getSmoothSplineInterpolation}} to produce a 
 function that does.
 }
-

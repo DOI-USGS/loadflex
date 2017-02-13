@@ -94,4 +94,3 @@ plotEGRET("boxConcMonth", fitdat = lamprey_nitrate, meta = meta)
 plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
 
 }
-

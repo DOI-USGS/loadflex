@@ -22,4 +22,3 @@ A new loadReg object with resampled coefficients such that one of
 Dives deep into loadReg objects to replace the coefficients for the purpose
 of simulating new predictions.
 }
-
