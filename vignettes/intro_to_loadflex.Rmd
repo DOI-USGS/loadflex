@@ -89,10 +89,10 @@ getFittingData(no3_lc)
 Now generate point predictions from each model.
 
 ```{r fig_1C}
-preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="log")
+preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="log")
+preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="log")
+preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="log")
 ```
 
 A few lines from one of the resulting prediction data.frames (they're all structured the same way):
