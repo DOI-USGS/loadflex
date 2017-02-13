@@ -241,8 +241,8 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   # Apply the retransformation (which we currently require to be exp) to create
   # preds_lin from preds_log
   
-  # only perform retransformation if linear is desired
-  if(lin.or.log == "log"){
+  # Only perform retransformation if linear is desired
+  if(lin.or.log == "log") {
     return(preds_log)
   }
   
