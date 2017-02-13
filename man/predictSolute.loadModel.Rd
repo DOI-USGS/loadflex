@@ -6,8 +6,8 @@
 \usage{
 \method{predictSolute}{loadModel}(load.model, flux.or.conc = c("flux",
   "conc"), newdata, interval = c("none", "confidence", "prediction"),
-  level = 0.95, se.fit = FALSE, se.pred = FALSE, date = FALSE,
-  attach.units = FALSE, ...)
+  level = 0.95, lin.or.log = c("linear", "log"), se.fit = FALSE,
+  se.pred = FALSE, date = FALSE, attach.units = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadModel object.}
@@ -28,6 +28,10 @@ that prediction point.}
 
 \item{level}{numeric. Fraction of density distribution to include within confidence or
 prediction interval}
+
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the predictions
+should be converted to log space or not. If converted to log space, a bias correction
+will be applied, see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical. If TRUE, the output data.frame will include a column 
 named "se.fit" describing the standard error of the model fit for each row 
