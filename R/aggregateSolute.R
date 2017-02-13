@@ -109,7 +109,7 @@ aggregateSolute <- function(
   se.preds, dates, custom=NA, 
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
-  na.rm=FALSE, attach.units=FALSE, completeThreshold = 0) {
+  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0) {
   
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
@@ -202,14 +202,14 @@ aggregateSolute <- function(
   
   #get threshold for number of measurements
   n_threshold <- switch(agg.by,
-                      "month"=28*completeThreshold,
-                      "water_year"=365*completeThreshold, 
-                      "calendar_year"=365*completeThreshold,
+                      "month"=28*complete.threshold,
+                      "water_year"=365*complete.threshold, 
+                      "calendar_year"=365*complete.threshold,
                       0)
   
   #do the actual stats on grouped df
-  preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by), 
-                          .dots=as.list(agg.by))) 
+  preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by)), 
+                          .dots=as.list(agg.by)) 
   #drop data for incomplete units with filter
   agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > n_threshold), 
                                       Value=mean(preds), 

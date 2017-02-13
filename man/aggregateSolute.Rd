@@ -10,7 +10,7 @@ aggregateSolute(preds, metadata, format = c("conc", "flux rate",
   custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
   level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
   se.agg = TRUE, na.rm = FALSE, attach.units = FALSE,
-  completeThreshold = 0)
+  complete.threshold = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
