@@ -515,6 +515,9 @@ observeSolute <- function(
 #'   a discharge column will be available in \code{newdata}.
 #' @param metadata An object of class \code{\link{metadata}} used to determine 
 #'   the units of inputs and desired output
+#' @param lin.or.log character. Either "linear" or "log" to say whether the predictions
+#'   should be converted to log space or not. If converted to log space, a bias correction
+#'   will be applied, see \code{\link{linToLog}}.
 #' @param attach.units logical. Attach the units to the returned value?
 #' @return converted predictions (in the format/units specified by to.format and
 #'   metadata)
@@ -538,11 +541,15 @@ observeSolute <- function(
 formatPreds <- function(preds, 
                         from.format=c("flux","conc*flow","flux/flow","conc"), 
                         to.format=c("flux","conc"), 
-                        newdata, metadata, attach.units=FALSE) {
+                        newdata, metadata, lin.or.log=c("linear","log"), attach.units=FALSE) {
   
   # Error checking for formats, with case flexibility
   from.format <- match.arg.loadflex(from.format, c("flux","conc*flow","flux/flow","conc"))
   to.format <- match.arg.loadflex(to.format, c("flux","conc"))
+  
+  if(lin.or.log=='log' && from.format != to.format){
+    stop("formatPreds cannot currently handle flux-conc conversions in log space.")
+  }
   
   # Do the conversion. Use units within flowconcToFluxConversion but not here, to save time.
   preds <-

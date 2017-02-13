@@ -290,7 +290,8 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   
   # Change flux/conc formats if appropriate
   preds <- formatPreds(preds, from.format=load.model@pred.format, to.format=flux.or.conc, 
-                       newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
+                       newdata=newdata, metadata=load.model@metadata, lin.or.log=lin.or.log, 
+                       attach.units=attach.units)
   
   # Add dates if requested
   if(date) {
