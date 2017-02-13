@@ -20,7 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #' 
-#' @importFrom dplyr %>% group_by_ summarise filter
+#' @importFrom dplyr %>% group_by_ summarise filter n
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
@@ -213,7 +213,8 @@ aggregateSolute <- function(
   #drop data for incomplete units with filter
   agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > n_threshold), 
                                       Value=mean(preds), 
-                                      SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA)) 
+                                      SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
+                                      n = if(agg.by != "unit") n() else NULL)) 
   
   
   ### Notes on Uncertainty ### 
