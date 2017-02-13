@@ -243,68 +243,71 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   
   # Only perform retransformation if linear is desired
   if(lin.or.log == "log") {
-    return(preds_log)
-  }
+    preds <- preds_log
+  } else {
   
-  if(!all.equal(load.model@retrans.function, exp)) {
-    # For now, restrict this function to loadLms where retrans.function == exp,
-    # i.e., the model is fit to log-transformed y values.
-    stop("predictSolute.loadLm currently only implemented for models where retrans.function == exp")
-  }
-  # This will be a standard conversion from SD of a lognormally distributed 
-  # statistic to SD of a normally distributed one. If mu and sigma are the 
-  # moments of the log(X) values (preds_log$fit and preds_log$se.fit (or se.pred?),
-  # respectively), then back in linear space the moments of X are
-  # preds_lin$fit=m=exp(mu+sigma^2/2) and preds_lin$se.fit^2=v=(exp(sigma^2) - 1)*exp(2*mu+sigma^2).
-  
-  # The mean: always use se.pred (rather than se.fit) to calculate the mean in 
-  # linear space. logToLin is one way of doing a "bias correction", sensu Cohn 
-  # 2005: it returns a meanlin of exp(meanlog+sdlog^2/2) instead of 
-  # exp(meanlog). Other options would be to use the jackknife, smearing, or 
-  # Finney's MVUE estimators; of those, MVUE has been repeatedly advocated by
-  # Cohn and others, and something close to MVUE is encoded in rloadest.
-  meansd_lin <- logToLin(meanlog=preds_log$fit, sdlog=preds_log$se.pred)
-  preds_lin <- data.frame(fit=meansd_lin$meanlin)
-  # The intervals: use a t distribution in log space, then reconvert to linear 
-  # space. We could also use qlnorm, but that would use a normal rather than t 
-  # in log space, and we do know the number of degrees of freedom. Regardless, 
-  # this will be quite close to the output of qlnorm(p=0.5+c(-1,1)*level/2,
-  # meanlog=preds_log$fit, sdlog=preds_log$se.pred).
-  if(interval != "none") {
-    se_ci <- switch(interval, confidence=preds_log$se.fit, prediction=preds_log$se.pred)
-    DF <- load.model@fit$df.residual
-    ci_quantiles <- qt(p=0.5+c(-1,1)*level/2, DF)
-    preds_lin$lwr <- exp(preds_log$fit + ci_quantiles[1]*se_ci)
-    preds_lin$upr <- exp(preds_log$fit + ci_quantiles[2]*se_ci)
-  }
-  # The SEs:
-  if(se.fit) {
-    preds_lin$se.fit <- logToLin(meanlog=preds_log$fit, sdlog=preds_log$se.fit)$sdlin
-  }
-  if(se.pred) {
-    preds_lin$se.pred <- meansd_lin$sdlin
-  }
+    if(!all.equal(load.model@retrans.function, exp)) {
+      # For now, restrict this function to loadLms where retrans.function == exp,
+      # i.e., the model is fit to log-transformed y values.
+      stop("predictSolute.loadLm currently only implemented for models where retrans.function == exp")
+    }
+    # This will be a standard conversion from SD of a lognormally distributed 
+    # statistic to SD of a normally distributed one. If mu and sigma are the 
+    # moments of the log(X) values (preds_log$fit and preds_log$se.fit (or se.pred?),
+    # respectively), then back in linear space the moments of X are
+    # preds_lin$fit=m=exp(mu+sigma^2/2) and preds_lin$se.fit^2=v=(exp(sigma^2) - 1)*exp(2*mu+sigma^2).
+    
+    # The mean: always use se.pred (rather than se.fit) to calculate the mean in 
+    # linear space. logToLin is one way of doing a "bias correction", sensu Cohn 
+    # 2005: it returns a meanlin of exp(meanlog+sdlog^2/2) instead of 
+    # exp(meanlog). Other options would be to use the jackknife, smearing, or 
+    # Finney's MVUE estimators; of those, MVUE has been repeatedly advocated by
+    # Cohn and others, and something close to MVUE is encoded in rloadest.
+    meansd_lin <- logToLin(meanlog=preds_log$fit, sdlog=preds_log$se.pred)
+    preds_lin <- data.frame(fit=meansd_lin$meanlin)
+    # The intervals: use a t distribution in log space, then reconvert to linear 
+    # space. We could also use qlnorm, but that would use a normal rather than t 
+    # in log space, and we do know the number of degrees of freedom. Regardless, 
+    # this will be quite close to the output of qlnorm(p=0.5+c(-1,1)*level/2,
+    # meanlog=preds_log$fit, sdlog=preds_log$se.pred).
+    if(interval != "none") {
+      se_ci <- switch(interval, confidence=preds_log$se.fit, prediction=preds_log$se.pred)
+      DF <- load.model@fit$df.residual
+      ci_quantiles <- qt(p=0.5+c(-1,1)*level/2, DF)
+      preds_lin$lwr <- exp(preds_log$fit + ci_quantiles[1]*se_ci)
+      preds_lin$upr <- exp(preds_log$fit + ci_quantiles[2]*se_ci)
+    }
+    # The SEs:
+    if(se.fit) {
+      preds_lin$se.fit <- logToLin(meanlog=preds_log$fit, sdlog=preds_log$se.fit)$sdlin
+    }
+    if(se.pred) {
+      preds_lin$se.pred <- meansd_lin$sdlin
+    }
+    
+    preds <- preds_lin
+  }  # end log to lin transformation
   
   # Change flux/conc formats if appropriate
-  preds_lin <- formatPreds(preds_lin, from.format=load.model@pred.format, to.format=flux.or.conc, 
-                           newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
+  preds <- formatPreds(preds, from.format=load.model@pred.format, to.format=flux.or.conc, 
+                       newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
   
   # Add dates if requested
   if(date) {
-    if(!is.data.frame(preds_lin)) {
-      preds_lin <- data.frame(fit=preds_lin)
+    if(!is.data.frame(preds)) {
+      preds <- data.frame(fit=preds)
     }
     # prepend the date column
-    preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
+    preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
   
   # If it's just the central predictions, return them as a vector rather than a data.frame
-  if(ncol(preds_lin) == 1) {
-    preds_lin <- preds_lin$fit
+  if(ncol(preds) == 1) {
+    preds <- preds$fit
   }
   
   # Return
-  return(preds_lin)
+  return(preds)
 }
 
 #' Resample the coefficients of a linear model (lm)
