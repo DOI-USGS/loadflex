@@ -6,10 +6,11 @@
 \usage{
 aggregateSolute(preds, metadata, format = c("conc", "flux rate",
   "flux total"), agg.by = c("unit", "day", "month", "water year",
-  "calendar year", "total", "[custom]"), se.preds, dates, custom = NA,
-  cormat.function = cormat1DayBand, ci.agg = TRUE, level = 0.95,
-  deg.free = NA, ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
-  na.rm = FALSE, attach.units = FALSE)
+  "calendar year", "total", "all years", "[custom]"), se.preds, dates,
+  custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
+  level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
+  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE,
+  completeThreshold = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
@@ -74,6 +75,9 @@ predictions (FALSE)?}
 
 \item{attach.units}{logical. If true, units will be attached as an attribute 
 of the second column of the returned data.frame.}
+
+\item{complete.threshold}{numeric decimal value below which an \code{agg.by}
+value, e.g. a year, will be considered incomplete and be discarded}
 }
 \value{
 A data.frame with two columns. The first contains the aggregation 
@@ -124,4 +128,3 @@ aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by=
                 cormat.function=new_correlation_assumption)
 
 }
-
