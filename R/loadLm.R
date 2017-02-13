@@ -240,6 +240,12 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   
   # Apply the retransformation (which we currently require to be exp) to create
   # preds_lin from preds_log
+  
+  # only perform retransformation if linear is desired
+  if(lin.or.log == "log"){
+    return(preds_log)
+  }
+  
   if(!all.equal(load.model@retrans.function, exp)) {
     # For now, restrict this function to loadLms where retrans.function == exp,
     # i.e., the model is fit to log-transformed y values.
@@ -298,7 +304,7 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   }
   
   # Return
-  preds_lin
+  return(preds_lin)
 }
 
 #' Resample the coefficients of a linear model (lm)
