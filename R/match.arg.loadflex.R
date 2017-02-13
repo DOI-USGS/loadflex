@@ -57,6 +57,9 @@ match.arg.loadflex <- function(arg, choices, several.ok=FALSE) {
     },
     "attach.units"={
       uniform.choices <- c(TRUE, FALSE)
+    },
+    "lin.or.log"={
+      uniform.choices <- c("linear", "log")
     })
   if(is.null(uniform.choices)) {
     if(missing(choices)) {
