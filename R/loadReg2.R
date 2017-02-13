@@ -264,11 +264,13 @@ loadReg2 <- function(load.reg,
 predictSolute.loadReg2 <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata, 
   interval=c("none","confidence","prediction"), level=0.95, 
-  se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
+  date=FALSE, attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   # Validate rloadest status
   checkRloadestStatus()
