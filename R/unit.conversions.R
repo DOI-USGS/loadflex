@@ -547,8 +547,8 @@ formatPreds <- function(preds,
   from.format <- match.arg.loadflex(from.format, c("flux","conc*flow","flux/flow","conc"))
   to.format <- match.arg.loadflex(to.format, c("flux","conc"))
   
-  if(lin.or.log=='log'){
-    if(from.format != to.format){
+  if(lin.or.log=='log') {
+    if(from.format != to.format) {
       stop("formatPreds cannot currently handle flux-conc conversions in log space.")
     }
     
