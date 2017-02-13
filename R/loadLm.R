@@ -159,13 +159,15 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 #' @export
 #' @family predictSolute
 predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
-                                 interval=c("none","confidence","prediction"), level=0.95, 
-                                 se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+                                 interval=c("none","confidence","prediction"), level=0.95,
+                                 lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
+                                 date=FALSE, attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   # Check the model - can we confirm that y is logged?
   if(!load.model@ylog) {
