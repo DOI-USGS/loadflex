@@ -217,13 +217,15 @@ getFittedModel.loadModel <- function(load.model) {
 #' @export
 #' @family predictSolute
 predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
-                                    interval=c("none","confidence","prediction"), level=0.95, 
-                                    se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+                                    interval=c("none","confidence","prediction"), level=0.95,
+                                    lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
+                                    date=FALSE, attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   # If there's no newdata, use the data
   if(missing(newdata)) {
@@ -341,6 +343,10 @@ simulateSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), 
 #' @export
 #' @family summarizeModel
 summarizeModel.loadModel <- function(load.model, ...) {
-  warning("summarizeModel.loadModel is unimplemented; use a descendant such as loadLm")
-  data.frame(site.id=getMetadata(load.model)@site.id)
+  out <- data.frame(
+    site.id = getMetadata(load.model)@site.id,
+    constituent = getMetadata(load.model)@constituent,
+    stringsAsFactors=FALSE
+  )
+  return(out)
 }

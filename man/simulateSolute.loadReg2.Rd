@@ -12,8 +12,8 @@ possibly also natural variation.}
 \arguments{
 \item{load.model}{A loadReg2 object.}
 
-\item{flux.or.conc}{indicate if the solute is measured as a flux or 
-concentration.}
+\item{flux.or.conc}{character. Should the simulations be reported as flux
+rates or concentrations?}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data. Column names 
 should match those given in the \code{loadReg2} metadata. If 

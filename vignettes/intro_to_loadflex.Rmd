@@ -58,7 +58,8 @@ Create a metadata description of the dataset & desired output.
 ```{r fig_1A}
 meta <- metadata(constituent="NO3", flow="DISCHARGE", 
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH",
+  consti.name="Nitrate", site.id='01073500', lat=43.10259, lon=-70.95256)
 ```
 
 Fit four models: interpolation, linear, rloadest, and composite. Many variants on these models are possible. For example: `loadInterp` models may use any of several interp.fun options; see `?interpolations`. `loadLm` accepts any linear model acceptable to `lm()`, not just the very simple formula we have used here. `loadReg2` functions are also flexible as specified in the documentation for \pkg{rloadest}. `loadComp` models accept a linear model as fit by either `loadLm` or `loadReg2` and any of the interp.fun options available to `loadInterp`.
@@ -90,7 +91,7 @@ Now generate point predictions from each model.
 
 ```{r fig_1C}
 preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="linear")
 preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE)
 preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE)
 ```

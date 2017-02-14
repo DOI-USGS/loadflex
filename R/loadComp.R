@@ -206,13 +206,14 @@ loadComp <- function(reg.model,
 #' @family predictSolute
 predictSolute.loadComp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, 
-  fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
+  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
+  attach.units=FALSE, fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   match.arg.loadflex(fit.reg, c(TRUE, FALSE))
   match.arg.loadflex(fit.resid, c(TRUE, FALSE))
   match.arg.loadflex(fit.resid.raw, c(TRUE, FALSE))
@@ -534,21 +535,51 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
 #' 
 #' Produce a 1-row data.frame of model metrics. The relevant metrics for 
 #' loadComp models include two sets of statistics about autocorrelation (one for
-#' the regression residuals, one for the 'residuals' used to do the composite
+#' the regression residuals, one for the 'residuals' used to do the composite 
 #' correction).
 #' 
 #' @inheritParams summarizeModel
+#' @param newdata data.frame of data that was/will be used to predict 
+#'   concentration or load; should be the same as the \code{newdata} argument to
+#'   \code{predictSolute}, e.g. a data.frame of daily or instantaneous dates and
+#'   discharges.
+#' @param irregular.timesteps.ok logical. If FALSE, this function requires that 
+#'   the timesteps between observations are identical to one another, and a plot
+#'   is generated and an error is thrown if this requirement is not met. If 
+#'   TRUE, the check is not performed. If NA (the default), the check is 
+#'   performed but the function proceeds with a warning and no plot if the 
+#'   timesteps are found to be irregular. Tests and estimates of autocorrelation
+#'   are weak to wrong when timesteps are irregular, but timesteps are often at 
+#'   least a bit irregular in the real world.
 #' @return A 1-row data.frame of model metrics
 #' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel
-summarizeModel.loadComp <- function(load.model, ...) {
-  warning("summarizeModel.loadComp isn't implemented yet")
-
+summarizeModel.loadComp <- function(
+  load.model, newdata, irregular.timesteps.ok=NA, ...) {
+  
+  # prepare args we'll use a few times below
+  resid.args <- list(
+    load.model=getFittedModel(load.model)@reg.model,
+    flux.or.conc=load.model@pred.format, 
+    abs.or.rel.resids=getFittedModel(load.model)@abs.or.rel.resids, 
+    use.log=getFittedModel(load.model)@log.resids,
+    plot.acf=FALSE, irregular.timesteps.ok=irregular.timesteps.ok)
+  resid.data <- getFittingData(getFittedModel(load.model)@resid.model)
+  
   # create a data.frame of model metrics
-  out <- data.frame(
-    site.id=getMetadata(load.model)@site.id
-  )
+  out <- NextMethod(load.model, ...) # site.id, constituent, etc.
+  if(resid.args$use.log) {
+    out$RMSE.log <- sqrt(load.model@MSE["mean", resid.args$flux.or.conc])
+  } else {
+    out$RMSE.lin <- sqrt(load.model@MSE["mean", resid.args$flux.or.conc])
+  }
+  out$reg.durbin.watson <- do.call(residDurbinWatson, resid.args)
+  resid.args$irregular.timesteps.ok <- TRUE # we checked on the first call but will now skip to avoid replicate warnings
+  out$reg.rho <- do.call(estimateRho, resid.args)$rho
+  out$int.durbin.watson <- do.call(residDurbinWatson, c(list(newdata=resid.data), resid.args))
+  out$int.rho <- do.call(estimateRho, c(list(newdata=resid.data), resid.args))$rho
+  out$correction.frac <- getCorrectionFraction(load.model, flux.or.conc=resid.args$flux.or.conc, newdata=newdata)
   
   # return
   return(out)
@@ -563,9 +594,10 @@ summarizeModel.loadComp <- function(load.model, ...) {
 #' @name getCorrectionFraction
 #' @rdname getCorrectionFraction
 #' @param load.model The load model from which to pull the correction fraction.
-#' @param flux.or.conc character indicating whether the metric should be
-#'   computed with respect to predictions of flux rate or concentration.
-#' @param newdata The data for which to compute the correction fraction.
+#' @param flux.or.conc character. Should the metric be computed with respect to
+#'   predictions of flux rate or concentration?
+#' @param newdata The data for which to compute the correction fraction, usually
+#'   containing daily or instantaneous discharge.
 #' @param ... Other arguments passed to class-specific implementations of 
 #'   getCorrectionFraction.
 #' @return A value between 0 and 1 indicating the fraction of total load that is
@@ -596,6 +628,7 @@ getCorrectionFraction <- function(load.model, flux.or.conc=c("flux","conc"), new
 #' @param na.rm logical. Should predictions with NA values be excluded?
 #' @export
 getCorrectionFraction.loadComp <- function(load.model, flux.or.conc=c("flux","conc"), newdata, na.rm=FALSE, ...) {
+  if(missing(newdata)) stop("required argument to getCorrectionFraction: newdata")
   preds <- predictSolute(load.model, flux.or.conc, newdata, fit.reg=TRUE, fit.resid=TRUE, date=TRUE)
   if(isTRUE(na.rm)) {
     preds <- preds[complete.cases(preds), ]

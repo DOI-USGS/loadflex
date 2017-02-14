@@ -6,14 +6,14 @@
 \usage{
 \method{predictSolute}{loadInterp}(load.model, flux.or.conc, newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
-  se.fit = FALSE, se.pred = FALSE, date = FALSE, attach.units = FALSE,
-  ...)
+  lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
+  date = FALSE, attach.units = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadInterp object.}
 
-\item{flux.or.conc}{indicate if the solute is measured as a flux or 
-concentration.}
+\item{flux.or.conc}{character. Should the predictions be reported as flux 
+rates or concentrations?}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data. Because 
 loadInterp models interpolate in time among the observations to which they 
@@ -25,8 +25,12 @@ original fitting data will be used.}
 \item{interval}{character. The type of interval desired. Confidence intervals
 are not currently available for loadInterp models.}
 
-\item{level}{numeric. Fraction of density distribution to include within confidence or
-prediction interval}
+\item{level}{numeric. Fraction of density distribution to include within 
+confidence or prediction interval}
+
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the
+predictions should be converted to log space or not. If converted to log
+space, a bias correction will be applied, see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical, but should be FALSE because se.fit is not currently
 available for loadInterp models.}

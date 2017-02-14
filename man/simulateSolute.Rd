@@ -12,8 +12,8 @@ simulateSolute(load.model, flux.or.conc = c("flux", "conc"), newdata,
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
 
-\item{flux.or.conc}{indicate if the solute is measured as a flux or 
-concentration.}
+\item{flux.or.conc}{character. Should the simulations be reported as flux
+rates or concentrations?}
 
 \item{newdata}{An optional data.frame of predictor observations. The column 
 names in this data.frame must match those specified in the load model's 

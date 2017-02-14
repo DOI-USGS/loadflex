@@ -231,11 +231,13 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 #' @family predictSolute
 predictSolute.loadInterp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
+  attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   meta <- load.model@metadata
   fit <- load.model@fit
