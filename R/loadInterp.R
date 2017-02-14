@@ -459,14 +459,15 @@ summarizeModel.loadInterp <- function(
   # as in residDurbinWatson, Use the car package to test for autocorrelation of 
   # the residuals. Because load.model is not always a linear model, we'll simply
   # pass in the residuals and will accept the lack of p-values in the output
-  out$int.durbin.watson <- car::durbinWatsonTest(model=int.obs)
+  out$durbin.watson <- car::durbinWatsonTest(model=int.obs)
   # as in estimateRho, extract the first-order autocorrelation coefficient, rho,
   # from an AR1 arima model. i think this is supported here:
   # http://stats.stackexchange.com/questions/68243/ar1-coefficient-is-correlation
-  out$int.rho <- coef(arima(int.obs, order=c(1, 0, 0), include.mean=FALSE))[['ar1']]
+  out$rho <- coef(arima(int.obs, order=c(1, 0, 0), include.mean=FALSE))[['ar1']]
   # could also include the lag-1 ACF value
-  out$int.acf1 <- acf(int.obs, plot=FALSE, lag.max=1, demean=FALSE)$acf[2]
-  out$int.acf1demean <- acf(int.obs, plot=FALSE, lag.max=1, demean=TRUE)$acf[2]
+  out$acf1 <- acf(int.obs, plot=FALSE, lag.max=1, demean=FALSE)$acf[2]
+  out$acf1demean <- acf(int.obs, plot=FALSE, lag.max=1, demean=TRUE)$acf[2]
+  out$corlag1 <- cor(int.obs[-1], int.obs[-length(int.obs)], method='pearson')
   
   # return
   return(out)
