@@ -578,7 +578,7 @@ summarizeModel.loadComp <- function(
   resid.args$irregular.timesteps.ok <- TRUE # we checked on the first call but will now skip to avoid replicate warnings
   out$reg.rho <- do.call(estimateRho, resid.args)$rho
   out$int.durbin.watson <- do.call(residDurbinWatson, c(list(newdata=resid.data), resid.args))
-  out$reg.rho <- do.call(estimateRho, c(list(newdata=resid.data), resid.args))$rho
+  out$int.rho <- do.call(estimateRho, c(list(newdata=resid.data), resid.args))$rho
   out$correction.frac <- getCorrectionFraction(load.model, flux.or.conc=resid.args$flux.or.conc, newdata=newdata)
   
   # return

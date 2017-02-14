@@ -345,7 +345,8 @@ simulateSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), 
 summarizeModel.loadModel <- function(load.model, ...) {
   out <- data.frame(
     site.id = getMetadata(load.model)@site.id,
-    constituent = getMetadata(load.model)@constituent
+    constituent = getMetadata(load.model)@constituent,
+    stringsAsFactors=FALSE
   )
   return(out)
 }
