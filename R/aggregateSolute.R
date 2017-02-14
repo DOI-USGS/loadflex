@@ -20,7 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #' 
-#' @importFrom dplyr %>% group_by_ summarise
+#' @importFrom dplyr %>% group_by_ summarise filter n
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
@@ -74,7 +74,10 @@
 #'   predictions (FALSE)?
 #' @param attach.units logical. If true, units will be attached as an attribute 
 #'   of the second column of the returned data.frame.
-#'   
+#' @param complete.threshold numeric decimal value below which an \code{agg.by}
+#'  value, e.g. a year, will be considered incomplete and be discarded 
+#' @param model.name  char Name of the model that generated the predictions.
+#' Returned with each row of the output data.frame  
 #' @return A data.frame with two columns. The first contains the aggregation 
 #'   period or custom aggregation unit and is named after the value of 
 #'   \code{agg.by}. The second contains the aggregate flux or concentration 
@@ -103,17 +106,20 @@
 #' @export
 aggregateSolute <- function(
   preds, metadata, format=c("conc", "flux rate", "flux total"), 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
+           "mean water year", "mean calendar year", "[custom]"),
   se.preds, dates, custom=NA, 
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
-  na.rm=FALSE, attach.units=FALSE) {
+  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0, model.name = NA) {
   
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
+  default_agg.by <- c("unit", "day", "month", "water year", "calendar year", 
+                        "total", "mean water year", "mean calendar year")
   for(abi in 1:length(agg.by)) {
-    agg.by[abi] <- match.arg.loadflex(agg.by[abi], c("unit", "day", "month", "water year", "calendar year", "total", colnames(custom)))
+    agg.by[abi] <- match.arg.loadflex(agg.by[abi], c(default_agg.by, colnames(custom)))
   }
   agg.by <- .reSpace(agg.by,"_") # replace spaces with underscores to use agg.by as a column name
   if(!is(custom, "data.frame")) {
@@ -180,7 +186,7 @@ aggregateSolute <- function(
   
   # Decide on the aggregation vector (the usual case) or list of vectors
   # (uncommon, but possible for "custom")
-  if(length(agg.by) == 1 & all(agg.by %in% c("unit","day","month","water_year","calendar_year","total"))) {
+  if(length(agg.by) == 1 & all(agg.by %in% gsub(" ", "_", default_agg.by))) {
     aggregate_by <- setNames(
       data.frame(
         switch(
@@ -191,6 +197,8 @@ aggregateSolute <- function(
           "water_year"=waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
+          "mean_water_year"=waterYear(dates), #will aggregate at the end
+          "mean_calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           stop("")
         )),
       agg.by)
@@ -198,60 +206,25 @@ aggregateSolute <- function(
     aggregate_by <- custom[agg.by]
   }
   
-  SEofSum <- function(dates, se.preds) {
-    # By Cohn 2005 Equation 51, Var[L-muL] = 
-    # sum_j(sum_i(rho_ij*mui*muj*(exp(sigma^2)-1))) where sigma^2 is the
-    # variance in log space and mui is the mean in linear space (mui = exp(mulog
-    # + 0.5*sigma^2)). In other words, this is the standard equation relating 
-    # correlation to covariance as cov=cor*se_i*se_j. We can use the same 
-    # equation, except that the SEs of the instantaneous loads have already been
-    # calculated for us as the values returned when you call predictSolute with 
-    # se.pred=TRUE. So it's sum_j(sum_i(cor_ij*se_i*se_j)).
-    
-    # Newey and West argued that autocovariance at longer lags should be
-    # downweighted in calculating the variance of the sum, largely because it's
-    # really hard to calculate the variance at a lag close to the length of the
-    # time series (because there are only a few pairs of points with that lag
-    # distance); this is therefore a small sample problem. So if you choose, you
-    # can multiply each term by a weight specified by weight.fun. The default is 1
-    # for any value of lag.num, but another good choice is 1-(l/(L+1)) as 
-    # suggested by Newey and West (1987); other weights were suggested in papers 
-    # subsequent to that one. If you do use such a weighting function, you should
-    # choose L wisely; it should probably be constant across all aggregation
-    # periods rather than changing from period to period, and it should probably
-    # depend on the temporal resolution of your predictions. The weight function
-    # is sometimes also called a kernel function.
-    #   weight.fun=function(lag.num) { rep(1, length(lag.num)) }
-    #   acfvec <- acfvec * weight.fun(0:num.lags)
-    
-    # First compute the correlations among observation errors, based on
-    # assumptions or estimates embodied in cormat.function
-    cor_matrix <- cormat.function(dates)
-    
-    # The covariance matrix is the element-wise product of cor_matrix and 
-    # varvar_matrix, where varvar_matrix[i,j] is se.preds[i]*se.preds[j]. 
-    # Because what we really want is the sum of all terms in the covariance 
-    # matrix, and because varvar_matrix could be huge, we don't actually ever 
-    # create varvar_matrix. Instead we use sparse matrix multiplication to get 
-    # us first to another sparse matrix (half_cov_matrix) and then to a column 
-    # vector (sums by row of products), and then we take the sum of that vector
-    # straight away.
-    half_cov_matrix <- cor_matrix*se.preds
-    cov_matrix_sum <- sum(half_cov_matrix %*% se.preds)
-    
-    # At this point (between creating cov_matrix and computing the summation,
-    # actually), the AMLE algorithm in rloadest adds an additional term for
-    # covariance arising from coefficient uncertainty - see src/TAC_LOAD.f - but
-    # for other model types this additional covariance is captured in se.pred
-    # and the chosen cormat.function already.
-    
-    # Return the calculated SE
-    sqrt(cov_matrix_sum)/length(se.preds)
-  }
-  agg_preds <- v(data.frame(preds, se.preds, dates, aggregate_by)) %>%
-    group_by_(.dots=as.list(agg.by)) %>%
-    dplyr::summarise(Value=mean(preds), SE=if(se.agg | ci.agg) SEofSum(dates, se.preds) else NA) %>%
-    as.data.frame()
+  #get threshold for number of measurements
+  n_threshold <- switch(agg.by,
+                      "month"=28*complete.threshold,
+                      "water_year"=365*complete.threshold, 
+                      "calendar_year"=365*complete.threshold,
+                      "all_years"=365*complete.threshold,
+                      0)
+  
+  #do the actual stats on grouped df
+  preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by)), 
+                          .dots=as.list(agg.by)) 
+  #drop data for incomplete units with filter
+  agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > n_threshold), 
+                                      Value=mean(preds), 
+                                      SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
+                                      n = n(), 
+                                      constitutent = getInfo(metadata, 'constituent'),
+                                      model = model.name)) 
+  
   
   ### Notes on Uncertainty ### 
   
@@ -329,14 +302,82 @@ aggregateSolute <- function(
       "flux rate"=metadata@load.rate.units,
       "flux total"=metadata@load.units
     )
-    agg_preds <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
+    retDF <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
   } else {
     # Shake off any pre-existing units - e.g., those attached to Duration
-    agg_preds <- v(agg_preds)
+    retDF <- v(agg_preds)
   }
+  #aggregate to multi year if asked
+  if(grepl(pattern = "mean", x = agg.by, ignore.case = TRUE)) {
+    multiSE <- 1/nrow(retDF)*sqrt(sum(retDF$SE ^ 2))
+    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'), 
+                        constituent = getInfo(metadata, 'constituent'),
+                        model = model.name,
+                        multi_year_avg = mean(retDF$Value),
+                        multiSE, 
+                        CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
+                        CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
+                        stringsAsFactors = FALSE)
+  } else {
+    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'),
+                        retDF, stringsAsFactors = FALSE)
+    
+  } 
+  
   # Give the data.frame nice column names
-  names(agg_preds)[1] <- .reSpace(.sentenceCase(names(agg_preds)[1]), "_")
-  names(agg_preds)[match("Value", names(agg_preds))] <- .reSpace(.sentenceCase(format), "_")
-  # Return
-  agg_preds
+  names(retDF)[1] <- .reSpace(.sentenceCase(names(retDF)[1]), "_")
+  names(retDF)[match("Value", names(retDF))] <- .reSpace(.sentenceCase(format), "_")
+  
+  return(retDF)
+}
+
+SEofSum <- function(dates, se.preds, cormat.function) {
+  # By Cohn 2005 Equation 51, Var[L-muL] = 
+  # sum_j(sum_i(rho_ij*mui*muj*(exp(sigma^2)-1))) where sigma^2 is the
+  # variance in log space and mui is the mean in linear space (mui = exp(mulog
+  # + 0.5*sigma^2)). In other words, this is the standard equation relating 
+  # correlation to covariance as cov=cor*se_i*se_j. We can use the same 
+  # equation, except that the SEs of the instantaneous loads have already been
+  # calculated for us as the values returned when you call predictSolute with 
+  # se.pred=TRUE. So it's sum_j(sum_i(cor_ij*se_i*se_j)).
+  
+  # Newey and West argued that autocovariance at longer lags should be
+  # downweighted in calculating the variance of the sum, largely because it's
+  # really hard to calculate the variance at a lag close to the length of the
+  # time series (because there are only a few pairs of points with that lag
+  # distance); this is therefore a small sample problem. So if you choose, you
+  # can multiply each term by a weight specified by weight.fun. The default is 1
+  # for any value of lag.num, but another good choice is 1-(l/(L+1)) as 
+  # suggested by Newey and West (1987); other weights were suggested in papers 
+  # subsequent to that one. If you do use such a weighting function, you should
+  # choose L wisely; it should probably be constant across all aggregation
+  # periods rather than changing from period to period, and it should probably
+  # depend on the temporal resolution of your predictions. The weight function
+  # is sometimes also called a kernel function.
+  #   weight.fun=function(lag.num) { rep(1, length(lag.num)) }
+  #   acfvec <- acfvec * weight.fun(0:num.lags)
+  
+  # First compute the correlations among observation errors, based on
+  # assumptions or estimates embodied in cormat.function
+  cor_matrix <- cormat.function(dates)
+  
+  # The covariance matrix is the element-wise product of cor_matrix and 
+  # varvar_matrix, where varvar_matrix[i,j] is se.preds[i]*se.preds[j]. 
+  # Because what we really want is the sum of all terms in the covariance 
+  # matrix, and because varvar_matrix could be huge, we don't actually ever 
+  # create varvar_matrix. Instead we use sparse matrix multiplication to get 
+  # us first to another sparse matrix (half_cov_matrix) and then to a column 
+  # vector (sums by row of products), and then we take the sum of that vector
+  # straight away.
+  half_cov_matrix <- cor_matrix*se.preds
+  cov_matrix_sum <- sum(half_cov_matrix %*% se.preds)
+  
+  # At this point (between creating cov_matrix and computing the summation,
+  # actually), the AMLE algorithm in rloadest adds an additional term for
+  # covariance arising from coefficient uncertainty - see src/TAC_LOAD.f - but
+  # for other model types this additional covariance is captured in se.pred
+  # and the chosen cormat.function already.
+  
+  # Return the calculated SE
+  return(sqrt(cov_matrix_sum)/length(se.preds))
 }
