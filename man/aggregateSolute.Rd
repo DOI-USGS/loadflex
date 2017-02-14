@@ -77,7 +77,7 @@ predictions (FALSE)?}
 \item{attach.units}{logical. If true, units will be attached as an attribute 
 of the second column of the returned data.frame.}
 
-\item{complete.threshold}{numeric decimal value below which an \code{agg.by}
+\item{complete.threshold}{numeric number of observations below which an \code{agg.by}
 value, e.g. a year, will be considered incomplete and be discarded}
 
 \item{model.name}{char Name of the model that generated the predictions.

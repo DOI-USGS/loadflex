@@ -74,6 +74,8 @@ test_that("mean water and calendar year work", {
   expect_is(mean_water, "data.frame")
   expect_equal(nrow(mean_water), 1)
   expect_equal(nrow(mean_calendar), 1)
+  
+  
 })
 
 
