@@ -79,6 +79,9 @@ of the second column of the returned data.frame.}
 
 \item{complete.threshold}{numeric decimal value below which an \code{agg.by}
 value, e.g. a year, will be considered incomplete and be discarded}
+
+\item{model.name}{char Name of the model that generated the predictions.
+Returned with each row of the output data.frame}
 }
 \value{
 A data.frame with two columns. The first contains the aggregation 

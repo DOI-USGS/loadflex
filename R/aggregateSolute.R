@@ -74,9 +74,10 @@
 #'   predictions (FALSE)?
 #' @param attach.units logical. If true, units will be attached as an attribute 
 #'   of the second column of the returned data.frame.
-#'@param complete.threshold numeric decimal value below which an \code{agg.by}
+#' @param complete.threshold numeric decimal value below which an \code{agg.by}
 #'  value, e.g. a year, will be considered incomplete and be discarded 
-#'   
+#' @param model.name  char Name of the model that generated the predictions.
+#' Returned with each row of the output data.frame  
 #' @return A data.frame with two columns. The first contains the aggregation 
 #'   period or custom aggregation unit and is named after the value of 
 #'   \code{agg.by}. The second contains the aggregate flux or concentration 
