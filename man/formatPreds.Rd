@@ -5,7 +5,8 @@
 \title{formatPreds raw to final predictions}
 \usage{
 formatPreds(preds, from.format = c("flux", "conc*flow", "flux/flow", "conc"),
-  to.format = c("flux", "conc"), newdata, metadata, attach.units = FALSE)
+  to.format = c("flux", "conc"), newdata, metadata, lin.or.log = c("linear",
+  "log"), attach.units = FALSE)
 }
 \arguments{
 \item{preds}{raw prediction values}
@@ -24,6 +25,10 @@ a discharge column will be available in \code{newdata}.}
 
 \item{metadata}{An object of class \code{\link{metadata}} used to determine 
 the units of inputs and desired output}
+
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the predictions
+should be converted to log space or not. If converted to log space, a bias correction
+will be applied, see \code{\link{linToLog}}.}
 
 \item{attach.units}{logical. Attach the units to the returned value?}
 }

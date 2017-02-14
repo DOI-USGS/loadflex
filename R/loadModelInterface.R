@@ -112,7 +112,7 @@ getFittedModel <- function(load.model) {
 #' 
 #' @param load.model A load model object, typically inheriting from loadModel 
 #'   and always implementing the loadModelInterface.
-#' @param flux.or.conc character. Should the predictions be reported as flux
+#' @param flux.or.conc character. Should the predictions be reported as flux 
 #'   rates or concentrations?
 #' @param newdata An optional data.frame of predictor observations. The column 
 #'   names in this data.frame must match those specified in the load model's 
@@ -125,6 +125,9 @@ getFittedModel <- function(load.model) {
 #'   that prediction point.
 #' @param level numeric. Fraction of density distribution to include within 
 #'   confidence or prediction interval
+#' @param lin.or.log character. Either "linear" or "log" to say whether the
+#'   predictions should be converted to log space or not. If converted to log
+#'   space, a bias correction will be applied, see \code{\link{linToLog}}.
 #' @param se.fit logical. If TRUE, the output data.frame will include a column 
 #'   named "se.fit" describing the standard error of the model fit for each row 
 #'   of predictors.
@@ -152,8 +155,9 @@ getFittedModel <- function(load.model) {
 #' @family predictSolute
 predictSolute <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata, 
-  interval=c("none","confidence","prediction"), level=0.95,   
-  se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+  interval=c("none","confidence","prediction"), level=0.95, 
+  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
+  date=FALSE, attach.units=FALSE, ...) {
 
   UseMethod("predictSolute")
 }

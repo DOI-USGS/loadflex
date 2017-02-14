@@ -217,13 +217,15 @@ getFittedModel.loadModel <- function(load.model) {
 #' @export
 #' @family predictSolute
 predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
-                                    interval=c("none","confidence","prediction"), level=0.95, 
-                                    se.fit=FALSE, se.pred=FALSE, date=FALSE, attach.units=FALSE, ...) {
+                                    interval=c("none","confidence","prediction"), level=0.95,
+                                    lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
+                                    date=FALSE, attach.units=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   # If there's no newdata, use the data
   if(missing(newdata)) {
