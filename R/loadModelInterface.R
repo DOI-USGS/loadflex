@@ -235,7 +235,7 @@ estimateMSE <- function(load.model, ...) {
 #' @export
 #' @family loadModelInterface
 #' @family summarizeModel
-summarizeModel <- function(load.model, flux.or.conc=c("conc","flux"), ...) UseMethod("summarizeModel")
+summarizeModel <- function(load.model, ...) UseMethod("summarizeModel")
 
 
 #' Test whether a class implements the loadModelInterface

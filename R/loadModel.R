@@ -341,6 +341,9 @@ simulateSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), 
 #' @export
 #' @family summarizeModel
 summarizeModel.loadModel <- function(load.model, ...) {
-  warning("summarizeModel.loadModel is unimplemented; use a descendant such as loadLm")
-  data.frame(site.id=getMetadata(load.model)@site.id)
+  out <- data.frame(
+    site.id = getMetadata(load.model)@site.id,
+    constituent = getMetadata(load.model)@constituent
+  )
+  return(out)
 }

@@ -477,14 +477,11 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' @export
 #' @family summarizeModel
 summarizeModel.loadReg2 <- function(load.model, ...) {
-  out <- summarizeModel(getFittedModel(load.model), ...)
   
-  # add the site.id as the leftmost column
-  out$site.id <- getMetadata(load.model)@site.id
-  out$constituent <- getMetadata(load.model)@constituent
-  site.id <- '.dplyr.var'
-  constituent <- 'dplyr.var'
-  out <- select(out, site.id, constituent, everything())
+  # collect and combine the default summary and the loadReg summary
+  out.info <- NextMethod()
+  out.loadReg <- summarizeModel(getFittedModel(load.model), flux.or.conc=no3_lr@pred.format, ...)
+  out <- bind_cols(out.info, out.loadReg)
   
   # return
   return(out)
