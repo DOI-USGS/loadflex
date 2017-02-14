@@ -23,7 +23,8 @@ estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
 ## ----fig_1A--------------------------------------------------------------
 meta <- metadata(constituent="NO3", flow="DISCHARGE", 
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH",
+  consti.name="Nitrate", site.id='01073500', lat=43.10259, lon=-70.95256)
 
 ## ----fig_1B--------------------------------------------------------------
 no3_li <- loadInterp(interp.format="conc", interp.fun=rectangularInterpolation, 

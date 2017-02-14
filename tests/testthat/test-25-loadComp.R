@@ -262,3 +262,34 @@ test_that("loadComp uncertainties make sense for all sorts of abs/reg, lin/log, 
     })
   
 })
+
+
+test_that("loadComp can summarize itself", {
+  # Setup from intro_to_loadflex.Rmd
+  data(lamprey_nitrate)
+  intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
+  regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
+  data(lamprey_discharge)
+  estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
+  estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
+  meta <- metadata(constituent="NO3", flow="DISCHARGE", 
+                   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+                   load.rate.units="kg d^-1", site.name="Lamprey River, NH",
+                   consti.name="Nitrate", site.id='01073500', lat=43.10259, lon=-70.95256)
+  library(rloadest)
+  no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
+                             flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+                             flow.units="cfs", conc.units="mg/L", load.units="kg",
+                             station='Lamprey River, NH'))
+  no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
+                     interp.data=intdat)
+  
+  # test for expected errors and warnings about timesteps
+  expect_error(summarizeModel(no3_lc, newdata=estdat, irregular.timesteps.ok=FALSE))
+  expect_warning(summarizeModel(no3_lc, newdata=estdat, irregular.timesteps.ok=NA))
+  expect_equal(nrow(summarizeModel(no3_lc, newdata=estdat, irregular.timesteps.ok=TRUE)), 1)
+  
+  # test that the function requires the newdata arg
+  expect_error(summarizeModel(no3_lc, irregular.timesteps.ok=TRUE), "newdata")
+  
+})

@@ -27,9 +27,10 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
     if(hist) {
       # Plot a histogram of time intervals for the user's inspection. The 
       # binwidth is the ggplot2 default, but set explicitly to avoid the warning
-      suppressWarnings(print(ggplot(data.frame(TimeInterval=as.numeric(time_diffs)), aes(x=TimeInterval)) + 
-                               geom_histogram(binwidth=diff(range(as.numeric(time_diffs)))/30) + 
-                               theme_bw() + xlab(paste0("Time Interval (",units(time_diffs),")")) + ylab("Count of Time Interval")))
+      suppressWarnings(print(
+        ggplot(data.frame(TimeInterval=as.numeric(time_diffs)), aes(x=TimeInterval)) + 
+          geom_histogram(binwidth=diff(range(as.numeric(time_diffs)))/30) + 
+          theme_bw() + xlab(paste0("Time Interval (",units(time_diffs),")")) + ylab("Count of Time Interval")))
     }
     handler(paste("Time series is irregular.", if(hist) "Printing histogram of timesteps."))
   }
@@ -39,7 +40,7 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #' Test for autocorrelation of residuals
 #' 
 #' Extracts residuals from a load.model (where residuals may be for the 
-#' calibration data or for a new set of observations). Applies
+#' calibration data or for a new set of observations). Applies 
 #' car::durbinWatsonTest to test for autocorrelation of those residuals.
 #' 
 #' @importFrom car durbinWatsonTest
@@ -49,21 +50,28 @@ isTimestepRegular <- function(dates, hist=TRUE, tol=.Machine$double.eps^0.5, han
 #'   calculated
 #' @param abs.or.rel.resids character. Should residuals be computed as the 
 #'   difference or the ratio of the observed and predicted values?
+#' @param use.log logical. use log residuals?
 #' @param newdata The data from which to compute residuals; if NULL, the 
 #'   original fitting data for load.model will be used.
 #' @param plot.acf logical. Should the autocorrelation function be plotted?
-#' @param timestep.tol the acceptable tolerance for considering timesteps regular. 
-#' @param irregular.timesteps.ok logical. By default, this function requires 
-#'   that the timesteps between observations are identical to one another, and 
-#'   an error is thrown if this requirement is not met. The check is not 
-#'   performed if \code{irregular.timesteps.ok} is TRUE.
+#' @param timestep.tol the acceptable tolerance for considering timesteps 
+#'   regular.
+#' @param irregular.timesteps.ok logical. If FALSE, this function requires that 
+#'   the timesteps between observations are identical to one another, and a plot
+#'   is generated and an error is thrown if this requirement is not met. If 
+#'   TRUE, the check is not performed. If NA (the default), the check is 
+#'   performed but the function proceeds with a warning and no plot if the 
+#'   timesteps are found to be irregular. Tests of autocorrelation are weak to
+#'   wrong when timesteps are irregular, but timesteps are often at least a bit
+#'   irregular in the real world.
 #' @return A Durbin-Watson test statistic applied to residuals.
 #' @export
 #' 
 #' @seealso car::durbinWatsonTest
 #' @family diagnostics
-residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.rel.resids=c("absolute","relative"), newdata=NULL, 
-                              plot.acf=TRUE, timestep.tol=.Machine$double.eps^0.5, irregular.timesteps.ok=FALSE) {
+residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), 
+                              abs.or.rel.resids=c("absolute","relative"), use.log=FALSE, newdata=NULL, 
+                              plot.acf=TRUE, timestep.tol=.Machine$double.eps^0.5, irregular.timesteps.ok=NA) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -71,11 +79,16 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
   
   # Get the ordered, dated residuals of the model applied to newdata (where
   # newdata is replaced by fitting data in getResiduals if needed)
-  resids <- getResiduals(load.model=load.model, flux.or.conc=flux.or.conc, abs.or.rel.resids=abs.or.rel.resids, newdata=newdata)
+  resids <- getResiduals(
+    load.model=load.model, 
+    flux.or.conc=flux.or.conc, abs.or.rel.resids=abs.or.rel.resids, use.log=use.log, 
+    newdata=newdata)
   
   # Assess the regularity of the time series (unless this checking has been overridden)
-  if(!irregular.timesteps.ok) {
-    is_regular <- isTimestepRegular(resids$Date, hist=TRUE, handler=warning)
+  if(is.na(irregular.timesteps.ok)) {
+    is_regular <- isTimestepRegular(resids$Date, tol=timestep.tol, hist=FALSE, handler=warning)
+  } else if(!irregular.timesteps.ok) {
+    is_regular <- isTimestepRegular(resids$Date, tol=timestep.tol, hist=TRUE, handler=function(e) { invisible() })
     if(!is_regular) {
       stop("The Durbin-Watson test is invalid for an irregular time series. Set irregular.timesteps.ok=TRUE to continue anyway.")
     }
@@ -116,7 +129,7 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
 #' 
 #' If you have no data with sufficient resolution to reasonably call this 
 #' function, take your pick from the established assumptions implemented in 
-#' functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}},
+#' functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}}, 
 #' or write your own assumptions.
 #' 
 #' @importFrom stats acf arima coef
@@ -124,33 +137,45 @@ residDurbinWatson <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.
 #' @param flux.or.conc The format in which residuals should be calculated
 #' @param abs.or.rel.resids Should residuals be computed as the difference or 
 #'   the ratio of the observed and predicted values?
-#' @param use.log use log residuals 
-#' @param newdata prediction values
+#' @param use.log logical. use log residuals?
+#' @param newdata prediction values. If this is set to NULL, 
+#'   \code{getFittingData(load.model)} will be used.
 #' @param plot.acf logical. Should the autocorrelation function be plotted?
-#' @param timestep.tol the acceptable tolerance for considering timesteps regular. 
-#' @param irregular.timesteps.ok logical. By default, this function requires 
-#'   that the timesteps between observations are identical to one another, and 
-#'   an error is thrown if this requirement is not met. The check is not 
-#'   performed if \code{irregular.timesteps.ok} is TRUE.
+#' @param timestep.tol the acceptable tolerance for considering timesteps 
+#'   regular.
+#' @param irregular.timesteps.ok logical. If FALSE, this function requires that 
+#'   the timesteps between observations are identical to one another, and a plot
+#'   is generated and an error is thrown if this requirement is not met. If 
+#'   TRUE, the check is not performed. If NA (the default), the check is 
+#'   performed but the function proceeds with a warning and no plot if the 
+#'   timesteps are found to be irregular. Estimates of autocorrelation are weak
+#'   to wrong when timesteps are irregular, but timesteps are often at least a
+#'   bit irregular in the real world.
 #' @return Return the rho function and the fitted model.
 #' @export
 #' 
 #' @family diagnostics
-estimateRho <- function(load.model, flux.or.conc=c("flux","conc"), abs.or.rel.resids=c("absolute","relative"), use.log=FALSE, newdata=NULL,
-                        plot.acf=TRUE, timestep.tol=.Machine$double.eps^0.5, irregular.timesteps.ok=FALSE) {
+estimateRho <- function(load.model, flux.or.conc=c("flux","conc"), 
+                        abs.or.rel.resids=c("absolute","relative"), use.log=FALSE, newdata=NULL,
+                        plot.acf=TRUE, timestep.tol=.Machine$double.eps^0.5, irregular.timesteps.ok=NA) {
   
   # Validate arguments - but these are both validated immediately within getResiduals
   #   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   #   abs.or.rel.resids <- match.arg.loadflex(abs.or.rel.resids)
   
   # Get the ordered, dated residuals of the model applied to newdata
-  resids <- getResiduals(load.model, flux.or.conc, abs.or.rel.resids, use.log=use.log, newdata=newdata)
+  resids <- getResiduals(
+    load.model=load.model, 
+    flux.or.conc=flux.or.conc, abs.or.rel.resids=abs.or.rel.resids, use.log=use.log, 
+    newdata=newdata)
   
   # Assess the regularity of the time series (unless this checking has been overridden)
-  if(!irregular.timesteps.ok) {
-    is_irregular <- isTimestepRegular(resids$Date, tol=timestep.tol, hist=TRUE, handler=warning)
-    if(is_irregular) {
-      stop("rho cannot be estimated for an irregular time series. Set irregular.timesteps.ok=TRUE to continue anyway.")
+  if(is.na(irregular.timesteps.ok)) {
+    is_regular <- isTimestepRegular(resids$Date, tol=timestep.tol, hist=FALSE, handler=warning)
+  } else if(!irregular.timesteps.ok) {
+    is_regular <- isTimestepRegular(resids$Date, tol=timestep.tol, hist=TRUE, handler=function(e) { invisible() })
+    if(!is_regular) {
+       stop("rho cannot be estimated for an irregular time series. Set irregular.timesteps.ok=TRUE to continue anyway.")
     }
   }
   

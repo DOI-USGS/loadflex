@@ -112,22 +112,22 @@ getFittedModel <- function(load.model) {
 #' 
 #' @param load.model A load model object, typically inheriting from loadModel 
 #'   and always implementing the loadModelInterface.
-#' @param flux.or.conc indicate if the solute is measured as a flux or 
-#'   concentration.
+#' @param flux.or.conc character. Should the predictions be reported as flux 
+#'   rates or concentrations?
 #' @param newdata An optional data.frame of predictor observations. The column 
 #'   names in this data.frame must match those specified in the load model's 
 #'   metadata.
-#' @param interval character. One of "none", "confidence" or "prediction".
-#'   If "confidence" or "prediction", the interval bounds will be returned in 
+#' @param interval character. One of "none", "confidence" or "prediction". If 
+#'   "confidence" or "prediction", the interval bounds will be returned in 
 #'   columns named "lwr" and "upr". Confidence intervals describe confidence in 
 #'   the model prediction for the mean value given a set of predictors, whereas 
 #'   prediction bounds describe the expected distribution of observations at 
 #'   that prediction point.
-#' @param level numeric. Fraction of density distribution to include within confidence or
-#'   prediction interval
-#' @param lin.or.log character. Either "linear" or "log" to say whether the predictions
-#'   should be converted to log space or not. If converted to log space, a bias correction
-#'   will be applied, see \code{\link{linToLog}}.
+#' @param level numeric. Fraction of density distribution to include within 
+#'   confidence or prediction interval
+#' @param lin.or.log character. Either "linear" or "log" to say whether the
+#'   predictions should be converted to log space or not. If converted to log
+#'   space, a bias correction will be applied, see \code{\link{linToLog}}.
 #' @param se.fit logical. If TRUE, the output data.frame will include a column 
 #'   named "se.fit" describing the standard error of the model fit for each row 
 #'   of predictors.
@@ -172,8 +172,8 @@ predictSolute <- function(
 #' 
 #' @param load.model A load model object, typically inheriting from loadModel 
 #'   and always implementing the loadModelInterface.
-#' @param flux.or.conc indicate if the solute is measured as a flux or 
-#'   concentration.
+#' @param flux.or.conc character. Should the simulations be reported as flux
+#'   rates or concentrations?
 #' @param newdata An optional data.frame of predictor observations. The column 
 #'   names in this data.frame must match those specified in the load model's 
 #'   metadata.
@@ -318,7 +318,11 @@ validLoadModelInterface <- function(object, stop.on.error=TRUE, verbose=TRUE) {
     msgstrs <- paste0(msgstrs, "\n  + predictSolute")
   }
   
-  ms <- summarizeModel(object)
+  if(cl == 'loadComp') {
+    ms <- summarizeModel(object, newdata=getFittingData(object)) # newdata = estdat would be better, but this tests adequately
+  } else {
+    ms <- summarizeModel(object)
+  }
   if(!is(ms, "data.frame") || nrow(ms) != 1) {
     errorstrs <- c(errorstrs, "summarizeModel should return a 1-row data.frame")
     msgstrs <- paste0(msgstrs, "\n  - summarizeModel")

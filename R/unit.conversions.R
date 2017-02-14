@@ -546,6 +546,7 @@ formatPreds <- function(preds,
   # Error checking for formats, with case flexibility
   from.format <- match.arg.loadflex(from.format, c("flux","conc*flow","flux/flow","conc"))
   to.format <- match.arg.loadflex(to.format, c("flux","conc"))
+  lin.or.log <- match.arg.loadflex(lin.or.log)
   
   if(lin.or.log=='log') {
     if(from.format != to.format) {

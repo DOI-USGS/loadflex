@@ -4,11 +4,26 @@
 \alias{summarizeModel.loadComp}
 \title{Extract model summary statistics from a loadComp model}
 \usage{
-\method{summarizeModel}{loadComp}(load.model, ...)
+\method{summarizeModel}{loadComp}(load.model, newdata,
+  irregular.timesteps.ok = NA, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
+
+\item{newdata}{data.frame of data that was/will be used to predict 
+concentration or load; should be the same as the \code{newdata} argument to
+\code{predictSolute}, e.g. a data.frame of daily or instantaneous dates and
+discharges.}
+
+\item{irregular.timesteps.ok}{logical. If FALSE, this function requires that 
+the timesteps between observations are identical to one another, and a plot
+is generated and an error is thrown if this requirement is not met. If 
+TRUE, the check is not performed. If NA (the default), the check is 
+performed but the function proceeds with a warning and no plot if the 
+timesteps are found to be irregular. Tests and estimates of autocorrelation
+are weak to wrong when timesteps are irregular, but timesteps are often at 
+least a bit irregular in the real world.}
 
 \item{...}{Other arguments passed to model-specific methods}
 }
@@ -18,7 +33,7 @@ A 1-row data.frame of model metrics
 \description{
 Produce a 1-row data.frame of model metrics. The relevant metrics for 
 loadComp models include two sets of statistics about autocorrelation (one for
-the regression residuals, one for the 'residuals' used to do the composite
+the regression residuals, one for the 'residuals' used to do the composite 
 correction).
 }
 \seealso{

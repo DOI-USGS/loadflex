@@ -12,26 +12,26 @@
 \arguments{
 \item{load.model}{A loadLm object.}
 
-\item{flux.or.conc}{indicate if the solute is measured as a flux or 
-concentration.}
+\item{flux.or.conc}{character. Should the predictions be reported as flux 
+rates or concentrations?}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data. Column names
 should match those given in the \code{loadLm} metadata. If
 \code{newdata} is not supplied, the original fitting data will be used.}
 
-\item{interval}{character. One of "none", "confidence" or "prediction".
-If "confidence" or "prediction", the interval bounds will be returned in 
+\item{interval}{character. One of "none", "confidence" or "prediction". If 
+"confidence" or "prediction", the interval bounds will be returned in 
 columns named "lwr" and "upr". Confidence intervals describe confidence in 
 the model prediction for the mean value given a set of predictors, whereas 
 prediction bounds describe the expected distribution of observations at 
 that prediction point.}
 
-\item{level}{numeric. Fraction of density distribution to include within confidence or
-prediction interval}
+\item{level}{numeric. Fraction of density distribution to include within 
+confidence or prediction interval}
 
-\item{lin.or.log}{character. Either "linear" or "log" to say whether the predictions
-should be converted to log space or not. If converted to log space, a bias correction
-will be applied, see \code{\link{linToLog}}.}
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the
+predictions should be converted to log space or not. If converted to log
+space, a bias correction will be applied, see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical. If TRUE, the output data.frame will include a column 
 named "se.fit" describing the standard error of the model fit for each row 

@@ -7,7 +7,7 @@
 estimateRho(load.model, flux.or.conc = c("flux", "conc"),
   abs.or.rel.resids = c("absolute", "relative"), use.log = FALSE,
   newdata = NULL, plot.acf = TRUE, timestep.tol = .Machine$double.eps^0.5,
-  irregular.timesteps.ok = FALSE)
+  irregular.timesteps.ok = NA)
 }
 \arguments{
 \item{load.model}{a loadModel descendant}
@@ -17,18 +17,24 @@ estimateRho(load.model, flux.or.conc = c("flux", "conc"),
 \item{abs.or.rel.resids}{Should residuals be computed as the difference or 
 the ratio of the observed and predicted values?}
 
-\item{use.log}{use log residuals}
+\item{use.log}{logical. use log residuals?}
 
-\item{newdata}{prediction values}
+\item{newdata}{prediction values. If this is set to NULL, 
+\code{getFittingData(load.model)} will be used.}
 
 \item{plot.acf}{logical. Should the autocorrelation function be plotted?}
 
-\item{timestep.tol}{the acceptable tolerance for considering timesteps regular.}
+\item{timestep.tol}{the acceptable tolerance for considering timesteps 
+regular.}
 
-\item{irregular.timesteps.ok}{logical. By default, this function requires 
-that the timesteps between observations are identical to one another, and 
-an error is thrown if this requirement is not met. The check is not 
-performed if \code{irregular.timesteps.ok} is TRUE.}
+\item{irregular.timesteps.ok}{logical. If FALSE, this function requires that 
+the timesteps between observations are identical to one another, and a plot
+is generated and an error is thrown if this requirement is not met. If 
+TRUE, the check is not performed. If NA (the default), the check is 
+performed but the function proceeds with a warning and no plot if the 
+timesteps are found to be irregular. Estimates of autocorrelation are weak
+to wrong when timesteps are irregular, but timesteps are often at least a
+bit irregular in the real world.}
 }
 \value{
 Return the rho function and the fitted model.
@@ -49,7 +55,7 @@ be used for load estimation. This will almost always involve sensor data.
 
 If you have no data with sufficient resolution to reasonably call this 
 function, take your pick from the established assumptions implemented in 
-functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}},
+functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}}, 
 or write your own assumptions.
 }
 \seealso{

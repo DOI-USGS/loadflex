@@ -69,7 +69,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to loadflex</h1>
 <h4 class="author"><em>Alison Appling</em></h4>
-<h4 class="date"><em>22 January, 2017</em></h4>
+<h4 class="date"><em>13 February, 2017</em></h4>
 
 
 
@@ -92,7 +92,8 @@ estdat &lt;-<span class="st"> </span>estdat[<span class="kw">seq</span>(<span cl
 <p>Create a metadata description of the dataset &amp; desired output.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">meta &lt;-<span class="st"> </span><span class="kw">metadata</span>(<span class="dt">constituent=</span><span class="st">&quot;NO3&quot;</span>, <span class="dt">flow=</span><span class="st">&quot;DISCHARGE&quot;</span>, 
   <span class="dt">dates=</span><span class="st">&quot;DATE&quot;</span>, <span class="dt">conc.units=</span><span class="st">&quot;mg L^-1&quot;</span>, <span class="dt">flow.units=</span><span class="st">&quot;cfs&quot;</span>, <span class="dt">load.units=</span><span class="st">&quot;kg&quot;</span>, 
-  <span class="dt">load.rate.units=</span><span class="st">&quot;kg d^-1&quot;</span>, <span class="dt">site.name=</span><span class="st">&quot;Lamprey River, NH&quot;</span>)</code></pre></div>
+  <span class="dt">load.rate.units=</span><span class="st">&quot;kg d^-1&quot;</span>, <span class="dt">site.name=</span><span class="st">&quot;Lamprey River, NH&quot;</span>,
+  <span class="dt">consti.name=</span><span class="st">&quot;Nitrate&quot;</span>, <span class="dt">site.id=</span><span class="st">'01073500'</span>, <span class="dt">lat=</span><span class="fl">43.10259</span>, <span class="dt">lon=</span>-<span class="fl">70.95256</span>)</code></pre></div>
 <p>Fit four models: interpolation, linear, rloadest, and composite. Many variants on these models are possible. For example: <code>loadInterp</code> models may use any of several interp.fun options; see <code>?interpolations</code>. <code>loadLm</code> accepts any linear model acceptable to <code>lm()</code>, not just the very simple formula we have used here. <code>loadReg2</code> functions are also flexible as specified in the documentation for . <code>loadComp</code> models accept a linear model as fit by either <code>loadLm</code> or <code>loadReg2</code> and any of the interp.fun options available to <code>loadInterp</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">no3_li &lt;-<span class="st"> </span><span class="kw">loadInterp</span>(<span class="dt">interp.format=</span><span class="st">&quot;conc&quot;</span>, <span class="dt">interp.fun=</span>rectangularInterpolation, 
   <span class="dt">data=</span>intdat, <span class="dt">metadata=</span>meta)
