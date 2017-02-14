@@ -482,7 +482,7 @@ summarizeModel.loadReg2 <- function(load.model, ...) {
   
   # collect and combine the default summary and the loadReg summary
   out.info <- NextMethod()
-  out.loadReg <- summarizeModel(getFittedModel(load.model), flux.or.conc=no3_lr@pred.format, ...)
+  out.loadReg <- summarizeModel(getFittedModel(load.model), flux.or.conc=load.model@pred.format, ...)
   out <- bind_cols(out.info, out.loadReg)
   
   # return

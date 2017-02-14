@@ -318,7 +318,11 @@ validLoadModelInterface <- function(object, stop.on.error=TRUE, verbose=TRUE) {
     msgstrs <- paste0(msgstrs, "\n  + predictSolute")
   }
   
-  ms <- summarizeModel(object)
+  if(cl == 'loadComp') {
+    ms <- summarizeModel(object, newdata=getFittingData(object)) # newdata = estdat would be better, but this tests adequately
+  } else {
+    ms <- summarizeModel(object)
+  }
   if(!is(ms, "data.frame") || nrow(ms) != 1) {
     errorstrs <- c(errorstrs, "summarizeModel should return a 1-row data.frame")
     msgstrs <- paste0(msgstrs, "\n  - summarizeModel")
