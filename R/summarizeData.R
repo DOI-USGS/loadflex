@@ -34,7 +34,7 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
   
   # compute date statistcs for both input datasets
   fitdat.stats <- summarizeTimeseries(metadata, fitdat)
-  estdat.stats <- summarizeTimeseries(metadata, estdat)
+  estdat.stats <- summarizeTimeseries(metadata, estdat) # should remove num.censored for Q
   
   # combine all info into a single data.frame row
   all.info <- data.frame(
@@ -63,7 +63,7 @@ summarizeTimeseries <- function(metadata, data) {
     end = max(ccdata[[date.col]]), # true end (last non-NA)
     num.total = nrow(data),
     num.incomplete = nrow(data) - nrow(ccdata),
-    num.censored = 'TBD', # placeholder; need to decide how we're storing censored data first
+    num.censored = NA, # placeholder; need to decide how we're storing censored data first. applies to conc only, not Q
     min.gap.days = min(as.numeric(diff(ccdata[[date.col]]), units='days')),
     max.gap.days = max(as.numeric(diff(ccdata[[date.col]]), units='days')),
     median.gap.days = median(as.numeric(diff(ccdata[[date.col]]), units='days')),
