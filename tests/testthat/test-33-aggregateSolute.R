@@ -62,6 +62,20 @@ test_that("Aggregations by unit line up with rloadest counterparts", {
   
 })
 
+test_that("mean water and calendar year work", {
+  #use preds from above 
+  mean_water <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, 
+                              format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, 
+                              agg.by="mean water year", na.rm=TRUE)
+  
+  mean_calendar <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred, 
+                                   format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES, 
+                                   agg.by="mean calendar year", na.rm=TRUE)
+  expect_is(mean_water, "data.frame")
+  expect_equal(nrow(mean_water), 1)
+  expect_equal(nrow(mean_calendar), 1)
+})
+
 
 test_that("Confidence intervals can be calculated with normal or lognormal assumption", {
   # Define & munge dataset
