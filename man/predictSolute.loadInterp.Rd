@@ -12,7 +12,7 @@
 \arguments{
 \item{load.model}{A loadInterp object.}
 
-\item{flux.or.conc}{character. Should the predictions be reported as flux
+\item{flux.or.conc}{character. Should the predictions be reported as flux 
 rates or concentrations?}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data. Because 
@@ -28,9 +28,9 @@ are not currently available for loadInterp models.}
 \item{level}{numeric. Fraction of density distribution to include within 
 confidence or prediction interval}
 
-\item{lin.or.log}{character. Either "linear" or "log" to say whether the predictions
-should be converted to log space or not. If converted to log space, a bias correction
-will be applied, see \code{\link{linToLog}}.}
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the
+predictions should be converted to log space or not. If converted to log
+space, a bias correction will be applied, see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical, but should be FALSE because se.fit is not currently
 available for loadInterp models.}

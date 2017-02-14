@@ -13,7 +13,7 @@ predictSolute(load.model, flux.or.conc = c("flux", "conc"), newdata,
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
 
-\item{flux.or.conc}{character. Should the predictions be reported as flux
+\item{flux.or.conc}{character. Should the predictions be reported as flux 
 rates or concentrations?}
 
 \item{newdata}{An optional data.frame of predictor observations. The column 
@@ -30,9 +30,9 @@ that prediction point.}
 \item{level}{numeric. Fraction of density distribution to include within 
 confidence or prediction interval}
 
-\item{lin.or.log}{character. Either "linear" or "log" to say whether the predictions
-should be converted to log space or not. If converted to log space, a bias correction
-will be applied, see \code{\link{linToLog}}.}
+\item{lin.or.log}{character. Either "linear" or "log" to say whether the
+predictions should be converted to log space or not. If converted to log
+space, a bias correction will be applied, see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical. If TRUE, the output data.frame will include a column 
 named "se.fit" describing the standard error of the model fit for each row 
