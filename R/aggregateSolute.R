@@ -105,17 +105,20 @@
 #' @export
 aggregateSolute <- function(
   preds, metadata, format=c("conc", "flux rate", "flux total"), 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "all years","[custom]"),
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
+           "mean water year", "mean calendar year", "[custom]"),
   se.preds, dates, custom=NA, 
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
-  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0) {
+  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0, model.name = NA) {
   
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
+  default_agg.by <- c("unit", "day", "month", "water year", "calendar year", 
+                        "total", "mean water year", "mean calendar year")
   for(abi in 1:length(agg.by)) {
-    agg.by[abi] <- match.arg.loadflex(agg.by[abi], c("unit", "day", "month", "water year", "calendar year", "total", "all years", colnames(custom)))
+    agg.by[abi] <- match.arg.loadflex(agg.by[abi], c(default_agg.by, colnames(custom)))
   }
   agg.by <- .reSpace(agg.by,"_") # replace spaces with underscores to use agg.by as a column name
   if(!is(custom, "data.frame")) {
@@ -182,7 +185,7 @@ aggregateSolute <- function(
   
   # Decide on the aggregation vector (the usual case) or list of vectors
   # (uncommon, but possible for "custom")
-  if(length(agg.by) == 1 & all(agg.by %in% c("unit","day","month","water_year","calendar_year","total"))) {
+  if(length(agg.by) == 1 & all(agg.by %in% gsub(" ", "_", default_agg.by))) {
     aggregate_by <- setNames(
       data.frame(
         switch(
@@ -193,6 +196,8 @@ aggregateSolute <- function(
           "water_year"=waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
+          "mean_water_year"=waterYear(dates), #will aggregate at the end
+          "mean_calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           stop("")
         )),
       agg.by)
@@ -205,6 +210,7 @@ aggregateSolute <- function(
                       "month"=28*complete.threshold,
                       "water_year"=365*complete.threshold, 
                       "calendar_year"=365*complete.threshold,
+                      "all_years"=365*complete.threshold,
                       0)
   
   #do the actual stats on grouped df
@@ -214,7 +220,9 @@ aggregateSolute <- function(
   agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > n_threshold), 
                                       Value=mean(preds), 
                                       SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
-                                      n = if(agg.by != "unit") n() else NULL)) 
+                                      n = n(), 
+                                      constitutent = getInfo(metadata, 'constituent'),
+                                      model = model.name)) 
   
   
   ### Notes on Uncertainty ### 
@@ -293,19 +301,34 @@ aggregateSolute <- function(
       "flux rate"=metadata@load.rate.units,
       "flux total"=metadata@load.units
     )
-    agg_preds <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
+    retDF <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
   } else {
     # Shake off any pre-existing units - e.g., those attached to Duration
-    agg_preds <- v(agg_preds)
+    retDF <- v(agg_preds)
   }
-  # Give the data.frame nice column names
-  names(agg_preds)[1] <- .reSpace(.sentenceCase(names(agg_preds)[1]), "_")
-  names(agg_preds)[match("Value", names(agg_preds))] <- .reSpace(.sentenceCase(format), "_")
+  #aggregate to multi year if asked
+  if(grepl(pattern = "mean", x = agg.by, ignore.case = TRUE)) {
+    multiSE <- 1/nrow(retDF)*sqrt(sum(retDF$SE ^ 2))
+    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'), 
+                        constituent = getInfo(metadata, 'constituent'),
+                        model = model.name,
+                        multi_year_avg = mean(retDF$Value),
+                        multiSE, 
+                        CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
+                        CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
+                        stringsAsFactors = FALSE)
+  } else {
+    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'),
+                        retDF, stringsAsFactors = FALSE)
+    
+  } 
   
-  return(agg_preds)
+  # Give the data.frame nice column names
+  names(retDF)[1] <- .reSpace(.sentenceCase(names(retDF)[1]), "_")
+  names(retDF)[match("Value", names(retDF))] <- .reSpace(.sentenceCase(format), "_")
+  
+  return(retDF)
 }
-
-
 
 SEofSum <- function(dates, se.preds, cormat.function) {
   # By Cohn 2005 Equation 51, Var[L-muL] = 

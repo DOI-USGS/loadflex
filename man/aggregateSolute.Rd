@@ -6,11 +6,12 @@
 \usage{
 aggregateSolute(preds, metadata, format = c("conc", "flux rate",
   "flux total"), agg.by = c("unit", "day", "month", "water year",
-  "calendar year", "total", "all years", "[custom]"), se.preds, dates,
-  custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
-  level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
-  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE,
-  complete.threshold = 0)
+  "calendar year", "total", "mean water year", "mean calendar year",
+  "[custom]"), se.preds, dates, custom = NA,
+  cormat.function = cormat1DayBand, ci.agg = TRUE, level = 0.95,
+  deg.free = NA, ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
+  na.rm = FALSE, attach.units = FALSE, complete.threshold = 0,
+  model.name = NA)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
