@@ -14,10 +14,11 @@ getCorrectionFraction(load.model, flux.or.conc = c("flux", "conc"), newdata,
 \arguments{
 \item{load.model}{The load model from which to pull the correction fraction.}
 
-\item{flux.or.conc}{character indicating whether the metric should be
-computed with respect to predictions of flux rate or concentration.}
+\item{flux.or.conc}{character. Should the metric be computed with respect to
+predictions of flux rate or concentration?}
 
-\item{newdata}{The data for which to compute the correction fraction.}
+\item{newdata}{The data for which to compute the correction fraction, usually
+containing daily or instantaneous discharge.}
 
 \item{...}{Other arguments passed to class-specific implementations of 
 getCorrectionFraction.}
