@@ -293,27 +293,29 @@ predictSolute.loadComp <- function(
       # The mean: always use se.pred (rather than se.fit) to calculate the mean in
       # log space.
       preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
-      preds_lin <- logToLin(mslist=preds_log)
-      
-      # The intervals:
-      if(interval == "prediction") {
-        # degrees of freedom are not straightforward for the interpolation part of
-        # the model, so use qnorm instead of qt to get quantiles.
-        ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-        preds_lin$lwr <- exp(preds_log$meanlog + ci_quantiles[1]*se_log) 
-        preds_lin$upr <- exp(preds_log$meanlog + ci_quantiles[2]*se_log)
-      }
-      # The SEs:
-      if(se.pred) {
-        preds_lin$se.pred <- preds_lin$sdlin
-      }
       
       if(log.or.lin == "log"){
         preds <- preds_log
       } else {
+        
+        preds_lin <- logToLin(mslist=preds_log)
+        
+        # The intervals:
+        if(interval == "prediction") {
+          # degrees of freedom are not straightforward for the interpolation part of
+          # the model, so use qnorm instead of qt to get quantiles.
+          ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
+          preds_lin$lwr <- exp(preds_log$meanlog + ci_quantiles[1]*se_log) 
+          preds_lin$upr <- exp(preds_log$meanlog + ci_quantiles[2]*se_log)
+        }
+        # The SEs:
+        if(se.pred) {
+          preds_lin$se.pred <- preds_lin$sdlin
+        }
+        
         preds <- preds_lin
       }
-      
+
     } else {
       
       #\\# TO DO: NEED TO CONVERT LIN TO LOG IF log.or.lin == "linear" #\\#
