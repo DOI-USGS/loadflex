@@ -292,6 +292,9 @@ predictSolute.loadComp <- function(
       se_log <- sqrt(load.model@MSE["mean", 1]) 
       # The mean: always use se.pred (rather than se.fit) to calculate the mean in
       # log space.
+      
+      ## if model was in log space and user requested log, then preds should
+      ## just be equal to predvec. Would we need to do this?
       preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
       
       if(log.or.lin == "log"){
