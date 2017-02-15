@@ -20,7 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #' 
-#' @importFrom dplyr %>% group_by_ summarise filter n
+#' @importFrom dplyr %>% group_by_ summarise filter n n_groups
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
@@ -74,7 +74,7 @@
 #'   predictions (FALSE)?
 #' @param attach.units logical. If true, units will be attached as an attribute 
 #'   of the second column of the returned data.frame.
-#' @param complete.threshold numeric decimal value below which an \code{agg.by}
+#' @param complete.threshold numeric number of observations below which an \code{agg.by}
 #'  value, e.g. a year, will be considered incomplete and be discarded 
 #' @param model.name  char Name of the model that generated the predictions.
 #' Returned with each row of the output data.frame  
@@ -206,25 +206,18 @@ aggregateSolute <- function(
     aggregate_by <- custom[agg.by]
   }
   
-  #get threshold for number of measurements
-  n_threshold <- switch(agg.by,
-                      "month"=28*complete.threshold,
-                      "water_year"=365*complete.threshold, 
-                      "calendar_year"=365*complete.threshold,
-                      "all_years"=365*complete.threshold,
-                      0)
-  
   #do the actual stats on grouped df
   preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by)), 
                           .dots=as.list(agg.by)) 
+  groupsInRecord <- n_groups(preds_grp)
   #drop data for incomplete units with filter
-  agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > n_threshold), 
+  agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > complete.threshold), 
                                       Value=mean(preds), 
                                       SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
                                       n = n(), 
                                       constitutent = getInfo(metadata, 'constituent'),
                                       model = model.name)) 
-  
+  groupsComplete <- nrow(agg_preds)
   
   ### Notes on Uncertainty ### 
   
@@ -317,6 +310,8 @@ aggregateSolute <- function(
                         multiSE, 
                         CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
                         CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
+                        years.record = groupsInRecord,
+                        years.complete = groupsComplete,
                         stringsAsFactors = FALSE)
   } else {
     retDF <- data.frame(site.id = getInfo(metadata, 'site.id'),
