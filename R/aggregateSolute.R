@@ -20,7 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #' 
-#' @importFrom dplyr %>% group_by_ summarise filter n
+#' @importFrom dplyr %>% group_by_ summarise filter n n_groups
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
@@ -209,6 +209,7 @@ aggregateSolute <- function(
   #do the actual stats on grouped df
   preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by)), 
                           .dots=as.list(agg.by)) 
+  groupsInRecord <- n_groups(preds_grp)
   #drop data for incomplete units with filter
   agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > complete.threshold), 
                                       Value=mean(preds), 
@@ -216,7 +217,7 @@ aggregateSolute <- function(
                                       n = n(), 
                                       constitutent = getInfo(metadata, 'constituent'),
                                       model = model.name)) 
-  
+  groupsComplete <- nrow(agg_preds)
   
   ### Notes on Uncertainty ### 
   
@@ -309,6 +310,8 @@ aggregateSolute <- function(
                         multiSE, 
                         CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
                         CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
+                        years.record = groupsInRecord,
+                        years.complete = groupsComplete,
                         stringsAsFactors = FALSE)
   } else {
     retDF <- data.frame(site.id = getInfo(metadata, 'site.id'),
