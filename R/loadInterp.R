@@ -242,6 +242,10 @@ predictSolute.loadInterp <- function(
   meta <- load.model@metadata
   fit <- load.model@fit
   
+  if(lin.or.log == "log"){
+    stop("loadInterp model is not currently setup to handle log space predictions")
+  }
+  
   # Use fitting data if newdata are not supplied
   if(missing(newdata)) {
     newdata <- getFittingData(load.model)
