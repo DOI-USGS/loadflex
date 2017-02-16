@@ -436,6 +436,7 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
 #' @importFrom dplyr select everything
 #' @importFrom car durbinWatsonTest
 #' @importFrom stats arima
+#' @importFrom stats cor
 #' @export
 #' @family summarizeModel
 summarizeModel.loadInterp <- function(
