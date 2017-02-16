@@ -242,10 +242,6 @@ predictSolute.loadInterp <- function(
   meta <- load.model@metadata
   fit <- load.model@fit
   
-  if(lin.or.log == "log"){
-    stop("loadInterp model is not currently setup to handle log space predictions")
-  }
-  
   # Use fitting data if newdata are not supplied
   if(missing(newdata)) {
     newdata <- getFittingData(load.model)
@@ -319,7 +315,13 @@ predictSolute.loadInterp <- function(
     preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
   
-  preds
+  if(lin.or.log == "log"){
+    preds$fit <- log(preds$fit)
+    preds$se.fit <- NA
+    preds$se.preds <- NA
+  }
+  
+  return(preds)
 }
 
 # Of the required loadModelInterface functions, getMetadata, getFittingData, and
