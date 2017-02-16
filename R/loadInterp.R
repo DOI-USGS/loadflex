@@ -315,7 +315,13 @@ predictSolute.loadInterp <- function(
     preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
   
-  preds
+  if(lin.or.log == "log") {
+    preds$fit <- log(preds$fit)
+    preds$se.fit <- NA
+    preds$se.preds <- NA
+  }
+  
+  return(preds)
 }
 
 # Of the required loadModelInterface functions, getMetadata, getFittingData, and
