@@ -316,9 +316,13 @@ predictSolute.loadInterp <- function(
   }
   
   if(lin.or.log == "log") {
-    preds$fit <- log(preds$fit)
-    preds$se.fit <- NA
-    preds$se.preds <- NA
+    if(is.data.frame(preds)) {
+      preds$fit <- log(preds$fit)
+      preds$se.fit <- if(se.fit) NA else NULL
+      preds$se.pred <- if(se.pred) NA else NULL
+      preds$lwr <- if(interval == "prediction") NA else NULL
+      preds$upr <- if(interval == "prediction") NA else NULL
+    }
   }
   
   return(preds)
