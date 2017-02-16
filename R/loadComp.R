@@ -297,7 +297,7 @@ predictSolute.loadComp <- function(
       ## just be equal to predvec. Would we need to do this?
       preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
       
-      if(log.or.lin == "log"){
+      if(lin.or.log == "log"){
         preds <- preds_log
       } else {
         
