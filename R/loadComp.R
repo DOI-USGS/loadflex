@@ -346,6 +346,8 @@ predictSolute.loadComp <- function(
     # Format the output
     preds_lin$sdlin <- NULL # we've copied this to the se.pred column if we wanted it
     names(preds_lin)[1] <- "fit" # name consistently with other predictSolute outputs
+    
+    preds <- preds_lin
   } else {
     # If we're not returning any uncertainty info, format as a vector rather than as a data.frame
     preds <- predvec
@@ -353,7 +355,7 @@ predictSolute.loadComp <- function(
   
   # Add dates if requested
   if(date) {
-    if(!is.data.frame(preds_lin)) {
+    if(!is.data.frame(preds)) {
       preds <- data.frame(fit=preds)
     }
     # prepend the date column
