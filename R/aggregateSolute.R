@@ -76,8 +76,6 @@
 #'   of the second column of the returned data.frame.
 #' @param complete.threshold numeric number of observations below which an \code{agg.by}
 #'  value, e.g. a year, will be considered incomplete and be discarded 
-#' @param model.name  char Name of the model that generated the predictions.
-#' Returned with each row of the output data.frame  
 #' @return A data.frame with two columns. The first contains the aggregation 
 #'   period or custom aggregation unit and is named after the value of 
 #'   \code{agg.by}. The second contains the aggregate flux or concentration 
@@ -111,7 +109,7 @@ aggregateSolute <- function(
   se.preds, dates, custom=NA, 
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
-  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0, model.name = NA) {
+  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0) {
   
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
@@ -211,12 +209,11 @@ aggregateSolute <- function(
                           .dots=as.list(agg.by)) 
   groupsInRecord <- n_groups(preds_grp)
   #drop data for incomplete units with filter
-  agg_preds <- as.data.frame(summarise(filter(preds_grp, n() > complete.threshold), 
-                                      Value=mean(preds), 
-                                      SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
-                                      n = n(), 
-                                      constitutent = getInfo(metadata, 'constituent'),
-                                      model = model.name)) 
+  agg_preds <- as.data.frame(summarise(
+    filter(preds_grp, n() > complete.threshold), 
+    Value=mean(preds), 
+    SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
+    n = n()))
   groupsComplete <- nrow(agg_preds)
   
   ### Notes on Uncertainty ### 
@@ -303,10 +300,7 @@ aggregateSolute <- function(
   #aggregate to multi year if asked
   if(grepl(pattern = "mean", x = agg.by, ignore.case = TRUE)) {
     multiSE <- 1/nrow(retDF)*sqrt(sum(retDF$SE ^ 2))
-    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'), 
-                        constituent = getInfo(metadata, 'constituent'),
-                        model = model.name,
-                        multi_year_avg = mean(retDF$Value),
+    retDF <- data.frame(multi_year_avg = mean(retDF$Value),
                         multiSE, 
                         CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
                         CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
