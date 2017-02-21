@@ -244,11 +244,20 @@ predictSolute.loadComp <- function(
   # linearInterpolation and others that are supposed to run straight through
   # each residual.
   predvec_lin <- if(load.model@fit@log.resids) exp(preds) else preds
+  predvec_log <- if(load.model@fit@log.resids) preds else log(preds)
+  
+  # return preds in log or linear space
+  predvec <- if(lin.or.log == "log") predvec_log else predvec_lin
   
   # Change flux/conc formats if appropriate. MSEs are already formatted.
-  predvec_lin <- formatPreds(
-    predvec_lin, from.format=load.model@pred.format, to.format=flux.or.conc, 
-    newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
+  predvec <- formatPreds(
+    predvec, from.format=load.model@pred.format, to.format=flux.or.conc, 
+    newdata=newdata, metadata=load.model@metadata, lin.or.log=lin.or.log,
+    attach.units=attach.units)
+  
+  #\\# Do we need to force uncertainty calc if going from
+  #\\#      linear model to log return * OR *
+  #\\#      log model to linear return
   
   # Add uncertainty if requested
   if(interval != "none" | se.fit | se.pred) {
@@ -283,22 +292,37 @@ predictSolute.loadComp <- function(
       se_log <- sqrt(load.model@MSE["mean", 1]) 
       # The mean: always use se.pred (rather than se.fit) to calculate the mean in
       # log space.
-      preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
-      preds_lin <- logToLin(mslist=preds_log)
       
-      # The intervals:
-      if(interval == "prediction") {
-        # degrees of freedom are not straightforward for the interpolation part of
-        # the model, so use qnorm instead of qt to get quantiles.
-        ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-        preds_lin$lwr <- exp(preds_log$meanlog + ci_quantiles[1]*se_log) 
-        preds_lin$upr <- exp(preds_log$meanlog + ci_quantiles[2]*se_log)
+      ## if model was in log space and user requested log, then preds should
+      ## just be equal to predvec. Would we need to do this?
+      preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
+      
+      if(lin.or.log == "log"){
+        preds <- preds_log
+      } else {
+        
+        preds_lin <- logToLin(mslist=preds_log)
+        
+        # The intervals:
+        if(interval == "prediction") {
+          # degrees of freedom are not straightforward for the interpolation part of
+          # the model, so use qnorm instead of qt to get quantiles.
+          ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
+          preds_lin$lwr <- exp(preds_log$meanlog + ci_quantiles[1]*se_log) 
+          preds_lin$upr <- exp(preds_log$meanlog + ci_quantiles[2]*se_log)
+        }
+        # The SEs:
+        if(se.pred) {
+          preds_lin$se.pred <- preds_lin$sdlin
+        }
+        
+        preds <- preds_lin
       }
-      # The SEs:
-      if(se.pred) {
-        preds_lin$se.pred <- preds_lin$sdlin
-      }
+
     } else {
+      
+      #\\# TO DO: NEED TO CONVERT LIN TO LOG IF log.or.lin == "linear" #\\#
+      
       # Compute uncertainty assuming a normal distribution of error around each
       # prediction
       se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
@@ -322,19 +346,23 @@ predictSolute.loadComp <- function(
     # Format the output
     preds_lin$sdlin <- NULL # we've copied this to the se.pred column if we wanted it
     names(preds_lin)[1] <- "fit" # name consistently with other predictSolute outputs
+    
+    preds <- preds_lin
   } else {
     # If we're not returning any uncertainty info, format as a vector rather than as a data.frame
-    preds_lin <- predvec_lin
+    preds <- predvec
   }
   
   # Add dates if requested
   if(date) {
-    if(!is.data.frame(preds_lin)) {
-      preds_lin <- data.frame(fit=preds_lin)
+    if(!is.data.frame(preds)) {
+      preds <- data.frame(fit=preds)
     }
     # prepend the date column
-    preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
+    preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
+  
+  #\\# Do intermediate prediction calcs need to be changed for log vs linear? #\\#
   
   # Add intermediate predictions if requested
   if(fit.reg | fit.resid | fit.resid.raw) {
@@ -365,10 +393,12 @@ predictSolute.loadComp <- function(
       c(if(fit.reg) list(fit.reg=fit_reg),
         if(fit.resid) list(fit.resid=fit_resid),
         if(fit.resid.raw) list(fit.resid.raw=fit_resid_raw)))
+    
+    preds <- preds_lin
   }
   
   # Return
-  preds_lin
+  return(preds)
 }
 
 
