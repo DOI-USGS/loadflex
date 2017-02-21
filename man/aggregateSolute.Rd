@@ -10,8 +10,7 @@ aggregateSolute(preds, metadata, format = c("conc", "flux rate",
   "[custom]"), se.preds, dates, custom = NA,
   cormat.function = cormat1DayBand, ci.agg = TRUE, level = 0.95,
   deg.free = NA, ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
-  na.rm = FALSE, attach.units = FALSE, complete.threshold = 0,
-  model.name = NA)
+  na.rm = FALSE, attach.units = FALSE, complete.threshold = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
@@ -79,9 +78,6 @@ of the second column of the returned data.frame.}
 
 \item{complete.threshold}{numeric number of observations below which an \code{agg.by}
 value, e.g. a year, will be considered incomplete and be discarded}
-
-\item{model.name}{char Name of the model that generated the predictions.
-Returned with each row of the output data.frame}
 }
 \value{
 A data.frame with two columns. The first contains the aggregation 
