@@ -367,8 +367,16 @@ predictSolute.loadComp <- function(
         if(fit.resid.raw) list(fit.resid.raw=fit_resid_raw)))
   }
   
+  preds <- preds_lin
+  
+  if(lin.or.log == "log"){
+    preds$fit <- log(preds_lin)
+    preds$se.fit <- NA
+    preds$se.preds <- NA
+  }
+  
   # Return
-  preds_lin
+  return(preds)
 }
 
 

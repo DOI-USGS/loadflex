@@ -315,7 +315,17 @@ predictSolute.loadInterp <- function(
     preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
   }
   
-  preds
+  if(lin.or.log == "log") {
+    if(is.data.frame(preds)) {
+      preds$fit <- log(preds$fit)
+      preds$se.fit <- if(se.fit) NA else NULL
+      preds$se.pred <- if(se.pred) NA else NULL
+      preds$lwr <- if(interval == "prediction") NA else NULL
+      preds$upr <- if(interval == "prediction") NA else NULL
+    }
+  }
+  
+  return(preds)
 }
 
 # Of the required loadModelInterface functions, getMetadata, getFittingData, and
@@ -430,6 +440,7 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
 #' @importFrom dplyr select everything
 #' @importFrom car durbinWatsonTest
 #' @importFrom stats arima
+#' @importFrom stats cor
 #' @export
 #' @family summarizeModel
 summarizeModel.loadInterp <- function(
