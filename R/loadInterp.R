@@ -109,7 +109,7 @@ setClass(
 #' unwitting user might violate this assumption without being caught by the 
 #' code, so be careful! This assumption is mainly relevant to the calculation of
 #' confidence or prediction intervals. Also, where other models such as loadReg 
-#' and loadLm will retransform predictions back into linear space, loadInterps
+#' and loadLm will retransform predictions back into linear space, loadInterps 
 #' will not.
 #' 
 #' @importFrom methods new
@@ -123,20 +123,14 @@ setClass(
 #' @param metadata metadata, used to access the appropriate columns of data. At 
 #'   a minimum, \code{metadata} should correctly specify the date column and the
 #'   column indicated by \code{interp.format}.
-#' @param retrans.function function that accepts a vector of predictions 
-#'   straight from the fitted model and retransforms them, if appropriate, to 
-#'   predictions in linear space and with units of concentration*flow. Because 
-#'   load models are frequently fit to log(y) ~ ..., the default is 
-#'   retrans.function=exp. After retrans.function has been applied to the 
-#'   predictions, the retransformed predictions will automatically undergo 
-#'   further units conversion from conc*flow to load.rate, according to the 
-#'   metadata elements conc.units, flow.units, and load.rate.units.
+#' @param retrans.function irrelevant to loadInterp and must be NULL. for other
+#'   models, permits fitting in log or other transformed spaces.
 #' @param store One or more character strings specifying which information to 
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
-#'   object from new data (this currently uses the same new data for both
-#'   regression calibration and interpolation); 'uncertainty': an estimate of
-#'   uncertainty, which can take some time to compute but will permit creation
+#'   object from new data (this currently uses the same new data for both 
+#'   regression calibration and interpolation); 'uncertainty': an estimate of 
+#'   uncertainty, which can take some time to compute but will permit creation 
 #'   of uncertainty intervals, etc. in the prediction and aggregation phases.
 #' @return A fitted loadInterp model.
 #' @export
@@ -194,7 +188,6 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
   if("uncertainty" %in% store) {
     load.model@MSE <- estimateMSE(load.model, n.out=1, n.iter=length(dates_in), replace=FALSE) #LOOCV=jackknife
   }
-  
   
   load.model
 }
@@ -258,11 +251,11 @@ predictSolute.loadInterp <- function(
   dates.out.numeric <- as.numeric(as.POSIXct(dates.out))
   
   # Do the interpolation
-  preds <- fit@interp.function(fit@dates.in, fit@y.in, dates.out.numeric)
+  preds_lin <- fit@interp.function(fit@dates.in, fit@y.in, dates.out.numeric)
   
   # Change flux/conc formats if appropriate
-  preds <- formatPreds(
-    preds, from.format=load.model@pred.format, to.format=flux.or.conc, 
+  preds_lin <- formatPreds(
+    preds_lin, from.format=load.model@pred.format, to.format=flux.or.conc, 
     newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
   
   # Add uncertainty if requested. As noted in the documentation above, we're
@@ -271,7 +264,7 @@ predictSolute.loadInterp <- function(
   if(interval != "none" | se.fit | se.pred) {
     # If there's any sort of uncertainty reporting, we'll need to return a
     # data.frame rather than a vector.
-    preds <- data.frame(fit=preds)
+    preds_lin <- data.frame(fit=preds_lin)
     
     # The MSEs we're calculating are specific to the format (flux or conc), so
     # we'll look those up here rather than trying to convert from some
@@ -292,36 +285,43 @@ predictSolute.loadInterp <- function(
     }
     
     # Now add uncertainty info
+    se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
+    preds_log <- linToLog(meanlin=preds_lin$fit, sdlin=se_lin) # we only need preds_log if lin.or.log='log'
+    # confidence intervals
     if(interval == "prediction") {
-      se_ci <- sqrt(load.model@MSE["mean", flux.or.conc]) #switch(interval, confidence=preds_log$se.fit, prediction=preds_log$se.pred)
       # degrees of freedom are not straightforward for interpolation models, so
       # use qnorm instead of qt to get quantiles.
       ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-      preds$lwr <- preds$fit + ci_quantiles[1]*se_ci
-      preds$upr <- preds$fit + ci_quantiles[2]*se_ci
+      preds_lin$lwr <- preds_lin$fit + ci_quantiles[1]*se_lin 
+      preds_lin$upr <- preds_lin$fit + ci_quantiles[2]*se_lin
+      preds_log$lwr <- log(preds_lin$lwr) 
+      preds_log$upr <- log(preds_lin$upr)
     }
     # The SEs:
     if(se.pred) {
-      preds$se.pred <- sqrt(load.model@MSE["mean", flux.or.conc])
+      preds_lin$se.pred <- se_lin
+      preds_log$se.pred <- preds_log$sdlog
     }
   }
   
   # Add dates if requested
   if(date) {
-    if(!is.data.frame(preds)) {
-      preds <- data.frame(fit=preds)
+    if(!is.data.frame(preds_lin)) {
+      preds_lin <- data.frame(fit=preds)
     }
     # prepend the date column
-    preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
+    preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
   }
   
+  preds <- preds_lin
   if(lin.or.log == "log") {
     if(is.data.frame(preds)) {
-      preds$fit <- log(preds$fit)
+      preds$fit <- log(preds$fit) # this is NOT the mean in log space, but it's the only way to get residuals of 0 in log space
+      preds$fit.meanlog <- preds_log$meanlog # include the mean in log space for a tiny bit more clarity
       preds$se.fit <- if(se.fit) NA else NULL
-      preds$se.pred <- if(se.pred) NA else NULL
-      preds$lwr <- if(interval == "prediction") NA else NULL
-      preds$upr <- if(interval == "prediction") NA else NULL
+      preds$se.pred <- if(se.pred) preds_log$se.pred else NULL
+      preds$lwr <- if(interval == "prediction") log(preds$lwr) else NULL
+      preds$upr <- if(interval == "prediction") log(preds$upr) else NULL
     }
   }
   

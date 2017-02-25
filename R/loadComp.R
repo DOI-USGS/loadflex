@@ -229,9 +229,10 @@ predictSolute.loadComp <- function(
   resid_preds <- predictSolute(
     load.model=load.model@fit@resid.model, flux.or.conc=load.model@pred.format, newdata=newdata, attach.units=attach.units, ...)
   
-  # resid_preds may be logged or not, absolute or relative. reg_preds will
-  # always be in pred.format, non-log space. So convert resid_preds and the
-  # combination of reg_preds with resid_preds as needed. 4 possibilities.
+  # Do the composite correction: combine reg_preds with resid_preds. resid_preds
+  # may be logged or not, absolute or relative. reg_preds will always be in 
+  # pred.format, non-log space. So convert resid_preds and the combination of 
+  # reg_preds with resid_preds as needed. 4 possibilities.
   preds <- switch(
     load.model@fit@abs.or.rel.resids,
     "absolute"=(if(load.model@fit@log.resids) log(reg_preds) else reg_preds) + resid_preds,
@@ -279,7 +280,7 @@ predictSolute.loadComp <- function(
       # Compute uncertainty assuming a lognormal distribution of error around
       # each prediction. The MSE comes in log space when
       # load.model@fit@log.resids==TRUE. Since flux and conc are identical here,
-      # it doesn't matter which column we use - just pick 1.
+      # it doesn't matter which column we use - just use the first.
       se_log <- sqrt(load.model@MSE["mean", 1]) 
       # The mean: always use se.pred (rather than se.fit) to calculate the mean in
       # log space.
@@ -291,11 +292,14 @@ predictSolute.loadComp <- function(
         # degrees of freedom are not straightforward for the interpolation part of
         # the model, so use qnorm instead of qt to get quantiles.
         ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-        preds_lin$lwr <- exp(preds_log$meanlog + ci_quantiles[1]*se_log) 
-        preds_lin$upr <- exp(preds_log$meanlog + ci_quantiles[2]*se_log)
+        preds_log$lwr <- preds_log$meanlog + ci_quantiles[1]*se_log
+        preds_log$upr <- preds_log$meanlog + ci_quantiles[2]*se_log
+        preds_lin$lwr <- exp(preds_log$lwr) 
+        preds_lin$upr <- exp(preds_log$upr)
       }
       # The SEs:
       if(se.pred) {
+        preds_log$se.pred <- se_log
         preds_lin$se.pred <- preds_lin$sdlin
       }
     } else {
@@ -303,7 +307,7 @@ predictSolute.loadComp <- function(
       # prediction
       se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
       preds_lin <- data.frame(meanlin=predvec_lin, sdlin=se_lin)
-      #preds_log <- linToLog(mslist=preds_lin) # we don't actually need preds_log at all in this case
+      preds_log <- linToLog(mslist=preds_lin) # we only need preds_log if lin.or.log='log'
       
       # The intervals:
       if(interval == "prediction") {
@@ -312,10 +316,13 @@ predictSolute.loadComp <- function(
         ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
         preds_lin$lwr <- preds_lin$meanlin + ci_quantiles[1]*se_lin 
         preds_lin$upr <- preds_lin$meanlin + ci_quantiles[2]*se_lin
+        preds_log$lwr <- log(preds_lin$lwr) 
+        preds_log$upr <- log(preds_lin$upr)
       }
       # The SEs:
       if(se.pred) {
         preds_lin$se.pred <- preds_lin$sdlin
+        preds_log$se.pred <- preds_log$sdlog
       }
     } 
     
@@ -336,20 +343,13 @@ predictSolute.loadComp <- function(
     preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
   }
   
-  # Add intermediate predictions if requested
+  # Add intermediate predictions (regression, residuals in linear and/or
+  # original form) if requested
   if(fit.reg | fit.resid | fit.resid.raw) {
     if(!is.data.frame(preds_lin)) {
       preds_lin <- data.frame(fit=preds_lin)
     }
-    #     load.model=no3_lc
-    #     newdata=lamprey_est_NO3
-    #     flux.or.conc="flux"
-    #     reg_preds <- predictSolute(load.model=load.model@fit@reg.model, flux.or.conc=load.model@pred.format, newdata=newdata)
-    #     resid_preds <- predictSolute(load.model=load.model@fit@resid.model, flux.or.conc=load.model@pred.format, newdata=newdata)
-    #     fit.reg=fit.resid.raw=TRUE
-    #     fit.resid=FALSE
-    #     attach.units=FALSE
-    fit_reg <- if(fit.reg) {
+    fit_reg <- if(fit.reg || fit.resid) {
       formatPreds(
         reg_preds, from.format=load.model@pred.format, to.format=flux.or.conc, 
         newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
@@ -368,11 +368,15 @@ predictSolute.loadComp <- function(
   }
   
   preds <- preds_lin
-  
-  if(lin.or.log == "log"){
-    preds$fit <- log(preds_lin)
-    preds$se.fit <- NA
-    preds$se.preds <- NA
+  if(lin.or.log == "log") {
+    if(is.data.frame(preds)) {
+      preds$fit <- log(preds$fit) # this is NOT the mean in log space, but it's the only way to get residuals of 0 in log space
+      preds$fit.meanlog <- preds_log$meanlog # include the mean in log space for a tiny bit more clarity
+      preds$se.fit <- if(se.fit) NA else NULL
+      preds$se.pred <- if(se.pred) preds_log$se.pred else NULL
+      preds$lwr <- if(interval == "prediction") log(preds$lwr) else NULL
+      preds$upr <- if(interval == "prediction") log(preds$upr) else NULL
+    }
   }
   
   # Return

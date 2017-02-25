@@ -22,6 +22,50 @@ test_that("loadComp models can be created", {
   expect_is(load.model, "loadComp")
 })
 
+test_that("loadComp preds can be made in log or linear space", {
+  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  estdata <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  reg.model <- loadReg2(loadReg(Atrazine ~ center(log(FLOW)), data = simpledata, flow = "FLOW", dates = "DATES", conc.units="mg/L"), pred.format = 'conc')
+  load.model <- loadComp(reg.model=reg.model, interp.data=simpledata, interp.function=linearInterpolation)
+  
+  obs <- mutate(
+    simpledata, 
+    AtrazineFlux=observeSolute(simpledata, 'flux', load.model@metadata),
+    logAtrazine=log(Atrazine),
+    logAtrazineFlux=log(AtrazineFlux))
+  
+  # demo the simple: if you ask for preds in linear space, you get fit in linear
+  # space going straight through predictions, and intervals computed in log
+  # space and exp()ed back to linear (asymmetric around fit)
+  fpreds <- predictSolute(load.model, newdata=estdata, flux.or.conc='flux', se.pred=TRUE, date=TRUE, interval='prediction')
+  gf <- ggplot(fpreds, aes(x=date, y=fit)) + geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.2) + 
+    geom_line(aes(y=fit), color='blue') +
+    geom_point(data=obs, aes(x=DATES, y=AtrazineFlux))
+  gf
+  gf + scale_y_log10()
+
+  cpreds <- predictSolute(load.model, newdata=estdata, flux.or.conc='conc', se.pred=TRUE, date=TRUE, interval='prediction')
+  gc <- ggplot(cpreds, aes(x=date)) + geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.2) +
+    geom_line(aes(y=fit), color='blue') +
+    geom_point(data=obs, aes(x=DATES, y=Atrazine))
+  gc
+  gc + scale_y_log10()
+
+  # demo the compromise: if you ask for preds in log space, you get fit=log(linearfit), but youalso get fit.meanlog=linToLog(linearfit)
+  flpreds <- predictSolute(load.model, newdata=estdata, flux.or.conc='flux', se.pred=TRUE, date=TRUE, interval='prediction', lin.or.log='log')
+  gfl <- ggplot(flpreds, aes(x=date)) + geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.2) +
+    geom_line(aes(y=fit), color='blue') + geom_line(aes(y=fit.meanlog), color='red') + 
+    geom_point(data=obs, aes(x=DATES, y=logAtrazineFlux))
+  gfl
+  
+  clpreds <- predictSolute(load.model, newdata=estdata, flux.or.conc='conc', se.pred=TRUE, date=TRUE, interval='prediction', lin.or.log='log')
+  gcl <- ggplot(clpreds, aes(x=date)) + geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.2) +
+    geom_line(aes(y=fit), color='blue') + geom_line(aes(y=fit.meanlog), color='red') + 
+    geom_point(data=obs, aes(x=DATES, y=logAtrazine))
+  gcl
+  
+})
+
 # getting error mcl 1-22-16
 # # Test composite method predictions for a variety of interpolation methods
 # checkLoadCompInterpPreds <- function(interp.fun, abs.or.rel.resids, use.log, flux.or.conc) {

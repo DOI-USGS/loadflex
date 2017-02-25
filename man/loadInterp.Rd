@@ -24,21 +24,15 @@ guidelines given there.}
 a minimum, \code{metadata} should correctly specify the date column and the
 column indicated by \code{interp.format}.}
 
-\item{retrans.function}{function that accepts a vector of predictions 
-straight from the fitted model and retransforms them, if appropriate, to 
-predictions in linear space and with units of concentration*flow. Because 
-load models are frequently fit to log(y) ~ ..., the default is 
-retrans.function=exp. After retrans.function has been applied to the 
-predictions, the retransformed predictions will automatically undergo 
-further units conversion from conc*flow to load.rate, according to the 
-metadata elements conc.units, flow.units, and load.rate.units.}
+\item{retrans.function}{irrelevant to loadInterp and must be NULL. for other
+models, permits fitting in log or other transformed spaces.}
 
 \item{store}{One or more character strings specifying which information to 
 write within the model. Options are 'data': the original fitting data; 
 'fitting.function': a fitting function that can produce a new loadComp 
-object from new data (this currently uses the same new data for both
-regression calibration and interpolation); 'uncertainty': an estimate of
-uncertainty, which can take some time to compute but will permit creation
+object from new data (this currently uses the same new data for both 
+regression calibration and interpolation); 'uncertainty': an estimate of 
+uncertainty, which can take some time to compute but will permit creation 
 of uncertainty intervals, etc. in the prediction and aggregation phases.}
 }
 \value{
@@ -59,7 +53,7 @@ loadInterps are currently assumed to have normally distributed residuals. An
 unwitting user might violate this assumption without being caught by the 
 code, so be careful! This assumption is mainly relevant to the calculation of
 confidence or prediction intervals. Also, where other models such as loadReg 
-and loadLm will retransform predictions back into linear space, loadInterps
+and loadLm will retransform predictions back into linear space, loadInterps 
 will not.
 }
 \seealso{
