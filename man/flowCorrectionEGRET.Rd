@@ -4,7 +4,7 @@
 \alias{flowCorrectionEGRET}
 \title{Convert a date and discharge data.frame into EGRET format}
 \usage{
-flowCorrectionEGRET(flowdat, flow.colname, date.colname, qconvert = 35.314667)
+flowCorrectionEGRET(flowdat, flow.colname, date.colname, flow.units)
 }
 \arguments{
 \item{flowdat}{data frame with discharge values to convert}
@@ -14,9 +14,6 @@ to flow}
 
 \item{date.colname}{character string giving the column name that corresponds 
 to dates}
-
-\item{qconvert}{numeric conversion factor to get flow into cubic meters per 
-second. Default conversion factor is for cubic feet per second.}
 }
 \description{
 Use EGRET functions to convert a data.frame of date and 

@@ -4,10 +4,10 @@
 #'   
 #' @param load.model a load model (loadReg2, loadComp, loadInterp, loadLm, etc.)
 #'   whose data and predictions are to be converted to EGRET format
-#' @param data data.frame of data used to fit a model. only required if 
-#'   load.model is omitted
 #' @param newdata data.frame of data used to generate predictions from an
 #'   already-fitted model
+#' @param data data.frame of data used to fit a model. only required if 
+#'   load.model is omitted
 #' @param meta loadflex metadata object; it must include constituent, flow, 
 #'   dates, conc.units, site.id, and consti.name. only required if load.model is
 #'   omitted
@@ -23,10 +23,11 @@
 #'   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 #' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
 #'   data=fitdat, metadata=meta, retrans=exp)
-#' loadflex:::convertToEGRET(data=fitdat, newdata=estdat, meta=meta)
-convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta = NULL) {
+#' minimalEGRET <- loadflex:::convertToEGRET(data=fitdat, meta=meta)
+#' maximalEGRET <- loadflex:::convertToEGRET(load.model=no3_lm, newdata=estdat)
+convertToEGRET <- function(load.model = NULL, newdata = NULL, data = NULL, meta = NULL) {
   
-  # Prepare inputs
+  # Reconcile load.model, data, and meta
   if(!is.null(load.model)) {
     if(!is.null(data)) warning('data arg will be overridden by load.model')
     if(!is.null(meta)) warning('meta arg will be overridden by load.model')
@@ -37,8 +38,8 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta 
   # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
   # with predictions for those time points). Collect the pieces.
   info_df <- convertToEGRETInfo(meta)
-  daily_df <- convertToEGRETDaily(load.model, newdata, meta)
-  sample_df <- convertToEGRETSample(data, meta, dailydat=if(is.null(load.model)) NULL else daily_df)
+  daily_df <- convertToEGRETDaily(newdata, load.model, meta=if(is.null(load.model)) meta else NULL)
+  sample_df <- convertToEGRETSample(data, meta, daily_df)
   
   # Combine and return the pieces
   eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
@@ -48,7 +49,7 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta 
 #' Convert the interpolation data.frame into the EGRET Sample dataframe.
 #' 
 #' @inheritParams convertToEGRET
-#' @param dailydat an EGRET Daily data.frame of flow values
+#' @param dailydat an EGRET Daily data.frame of flow and prediction values
 #' 
 #' @importFrom dplyr rename_
 #' @importFrom dplyr select
@@ -100,11 +101,11 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   # estimation method for loadInterp and half of the method for loadComp, so it
   # would be appropriate for at least those models to use an approach like the
   # EGRET approach here someday.
-  if(!is.null(dailydat)) {
-    subDaily <- select(sample_df, dateTime) %>%
-      left_join(select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay), by='dateTime')
-    
-    sample_df <- left_join(sample_df, subDaily, by='dateTime')
+  if(!is.null(dailydat) && all(c('yHat','SE','ConcDay') %in% names(dailydat))) {
+    sample_df <- left_join(
+      sample_df, 
+      select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay), 
+      by='dateTime')
   }
   
   return(sample_df)
@@ -141,8 +142,13 @@ convertToEGRETInfo <- function(meta) {
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename
-convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL) {
-
+convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
+  
+  # return NA if daily data.frame can't be created
+  if(missing(newdata) || is.null(newdata)) {
+    return(NA)
+  }
+  
   # Use meta from load.model if available, and note conflicts
   if(!is.null(meta) && !is.null(load.model)) {
     warning('meta argument will be ignored; metadata from load.model will be used instead')
@@ -158,7 +164,7 @@ convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL) {
     flow.units = verify_meta(meta, 'flow.units'))
   
   # Return now if we can't add predictions
-  if(missing(load.model)) {
+  if(is.null(load.model)) {
     return(daily_df)
   }
   

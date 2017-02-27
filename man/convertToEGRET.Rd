@@ -4,22 +4,22 @@
 \alias{convertToEGRET}
 \title{Convert loadflex to EGRET object}
 \usage{
-convertToEGRET(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL,
-  preds.type = "Conc")
+convertToEGRET(load.model = NULL, newdata = NULL, data = NULL,
+  meta = NULL)
 }
 \arguments{
-\item{fitdat}{data.frame of data used to fit a model}
+\item{load.model}{a load model (loadReg2, loadComp, loadInterp, loadLm, etc.)
+whose data and predictions are to be converted to EGRET format}
 
-\item{estdat}{data.frame of estimation data}
+\item{newdata}{data.frame of data used to generate predictions from an
+already-fitted model}
 
-\item{preds}{data.frame of load predictions}
+\item{data}{data.frame of data used to fit a model. only required if 
+load.model is omitted}
 
-\item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, site.id, and consti.name}
-
-\item{preds.type}{character specifying if the predictions being used are 
-concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
-"Conc", and this argument will be leaving soon.}
+\item{meta}{loadflex metadata object; it must include constituent, flow, 
+dates, conc.units, site.id, and consti.name. only required if load.model is
+omitted}
 }
 \description{
 Convert a loadflex object into an EGRET object for plotting.
@@ -35,7 +35,6 @@ meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE",
   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
   data=fitdat, metadata=meta, retrans=exp)
-preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
-preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
-loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
+minimalEGRET <- loadflex:::convertToEGRET(data=fitdat, meta=meta)
+maximalEGRET <- loadflex:::convertToEGRET(load.model=no3_lm, newdata=estdat)
 }
