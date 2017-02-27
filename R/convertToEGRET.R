@@ -8,8 +8,6 @@
 #'   load.model is omitted
 #' @param newdata data.frame of data used to generate predictions from an
 #'   already-fitted model
-#' @param preds data.frame of load predictions. only required if load.model is 
-#'   omitted
 #' @param meta loadflex metadata object; it must include constituent, flow, 
 #'   dates, conc.units, site.id, and consti.name. only required if load.model is
 #'   omitted
@@ -25,36 +23,24 @@
 #'   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 #' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
 #'   data=fitdat, metadata=meta, retrans=exp)
-#' preds_conc <- predictSolute(no3_lm, "conc", newdata=estdat, se.pred=TRUE, date=TRUE)
-#' preds_flux <- predictSolute(no3_lm, "flux", newdata=estdat, se.pred=TRUE, date=TRUE)
-#' loadflex:::convertToEGRET(data=fitdat, newdata=estdat, preds_conc, meta)
-convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, preds = NULL, meta = NULL) {
+#' loadflex:::convertToEGRET(data=fitdat, newdata=estdat, meta=meta)
+convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta = NULL) {
   
-  # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
-  # combined with predictions for those time points). Collect and combine those
-  # pieces.
-  
+  # prepare inputs
   if(!is.null(load.model)) {
     if(!is.null(data)) warning('data arg will be overridden by load.model')
-    if(!is.null(preds)) warning('preds arg will be overridden by load.model')
     if(!is.null(meta)) warning('meta arg will be overridden by load.model')
     data <- getFittingData(load.model)
     meta <- getMetadata(load.model)
   }
   
+  # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
+  # with predictions for those time points). Collect the pieces.
   info_df <- convertToEGRETInfo(meta)
+  daily_df <- convertToEGRETDaily(load.model, newdata, meta, qconvert)
+  sample_df <- convertToEGRETSample(data, meta, qconvert, dailydat=if(is.null(load.model)) NULL else daily_df)
   
-  # EGRET expects cms for all flow values; get the conversion factor
-  qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
-  
-  daily_df <- convertToEGRETDaily(newdata, meta, preds, qconvert)
-  
-  if(is.null(preds)) {
-    sample_df <- convertToEGRETSample(data, meta, qconvert)
-  } else {
-    sample_df <- convertToEGRETSample(data, meta, qconvert, daily_df)
-  }
-  
+  # Combine and return the pieces
   eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
   return(eList)
 }
@@ -72,7 +58,7 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, preds
 #' @importFrom EGRET populateSampleColumns
 #' @importFrom dplyr left_join
 #' @importFrom dplyr bind_cols
-convertToEGRETSample <- function(data, meta, qconvert = 35.314667, dailydat = NULL) {
+convertToEGRETSample <- function(data = NULL, meta = NULL, qconvert = 35.314667, dailydat = NULL) {
   if(any(is.null(data), is.null(meta))) {
     return(NA)
   }
@@ -129,12 +115,14 @@ convertToEGRETInfo <- function(meta) {
     stop("metadata is required to create an EGRET eList")
   }
   
-  info_df <- data.frame(shortName=verify_meta(meta, 'site.name'),
-                        paramShortName=verify_meta(meta, 'consti.name'),
-                        staAbbrev=verify_meta(meta, 'site.id'),
-                        constitAbbrev=verify_meta(meta, 'constituent'),
-                        param.units=verify_meta(meta, 'conc.units'),
-                        stringsAsFactors = FALSE)
+  info_df <- data.frame(
+    shortName = verify_meta(meta, 'site.name'),
+    paramShortName = verify_meta(meta, 'consti.name'),
+    staAbbrev = verify_meta(meta, 'site.id'),
+    constitAbbrev = verify_meta(meta, 'constituent'),
+    param.units = verify_meta(meta, 'conc.units'),
+    stringsAsFactors = FALSE)
+  
   return(info_df)
 }
 
@@ -151,39 +139,47 @@ convertToEGRETInfo <- function(meta) {
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename
-convertToEGRETDaily <- function(load.model, newdata, meta, preds, qconvert = 35.314667) {
-  if(any(is.null(newdata), is.null(preds), is.null(meta))) {
-    return(NA)
+convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL, qconvert = 35.314667) {
+
+  # use meta from load.model if available, and note conflicts
+  if(!is.null(meta) && !is.null(load.model)) {
+    warning('meta argument will be ignored; metadata from load.model will be used instead')
+  } else if(is.null(meta)) {
+    meta <- getMetadata(load.model)
   }
   
-  # from https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
+  # prepare a data.frame of flow information
+  daily_df <- flowCorrectionEGRET(
+    flowdat = newdata, 
+    flow.colname = verify_meta(meta, 'flow'),
+    date.colname = verify_meta(meta, 'dates'),
+    qconvert = qconvert)
+  
+  # return now if we can't add predictions
+  if(missing(load.model)) {
+    return(daily_df)
+  }
+  
+  # generate concentration predictions in both linear and log space
+  preds_lin <- predictSolute(load.model, "conc", newdata=newdata, date=TRUE, lin.or.log='linear')
+  preds_log <- predictSolute(load.model, "conc", newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log')
+    
+  # merge daily_df with preds. from
+  # https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
   # the EGRET surfaces/columns are:
   #   (1) is the estimated log concentration (yHat), 
   #   (2) is the estimated standard error (SE), 
   #   (3) is the estimated concentration (ConcHat). 
+  fit <- se.pred <- '.dplyr.var'
+  daily_df <- daily_df %>%
+    left_join(select(preds_log, date, yHat = fit, SE = se.pred), by=c("dateTime" = "date")) %>%
+    left_join(select(preds_lin, date, ConcDay = fit), by=c("dateTime" = "date"))
   
-  daily_df <- flowCorrectionEGRET(flowdat = newdata, 
-                                  flow.colname = verify_meta(meta, 'flow'),
-                                  date.colname = verify_meta(meta, 'dates'),
-                                  qconvert = qconvert)
-  
-  if(!is.null(preds)) {
-    
-    fit <- se.pred <- ConcDay <- FluxDay <- '.dplyr.var'
-    
-    # merge daily_df with preds
-    daily_df <- daily_df %>% 
-      left_join(preds, by=c("dateTime" = "date")) %>% 
-      rename(
-        ConcDay = fit,
-        SE = se.pred) %>% # in EGRET, the SE always describes the SE of yHat, so this is wrong. see #172
-      mutate(
-        yHat = log(ConcDay)) # yHat should differ from log(ConcDay) by a model-specific bias correction factor. see #134
-    
-    # fill in the Flux preds based on the Conc preds
-    meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
-    daily_df <- mutate(daily_df, FluxDay = formatPreds(daily_df$ConcDay, 'conc', 'flux', newdata=daily_df, metadata=meta.conv))
-  }
+  # fill in the Flux preds based on the Conc preds
+  meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
+  daily_df <- mutate(
+    daily_df,
+    FluxDay = formatPreds(daily_df$ConcDay, 'conc', 'flux', newdata=daily_df, metadata=meta.conv))
   
   return(daily_df)
 }
