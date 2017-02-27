@@ -4,8 +4,9 @@
 #'   
 #' @param data data.frame of data used to fit a model. only required if
 #'   load.model is omitted
-#' @param estdat data.frame of estimation data
-#' @param preds data.frame of load predictions. only required if load.model is
+#' @param newdata data.frame of data used to generate predictions from an
+#'   already-fitted model
+#' @param preds data.frame of load predictions. only required if load.model is 
 #'   omitted
 #' @param meta loadflex metadata object; it must include constituent, flow, 
 #'   dates, conc.units, site.id, and consti.name. only required if load.model is
@@ -25,22 +26,29 @@
 #'   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
 #' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
 #'   data=fitdat, metadata=meta, retrans=exp)
-#' preds_conc <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
-#' preds_flux <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
-#' loadflex:::convertToEGRET(fitdat, estdat, preds_conc, meta)
-convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
+#' preds_conc <- predictSolute(no3_lm, "conc", newdata=estdat, se.pred=TRUE, date=TRUE)
+#' preds_flux <- predictSolute(no3_lm, "flux", newdata=estdat, se.pred=TRUE, date=TRUE)
+#' loadflex:::convertToEGRET(data=fitdat, newdata=estdat, preds_conc, meta)
+convertToEGRET <- function(data = NULL, newdata = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
   # combined with predictions for those time points). Collect and combine those
   # pieces.
   
+  if(!is.null(load.model)) {
+    if(!is.null(data)) warning('data arg will be overridden by load.model')
+    if(!is.null(preds)) warning('preds arg will be overridden by load.model')
+    if(!is.null(meta)) warning('meta arg will be overridden by load.model')
+    data <- getFittingData(load.model)
+    meta <- getMetadata(load.model)
+  }
   
   info_df <- convertToEGRETInfo(meta, preds.type)
   
   # EGRET expects cms for all flow values; get the conversion factor
   qconvert <- 1/flowUnitsConversion(verify_meta(meta, 'flow.units'), 'cms')
   
-  daily_df <- convertToEGRETDaily(estdat, meta, preds, preds.type, qconvert)
+  daily_df <- convertToEGRETDaily(newdata, meta, preds, preds.type, qconvert)
   
   if(is.null(preds)) {
     sample_df <- convertToEGRETSample(data, meta, qconvert)
@@ -140,7 +148,7 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
 
 #' Convert estimation and load prediction data into the EGRET Daily data.frame
 #' 
-#' @param estdat data.frame of estimation data
+#' @param newdata data.frame of estimation data
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
 #' @param preds data.frame of load predictions
@@ -154,8 +162,8 @@ convertToEGRETInfo <- function(meta, preds.type = 'Conc') {
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename
-convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconvert = 35.314667) {
-  if(any(is.null(estdat), is.null(preds), is.null(meta))) {
+convertToEGRETDaily <- function(newdata, meta, preds, preds.type = "Conc", qconvert = 35.314667) {
+  if(any(is.null(newdata), is.null(preds), is.null(meta))) {
     return(NA)
   }
   
@@ -167,7 +175,7 @@ convertToEGRETDaily <- function(estdat, meta, preds, preds.type = "Conc", qconve
   
   stopifnot(preds.type == 'Conc') # We need it to be Conc to work with EGRET. No choice.
   
-  daily_df <- flowCorrectionEGRET(flowdat = estdat, 
+  daily_df <- flowCorrectionEGRET(flowdat = newdata, 
                                   flow.colname = verify_meta(meta, 'flow'),
                                   date.colname = verify_meta(meta, 'dates'),
                                   qconvert = qconvert)
