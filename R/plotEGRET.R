@@ -101,7 +101,7 @@ plotEGRET <- function(plot.name,
     boxConcMonth = ,
     plotConcTime = ,
     plotConcQ = ,
-    plotFluxQ = is.null(data) || is.null(meta),
+    plotFluxQ = is.null(load.model) && (is.null(data) || is.null(meta)),
     
     # require load.model and newdata
     boxQTwice = ,

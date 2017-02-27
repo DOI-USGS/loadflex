@@ -307,7 +307,7 @@ predictSolute.loadInterp <- function(
   # Add dates if requested
   if(date) {
     if(!is.data.frame(preds_lin)) {
-      preds_lin <- data.frame(fit=preds)
+      preds_lin <- data.frame(fit=preds_lin)
     }
     # prepend the date column
     preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)

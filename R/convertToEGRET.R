@@ -125,7 +125,7 @@ convertToEGRETInfo <- function(meta) {
     paramShortName = verify_meta(meta, 'consti.name'),
     staAbbrev = verify_meta(meta, 'site.id'),
     constitAbbrev = verify_meta(meta, 'constituent'),
-    param.units = verify_meta(meta, 'conc.units'),
+    param.units = if(verify_meta(meta, 'conc.units') == 'mg L^-1') 'mg/l' else verify_meta(meta, 'conc.units'),
     stringsAsFactors = FALSE)
   
   return(info_df)
