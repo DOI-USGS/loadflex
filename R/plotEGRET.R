@@ -4,7 +4,7 @@
 #' 
 #' @param plot.name the name of the plot the user wants to create. See 
 #' Details for current options. For now, only one allowed at time.
-#' @param fitdat data.frame of model fitting data
+#' @param data data.frame of model fitting data
 #' @param estdat data.frame of estimation data
 #' @param preds data.frame of load predictions
 #' @param meta loadflex metadata object; it must include constituent,
@@ -18,14 +18,14 @@
 #'   \code{preds}. Must be concentrations ("Conc").
 #' @param ... additional arguments to pass to the plot
 #'
-#' @details EGRET plots that require \code{fitdat, meta}:
+#' @details EGRET plots that require \code{data, meta}:
 #' \itemize{
 #'   \item boxConcMonth
 #'   \item plotConcTime
 #'   \item plotConcQ
 #'   \item plotFluxQ
 #' }
-#' EGRET plots that require \code{fitdat, estdat, preds, meta}:
+#' EGRET plots that require \code{data, estdat, preds, meta}:
 #' \itemize{
 #'   \item boxQTwice
 #'   \item multiPlotDataOverview
@@ -92,22 +92,22 @@
 #' preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 #' 
 #' # Now you can plot
-#' plotEGRET("boxConcMonth", fitdat = lamprey_nitrate, meta = meta)
+#' plotEGRET("boxConcMonth", data = lamprey_nitrate, meta = meta)
 #' plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
 #' 
-plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL, 
+plotEGRET <- function(plot.name, data = NULL, estdat = NULL, preds = NULL, 
                       meta = NULL, preds.type = "Conc", moreTitle = "loadflex", 
                       plotFlowNorm = FALSE, ...) {
   
   req_missing <- switch(plot.name,
                         
-                        # require fitdat & meta
+                        # require data & meta
                         boxConcMonth = ,
                         plotConcTime = ,
                         plotConcQ = ,
-                        plotFluxQ = is.null(fitdat) | is.null(meta),
+                        plotFluxQ = is.null(data) | is.null(meta),
                         
-                        # require fitdat, meta, estdat, and preds
+                        # require data, meta, estdat, and preds
                         boxQTwice = ,
                         multiPlotDataOverview = ,
                         plotConcTimeDaily = ,
@@ -121,7 +121,7 @@ plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
                         boxConcThree = , 
                         plotConcHist = , 
                         plotFluxHist = ,
-                        fluxBiasMulti = is.null(fitdat) | is.null(meta) |
+                        fluxBiasMulti = is.null(data) | is.null(meta) |
                           is.null(estdat) | is.null(preds),
                         
                         # default if no name matches
@@ -131,17 +131,17 @@ plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL,
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
-  egretobj <- convertToEGRET(fitdat, estdat, preds, meta, preds.type)
+  egretobj <- convertToEGRET(data, estdat, preds, meta, preds.type)
   
   switch(plot.name,
          
-         # require fitdat & meta
+         # require data & meta
          boxConcMonth = boxConcMonth(egretobj, ...),
          plotConcTime = plotConcTime(egretobj, ...),
          plotConcQ = plotConcQ(egretobj, ...),
          plotFluxQ = plotFluxQ(egretobj, ...),
          
-         # require fitdat, meta, estdat, and preds
+         # require data, meta, estdat, and preds
          boxQTwice = boxQTwice(egretobj, ...),
          multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
          plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),

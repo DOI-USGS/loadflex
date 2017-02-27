@@ -1,14 +1,17 @@
 #' Convert loadflex to EGRET object
-#'  
-#' @description Convert a loadflex object into an EGRET object for plotting.
 #' 
-#' @param fitdat data.frame of data used to fit a model
+#' @description Convert a loadflex object into an EGRET object for plotting.
+#'   
+#' @param data data.frame of data used to fit a model. only required if
+#'   load.model is omitted
 #' @param estdat data.frame of estimation data
-#' @param preds data.frame of load predictions
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, dates, conc.units, site.id, and consti.name
+#' @param preds data.frame of load predictions. only required if load.model is
+#'   omitted
+#' @param meta loadflex metadata object; it must include constituent, flow, 
+#'   dates, conc.units, site.id, and consti.name. only required if load.model is
+#'   omitted
 #' @param preds.type character specifying if the predictions being used are 
-#'   concentrations ("Conc") or fluxes ("Flux"). The only permitted value is
+#'   concentrations ("Conc") or fluxes ("Flux"). The only permitted value is 
 #'   "Conc", and this argument will be leaving soon.
 #' @importFrom EGRET as.egret
 #' @examples
@@ -28,7 +31,9 @@
 convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NULL, preds.type = "Conc") {
   
   # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
-  # combined with predictions for those time points)
+  # combined with predictions for those time points). Collect and combine those
+  # pieces.
+  
   
   info_df <- convertToEGRETInfo(meta, preds.type)
   
@@ -38,9 +43,9 @@ convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NU
   daily_df <- convertToEGRETDaily(estdat, meta, preds, preds.type, qconvert)
   
   if(is.null(preds)) {
-    sample_df <- convertToEGRETSample(fitdat, meta, qconvert)
+    sample_df <- convertToEGRETSample(data, meta, qconvert)
   } else {
-    sample_df <- convertToEGRETSample(fitdat, meta, qconvert, daily_df)
+    sample_df <- convertToEGRETSample(data, meta, qconvert, daily_df)
   }
   
   eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
@@ -49,7 +54,7 @@ convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NU
 
 #' Convert the interpolation data.frame into the EGRET Sample dataframe.
 #'
-#' @param fitdat data.frame of data used to fit a model
+#' @param data data.frame of data used to fit a model
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
 #' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
@@ -62,8 +67,8 @@ convertToEGRET <- function(fitdat = NULL, estdat = NULL, preds = NULL, meta = NU
 #' @importFrom EGRET populateSampleColumns
 #' @importFrom dplyr left_join
 #' @importFrom dplyr bind_cols
-convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = NULL) {
-  if(any(is.null(fitdat), is.null(meta))) {
+convertToEGRETSample <- function(data, meta, qconvert = 35.314667, dailydat = NULL) {
+  if(any(is.null(data), is.null(meta))) {
     return(NA)
   }
   
@@ -72,7 +77,7 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
   flow_col <- verify_meta(meta, 'flow')
   date_col <- verify_meta(meta, 'dates')
   constituent <- verify_meta(meta, 'constituent')
-  sample_df1 <- fitdat %>% 
+  sample_df1 <- data %>% 
     rename_("value" = constituent,
             "dateTime" = date_col)  %>%
     select(dateTime, 
@@ -80,10 +85,10 @@ convertToEGRETSample <- function(fitdat, meta, qconvert = 35.314667, dailydat = 
     mutate(ConcLow = ConcHigh, 
            Uncen = as.numeric(ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
-    mutate(dateTime = fitdat[[date_col]],
+    mutate(dateTime = data[[date_col]],
            Date = as.Date(Date))
   
-  flow_data <- flowCorrectionEGRET(flowdat = fitdat, 
+  flow_data <- flowCorrectionEGRET(flowdat = data, 
                                    flow.colname = flow_col,
                                    date.colname = date_col,
                                    qconvert = qconvert) %>% 
