@@ -283,8 +283,9 @@ predictSolute.loadReg2 <- function(
     args <- list(...)
     argnames <- names(args)
     accepted_argnames <- c("load.units", "seopt", "print") #"conf.int"
-    if(is.null(argnames) | any(!(argnames %in% accepted_argnames))) {
-      stop("names of args in ... should be in this list: ", paste0(accepted_argnames, collapse=", "))
+    if(is.null(argnames) || any(!(argnames %in% accepted_argnames))) {
+      stop("unrecognized args: ", paste0(setdiff(argnames, accepted_argnames), collapse=", "), 
+           ". args in ... should be in this list: ", paste0(accepted_argnames, collapse=", "))
     }
     if("load.units" %in% argnames) {
       metadata <- updateMetadata(metadata, load.units=args$load.units)
@@ -323,30 +324,43 @@ predictSolute.loadReg2 <- function(
   # default. nchunks is the number of chunks required.
   chunk.size <- 176000
   nchunks <- ceiling(nrow(newdata) / chunk.size)
-  newdata <- lapply(1:nchunks, function(i) {
+  datachunks <- lapply(1:nchunks, function(i) {
     newdata[((i-1)*chunk.size + 1):min(i*chunk.size, nrow(newdata)),]
   })
   
   # Now do the prediction for each chunk and then reassemble the full set of
   # predictions
-  preds_raw <- lapply(newdata, function(datachunk) {
+  preds_lin_raw <- lapply(datachunks, function(datachunk) {
     switch(
       flux.or.conc,
-      "flux"=predLoad(
+      "flux"={
         # ... may contain load.units, seopt, print
-        fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level, ...), 
-      "conc"=predConc(
-        fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level) 
+        predLoad(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level, ...)
+      }, 
+      "conc"={
+        predLoad_args <- c('load.units','seopt','print')[(c('load.units','seopt','print') %in% names(list(...)))]
+        if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
+        predConc(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level) 
+      }
     )
   })
-  preds_raw <- do.call(rbind, preds_raw)
+  preds_lin_raw <- do.call(rbind, preds_lin_raw)
+  preds_col <- .sentenceCase(flux.or.conc)
+  
+  # Generate predictions in log space in case these were requested. Uses the 
+  # assumption, as in predLoad and predConc, that the Ferguson (1986) method is
+  # adequate for re-retransformation. (predLoad and predConc use these to
+  # compute prediction intervals)
+  KDays <- !is.na(preds_lin_raw[["SEP"]])
+  preds_log_raw <- linToLog(meanlin=preds_lin_raw[[preds_col]][KDays], sdlin=preds_lin_raw$SEP[KDays])
   
   # Format predictions; add intervals if requested
-  preds_col <- .sentenceCase(flux.or.conc)
   if(interval == "none") {
-    preds <- formatPreds(preds_raw[[preds_col]], 
-                         from.format=flux.or.conc, to.format=flux.or.conc, 
-                         newdata=NULL, metadata=metadata, attach.units=attach.units)
+    preds <- switch(
+      lin.or.log,
+      'linear' = preds_lin_raw[[preds_col]],
+      'log' = preds_log_raw[["meanlog"]]
+    )
   } else if(interval == "confidence") {
     stop("confidence intervals not implemented for loadReg2 models")
   } else if(interval=="prediction") {
@@ -354,11 +368,22 @@ predictSolute.loadReg2 <- function(
     # used here as in the original documentation for LOADEST, but the values
     # that are reported are the prediction intervals, computed from the SEP."
     pred.int.num <- as.character(round(level*100, 0))
-    preds <- list(fit=preds_raw[[preds_col]], lwr=preds_raw[[paste0("L",pred.int.num)]], upr=preds_raw[[paste0("U",pred.int.num)]])
-    preds <- as.data.frame(lapply(preds, function(pr) {
-      formatPreds(pr, from.format=flux.or.conc, to.format=flux.or.conc, newdata=NULL, metadata=metadata, attach.units=attach.units)
-    }))
-  }
+    preds <- switch(
+      lin.or.log,
+      'linear' = 
+        data.frame(
+          fit = preds_lin_raw[[preds_col]], 
+          lwr = preds_lin_raw[[paste0("L",pred.int.num)]], 
+          upr = preds_lin_raw[[paste0("U",pred.int.num)]]),
+      'log' = 
+        # preds_lin CI was computed in log space, so a straight log transformation 
+        # is fine here. Use the bias re-corrected mean, though
+        data.frame(
+          fit = preds_log_raw$meanlog,
+          lwr = log(preds_lin_raw[[paste0("L",pred.int.num)]]),
+          upr = log(preds_lin_raw[[paste0("U",pred.int.num)]]))
+    )
+  } # other possibilities prevented by match.arg.loadflex(interval) above
   
   # If se.fit==TRUE or se.pred==TRUE, format the output to approximately
   # parallel the output of other predict functions: a list of vectors with
@@ -368,10 +393,39 @@ predictSolute.loadReg2 <- function(
       preds <- data.frame(fit=preds)
     }
     if(se.fit) {
-      preds$se.fit <- preds_raw[["Std.Err"]]
+      preds$se.fit <- switch(
+        lin.or.log,
+        'linear' = preds_lin_raw[["Std.Err"]],
+        'log' = NA # wouldn't be compatible with the meanlog computed from the SEP
+      )
     }
     if(se.pred) {
-      preds$se.pred <- preds_raw[["SEP"]]
+      preds$se.pred <- switch(
+        lin.or.log,
+        'linear' = preds_lin_raw[["SEP"]],
+        'log' = preds_log_raw[["sdlog"]]
+      )
+    }
+  }
+  
+  # Attach units if requested. Applies to fit, lwr, upr, se.fit, and se.pred. 
+  # formatPreds with same from and to formats doesn't do anything if 
+  # attach.units==FALSE, so don't bother unless attach.units==TRUE
+  if(attach.units) {
+    if(lin.or.log == 'log') {
+      warning("units requested but unavailable for lin.or.log='log'")
+    } else {
+      if(is.data.frame(preds)) {
+        preds <- as.data.frame(lapply(preds, function(pr) {
+          formatPreds(
+            pr, from.format=flux.or.conc, to.format=flux.or.conc, 
+            newdata=NULL, metadata=metadata, attach.units=attach.units)
+        }))
+      } else {
+        preds <- formatPreds(
+          preds, from.format=flux.or.conc, to.format=flux.or.conc, 
+          newdata=NULL, metadata=metadata, attach.units=attach.units)
+      }
     }
   }
   
@@ -380,9 +434,13 @@ predictSolute.loadReg2 <- function(
     if(!is.data.frame(preds)) {
       preds <- data.frame(fit=preds)
     }
-    # prepend the date column, reassembling it from the chunks in newdata
-    preds <- data.frame(
-      date=do.call(c, lapply(newdata, function(datachunk) { getCol(metadata, datachunk, "date") })), preds)
+    # prepend the date column
+    preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
+  }
+  
+  # Bring out units if hidden in a data.frame
+  if(attach.units && is.data.frame(preds)) {
+    preds <- u(preds)
   }
   
   return(preds)

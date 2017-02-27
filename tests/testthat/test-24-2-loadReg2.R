@@ -1,7 +1,61 @@
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
-#' loadReg2 is a wrapper for loadReg produced by rloadest.
-#library(rloadest)
+# loadReg2 is a wrapper for loadReg produced by rloadest; it's required to load
+# the library explicitly
+library(rloadest)
+
+# Setup from intro_to_loadflex.Rmd
+data(lamprey_nitrate)
+intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
+regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
+data(lamprey_discharge)
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
+no3_lr <- loadReg2(loadReg(
+  NO3 ~ model(9), data=regdat,
+  flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+  flow.units="cfs", conc.units="mg/L", load.units="kg",
+  station='Lamprey River, NH'))
+
+test_that("loadReg2 can summarize itself", {
+  # test that a summary gets produced without any extra arguments
+  smry <- summarizeModel(no3_lr)
+  expect_equal(nrow(smry), 1)
+  expect_true(all(c('site.id','constituent','RMSE') %in% names(smry)))
+})
+
+test_that("loadReg2 can make predictions", {
+  # new units should be respected, though for flux only
+  expect_equal(
+    predictSolute(no3_lr, flux.or.conc='flux', lin.or.log = 'lin'),
+    1000 * predictSolute(no3_lr, flux.or.conc='flux', load.units='Mg', lin.or.log = 'lin'))
+  expect_warning(predictSolute(no3_lr, flux.or.conc='conc', load.units='Mg', lin.or.log = 'lin'), "args are ignored")
+
+  # returns a vector unless additional columns are requested
+  expect_null(dim(predictSolute(no3_lr, flux.or.conc='conc')))
+  expect_equal(2, ncol(predictSolute(no3_lr, flux.or.conc='conc', se.fit=TRUE)))
+  expect_equal(2, ncol(predictSolute(no3_lr, flux.or.conc='conc', se.pred=TRUE)))
+  expect_equal(2, ncol(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE)))
+  expect_equal(4, ncol(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE)))
+  expect_error(ncol(predictSolute(no3_lr, flux.or.conc='conc', interval='confidence')), "confidence intervals not implemented")
+  expect_equal(3, ncol(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction')))
+  expect_equal(5, ncol(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE)))
+  
+  # can predict in linear or log space
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', se.fit=TRUE)),
+               names(predictSolute(no3_lr, flux.or.conc='conc', se.fit=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', se.pred=TRUE)),
+               names(predictSolute(no3_lr, flux.or.conc='conc', se.pred=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE)),
+               names(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE)),
+               names(predictSolute(no3_lr, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction')),
+               names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', lin.or.log='log')))
+  expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE)),
+               names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE, lin.or.log='log')))
+})
+
 # 
 # test_that("loadReg2 models can be created", {
 #   
@@ -256,28 +310,3 @@ tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=func
 #   
 #   warning("prediction intervals remain untested")
 # })
-
-
-test_that("loadReg2 can summarize itself", {
-  # Setup from intro_to_loadflex.Rmd
-  data(lamprey_nitrate)
-  intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
-  regdat <- subset(lamprey_nitrate, REGR)[c("DATE","DISCHARGE","NO3")]
-  data(lamprey_discharge)
-  estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
-  estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # pare to 4 obs/day for speed
-  meta <- metadata(constituent="NO3", flow="DISCHARGE", 
-                   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
-                   load.rate.units="kg d^-1", site.name="Lamprey River, NH",
-                   consti.name="Nitrate", site.id='01073500', lat=43.10259, lon=-70.95256)
-  library(rloadest)
-  no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
-                             flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
-                             flow.units="cfs", conc.units="mg/L", load.units="kg",
-                             station='Lamprey River, NH'))
-  
-  # test that a summary gets produced without any extra arguments
-  expect_equal(nrow(summarizeModel(no3_lr)), 1)
-  
-})
-
