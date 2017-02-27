@@ -4,11 +4,7 @@
 #' 
 #' @param plot.name the name of the plot the user wants to create. See 
 #' Details for current options. For now, only one allowed at time.
-#' @param data data.frame of model fitting data
-#' @param newdata data.frame of estimation data
-#' @param preds data.frame of load predictions
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, site.id, and consti.name
+#' @inheritParams convertToEGRET
 #' @param moreTitle additional text to include in the fluxBiasMulti plot 
 #' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
 #' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
@@ -73,29 +69,30 @@
 #' estdat <- subset(estdat, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT")) 
 #' estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
 #' 
-#' meta <- metadata(constituent="NO3", 
-#'                  flow="DISCHARGE",
-#'                  dates="DATE", 
-#'                  conc.units="mg L^-1", 
-#'                  flow.units="cfs", 
-#'                  load.units="kg",
-#'                  load.rate.units="kg d^-1", 
-#'                  site.name="Lamprey River, NH",
-#'                  site.id="01073500",
-#'                  consti.name="Nitrate")
+#' meta <- metadata(
+#'   constituent="NO3", 
+#'   flow="DISCHARGE",
+#'   dates="DATE", 
+#'   conc.units="mg L^-1", 
+#'   flow.units="cfs", 
+#'   load.units="kg",
+#'   load.rate.units="kg d^-1", 
+#'   site.name="Lamprey River, NH",
+#'   site.id="01073500",
+#'   consti.name="Nitrate")
 #' 
 #' # Run your model and get your predictions
-#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
-#'                  data=fitdat, metadata=meta, retrans=exp)
-#' preds <- predictSolute(no3_lm, "conc", newdata=estdat, se.pred=TRUE, date=TRUE)
+#' no3_lm <- loadLm(
+#'   formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+#'   data=fitdat, metadata=meta, retrans=exp)
 #' 
 #' # Now you can plot
 #' plotEGRET("boxConcMonth", data = lamprey_nitrate, meta = meta)
-#' plotEGRET("multiPlotDataOverview", lamprey_nitrate, newdata=estdat, preds, meta)
+#' plotEGRET("multiPlotDataOverview", load.model=no3_lm, newdata=estdat)
 #' 
-plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL, 
-                      meta = NULL, moreTitle = "loadflex", 
-                      plotFlowNorm = FALSE, ...) {
+plotEGRET <- function(plot.name, 
+                      load.model = NULL, newdata = NULL, data = NULL, meta = NULL, 
+                      moreTitle = "loadflex", plotFlowNorm = FALSE, ...) {
   
   req_missing <- switch(
     plot.name,
@@ -104,9 +101,9 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
     boxConcMonth = ,
     plotConcTime = ,
     plotConcQ = ,
-    plotFluxQ = is.null(data) | is.null(meta),
+    plotFluxQ = is.null(data) || is.null(meta),
     
-    # require data, meta, newdata, and preds
+    # require load.model and newdata
     boxQTwice = ,
     multiPlotDataOverview = ,
     plotConcTimeDaily = ,
@@ -120,8 +117,7 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
     boxConcThree = , 
     plotConcHist = , 
     plotFluxHist = ,
-    fluxBiasMulti = is.null(data) | is.null(meta) |
-      is.null(newdata) | is.null(preds),
+    fluxBiasMulti = is.null(load.model) || is.null(newdata),
     
     # default if no name matches
     FALSE)
@@ -130,7 +126,7 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
-  egretobj <- convertToEGRET(data, newdata, preds, meta)
+  egretobj <- convertToEGRET(load.model, newdata, data, meta)
   
   switch(
     plot.name,
