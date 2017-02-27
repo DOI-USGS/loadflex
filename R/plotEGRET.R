@@ -14,8 +14,6 @@
 #' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
 #' lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
 #' in plotFluxHist and plotConcHist.
-#' @param preds.type character specifying the format of the predictions in
-#'   \code{preds}. Must be concentrations ("Conc").
 #' @param ... additional arguments to pass to the plot
 #'
 #' @details EGRET plots that require \code{data, meta}:
@@ -96,7 +94,7 @@
 #' plotEGRET("multiPlotDataOverview", lamprey_nitrate, newdata=estdat, preds, meta)
 #' 
 plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL, 
-                      meta = NULL, preds.type = "Conc", moreTitle = "loadflex", 
+                      meta = NULL, moreTitle = "loadflex", 
                       plotFlowNorm = FALSE, ...) {
   
   req_missing <- switch(plot.name,
@@ -131,7 +129,7 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
-  egretobj <- convertToEGRET(data, newdata, preds, meta, preds.type)
+  egretobj <- convertToEGRET(data, newdata, preds, meta)
   
   switch(plot.name,
          
