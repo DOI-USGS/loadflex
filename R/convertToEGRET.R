@@ -26,7 +26,7 @@
 #' loadflex:::convertToEGRET(data=fitdat, newdata=estdat, meta=meta)
 convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta = NULL) {
   
-  # prepare inputs
+  # Prepare inputs
   if(!is.null(load.model)) {
     if(!is.null(data)) warning('data arg will be overridden by load.model')
     if(!is.null(meta)) warning('meta arg will be overridden by load.model')
@@ -63,6 +63,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   
   dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- ConcDay <- '.dplyr.var'
   
+  # Format the sample info
   date_col <- verify_meta(meta, 'dates')
   sample_df1 <- data %>% 
     rename_(
@@ -79,6 +80,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
       dateTime = data[[date_col]],
       Date = as.Date(Date))
   
+  # Format the flow info
   flow_data <- data %>%
     flowCorrectionEGRET(
       flow.colname = verify_meta(meta, 'flow'),
@@ -86,20 +88,21 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
       flow.units = verify_meta(meta, 'flow.units')) %>% 
     select(Date, Q, dateTime)
   
+  # Combine the sample and flow info
   sample_df <- sample_df1 %>%
     left_join(flow_data, by=c('dateTime', 'Date'))
   
+  # Add in predictions if available. The sample-specific model predictions
+  # created by EGRET are actually leave-one-out estimates where yHat, SE, and
+  # ConcHat are the predictions from a model fit without the given observation.
+  # For the time being, we'll stick to the simpler approach of using the same
+  # model for every row in the subDaily dataset. But LOOCV is the uncertainty
+  # estimation method for loadInterp and half of the method for loadComp, so it
+  # would be appropriate for at least those models to use an approach like the
+  # EGRET approach here someday.
   if(!is.null(dailydat)) {
     subDaily <- select(sample_df, dateTime) %>%
       left_join(select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay), by='dateTime')
-    # The sample-specific model predictions created by EGRET are actually 
-    # leave-one-out estimates where yHat, SE, and ConcHat are the predictions 
-    # from a model fit without the given observation. For the time being, we'll 
-    # stick to the simpler approach of using the same model for every row in the
-    # subDaily dataset. But LOOCV is the uncertainty estimation method for 
-    # loadInterp and half of the method for loadComp, so it would be appropriate
-    # for at least those models to use an approach like the EGRET approach here
-    # someday.
     
     sample_df <- left_join(sample_df, subDaily, by='dateTime')
   }
@@ -140,30 +143,30 @@ convertToEGRETInfo <- function(meta) {
 #' @importFrom dplyr rename
 convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL) {
 
-  # use meta from load.model if available, and note conflicts
+  # Use meta from load.model if available, and note conflicts
   if(!is.null(meta) && !is.null(load.model)) {
     warning('meta argument will be ignored; metadata from load.model will be used instead')
   } else if(is.null(meta)) {
     meta <- getMetadata(load.model)
   }
   
-  # prepare a data.frame of flow information
+  # Prepare a data.frame of flow information
   daily_df <- flowCorrectionEGRET(
     flowdat = newdata,
     flow.colname = verify_meta(meta, 'flow'),
     date.colname = verify_meta(meta, 'dates'),
     flow.units = verify_meta(meta, 'flow.units'))
   
-  # return now if we can't add predictions
+  # Return now if we can't add predictions
   if(missing(load.model)) {
     return(daily_df)
   }
   
-  # generate concentration predictions in both linear and log space
+  # Generate concentration predictions in both linear and log space
   preds_lin <- predictSolute(load.model, 'conc', newdata=newdata, date=TRUE, lin.or.log='linear')
   preds_log <- predictSolute(load.model, 'conc', newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log')
     
-  # merge daily_df with preds. from
+  # Merge daily_df with preds. from
   # https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
   # the EGRET surfaces/columns are:
   #   (1) is the estimated log concentration (yHat), 
@@ -174,7 +177,7 @@ convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL) {
     left_join(select(preds_log, date, yHat = fit, SE = se.pred), by=c("dateTime" = "date")) %>%
     left_join(select(preds_lin, date, ConcDay = fit), by=c("dateTime" = "date"))
   
-  # fill in the Flux preds based on the Conc preds
+  # Fill in the Flux preds based on the Conc preds
   meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
   daily_df <- mutate(
     daily_df,
@@ -230,10 +233,10 @@ verify_meta <- function(meta, nm) {
 #' @importFrom EGRET populateDaily
 flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
   
-  # get the conversion factor. EGRET expects cms for all flow values
+  # Get the conversion factor. EGRET expects cms for all flow values
   qconvert <- 1/flowUnitsConversion(flow.units, 'cms')
   
-  # convert to EGRET format with many columns describing flow
+  # Convert to EGRET format with many columns describing flow
   flowdat_corrected <- flowdat %>% 
     rename_("value" = flow.colname,
             "dateTime" = date.colname) %>% 
