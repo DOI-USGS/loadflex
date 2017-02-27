@@ -37,8 +37,8 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta 
   # EGRET format is a list of INFO, Daily predictions, and Sample data (possibly
   # with predictions for those time points). Collect the pieces.
   info_df <- convertToEGRETInfo(meta)
-  daily_df <- convertToEGRETDaily(load.model, newdata, meta, qconvert)
-  sample_df <- convertToEGRETSample(data, meta, qconvert, dailydat=if(is.null(load.model)) NULL else daily_df)
+  daily_df <- convertToEGRETDaily(load.model, newdata, meta)
+  sample_df <- convertToEGRETSample(data, meta, dailydat=if(is.null(load.model)) NULL else daily_df)
   
   # Combine and return the pieces
   eList <- as.egret(INFO=info_df, Daily=daily_df, Sample=sample_df)
@@ -48,8 +48,6 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta 
 #' Convert the interpolation data.frame into the EGRET Sample dataframe.
 #' 
 #' @inheritParams convertToEGRET
-#' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
-#' conversion factor is for cubic feet per second.
 #' @param dailydat an EGRET Daily data.frame of flow values
 #' 
 #' @importFrom dplyr rename_
@@ -58,35 +56,38 @@ convertToEGRET <- function(load.model = NULL, data = NULL, newdata = NULL, meta 
 #' @importFrom EGRET populateSampleColumns
 #' @importFrom dplyr left_join
 #' @importFrom dplyr bind_cols
-convertToEGRETSample <- function(data = NULL, meta = NULL, qconvert = 35.314667, dailydat = NULL) {
+convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   if(any(is.null(data), is.null(meta))) {
     return(NA)
   }
   
   dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- ConcDay <- '.dplyr.var'
   
-  flow_col <- verify_meta(meta, 'flow')
   date_col <- verify_meta(meta, 'dates')
-  constituent <- verify_meta(meta, 'constituent')
   sample_df1 <- data %>% 
-    rename_("value" = constituent,
-            "dateTime" = date_col)  %>%
-    select(dateTime, 
-           ConcHigh = value) %>% 
-    mutate(ConcLow = ConcHigh, 
-           Uncen = as.numeric(ConcHigh == ConcLow)) %>% 
+    rename_(
+      value = verify_meta(meta, 'constituent'),
+      dateTime = date_col)  %>%
+    select(
+      dateTime, 
+      ConcHigh = value) %>% 
+    mutate(
+      ConcLow = ConcHigh, 
+      Uncen = as.numeric(ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
-    mutate(dateTime = data[[date_col]],
-           Date = as.Date(Date))
+    mutate(
+      dateTime = data[[date_col]],
+      Date = as.Date(Date))
   
-  flow_data <- flowCorrectionEGRET(flowdat = data, 
-                                   flow.colname = flow_col,
-                                   date.colname = date_col,
-                                   qconvert = qconvert) %>% 
+  flow_data <- data %>%
+    flowCorrectionEGRET(
+      flow.colname = verify_meta(meta, 'flow'),
+      date.colname = date_col,
+      flow.units = verify_meta(meta, 'flow.units')) %>% 
     select(Date, Q, dateTime)
   
   sample_df <- sample_df1 %>%
-    left_join(flow_data, by=c("dateTime","Date"))
+    left_join(flow_data, by=c('dateTime', 'Date'))
   
   if(!is.null(dailydat)) {
     subDaily <- select(sample_df, dateTime) %>%
@@ -131,15 +132,13 @@ convertToEGRETInfo <- function(meta) {
 #' @inheritParams convertToEGRET
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
-#' @param qconvert numeric conversion factor to get flow into cubic meters per second. Default
-#' conversion factor is for cubic feet per second.
 #' 
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate 
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
 #' @importFrom dplyr rename
-convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL, qconvert = 35.314667) {
+convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL) {
 
   # use meta from load.model if available, and note conflicts
   if(!is.null(meta) && !is.null(load.model)) {
@@ -150,10 +149,10 @@ convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL, qconver
   
   # prepare a data.frame of flow information
   daily_df <- flowCorrectionEGRET(
-    flowdat = newdata, 
+    flowdat = newdata,
     flow.colname = verify_meta(meta, 'flow'),
     date.colname = verify_meta(meta, 'dates'),
-    qconvert = qconvert)
+    flow.units = verify_meta(meta, 'flow.units'))
   
   # return now if we can't add predictions
   if(missing(load.model)) {
@@ -161,8 +160,8 @@ convertToEGRETDaily <- function(load.model = NULL, newdata, meta = NULL, qconver
   }
   
   # generate concentration predictions in both linear and log space
-  preds_lin <- predictSolute(load.model, "conc", newdata=newdata, date=TRUE, lin.or.log='linear')
-  preds_log <- predictSolute(load.model, "conc", newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log')
+  preds_lin <- predictSolute(load.model, 'conc', newdata=newdata, date=TRUE, lin.or.log='linear')
+  preds_log <- predictSolute(load.model, 'conc', newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log')
     
   # merge daily_df with preds. from
   # https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:
@@ -225,18 +224,22 @@ verify_meta <- function(meta, nm) {
 #'   to flow
 #' @param date.colname character string giving the column name that corresponds 
 #'   to dates
-#' @param qconvert numeric conversion factor to get flow into cubic meters per 
-#'   second. Default conversion factor is for cubic feet per second.
-#'   
+#'  
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
-flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, qconvert = 35.314667) {
+flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
+  
+  # get the conversion factor. EGRET expects cms for all flow values
+  qconvert <- 1/flowUnitsConversion(flow.units, 'cms')
+  
+  # convert to EGRET format with many columns describing flow
   flowdat_corrected <- flowdat %>% 
     rename_("value" = flow.colname,
             "dateTime" = date.colname) %>% 
     mutate(code = "") %>% 
     populateDaily(qConvert = qconvert, interactive = FALSE) %>%
     mutate(dateTime = flowdat[[date.colname]])
+  
   return(flowdat_corrected)
 }
