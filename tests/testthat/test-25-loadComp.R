@@ -1,16 +1,18 @@
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
+# Define & munge dataset
+library(rloadest)
+simpledata <- transform(
+  app2.calib[-which(diff(app2.calib$DATES) < 7),], 
+  Period = seasons(DATES,breaks=c("Apr", "Jul")))
+estdata <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
+
 test_that("loadComp models can be created", {
-  # Define & munge dataset
-  library(rloadest)
-  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
-                          Period=seasons(DATES,breaks=c("Apr", "Jul")))
-  
   # Create the regression model
-  simpledata$DATES <- as.POSIXct(simpledata$DATES)
+  simpledata2 <- transform(simpledata, DATES = as.POSIXct(format(DATES, '%Y-%m-%d'), tz='UTC'))
   reg.model <- loadReg2(loadReg(
     Atrazine ~ Period*center(log(FLOW)), 
-    data = simpledata, time.step="instantaneous",
+    data = simpledata2, time.step="instantaneous",
     flow = "FLOW", dates = "DATES", conc.units="mg/L"))
   
   ### HAD TO CONVERT SIMPLEDATA$DATES TO POSIXCT AND TIMESTEP TO INSTANTANEOUS
@@ -18,22 +20,59 @@ test_that("loadComp models can be created", {
   ### (WHERE DATES ARE REPEATED). THIS IS HIGHLY INCONVENIENT.
   
   # Create the composite model
-  load.model <- loadComp(reg.model=reg.model, interp.format="flux", interp.data=simpledata, interp.function=linearInterpolation)
+  load.model <- loadComp(reg.model=reg.model, interp.format="flux", interp.data=simpledata2, interp.function=linearInterpolation)
   expect_is(load.model, "loadComp")
 })
 
 test_that("loadComp preds can be made in log or linear space", {
-  simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], Period=seasons(DATES,breaks=c("Apr", "Jul")))
-  estdata <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
+  # Create the regression and composite models
   reg.model <- loadReg2(loadReg(Atrazine ~ center(log(FLOW)), data = simpledata, flow = "FLOW", dates = "DATES", conc.units="mg/L"), pred.format = 'conc')
   load.model <- loadComp(reg.model=reg.model, interp.data=simpledata, interp.function=linearInterpolation)
   
-  obs <- mutate(
+  obs <- dplyr::mutate(
     simpledata, 
     AtrazineFlux=observeSolute(simpledata, 'flux', load.model@metadata),
     logAtrazine=log(Atrazine),
     logAtrazineFlux=log(AtrazineFlux))
   
+  expect_error(predictSolute(load.model, flux.or.conc='flux', se.fit=TRUE, lin.or.log = 'lin'), 'se.fit not implemented for loadComp')
+  expect_error(predictSolute(load.model, flux.or.conc='flux', se.fit=TRUE, lin.or.log = 'log'), 'se.fit not implemented for loadComp')
+  
+  # units should be respected. only available for flux, where for loadComps the flux.or.conc value passed to the reg.model is the pred format of the 
+  expect_equal(
+    predictSolute(load.model, flux.or.conc='flux', lin.or.log = 'lin'),
+    1000 * predictSolute(load.model, flux.or.conc='flux', load.units='Mg', lin.or.log = 'lin'))
+  conc.model <- loadComp(reg.model=reg.model, interp.data=simpledata, interp.function=linearInterpolation, interp.format='conc')
+  expect_warning(predictSolute(conc.model, flux.or.conc='flux', load.units='Mg', lin.or.log = 'lin'), "ignored for flux.or.conc='conc'")
+  flux.model <- loadComp(reg.model=reg.model, interp.data=simpledata, interp.function=linearInterpolation, interp.format='flux')
+  expect_equal(length(predictSolute(flux.model, flux.or.conc='conc', load.units='kg', lin.or.log = 'lin')), nrow(simpledata))
+  
+  # returns a vector unless additional columns are requested
+  expect_null(dim(predictSolute(load.model, flux.or.conc='conc')))
+  expect_equal(2, ncol(predictSolute(load.model, flux.or.conc='conc', se.fit=TRUE)))
+  expect_equal(2, ncol(predictSolute(load.model, flux.or.conc='conc', se.pred=TRUE)))
+  expect_equal(2, ncol(predictSolute(load.model, flux.or.conc='conc', date=TRUE)))
+  expect_equal(4, ncol(predictSolute(load.model, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE)))
+  expect_error(ncol(predictSolute(load.model, flux.or.conc='conc', interval='confidence')), "confidence intervals not implemented")
+  expect_equal(3, ncol(predictSolute(load.model, flux.or.conc='conc', interval='prediction')))
+  expect_equal(5, ncol(predictSolute(load.model, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE)))
+  
+  # can predict in linear or log space
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', se.fit=TRUE)),
+               names(predictSolute(load.model, flux.or.conc='conc', se.fit=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', se.pred=TRUE)),
+               names(predictSolute(load.model, flux.or.conc='conc', se.pred=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', date=TRUE)),
+               names(predictSolute(load.model, flux.or.conc='conc', date=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE)),
+               names(predictSolute(load.model, flux.or.conc='conc', date=TRUE, se.fit=TRUE, se.pred=TRUE, lin.or.log='log')))
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', interval='prediction')),
+               names(predictSolute(load.model, flux.or.conc='conc', interval='prediction', lin.or.log='log')))
+  expect_equal(names(predictSolute(load.model, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE)),
+               names(predictSolute(load.model, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE, lin.or.log='log')))
+  
+  
+  library(ggplot2)
   # demo the simple: if you ask for preds in linear space, you get fit in linear
   # space going straight through predictions, and intervals computed in log
   # space and exp()ed back to linear (asymmetric around fit)
