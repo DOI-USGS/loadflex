@@ -97,33 +97,34 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
                       meta = NULL, moreTitle = "loadflex", 
                       plotFlowNorm = FALSE, ...) {
   
-  req_missing <- switch(plot.name,
-                        
-                        # require data & meta
-                        boxConcMonth = ,
-                        plotConcTime = ,
-                        plotConcQ = ,
-                        plotFluxQ = is.null(data) | is.null(meta),
-                        
-                        # require data, meta, newdata, and preds
-                        boxQTwice = ,
-                        multiPlotDataOverview = ,
-                        plotConcTimeDaily = ,
-                        plotFluxTimeDaily = ,
-                        plotConcPred = , 
-                        plotFluxPred = , 
-                        plotResidPred = ,
-                        plotResidQ = ,  
-                        plotResidTime = ,
-                        boxResidMonth = ,
-                        boxConcThree = , 
-                        plotConcHist = , 
-                        plotFluxHist = ,
-                        fluxBiasMulti = is.null(data) | is.null(meta) |
-                          is.null(newdata) | is.null(preds),
-                        
-                        # default if no name matches
-                        FALSE)
+  req_missing <- switch(
+    plot.name,
+    
+    # require data & meta
+    boxConcMonth = ,
+    plotConcTime = ,
+    plotConcQ = ,
+    plotFluxQ = is.null(data) | is.null(meta),
+    
+    # require data, meta, newdata, and preds
+    boxQTwice = ,
+    multiPlotDataOverview = ,
+    plotConcTimeDaily = ,
+    plotFluxTimeDaily = ,
+    plotConcPred = , 
+    plotFluxPred = , 
+    plotResidPred = ,
+    plotResidQ = ,  
+    plotResidTime = ,
+    boxResidMonth = ,
+    boxConcThree = , 
+    plotConcHist = , 
+    plotFluxHist = ,
+    fluxBiasMulti = is.null(data) | is.null(meta) |
+      is.null(newdata) | is.null(preds),
+    
+    # default if no name matches
+    FALSE)
   
   if(req_missing) {
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
@@ -131,31 +132,32 @@ plotEGRET <- function(plot.name, data = NULL, newdata = NULL, preds = NULL,
   
   egretobj <- convertToEGRET(data, newdata, preds, meta)
   
-  switch(plot.name,
-         
-         # require data & meta
-         boxConcMonth = boxConcMonth(egretobj, ...),
-         plotConcTime = plotConcTime(egretobj, ...),
-         plotConcQ = plotConcQ(egretobj, ...),
-         plotFluxQ = plotFluxQ(egretobj, ...),
-         
-         # require data, meta, newdata, and preds
-         boxQTwice = boxQTwice(egretobj, ...),
-         multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
-         plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),
-         plotFluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
-         plotConcPred = plotConcPred(egretobj, ...), 
-         plotFluxPred = plotFluxPred(egretobj, ...), 
-         plotResidPred = plotResidPred(egretobj, ...),
-         plotResidQ = plotResidQ(egretobj, ...),  
-         plotResidTime = plotResidTime(egretobj, ...),
-         boxResidMonth = boxResidMonth(egretobj, ...),
-         boxConcThree = boxConcThree(egretobj, ...), 
-         plotConcHist = plotConcHist(egretobj, plotFlowNorm = plotFlowNorm, ...), 
-         plotFluxHist = plotFluxHist(egretobj, plotFlowNorm = plotFlowNorm, ...),
-         fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = moreTitle, ...),
-         
-         # default if no name matches
-         stop(paste('unrecognized plot.name:', plot.name)))
+  switch(
+    plot.name,
+    
+    # require data & meta
+    boxConcMonth = boxConcMonth(egretobj, ...),
+    plotConcTime = plotConcTime(egretobj, ...),
+    plotConcQ = plotConcQ(egretobj, ...),
+    plotFluxQ = plotFluxQ(egretobj, ...),
+    
+    # require data, meta, newdata, and preds
+    boxQTwice = boxQTwice(egretobj, ...),
+    multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
+    plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),
+    plotFluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
+    plotConcPred = plotConcPred(egretobj, ...), 
+    plotFluxPred = plotFluxPred(egretobj, ...), 
+    plotResidPred = plotResidPred(egretobj, ...),
+    plotResidQ = plotResidQ(egretobj, ...),  
+    plotResidTime = plotResidTime(egretobj, ...),
+    boxResidMonth = boxResidMonth(egretobj, ...),
+    boxConcThree = boxConcThree(egretobj, ...), 
+    plotConcHist = plotConcHist(egretobj, plotFlowNorm = plotFlowNorm, ...), 
+    plotFluxHist = plotFluxHist(egretobj, plotFlowNorm = plotFlowNorm, ...),
+    fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = moreTitle, ...),
+    
+    # default if no name matches
+    stop(paste('unrecognized plot.name:', plot.name)))
   
 }
