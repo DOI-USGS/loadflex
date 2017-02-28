@@ -98,7 +98,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   flow_col <- verify_meta(meta, 'flow')
   flow_data <- data %>%
     select_(date_col, flow_col) %>%
-    flowCorrectionEGRET(
+    expandFlowForEGRET(
       flow.colname = flow_col,
       date.colname = date_col,
       flow.units = verify_meta(meta, 'flow.units')) %>% 
@@ -172,7 +172,7 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   }
   
   # Prepare a data.frame of flow information
-  daily_df <- flowCorrectionEGRET(
+  daily_df <- expandFlowForEGRET(
     flowdat = newdata,
     flow.colname = verify_meta(meta, 'flow'),
     date.colname = verify_meta(meta, 'dates'),
@@ -252,7 +252,7 @@ verify_meta <- function(meta, nm) {
 #' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
-flowCorrectionEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
+expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
   
   # Get the conversion factor. EGRET expects cms for all flow values
   qconvert <- 1/flowUnitsConversion(flow.units, 'cms')
