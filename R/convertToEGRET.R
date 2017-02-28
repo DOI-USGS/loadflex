@@ -51,12 +51,9 @@ convertToEGRET <- function(load.model = NULL, newdata = NULL, data = NULL, meta 
 #' @inheritParams convertToEGRET
 #' @param dailydat an EGRET Daily data.frame of flow and prediction values
 #' 
-#' @importFrom dplyr rename_
-#' @importFrom dplyr select
-#' @importFrom dplyr mutate
+#' @importFrom dplyr rename_ select select_ mutate left_join bind_cols
 #' @importFrom EGRET populateSampleColumns
-#' @importFrom dplyr left_join
-#' @importFrom dplyr bind_cols
+#' @importFrom methods S3Part
 convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   if(any(is.null(data), is.null(meta))) {
     return(NA)
