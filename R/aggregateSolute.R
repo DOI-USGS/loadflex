@@ -308,7 +308,7 @@ aggregateSolute <- function(
                         years.complete = groupsComplete,
                         stringsAsFactors = FALSE)
   } else {
-    retDF <- data.frame(site.id = getInfo(metadata, 'site.id'),
+    retDF <- data.frame(site.id = getInfo(metadata, 'site.id', FALSE),
                         retDF, stringsAsFactors = FALSE)
     
   } 
