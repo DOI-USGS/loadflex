@@ -66,31 +66,49 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   
   # Format the sample info
   date_col <- verify_meta(meta, 'dates')
-  sample_df1 <- data %>% 
-    rename_(
-      value = verify_meta(meta, 'constituent'),
-      dateTime = date_col)  %>%
-    select(
-      dateTime, 
-      ConcHigh = value) %>% 
-    mutate(
-      ConcLow = ConcHigh, 
-      Uncen = as.numeric(ConcHigh == ConcLow)) %>% 
+  # For now, allow value column to be smwrQW and convert here to ConcLow and 
+  # ConcHigh. Later we'll get fancier about censored data throughout loadflex.
+  smwrQW_cols <- names(which(lapply(data, function(col) attr(class(col), 'package')) == 'smwrQW'))
+  const_col <- verify_meta(meta, 'constituent')
+  if(const_col %in% smwrQW_cols) {
+    if(class(data[[const_col]]) != 'lcens') {
+      stop("we only recognize lcens censoring from smwrQW for now. please submit an issue if you want more")
+    }
+    vals <- S3Part(data[[const_col]], strictS3=TRUE, S3Class='matrix')[,'values']
+    censored <- attr(data[[const_col]], 'censor.codes')
+    sample_data <- data %>% 
+      select_(dateTime = date_col) %>%
+      mutate( 
+        ConcLow  = ifelse(censored, NA, vals),
+        ConcHigh = vals)
+  } else {
+    sample_data <- data %>% 
+      select_(
+        dateTime = date_col, 
+        ConcLow  = const_col) %>%
+      mutate(
+        ConcHigh = ConcLow)
+  }
+  # Finish formatting the sample info
+  sample_data <- sample_data %>% # use transform b/c mutate breaks with smwrQW columns
+    mutate(Uncen = as.numeric(!is.na(ConcLow) & !is.na(ConcHigh) & ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
     mutate(
       dateTime = data[[date_col]],
       Date = as.Date(Date))
   
   # Format the flow info
+  flow_col <- verify_meta(meta, 'flow')
   flow_data <- data %>%
+    select_(date_col, flow_col) %>%
     flowCorrectionEGRET(
-      flow.colname = verify_meta(meta, 'flow'),
+      flow.colname = flow_col,
       date.colname = date_col,
       flow.units = verify_meta(meta, 'flow.units')) %>% 
     select(Date, Q, dateTime)
   
   # Combine the sample and flow info
-  sample_df <- sample_df1 %>%
+  sample_df <- sample_data %>%
     left_join(flow_data, by=c('dateTime', 'Date'))
   
   # Add in predictions if available. The sample-specific model predictions
