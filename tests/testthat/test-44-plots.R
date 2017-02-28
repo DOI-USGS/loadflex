@@ -1,22 +1,18 @@
 context("plotEGRET")
 
 # Setup of data to use in tests
-
-fitdat <- data.frame(
-  conc=c(5,4,2,6,9,8),
-  discharge=10,
-  datetime=strptime(paste0("2000-05-",c(2,5,13,15,23,31)),format="%Y-%m-%d"))
-estdat <- data.frame(
-  discharge=rep(c(13,15,1,14,23,31,7,11,5,27), 3),
-  datetime=strptime(paste0("2000-05-",1:30),format="%Y-%m-%d"))
-meta <- metadata(constituent="conc", flow="discharge", dates="datetime", 
-                 conc.units="mg L^-1", flow.units="cfs", load.units="kg",
-                 load.rate.units="kg d^-1", site.name="Example Station",
-                 site.id = "examp", consti.name = "nitrate")
-conc_lm <- loadLm(formula=log(conc) ~ log(discharge), pred.format="conc", 
+data(lamprey_nitrate)
+fitdat <- lamprey_nitrate
+data(lamprey_discharge)
+estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
+meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE",
+                 conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1",
+                 site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
+conc_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
                   data=fitdat, metadata=meta, retrans=exp)
-preds <- suppressWarnings(predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE))
-preds_flux <- suppressWarnings(predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE))
+preds <- predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+preds_flux <- predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
 
 test_that("plotEGRET will reject a fake plot name", {
   expect_error(plotEGRET(plot.name = 'myplot', meta = meta),
@@ -24,19 +20,18 @@ test_that("plotEGRET will reject a fake plot name", {
 })
 
 test_that("plotEGRET will reject a plot type that is missing required data", {
-  expect_error(plotEGRET(plot.name = 'plotConcTime', fitdat = fitdat),
+  expect_error(plotEGRET(plot.name = 'plotConcTime', data = fitdat),
                'missing data requirements for plotConcTime')
 })
 
 test_that("plotEGRET works for fitdat and meta", {
-  plotEGRET(plot.name = 'plotConcQ', fitdat = fitdat, meta = meta)
+  plotEGRET(plot.name = 'plotConcQ', data = fitdat, meta = meta)
   expect_false(is.null(dev.list()))
   dev.off()
 })
 
 test_that("plotEGRET works for fitdat, estdat, preds, and meta", {
-  plotEGRET(plot.name = 'boxQTwice', fitdat = fitdat, 
-            estdat = estdat, preds = preds, meta = meta)
+  plotEGRET(plot.name = 'boxQTwice', load.model = conc_lm, newdata = estdat)
   expect_false(is.null(dev.list()))
   dev.off()
 })
