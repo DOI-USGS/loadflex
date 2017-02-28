@@ -77,7 +77,7 @@ test_that("convertToEGRETSample returns NA without fitdat", {
 
 test_that("convertToEGRETSample correctly converts", {
   Sample <- loadflex:::convertToEGRETSample(meta = meta, data = fitdat)
-  expect_equal(nrow(Sample), nrow(data))
+  expect_equal(nrow(Sample), nrow(fitdat))
   expect_equal(ncol(Sample), 15)
   
   expected_cols <- c("Date", "ConcLow", "ConcHigh", "Uncen", "ConcAve", "Julian", 
@@ -107,23 +107,6 @@ test_that("convertToEGRETDaily correctly converts", {
                      "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime",
                      "ConcDay", "SE", "FluxDay", "yHat")
   expect_equal(sort(names(Daily)), sort(expected_cols))
-})
-
-
-context("verify_meta")
-
-test_that("verify_meta fails when the item you requested is empty", {
-  expect_error(loadflex:::verify_meta(meta, "load.rate"),
-               "metadata item `load.rate` must exist")
-})
-
-test_that("verify_meta works for custom metadata fields", {
-  mu <- updateMetadata(meta, custom=list('fieldA'=7:10, 'B'='wahoo'))
-  expect_equal(loadflex:::verify_meta(mu, c('custom', 'B')), 'wahoo')
-})
-
-test_that("verify_meta works for regular fields", {
-  expect_equal(loadflex:::verify_meta(meta, 'flow'), 'DISCHARGE')
 })
 
 

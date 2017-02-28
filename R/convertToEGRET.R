@@ -62,11 +62,11 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   dateTime <- value <- ConcHigh <- ConcLow <- Date <- Q <- SE <- yHat <- ConcDay <- '.dplyr.var'
   
   # Format the sample info
-  date_col <- verify_meta(meta, 'dates')
+  date_col <- getInfo(meta, 'dates', TRUE)
   # For now, allow value column to be smwrQW and convert here to ConcLow and 
   # ConcHigh. Later we'll get fancier about censored data throughout loadflex.
   smwrQW_cols <- names(which(lapply(data, function(col) attr(class(col), 'package')) == 'smwrQW'))
-  const_col <- verify_meta(meta, 'constituent')
+  const_col <- getInfo(meta, 'constituent', TRUE)
   if(const_col %in% smwrQW_cols) {
     if(class(data[[const_col]]) != 'lcens') {
       stop("we only recognize lcens censoring from smwrQW for now. please submit an issue if you want more")
@@ -95,13 +95,13 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
       Date = as.Date(Date))
   
   # Format the flow info
-  flow_col <- verify_meta(meta, 'flow')
+  flow_col <- getInfo(meta, 'flow', TRUE)
   flow_data <- data %>%
     select_(date_col, flow_col) %>%
     expandFlowForEGRET(
       flow.colname = flow_col,
       date.colname = date_col,
-      flow.units = verify_meta(meta, 'flow.units')) %>% 
+      flow.units = getUnits(meta, 'flow', 'EGRET')) %>% 
     select(Date, Q, dateTime)
   
   # Combine the sample and flow info
@@ -136,11 +136,11 @@ convertToEGRETInfo <- function(meta) {
   }
   
   info_df <- data.frame(
-    shortName = verify_meta(meta, 'site.name'),
-    paramShortName = verify_meta(meta, 'consti.name'),
-    staAbbrev = verify_meta(meta, 'site.id'),
-    constitAbbrev = verify_meta(meta, 'constituent'),
-    param.units = if(verify_meta(meta, 'conc.units') == 'mg L^-1') 'mg/l' else verify_meta(meta, 'conc.units'),
+    shortName = getInfo(meta, 'site.name', TRUE), # do we need to require these to be non-empty?
+    paramShortName = getInfo(meta, 'consti.name', TRUE),
+    staAbbrev = getInfo(meta, 'site.id', TRUE),
+    constitAbbrev = getInfo(meta, 'constituent', TRUE),
+    param.units = getUnits(meta, 'conc', 'EGRET'),
     stringsAsFactors = FALSE)
   
   return(info_df)
@@ -174,9 +174,9 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   # Prepare a data.frame of flow information
   daily_df <- expandFlowForEGRET(
     flowdat = newdata,
-    flow.colname = verify_meta(meta, 'flow'),
-    date.colname = verify_meta(meta, 'dates'),
-    flow.units = verify_meta(meta, 'flow.units'))
+    flow.colname = getInfo(meta, 'flow', TRUE),
+    date.colname = getInfo(meta, 'dates', TRUE),
+    flow.units = getUnits(meta, 'flow', 'EGRET'))
   
   # Return now if we can't add predictions
   if(is.null(load.model)) {

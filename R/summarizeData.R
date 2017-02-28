@@ -55,7 +55,7 @@ summarizeInputs <- function(metadata, fitdat, estdat) {
 #' @importFrom stats median
 #' @keywords internal
 summarizeTimeseries <- function(metadata, data) {
-  date.col <- getInfo(metadata, 'date')
+  date.col <- getInfo(metadata, 'date', TRUE)
   ccdata <- data[complete.cases(data), ]
   
   input.info <- data.frame(
