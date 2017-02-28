@@ -1,6 +1,4 @@
 # Setup of data to use in tests
-
-
 data(lamprey_nitrate)
 fitdat <- lamprey_nitrate
 data(lamprey_discharge)
@@ -13,24 +11,6 @@ conc_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
   data=fitdat, metadata=meta, retrans=exp)
 preds <- predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 preds_flux <- predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
-
-# 
-# 
-# fitdat <- data.frame(
-#   conc=c(5,4,2,6,9,8),
-#   discharge=10,
-#   datetime=strptime(paste0("2000-05-",c(2,5,13,15,23,31)),format="%Y-%m-%d"))
-# estdat <- data.frame(
-#   discharge=rep(c(13,15,1,14,23,31,7,11,5,27), 3),
-#   datetime=strptime(paste0("2000-05-",1:30),format="%Y-%m-%d"))
-# meta <- metadata(constituent="conc", flow="discharge", dates="datetime", 
-#                  conc.units="mg L^-1", flow.units="cfs", load.units="kg",
-#                  load.rate.units="kg d^-1", site.name="Example Station",
-#                  site.id="examp", consti.name="nitrate")
-# conc_lm <- loadLm(formula=log(conc) ~ log(discharge), pred.format="conc", 
-#                   data=fitdat, metadata=meta, retrans=exp)
-preds <- suppressWarnings(predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE))
-preds_flux <- suppressWarnings(predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE))
 
 context("convertToEGRET")
 
@@ -147,10 +127,10 @@ test_that("verify_meta works for regular fields", {
 })
 
 
-context("flowCorrectionEGRET")
+context("expandFlowForEGRET")
 
-test_that("flowCorrectionEGRET returns correct columns", {
-  corrected_flow_df <- loadflex:::flowCorrectionEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1')
+test_that("expandFlowForEGRET returns correct columns", {
+  corrected_flow_df <- loadflex:::expandFlowForEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1')
   expect_equal(nrow(corrected_flow_df), nrow(estdat))
   expect_equal(ncol(corrected_flow_df), 14)
   expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",
