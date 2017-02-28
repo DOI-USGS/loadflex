@@ -608,6 +608,35 @@ getInfo <- function(metadata,
   return(retVal)
 }
 
+
+#' Return a value from metadata or throw error if invalid request
+#' 
+#' @description Try to get a value of name \code{nm} from the regular or custom
+#'   slots in a metadata object. If the named value is unavailable or "", throw
+#'   an error.
+#'   
+#' @param meta loadflex metadata object
+#' @param nm character name of the metadata item to check. If it is a custom 
+#'   name, this would be a character vector with the first name as 'custom' 
+#'   (e.g. nm = c('custom', 'staAbbr'))
+#'   
+#' @keywords internal
+verify_meta <- function(meta, nm) {
+  
+  if("custom" %in% nm) {
+    meta_value <- loadflex::getInfo(meta, nm[1])
+    meta_value <- meta_value[[nm[2]]]
+  } else {
+    meta_value <- loadflex::getInfo(meta, nm)
+  }
+  
+  if(nchar(meta_value) == 0) {
+    stop(paste0("metadata item `", nm, "` must exist"))
+  }
+  
+  return(meta_value)
+}
+
 #### Show ####
 
 #' Display a metadata object
