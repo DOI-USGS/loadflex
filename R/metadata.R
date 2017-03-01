@@ -627,8 +627,8 @@ getInfo <- function(metadata,
   
   # Optionally check for an empty string and stop if found
   if(isTRUE(stop.on.empty) && 
-     is.null(retVal) ||
-     (length(retVal) == 1 && (is.na(retVal) || nchar(retVal) == 0))) {
+     (is.null(retVal) ||
+      (length(retVal) == 1 && (is.na(retVal) || nchar(retVal) == 0)))) {
     stop(paste0("metadata item `", field, "` must be a non-empty string"))
   } 
   
