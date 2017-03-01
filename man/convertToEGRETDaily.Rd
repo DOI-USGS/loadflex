@@ -4,22 +4,17 @@
 \alias{convertToEGRETDaily}
 \title{Convert estimation and load prediction data into the EGRET Daily data.frame}
 \usage{
-convertToEGRETDaily(estdat, meta, preds, preds.type = "Conc",
-  qconvert = 35.314667)
+convertToEGRETDaily(newdata, load.model = NULL, meta = NULL)
 }
 \arguments{
-\item{estdat}{data.frame of estimation data}
+\item{newdata}{data.frame of data used to generate predictions from an
+already-fitted model}
+
+\item{load.model}{a load model (loadReg2, loadComp, loadInterp, loadLm, etc.)
+whose data and predictions are to be converted to EGRET format}
 
 \item{meta}{loadflex metadata object; it must include constituent,
 flow, dates, conc.units, site.id, and consti.name}
-
-\item{preds}{data.frame of load predictions}
-
-\item{preds.type}{character specifying if the predictions being used are
-concentrations ("Conc") or fluxes ("Flux").}
-
-\item{qconvert}{numeric conversion factor to get flow into cubic meters per second. Default
-conversion factor is for cubic feet per second.}
 }
 \description{
 Convert estimation and load prediction data into the EGRET Daily data.frame

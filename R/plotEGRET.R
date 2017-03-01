@@ -4,28 +4,22 @@
 #' 
 #' @param plot.name the name of the plot the user wants to create. See 
 #' Details for current options. For now, only one allowed at time.
-#' @param fitdat data.frame of model fitting data
-#' @param estdat data.frame of estimation data
-#' @param preds data.frame of load predictions
-#' @param meta loadflex metadata object; it must include constituent,
-#' flow, conc.units, site.id, and consti.name
+#' @inheritParams convertToEGRET
 #' @param moreTitle additional text to include in the fluxBiasMulti plot 
 #' title. The EGRET default is "WRTDS", so this changes the default to "loadflex".
 #' @param plotFlowNorm logical indicating whether or not to plot the normalized flow
 #' lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
 #' in plotFluxHist and plotConcHist.
-#' @param preds.type character specifying the format of the predictions in
-#'   \code{preds}. Must be concentrations ("Conc").
 #' @param ... additional arguments to pass to the plot
 #'
-#' @details EGRET plots that require \code{fitdat, meta}:
+#' @details EGRET plots that require \code{data, meta}:
 #' \itemize{
 #'   \item boxConcMonth
 #'   \item plotConcTime
 #'   \item plotConcQ
 #'   \item plotFluxQ
 #' }
-#' EGRET plots that require \code{fitdat, estdat, preds, meta}:
+#' EGRET plots that require \code{data, newdata, preds, meta}:
 #' \itemize{
 #'   \item boxQTwice
 #'   \item multiPlotDataOverview
@@ -75,89 +69,91 @@
 #' estdat <- subset(estdat, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT")) 
 #' estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
 #' 
-#' meta <- metadata(constituent="NO3", 
-#'                  flow="DISCHARGE",
-#'                  dates="DATE", 
-#'                  conc.units="mg L^-1", 
-#'                  flow.units="cfs", 
-#'                  load.units="kg",
-#'                  load.rate.units="kg d^-1", 
-#'                  site.name="Lamprey River, NH",
-#'                  site.id="01073500",
-#'                  consti.name="Nitrate")
+#' meta <- metadata(
+#'   constituent="NO3", 
+#'   flow="DISCHARGE",
+#'   dates="DATE", 
+#'   conc.units="mg L^-1", 
+#'   flow.units="cfs", 
+#'   load.units="kg",
+#'   load.rate.units="kg d^-1", 
+#'   site.name="Lamprey River, NH",
+#'   site.id="01073500",
+#'   consti.name="Nitrate")
 #' 
 #' # Run your model and get your predictions
-#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
-#'                  data=fitdat, metadata=meta, retrans=exp)
-#' preds <- predictSolute(no3_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
+#' no3_lm <- loadLm(
+#'   formula=log(NO3) ~ log(DISCHARGE), pred.format="conc", 
+#'   data=fitdat, metadata=meta, retrans=exp)
 #' 
 #' # Now you can plot
-#' plotEGRET("boxConcMonth", fitdat = lamprey_nitrate, meta = meta)
-#' plotEGRET("multiPlotDataOverview", lamprey_nitrate, estdat, preds, meta)
+#' plotEGRET("boxConcMonth", data = lamprey_nitrate, meta = meta)
+#' plotEGRET("multiPlotDataOverview", load.model=no3_lm, newdata=estdat)
 #' 
-plotEGRET <- function(plot.name, fitdat = NULL, estdat = NULL, preds = NULL, 
-                      meta = NULL, preds.type = "Conc", moreTitle = "loadflex", 
-                      plotFlowNorm = FALSE, ...) {
+plotEGRET <- function(plot.name, 
+                      load.model = NULL, newdata = NULL, data = NULL, meta = NULL, 
+                      moreTitle = "loadflex", plotFlowNorm = FALSE, ...) {
   
-  req_missing <- switch(plot.name,
-                        
-                        # require fitdat & meta
-                        boxConcMonth = ,
-                        plotConcTime = ,
-                        plotConcQ = ,
-                        plotFluxQ = is.null(fitdat) | is.null(meta),
-                        
-                        # require fitdat, meta, estdat, and preds
-                        boxQTwice = ,
-                        multiPlotDataOverview = ,
-                        plotConcTimeDaily = ,
-                        plotFluxTimeDaily = ,
-                        plotConcPred = , 
-                        plotFluxPred = , 
-                        plotResidPred = ,
-                        plotResidQ = ,  
-                        plotResidTime = ,
-                        boxResidMonth = ,
-                        boxConcThree = , 
-                        plotConcHist = , 
-                        plotFluxHist = ,
-                        fluxBiasMulti = is.null(fitdat) | is.null(meta) |
-                          is.null(estdat) | is.null(preds),
-                        
-                        # default if no name matches
-                        FALSE)
+  req_missing <- switch(
+    plot.name,
+    
+    # require data & meta
+    boxConcMonth = ,
+    plotConcTime = ,
+    plotConcQ = ,
+    plotFluxQ = is.null(load.model) && (is.null(data) || is.null(meta)),
+    
+    # require load.model and newdata
+    boxQTwice = ,
+    multiPlotDataOverview = ,
+    plotConcTimeDaily = ,
+    plotFluxTimeDaily = ,
+    plotConcPred = , 
+    plotFluxPred = , 
+    plotResidPred = ,
+    plotResidQ = ,  
+    plotResidTime = ,
+    boxResidMonth = ,
+    boxConcThree = , 
+    plotConcHist = , 
+    plotFluxHist = ,
+    fluxBiasMulti = is.null(load.model) || is.null(newdata),
+    
+    # default if no name matches
+    FALSE)
   
   if(req_missing) {
     stop(paste0("missing data requirements for ", plot.name, ". See ?plotEGRET"))
   }
   
-  egretobj <- convertToEGRET(fitdat, estdat, preds, meta, preds.type)
+  egretobj <- convertToEGRET(load.model, newdata, data, meta)
   
-  switch(plot.name,
-         
-         # require fitdat & meta
-         boxConcMonth = boxConcMonth(egretobj, ...),
-         plotConcTime = plotConcTime(egretobj, ...),
-         plotConcQ = plotConcQ(egretobj, ...),
-         plotFluxQ = plotFluxQ(egretobj, ...),
-         
-         # require fitdat, meta, estdat, and preds
-         boxQTwice = boxQTwice(egretobj, ...),
-         multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
-         plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),
-         plotFluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
-         plotConcPred = plotConcPred(egretobj, ...), 
-         plotFluxPred = plotFluxPred(egretobj, ...), 
-         plotResidPred = plotResidPred(egretobj, ...),
-         plotResidQ = plotResidQ(egretobj, ...),  
-         plotResidTime = plotResidTime(egretobj, ...),
-         boxResidMonth = boxResidMonth(egretobj, ...),
-         boxConcThree = boxConcThree(egretobj, ...), 
-         plotConcHist = plotConcHist(egretobj, plotFlowNorm = plotFlowNorm, ...), 
-         plotFluxHist = plotFluxHist(egretobj, plotFlowNorm = plotFlowNorm, ...),
-         fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = moreTitle, ...),
-         
-         # default if no name matches
-         stop(paste('unrecognized plot.name:', plot.name)))
+  switch(
+    plot.name,
+    
+    # require data & meta
+    boxConcMonth = boxConcMonth(egretobj, ...),
+    plotConcTime = plotConcTime(egretobj, ...),
+    plotConcQ = plotConcQ(egretobj, ...),
+    plotFluxQ = plotFluxQ(egretobj, ...),
+    
+    # require data, meta, newdata, and preds
+    boxQTwice = boxQTwice(egretobj, ...),
+    multiPlotDataOverview = multiPlotDataOverview(egretobj, ...),
+    plotConcTimeDaily = plotConcTimeDaily(egretobj, ...),
+    plotFluxTimeDaily = plotFluxTimeDaily(egretobj, ...),
+    plotConcPred = plotConcPred(egretobj, ...), 
+    plotFluxPred = plotFluxPred(egretobj, ...), 
+    plotResidPred = plotResidPred(egretobj, ...),
+    plotResidQ = plotResidQ(egretobj, ...),  
+    plotResidTime = plotResidTime(egretobj, ...),
+    boxResidMonth = boxResidMonth(egretobj, ...),
+    boxConcThree = boxConcThree(egretobj, ...), 
+    plotConcHist = plotConcHist(egretobj, plotFlowNorm = plotFlowNorm, ...), 
+    plotFluxHist = plotFluxHist(egretobj, plotFlowNorm = plotFlowNorm, ...),
+    fluxBiasMulti = fluxBiasMulti(egretobj, moreTitle = moreTitle, ...),
+    
+    # default if no name matches
+    stop(paste('unrecognized plot.name:', plot.name)))
   
 }

@@ -539,6 +539,10 @@ getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"),
 #' flux, or flux rate).
 #' 
 #' @rdname metadata-getters
+#' @param format character. The format in which units should be returned. Set to
+#'   'rloadest' to output units in a format recognized by \code{rloadest}, or
+#'   'EGRET' for crosstalk with that package, or NA to keep units as stored in
+#'   'loadflex'.
 #' @importFrom methods slot
 #' @return \code{getUnits} returns the specified units as a character string.
 #' @export
@@ -547,7 +551,8 @@ getCol <- function(metadata, data, field=c("conc", "flow", "flux rate", "date"),
 #'   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
 #'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 #' getUnits(md, 'flow')
-getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
+getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate"),
+                     format = NA, stop.on.empty = FALSE) {
   
   # Standardize the field input; match.arg allows partial matching for lazy typers
   field <- match.arg.loadflex(field, c("conc", "flow", "flux", "flux rate"))
@@ -560,8 +565,34 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
     "flux"="load.units",
     "flux rate"="load.rate.units")
   
+  # Retrieve the metadata
+  retVal <- getInfo(metadata, slotname, stop.on.empty)
+  
+  # Optionally reformat for rloadest or EGRET
+  if(!is.na(format)) {
+    switch(
+      format,
+      "rloadest" = {
+        retVal <- switch(
+          retVal,
+          "m^3 s^-1"="cms",
+          "mg L^-1"="mg/L",
+          retVal
+        )
+      },
+      "EGRET" = {
+        retVal <- switch(
+          retVal,
+          "mg L^-1"="mg/l",
+          retVal
+        )
+      },
+      stop("unrecognized unit format")
+    )
+  }
+  
   # Return the units info stored in that slot
-  slot(metadata, slotname)
+  return(retVal)
 }
 
 #' Return miscellaneous information from a metadata object.
@@ -570,8 +601,7 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #' model.
 #' 
 #' @rdname metadata-getters
-#' @param unit.format character defaults to NULL. Set to 'rloadest' to output units in the correct
-#' \code{rloadest} format
+#' @param stop.on.empty logical. Stops f the field is empty or non-character
 #' @importFrom methods slot getSlots
 #' @return \code{getInfo} returns the miscellaneous information specified by
 #'   \code{field}.
@@ -582,31 +612,29 @@ getUnits <- function(metadata, field=c("conc", "flow", "flux", "flux rate")) {
 #'   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 #' getInfo(md, 'site.name')
 getInfo <- function(metadata, 
-                    # field: cat('c(', paste0('"', names(getSlots('metadata')), '"', collapse=', '), ')', sep='')
                     field=c("constituent", "consti.name", "flow", "load.rate", "dates", 
                             "conc.units", "flow.units", "load.units", "load.rate.units", "station", 
                             "site.name", "site.id", "lat", "lon", "basin.area", 
                             "flow.site.name", "flow.site.id", "flow.lat", "flow.lon", "flow.basin.area", 
                             "basin.area.units", "custom"), 
-                    unit.format = NULL) {
+                    stop.on.empty = FALSE) {
   
-  # Standardize the field input; match.arg allows partial matching for lazy typers
+  # Standardize the field input
   field <- match.arg(field)
   
-  # Return the metadata stored in the corresponding field
+  # Get the metadata stored in the corresponding field
   retVal <- slot(metadata, field)
   
-  # rloadest doesn't accept the default output format, so reformat
-  if(!is.null(unit.format) && unit.format == "rloadest") {
-    if(retVal == "m^3 s^-1") {
-      retVal <- "cms"
-    } else if(retVal == "mg L^-1") {
-      retVal <- "mg/L"
-    }
-  }
+  # Optionally check for an empty string and stop if found
+  if(isTRUE(stop.on.empty) && 
+     (is.null(retVal) ||
+      (length(retVal) == 1 && (is.na(retVal) || nchar(retVal) == 0)))) {
+    stop(paste0("metadata item `", field, "` must be a non-empty string"))
+  } 
   
   return(retVal)
 }
+
 
 #### Show ####
 

@@ -91,21 +91,34 @@ test_that("metadata can be accessed by getUnits", {
   expect_equal(getUnits(md, "flux rate"), getUnits(md, "flux r"))
   
   # Confirm error checking for ambiguity and non-matches
-  expect_error(getUnits(md, "fl"))
-  expect_error(getUnits(md, "spaghetti"))
-  expect_error(getUnits(md, "Custom"))
+  expect_error(getUnits(md, "fl"), "should be one of")
+  expect_error(getUnits(md, "spaghetti"), "should be one of")
+  expect_error(getUnits(md, "Custom"), "should be one of")
+  
+  # Different formats for different packages
+  expect_equal(getUnits(md, 'conc', format=NA), 'mg L^-1')
+  expect_equal(getUnits(md, 'conc', format='rloadest'), 'mg/L')
+  expect_equal(getUnits(md, 'conc', format='EGRET'), 'mg/l')
+  expect_equal(getUnits(md, 'flux rate', format='EGRET'), 'kg d^-1')
+  expect_error(getUnits(md, 'flux rate', format='LOADEST'), 'unrecognized unit format')
 })
 
 test_that("metadata can be accessed by getInfo", {
   md <- exampleMetadata()
   
   # Confirm partial matching and case insensitivity
-  expect_equal(getInfo(md, "cu"), getInfo(md, "custom"))
-  expect_equal(getInfo(md, "flow.basin"), getInfo(md, "flow.basin.area"))
+  expect_equal(getInfo(md, "da"), getInfo(md, "dates"))
+  expect_equal(getInfo(md, "cu", FALSE), getInfo(md, "custom", FALSE))
   
   # Confirm error checking for ambiguity and non-matches
-  expect_error(getInfo(md, "fl"))
-  expect_error(getInfo(md, "spaghetti"))
+  expect_error(getInfo(md, "fl"), "should be one of")
+  expect_error(getInfo(md, "spaghetti"), "should be one of")
+  
+  # Confirm error checking for empty values
+  expect_error(getInfo(md, "site.id", TRUE), "must be a non-empty string")
+  expect_equal(getInfo(md, "site.id", FALSE), '')
+  expect_equal(getInfo(md, "load.rate", TRUE), 'NO3_FLUX')
+  expect_equal(getInfo(md, "load.rate", FALSE), 'NO3_FLUX')
 })
 
 test_that("metadata can be displayed", {

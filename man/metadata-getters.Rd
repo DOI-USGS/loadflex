@@ -10,13 +10,14 @@
 getCol(metadata, data, field = c("conc", "flow", "flux rate", "date"),
   attach.units = FALSE)
 
-getUnits(metadata, field = c("conc", "flow", "flux", "flux rate"))
+getUnits(metadata, field = c("conc", "flow", "flux", "flux rate"),
+  format = NA, stop.on.empty = FALSE)
 
 getInfo(metadata, field = c("constituent", "consti.name", "flow", "load.rate",
   "dates", "conc.units", "flow.units", "load.units", "load.rate.units",
   "station", "site.name", "site.id", "lat", "lon", "basin.area",
   "flow.site.name", "flow.site.id", "flow.lat", "flow.lon", "flow.basin.area",
-  "basin.area.units", "custom"), unit.format = NULL)
+  "basin.area.units", "custom"), stop.on.empty = FALSE)
 }
 \arguments{
 \item{metadata}{a metadata object from which the information will be 
@@ -30,8 +31,12 @@ matching is allowed.}
 \item{attach.units}{logical. If TRUE, the return value will be a
 \pkg{\link{unitted}} vector.}
 
-\item{unit.format}{character defaults to NULL. Set to 'rloadest' to output units in the correct
-\code{rloadest} format}
+\item{format}{character. The format in which units should be returned. Set to
+'rloadest' to output units in a format recognized by \code{rloadest}, or
+'EGRET' for crosstalk with that package, or NA to keep units as stored in
+'loadflex'.}
+
+\item{stop.on.empty}{logical. Stops f the field is empty or non-character}
 }
 \value{
 \code{getCol} returns the specified column of data as a vector.

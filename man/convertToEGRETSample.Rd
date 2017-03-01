@@ -4,18 +4,17 @@
 \alias{convertToEGRETSample}
 \title{Convert the interpolation data.frame into the EGRET Sample dataframe.}
 \usage{
-convertToEGRETSample(fitdat, meta, qconvert = 35.314667, dailydat = NULL)
+convertToEGRETSample(data = NULL, meta = NULL, dailydat = NULL)
 }
 \arguments{
-\item{fitdat}{data.frame of data used to fit a model}
+\item{data}{data.frame of data used to fit a model. only required if 
+load.model is omitted}
 
-\item{meta}{loadflex metadata object; it must include constituent,
-flow, dates, conc.units, site.id, and consti.name}
+\item{meta}{loadflex metadata object; it must include constituent, flow, 
+dates, conc.units, site.id, and consti.name. only required if load.model is
+omitted}
 
-\item{qconvert}{numeric conversion factor to get flow into cubic meters per second. Default
-conversion factor is for cubic feet per second.}
-
-\item{dailydat}{an EGRET Daily data.frame of flow values}
+\item{dailydat}{an EGRET Daily data.frame of flow and prediction values}
 }
 \description{
 Convert the interpolation data.frame into the EGRET Sample dataframe.
