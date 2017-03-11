@@ -209,6 +209,7 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   formula is flux or concentration. Some of the model metrics differ between 
 #'   these two internal models.
 #' @importFrom smwrStats rmse
+#' @importFrom utils capture.output
 #' @importFrom stats coef
 #' @export
 summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
@@ -232,23 +233,44 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
   
   # package coefs and other overall statistics into a single 1-row data.frame
   retDF <- data.frame(
-    model = paste('rloadest', load.model$model.no, sep = "_"),
+    eqn = capture.output(loadReg.fit$call[[2]]),
     RMSE = rmse(load.model, model=loadReg.model),
     r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
-    p.value = getPVal(loadReg.fit),
+    p.value = rlmetricPVal(loadReg.fit),
+    cor.resid = loadReg.fit$SCORR,
+    PPCC = rlmetricPPCC(loadReg.fit),
     coefsDF,
     stringsAsFactors=FALSE
   )
   return(retDF)
 }
 
-#' helper function to compute the p-value like rloadest does in 
-#' print.loadReg
+#' Compute the p-value of a loadReg fit
+#' 
+#' Helper function to compute the p-value like rloadest does in print.loadReg
 #' @importFrom stats pchisq
 #' @param fit the loadReg lfit or cfit object
 #' @keywords internal
-getPVal <- function(fit) {
+rlmetricPVal <- function(fit) {
   G2 <- signif(2*(fit$LLR - fit$LLR1), 4)
   pval <- 1 - pchisq(G2, fit$NPAR - 1)
   return(pval)
+}
+
+#' Compute the probability plot correlation coefficient of a loadReg fit
+#' 
+#' Helper function to compute the probability plot correlation coefficient as 
+#' rloadest does in print.loadReg, lines 141-144
+#' @importFrom smwrQW censPPCC.test as.lcens
+#' @importFrom stats residuals
+#' @param fit the loadReg lfit or cfit object
+#' @keywords internal
+rlmetricPPCC <- function(fit) {
+  if(fit$method == 'AMLE') {
+    Res <- residuals(fit, type="working", suppress.na.action=TRUE)
+    ppcc <- censPPCC.test(as.lcens(Res, censor.codes=fit$CENSFLAG))
+    return(unname(ppcc$statistic))
+  } else {
+    NA # PPCC cannot be computed for method MLE
+  }
 }

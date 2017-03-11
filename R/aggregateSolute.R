@@ -157,7 +157,7 @@ aggregateSolute <- function(
       format,
       "conc"=metadata@conc.units,
       "flux rate"=metadata@load.rate.units,
-      "flux total"=metadata@load.rate.units
+      "flux total"=metadata@load.rate.units # sic - we'll convert to load.units later
     )
     if(pred_units != expected_pred_units) {
       stop(paste0("The units of preds should be ", expected_pred_units, 
@@ -195,7 +195,8 @@ aggregateSolute <- function(
           "water_year"=waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
-          "mean_water_year"=waterYear(dates), #will aggregate at the end
+          # 2-phase aggregation:
+          "mean_water_year"=waterYear(dates),
           "mean_calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           stop("")
         )),
@@ -204,17 +205,20 @@ aggregateSolute <- function(
     aggregate_by <- custom[agg.by]
   }
   
-  #do the actual stats on grouped df
-  preds_grp <- group_by_(v(data.frame(preds, se.preds, dates, aggregate_by)), 
-                          .dots=as.list(agg.by)) 
+  # Group the estimates as requested
+  preds_grp <- group_by_(
+    v(data.frame(preds, se.preds, dates, aggregate_by)), 
+    .dots=as.list(agg.by)) 
   groupsInRecord <- n_groups(preds_grp)
-  #drop data for incomplete units with filter
+  # Remove grouping periods with insufficient data
+  preds_filt <- filter(preds_grp, n() > complete.threshold)
+  groupsComplete <- n_groups(preds_filt)
+  # Compute the means and SEs values in each group
   agg_preds <- as.data.frame(summarise(
-    filter(preds_grp, n() > complete.threshold), 
-    Value=mean(preds), 
-    SE=if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA,
+    preds_filt, 
+    Value = mean(preds), 
+    SE = if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA, # why isn't SEofSum divided by n()??
     n = n()))
-  groupsComplete <- nrow(agg_preds)
   
   ### Notes on Uncertainty ### 
   
@@ -299,19 +303,18 @@ aggregateSolute <- function(
   }
   #aggregate to multi year if asked
   if(grepl(pattern = "mean", x = agg.by, ignore.case = TRUE)) {
-    multiSE <- 1/nrow(retDF)*sqrt(sum(retDF$SE ^ 2))
-    retDF <- data.frame(multi_year_avg = mean(retDF$Value),
-                        multiSE, 
-                        CI_lower = mean(retDF$Value) - qnorm(1 - (1-level)/2)*multiSE,
-                        CI_upper = mean(retDF$Value) + qnorm(1 - (1-level)/2)*multiSE,
-                        years.record = groupsInRecord,
-                        years.complete = groupsComplete,
-                        stringsAsFactors = FALSE)
-  } else {
-    retDF <- data.frame(site.id = getInfo(metadata, 'site.id', FALSE),
-                        retDF, stringsAsFactors = FALSE)
-    
-  } 
+    # Treat the final mean as a normal distribution
+    multiSE <- sqrt(sum(retDF$SE ^ 2)) / nrow(retDF)
+    CI_quantile <- qnorm(1 - (1 - level)/2)
+    retDF <- data.frame(
+      Value = mean(retDF$Value),
+      SE = multiSE, 
+      CI_lower = mean(retDF$Value) - CI_quantile*multiSE,
+      CI_upper = mean(retDF$Value) + CI_quantile*multiSE,
+      years.record = groupsInRecord,
+      years.complete = groupsComplete,
+      stringsAsFactors = FALSE)
+  }
   
   # Give the data.frame nice column names
   names(retDF)[1] <- .reSpace(.sentenceCase(names(retDF)[1]), "_")
