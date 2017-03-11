@@ -209,6 +209,7 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   formula is flux or concentration. Some of the model metrics differ between 
 #'   these two internal models.
 #' @importFrom smwrStats rmse
+#' @importFrom utils capture.output
 #' @importFrom stats coef
 #' @export
 summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), ...) {
@@ -261,6 +262,7 @@ rlmetricPVal <- function(fit) {
 #' Helper function to compute the probability plot correlation coefficient as 
 #' rloadest does in print.loadReg, lines 141-144
 #' @importFrom smwrQW censPPCC.test as.lcens
+#' @importFrom stats residuals
 #' @param fit the loadReg lfit or cfit object
 #' @keywords internal
 rlmetricPPCC <- function(fit) {
