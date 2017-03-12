@@ -232,6 +232,21 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   )
 }
 
+#' Return the unit.type of a unit string
+#' 
+#' @param unitstr A string representing units (just one at a time, please)
+#' @examples
+#' loadflex:::unitType('kg') # 'load.units'
+#' loadflex:::unitType('kg/d') # NA
+#' loadflex:::unitType(loadflex:::translateFreeformToUnitted('kg/d')) # 'load.rate.units'
+#' loadflex:::unitType('nothing') # NA
+unitType <- function(unitstr) {
+  unit.type <- names(which(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
+    validMetadataUnits(unitstr, eachtype)
+  })))
+  if(length(unit.type) == 0) unit.type <- NA
+  return(unit.type)
+}
 
 #' Convert units from a greater variety of forms, including rloadest form, to 
 #' unitted form
