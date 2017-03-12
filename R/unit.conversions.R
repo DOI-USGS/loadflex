@@ -56,8 +56,8 @@ generateUnitsData <- function() {
       unit=c("m^3", "ft^3", "dL", "L")),
     data.frame(
       dimension="time",
-      unit=c("s", "d")),
     data.frame(
+      unit=c("s", "d", "y")),
       dimension="mass",
       unit=c("lb", "ton", "ng", "ug", "mg", "g", "kg", "Mg")),
     data.frame(
@@ -81,6 +81,7 @@ generateUnitsData <- function() {
     # Times
     data.frame(new="s", old=c("second", "sec", "s")),
     data.frame(new="d", old=c("day", "d")),
+    data_frame(new="y", old=c("year", "yr", "y")),
     
     # Masses and counts
     data.frame(new="lb", old=c("pounds", "lbs", "lb")),
@@ -114,6 +115,7 @@ generateUnitsData <- function() {
     data.frame(num="d", rbind(
       data.frame(den="s", val=1/(60*60*24)),
       data.frame(den="d", val=1))
+      data_frame(den="y", val=365.25)),
     ),
     
     # Masses and counts
