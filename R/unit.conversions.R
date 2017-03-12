@@ -45,6 +45,7 @@ NULL
 #' combined) R/sysdata.rda. These are then saved with the package.
 #' 
 #' @importFrom stats setNames
+#' @import dplyr
 #' @keywords data units internal
 generateUnitsData <- function() {
   # valid.metadata.units
