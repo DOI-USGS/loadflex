@@ -248,6 +248,31 @@ unitType <- function(unitstr) {
   return(unit.type)
 }
 
+#' Determine whether a 1D dimension string is known and of the expected
+#' dimension type
+#' 
+#' @param dimstr A string representing one units dimension (just one at a time, 
+#'   please). For example: kg, d, or m^3, but not kg/d or d^-1
+#' @param dim.type One or more acceptable dimension types
+#' @examples 
+#' loadflex:::validDim('kg') # TRUE
+#' loadflex:::validDim('kg', 'mass') # TRUE
+#' loadflex:::validDim('kg', 'volume') # FALSE
+#' loadflex:::validDim('whoknows') # FALSE
+#' loadflex:::validDim('whoknows', 'time') # FALSE
+validDim <- function(dimstr, dim.type=c("ANY","volume","time","mass","count","area")) {
+  # settle on 1+ dimensions to expect
+  dim.type <- match.arg(dim.type, several.ok=TRUE)
+  if('ANY' %in% dim.type) dim.type <- setdiff(eval(formals(loadflex:::validDim)$dim.type), 'ANY')
+  
+  dim_row <- subset(valid.metadata.units, unit==dimstr)
+  if(nrow(dim_row) != 1 || !(dim_row$dimension %in% dim.type)) {
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
+}
+
 #' Convert units from a greater variety of forms, including rloadest form, to 
 #' unitted form
 #' 
