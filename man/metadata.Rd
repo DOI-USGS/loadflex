@@ -145,7 +145,7 @@ units type:
 
 \item VOLUME: m^3, ft^3, dL, L
 
-\item TIME: s, d
+\item TIME: s, d, y
 
 }
 
@@ -179,7 +179,7 @@ units type:
 
 \item COUNT: colonies, million_colonies
 
-\item TIME: s, d
+\item TIME: s, d, y
 
 }
 
@@ -212,7 +212,7 @@ units when supplied to \code{\link{loadReg2}}, \code{metadata} or
 \item VOLUME: cubic meter, cubic meters, m^3, cubic foot, cubic feet, ft^3, 
 100mL, dL, liter, l, L
 
-\item TIME: second, sec, day, d
+\item TIME: second, sec, day, d, year, yr, y
 
 \item ABV: cms, cfs
 
