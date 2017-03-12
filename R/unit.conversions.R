@@ -248,8 +248,9 @@ unitType <- function(unitstr) {
 validDim <- function(dimstr, dim.type=c("ANY","volume","time","mass","count","area")) {
   # settle on 1+ dimensions to expect
   dim.type <- match.arg(dim.type, several.ok=TRUE)
-  if('ANY' %in% dim.type) dim.type <- setdiff(eval(formals(loadflex:::validDim)$dim.type), 'ANY')
+  if('ANY' %in% dim.type) dim.type <- setdiff(eval(formals(validDim)$dim.type), 'ANY')
   
+  unit <- '.subset.var'
   dim_row <- subset(valid.metadata.units, unit==dimstr)
   if(nrow(dim_row) != 1 || !(dim_row$dimension %in% dim.type)) {
     return(FALSE)
@@ -269,6 +270,7 @@ validDim <- function(dimstr, dim.type=c("ANY","volume","time","mass","count","ar
 #' loadflex:::dimInfo('m^3') # NA
 #' loadflex:::dimInfo('kk') # NA
 dimInfo <- function(unitstr) {
+  Unit <- Power <- dimension <- standard <- '.dplyr.var'
   unitbundle(unitstr) %>%
     separate_units() %>%
     mutate(
@@ -281,11 +283,15 @@ dimInfo <- function(unitstr) {
 
 #' Produce conversion factor to multiply old.units by to get new.units
 #' 
-#' Converts units; units can be arbitrarily complex as long as every dimension
+#' Converts units; units can be arbitrarily complex as long as every dimension 
 #' of each unit is present in unit.conversions
 #' 
-#' @param attach.units logical. Should units be attached to the conversion
+#' @param old.units character. The units to convert from.
+#' @param new.units character. The units to convert to.
+#' @param attach.units logical. Should units be attached to the conversion 
 #'   factor?
+#' @return a conversion factor that can be multiplied with data in the old.units
+#'   to achieve data in the new.units
 #' @importFrom unitted separate_units get_units unitbundle u
 #' @importFrom methods is
 #' @import dplyr
@@ -307,6 +313,7 @@ convertUnits <- function(old.units, new.units, attach.units = FALSE) {
   new.info <- dimInfo(new.units)
   
   # combine if possible
+  Dim <- Pos <- '.dplyr.var'
   old.dimunits <- unitbundle(transmute(old.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
   new.dimunits <- unitbundle(transmute(new.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
   if(old.dimunits != new.dimunits) {
@@ -320,6 +327,7 @@ convertUnits <- function(old.units, new.units, attach.units = FALSE) {
   }
   
   # find the conversion from Str.old. into Str.std
+  numerator <- denominator <- '.dplyr.var'
   conv.info$old2std <- mapply(
     function(num, den) { filter(unit.conversions, numerator==num, denominator==den)$value },
     num=conv.info$Std, den=conv.info$Str.old)
@@ -430,12 +438,13 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
   load.rate.units <- translateFreeformToUnitted(load.rate.units, TRUE)
   
   # Get the conversion that turns flow*conc into a simple mass/time unit
-  vol.flow <- loadflex:::dimInfo(flow.units) %>% filter(Dim=='volume') %>% .$Str
-  vol.conc <- loadflex:::dimInfo(conc.units) %>% filter(Dim=='volume') %>% .$Str
-  conv.vol.flow2conc <- loadflex:::convertUnits(vol.flow, vol.conc, attach.units = TRUE)
+  Dim <- . <- '.dplyr.var'
+  vol.flow <- dimInfo(flow.units) %>% filter(Dim=='volume') %>% .$Str
+  vol.conc <- dimInfo(conc.units) %>% filter(Dim=='volume') %>% .$Str
+  conv.vol.flow2conc <- convertUnits(vol.flow, vol.conc, attach.units = TRUE)
   
   # Get the conversion that turns the simple mass/time unit into load.rate.units
-  conv.masstime <- loadflex:::convertUnits(
+  conv.masstime <- convertUnits(
     get_units(flow.units*unitbundle(get_units(conv.vol.flow2conc))*conc.units), 
     get_units(load.rate.units), 
     attach.units=TRUE)

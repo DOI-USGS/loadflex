@@ -7,11 +7,19 @@
 convertUnits(old.units, new.units, attach.units = FALSE)
 }
 \arguments{
-\item{attach.units}{logical. Should units be attached to the conversion
+\item{old.units}{character. The units to convert from.}
+
+\item{new.units}{character. The units to convert to.}
+
+\item{attach.units}{logical. Should units be attached to the conversion 
 factor?}
 }
+\value{
+a conversion factor that can be multiplied with data in the old.units
+  to achieve data in the new.units
+}
 \description{
-Converts units; units can be arbitrarily complex as long as every dimension
+Converts units; units can be arbitrarily complex as long as every dimension 
 of each unit is present in unit.conversions
 }
 \examples{
