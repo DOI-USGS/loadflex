@@ -192,6 +192,7 @@ generateUnitsData <- function() {
 #' @export
 #' @examples
 #' validMetadataUnits("colonies d^-1") # TRUE
+#' validMetadataUnits("m^3 s^-1", unit.type="ANY") # TRUE
 #' validMetadataUnits("nonsensical") # FALSE
 #' validMetadataUnits("g", unit.type="load.units") # TRUE
 #' validMetadataUnits("g", unit.type="flow.units") # FALSE
@@ -202,33 +203,17 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   unitpieces <- separate_units(unitbundle(unitstr))
   numerator <- get_units(unitbundle(unitpieces[which(unitpieces$Power > 0),]))
   denominator <- get_units(1/unitbundle(unitpieces[which(unitpieces$Power < 0),]))
-  
-  # A useful helper function: returns TRUE iif oneunit is present in valid.metadata.units
-  # and has a dimension that's in dims
-  unit <- "subset.var"
-  hasDim <- function(oneunit, dims) {
-    unit_row <- subset(valid.metadata.units, unit==oneunit)
-    if(nrow(unit_row) != 1) {
-      return(FALSE)
-    } else if(!(unit_row$dimension %in% dims)) {
-      return(FALSE)
-    } else {
-      return(TRUE)
-    }
-  }
 
   # The numerator (and denominator if it exists) should have specific dimensions
   # for each units type. Check.
   switch(
     unit.type,
-    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
-        validMetadataUnits(unitstr, eachtype)
-      })),
-    flow.units = hasDim(numerator, "volume") & hasDim(denominator, "time"),
-    conc.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, "volume"),
-    load.units = hasDim(numerator, c("mass","count")) & denominator=="",
-    load.rate.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, c("time")),
-    basin.area.units = hasDim(numerator, c("area")) & denominator==""
+    "ANY" = !is.na(unitType(unitstr)) && validMetadataUnits(unitstr, unitType(unitstr)),
+    flow.units = validDim(numerator, "volume") & validDim(denominator, "time"),
+    conc.units = validDim(numerator, c("mass","count")) & validDim(denominator, "volume"),
+    load.units = validDim(numerator, c("mass","count")) & denominator=="",
+    load.rate.units = validDim(numerator, c("mass","count")) & validDim(denominator, c("time")),
+    basin.area.units = validDim(numerator, c("area")) & denominator==""
   )
 }
 
