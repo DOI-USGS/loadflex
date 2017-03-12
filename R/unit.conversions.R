@@ -409,7 +409,7 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' function may also be used to convert from flux units to the units of the 
 #' product of flow and concentration.
 #' 
-#' @importFrom unitted separate_units get_units unitbundle u
+#' @importFrom unitted separate_units get_units unitbundle u v
 #' @export
 #' @param flow.units character. The units of flow.
 #' @param conc.units character. The units of concentration.
@@ -421,71 +421,28 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
 #' flowconcToFluxConversion("cfs", "g/L", "kg/d") # 2446.589
 #' library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * 
-#' flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
+#'   flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
 flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, attach.units=FALSE) {
-  ## Code inspired by rloadest::loadConvFactor code by DLLorenz and ldecicco
-  ## Makes heavy use of unitted package by A Appling
-  
   
   # Translate units - goes quickly if they're good already
   flow.units <- translateFreeformToUnitted(flow.units, TRUE)
   conc.units <- translateFreeformToUnitted(conc.units, TRUE)
   load.rate.units <- translateFreeformToUnitted(load.rate.units, TRUE)
   
-  # split the flow.units*conc.units into numerator and denominator
-  flow.conc.units <- flow.units * conc.units
-  fcu_separated <- separate_units(flow.conc.units)
-  fcu_numerstrs <- strsplit(get_units(unitbundle(fcu_separated[which(fcu_separated$Power > 0),])), " ")[[1]]
-  fcu_denomstrs <- strsplit(get_units(1/unitbundle(fcu_separated[which(fcu_separated$Power < 0),])), " ")[[1]]
+  # Get the conversion that turns flow*conc into a simple mass/time unit
+  vol.flow <- loadflex:::dimInfo(flow.units) %>% filter(Dim=='volume') %>% .$Str
+  vol.conc <- loadflex:::dimInfo(conc.units) %>% filter(Dim=='volume') %>% .$Str
+  conv.vol.flow2conc <- loadflex:::convertUnits(vol.flow, vol.conc, attach.units = TRUE)
   
-  # split the load.rate.units into numerator and denominator
-  lru_separated <- separate_units(load.rate.units)
-  lru_numerstr <- strsplit(get_units(unitbundle(lru_separated[which(lru_separated$Power > 0),])), " ")[[1]]
-  lru_denomstr <- strsplit(get_units(1/unitbundle(lru_separated[which(lru_separated$Power < 0),])), " ")[[1]]
+  # Get the conversion that turns the simple mass/time unit into load.rate.units
+  conv.masstime <- loadflex:::convertUnits(
+    get_units(flow.units*unitbundle(get_units(conv.vol.flow2conc))*conc.units), 
+    get_units(load.rate.units), 
+    attach.units=TRUE)
   
-  # Identify the right components of the multiplier. Components that are
-  # unavailable will be omitted from the multipliers data.frame
-  #data(unit.conversions)
-  numerator <- denominator <- "rbind.var"
-  multipliers <- rbind(
-    # Convert to mg/day
-    numer_to_mg = subset(unit.conversions, numerator == "mg" & denominator %in% fcu_numerstrs),
-    numer_to_L = subset(unit.conversions, numerator == "L" & denominator %in% fcu_numerstrs),
-    denom_to_L = subset(unit.conversions, denominator == "L" & numerator %in% fcu_denomstrs),
-    denom_to_d = subset(unit.conversions, denominator == "d" & numerator %in% fcu_denomstrs),
-    # Convert mg/day to load.rate.units
-    mg_to_load = subset(unit.conversions, numerator == lru_numerstr & denominator == "mg"),
-    d_to_load = subset(unit.conversions, numerator == "d" & denominator == lru_denomstr)
-  )
-  
-  # Combine the component multipliers into a single multiplier
-  multiplier <- u(1,"")
-  for(row in 1:nrow(multipliers)) {
-    multrow <- multipliers[row,]
-    multiplier <- multiplier * u(multrow$value, unitbundle(multrow$numerator)/unitbundle(multrow$denominator)) 
-  }
-  
-  # If the conversion isn't right yet, look for conversions that don't pass through "mg"
-  if(unitbundle(get_units(u(1,flow.conc.units) * multiplier)) != load.rate.units) {
-    # Identify the numerator still to be converted
-    residual_units <- load.rate.units / unitbundle(get_units(u(1,flow.conc.units) * multiplier))
-    ru_separated <- separate_units(residual_units)
-    ru_numerstr <- strsplit(get_units(unitbundle(ru_separated[which(ru_separated$Power > 0),])), " ")[[1]]
-    ru_denomstr <- strsplit(get_units(1/unitbundle(ru_separated[which(ru_separated$Power < 0),])), " ")[[1]]
-    # We want the multiplier with the same units as residual_units
-    num_to_load <- subset(unit.conversions, denominator == ru_denomstr & numerator == ru_numerstr)
-    # Do the additional conversion
-    if(nrow(num_to_load) == 1) {
-      multiplier <- multiplier * u(num_to_load$value, unitbundle(num_to_load$numerator)/unitbundle(num_to_load$denominator))
-    }
-    
-    # Now confirm that the conversion will work - it really should now.
-    if(unitbundle(get_units(u(1,flow.conc.units) * multiplier)) != load.rate.units) {
-      stop("Failed to identify the right multiplier. Check that all units are valid")
-    }
-  }
-   
-  return(if(attach.units) multiplier else v(multiplier))
+  # The final conversion is the product of the two preceding conversion factors
+  conv.full <- conv.vol.flow2conc * conv.masstime
+  return(if(attach.units) conv.full else v(conv.full))
 }
 
 #' Get a conversion factor to convert between flow units
