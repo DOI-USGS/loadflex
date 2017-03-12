@@ -56,35 +56,38 @@ setClass(
 #' loadReg2s are wrappers for loadReg objects produced by the USGS 
 #' \pkg{rloadest} package. \code{loadReg2}s can implement the 
 #' \code{\link{loadModelInterface}} more reliably than is possible for a 
-#' \code{loadReg} object.
+#' \code{loadReg} object. Some metadata information is set within the loadReg()
+#' call; entries that can be edited may be given as arguments to the loadReg2()
+#' call (e.g., site.id, lat, lon, basin.area).
 #' 
 #' @importFrom methods is new
 #' @param load.reg An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
 #'   call will be parsed and evaluated within \code{loadReg2} to create a fully 
 #'   functional load model for use within \pkg{loadflex}.
 #' @param pred.format character. Should predictions be made for 'flux' (load 
-#'   rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2,
+#'   rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2, 
 #'   uses different models for flux and concentration, though fitted to the same
-#'   data and with the same model structure except for whether the left-hand
+#'   data and with the same model structure except for whether the left-hand 
 #'   side of the model formula is load rate or concentration. The model specific
 #'   to \code{pred.format} will be used to generate predictions.
 #' @param store One or more character strings specifying which information to 
 #'   write within the model. Options are 'data': the original fitting data; 
 #'   'fitting.function': a fitting function that can produce a new loadComp 
 #'   object from new data
+#' @inheritParams metadata
 #' @param ... Other arguments passed to this model.
-#' @param site.id char Fills the site.id field the loadReg2 metadata, since it does not 
-#' have a loadReg equivalent
 #' @return A fitted loadReg2 model.
 #'   
 #' @importFrom rloadest loadReg
 #' @export
 #' @family load.model.inits
-loadReg2 <- function(load.reg,
-                     pred.format=c("flux","conc"),
-                     store=c("data","fitting.function"),
-                     site.id, 
-                     ...) {
+loadReg2 <- function(
+  load.reg, pred.format=c("flux","conc"), store=c("data","fitting.function"),
+  consti.name="", load.rate="", 
+  site.id="", lat=as.numeric(NA), lon=as.numeric(NA), basin.area=as.numeric(NA),
+  flow.site.name="", flow.site.id="", flow.lat=as.numeric(NA), flow.lon=as.numeric(NA), flow.basin.area=as.numeric(NA),
+  basin.area.units="km^2", custom,                     
+  ...) {
   
   # Validate arguments
   pred.format <- match.arg.loadflex(pred.format)
@@ -151,11 +154,8 @@ loadReg2 <- function(load.reg,
   
   # Get the metadata, which we'll need to do the following data checks
   meta <- getMetadata(load.reg)
-  #fill the site.id field, since rloadest only has a site.name equivalent
-  if(!missing(site.id)) {
-    meta <- updateMetadata(meta, site.id = site.id)
-  }
-  
+  # Fill the site.id field if given in args, since rloadest only has a site.name equivalent
+  meta <- updateMetadata(meta, site.id = site.id)
   
   # Parse the loadReg call, attaching argument names as needed. This will be
   # useful both for the refitting function and for saving the original data.
@@ -275,21 +275,22 @@ predictSolute.loadReg2 <- function(
   # Validate rloadest status
   checkRloadestStatus()
   
-  # Extract the metadata in object into our standard metadata format, and modify
-  # it if load.units has been passed in separately. We'll use the metadata just
-  # a couple of times in this function.
+  # Extract the metadata in object into our standard metadata format, and 
+  # confirm that load.units are as we first passed them to loadReg
   metadata <- getMetadata(load.model)
+  loadReg2.load.units <- sapply(c('load.units','load.rate.units'), getInfo, metadata=getMetadata(load.model))
+  rloadest.load.units <- sapply(c('load.units','load.rate.units'), getInfo, metadata=getMetadata(getFittedModel(load.model)))
+  if(!isTRUE(all.equal(loadReg2.load.units, rloadest.load.units))) {
+    stop("loadReg2 metadata on load.units and load.rate.units must not be modified from the rloadest (loadReg) values. ",
+         "rloadest always predicts load rate in load.units per day")
+  }
   if(length(list(...)) > 0) {
     args <- list(...)
     argnames <- names(args)
-    accepted_argnames <- c("load.units", "seopt", "print") #"conf.int"
+    accepted_argnames <- c("seopt", "print") # "load.units","conf.int"
     if(is.null(argnames) || any(!(argnames %in% accepted_argnames))) {
       stop("unrecognized args: ", paste0(setdiff(argnames, accepted_argnames), collapse=", "), 
            ". args in ... should be in this list: ", paste0(accepted_argnames, collapse=", "))
-    }
-    if("load.units" %in% argnames) {
-      metadata <- updateMetadata(metadata, load.units=args$load.units)
-      metadata <- updateMetadata(metadata, load.rate.units=paste0(args$load.units, "/day"))
     }
   }
   
@@ -334,11 +335,11 @@ predictSolute.loadReg2 <- function(
     switch(
       flux.or.conc,
       "flux"={
-        # ... may contain load.units, seopt, print
+        # ... may contain seopt, print
         predLoad(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level, ...)
       }, 
       "conc"={
-        predLoad_args <- c('load.units','seopt','print')[(c('load.units','seopt','print') %in% names(list(...)))]
+        predLoad_args <- union(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
         if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
         predConc(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level) 
       }

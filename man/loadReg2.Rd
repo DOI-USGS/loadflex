@@ -5,7 +5,11 @@
 \title{Create a fitted loadReg2 object.}
 \usage{
 loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
-  "fitting.function"), site.id, ...)
+  "fitting.function"), consti.name = "", load.rate = "", site.id = "",
+  lat = as.numeric(NA), lon = as.numeric(NA), basin.area = as.numeric(NA),
+  flow.site.name = "", flow.site.id = "", flow.lat = as.numeric(NA),
+  flow.lon = as.numeric(NA), flow.basin.area = as.numeric(NA),
+  basin.area.units = "km^2", custom, ...)
 }
 \arguments{
 \item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
@@ -13,9 +17,9 @@ call will be parsed and evaluated within \code{loadReg2} to create a fully
 functional load model for use within \pkg{loadflex}.}
 
 \item{pred.format}{character. Should predictions be made for 'flux' (load 
-rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2,
+rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2, 
 uses different models for flux and concentration, though fitted to the same
-data and with the same model structure except for whether the left-hand
+data and with the same model structure except for whether the left-hand 
 side of the model formula is load rate or concentration. The model specific
 to \code{pred.format} will be used to generate predictions.}
 
@@ -24,8 +28,48 @@ write within the model. Options are 'data': the original fitting data;
 'fitting.function': a fitting function that can produce a new loadComp 
 object from new data}
 
-\item{site.id}{char Fills the site.id field the loadReg2 metadata, since it does not 
-have a loadReg equivalent}
+\item{consti.name}{character. Consituent long name, for use in plots and 
+reports}
+
+\item{load.rate}{character. The name of the data.frame column, if it exists, 
+describing instantaneous load}
+
+\item{site.id}{character Station ID for the site where the concentration of 
+the constituent was measured.}
+
+\item{lat}{numeric Station latitude where concentration (and possibly also 
+discharge) was measured.}
+
+\item{lon}{numeric Station longitude where concentration (and possibly also 
+discharge) was measured.}
+
+\item{basin.area}{numeric Area of the drainage basin contributing water to 
+the site where concentrations were measured.}
+
+\item{flow.site.name}{character Long name of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.name}).}
+
+\item{flow.site.id}{character Station ID of the station where flow was 
+monitored, if different from where concentration was monitored (as in 
+\code{site.id}).}
+
+\item{flow.lat}{numeric Latitude of the station where flow was monitored, if 
+different from where concentration was monitored (as in \code{site.lat}).}
+
+\item{flow.lon}{numeric Longitude of the station where flow was monitored, if
+different from where concentration was monitored (as in \code{site.lon}).}
+
+\item{flow.basin.area}{numeric Area of the drainage basin contributing water 
+to the site where flow was monitored, if different from where concentration
+was monitored (as in \code{basin.area}).}
+
+\item{basin.area.units}{character Units of the values in \code{basin.area} 
+and \code{flow.basin.area} (must be the same for both). Basin areas are 
+used to compute yields as loads per contributing (basin) area.}
+
+\item{custom}{ANY. Empty by default, but may be modified to store any 
+additional data the user wants to track.}
 
 \item{...}{Other arguments passed to this model.}
 }
@@ -37,7 +81,9 @@ Generates a new model of class loadReg2 (\code{\link{loadReg2-class}}).
 loadReg2s are wrappers for loadReg objects produced by the USGS 
 \pkg{rloadest} package. \code{loadReg2}s can implement the 
 \code{\link{loadModelInterface}} more reliably than is possible for a 
-\code{loadReg} object.
+\code{loadReg} object. Some metadata information is set within the loadReg()
+call; entries that can be edited may be given as arguments to the loadReg2()
+call (e.g., site.id, lat, lon, basin.area).
 }
 \seealso{
 Other load.model.inits: \code{\link{loadComp}},
