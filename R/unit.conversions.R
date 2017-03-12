@@ -294,6 +294,76 @@ dimInfo <- function(unitstr) {
     left_join(rename(valid.metadata.units, Dim=dimension, Std=standard), by=c("Str"="unit"))
 }
 
+#' Produce conversion factor to multiply old.units by to get new.units
+#' 
+#' Converts units; units can be arbitrarily complex as long as every dimension
+#' of each unit is present in unit.conversions
+#' 
+#' @param attach.units logical. Should units be attached to the conversion
+#'   factor?
+#' @importFrom unitted separate_units get_units unitbundle u
+#' @importFrom methods is
+#' @import dplyr
+#' @examples 
+#' loadflex:::convertUnits('mg/L', 'kg/m^3')
+#' loadflex:::convertUnits('kg d^-1', 'kg/yr')
+#' loadflex:::convertUnits('kg/yr', 'kg/d', attach.units = TRUE)
+#' \dontrun{
+#' loadflex:::convertUnits('mg/L', 'm^3/d') # error: dimensions must match
+#' loadflex:::convertUnits(unitbundle('ft^3 g L^-1 s^-1'), 'kg/d') # error: too complicated
+#' }
+convertUnits <- function(old.units, new.units, attach.units = FALSE) {
+  # Translate units - goes quickly if they're good already
+  if(!is(old.units, 'unitbundle')) old.units <- translateFreeformToUnitted(old.units, attach.units = TRUE)
+  if(!is(new.units, 'unitbundle')) new.units <- translateFreeformToUnitted(new.units, attach.units = TRUE)
+  
+  # split the units into pieces and identify the dimension, etc. of each piece
+  old.info <- dimInfo(old.units)
+  new.info <- dimInfo(new.units)
+  
+  # combine if possible
+  old.dimunits <- unitbundle(transmute(old.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
+  new.dimunits <- unitbundle(transmute(new.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
+  if(old.dimunits != new.dimunits) {
+    stop("dimensions must match between old.units (", get_units(old.dimunits), ") and new.units (", get_units(new.dimunits), ")")
+  }
+  conv.info <- full_join(old.info, new.info, suffix=c('.old','.new'), by=c('Pos','Dim','Std'))
+  if(any(is.na(conv.info$Unit.old))  || any(is.na(conv.info$Unit.new)) || 
+     nrow(old.info) != nrow(conv.info) || nrow(new.info) != nrow(conv.info)) {
+    # e.g., convertUnits(unitbundle('ft^3 g L^-1 s^-1'), 'kg/d')
+    stop("despite equal dimensions, still failed to match old and new units")
+  }
+  
+  # find the conversion from Str.old. into Str.std
+  conv.info$old2std <- mapply(
+    function(num, den) { filter(unit.conversions, numerator==num, denominator==den)$value },
+    num=conv.info$Std, den=conv.info$Str.old)
+  conv.info$std2new <- mapply(
+    function(num, den) { filter(unit.conversions, numerator==num, denominator==den)$value },
+    num=conv.info$Str.new, den=conv.info$Std)
+  conv.info$Value <- conv.info$old2std * conv.info$std2new
+  conv.info$Unit <- mapply(function(n, o) unitbundle(n)/unitbundle(o), n=conv.info$Str.new, o=conv.info$Str.old, USE.NAMES=FALSE)
+  # conv.info is now unprintable because Unit is S4, but you can print cols 1:12
+  # and use all the cols in the calcs that follow
+  
+  # combine into a single conversion factor and unitbundle
+  Conv <- u(1, NA)
+  for(i in seq_len(nrow(conv.info))) {
+    iConv <- u(conv.info$Value[[i]], conv.info$Unit[[i]])
+    if(conv.info$Pos[[i]] == 'numerator') {
+      Conv <- Conv * iConv
+    } else {
+      Conv <- Conv / iConv
+    }
+  }
+  # confirm the direction/completeness of our conversion factor: Unit*old.units
+  # should get us new.units
+  stopifnot(old.units*unitbundle(get_units(Conv)) == new.units)
+  
+  return(if(attach.units) Conv else v(Conv))
+}
+
+
 #' Convert units from a greater variety of forms, including rloadest form, to 
 #' unitted form
 #' 
