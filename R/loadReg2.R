@@ -339,7 +339,7 @@ predictSolute.loadReg2 <- function(
         predLoad(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level, ...)
       }, 
       "conc"={
-        predLoad_args <- union(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
+        predLoad_args <- intersect(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
         if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
         predConc(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level) 
       }
