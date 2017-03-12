@@ -52,7 +52,7 @@ test_that("metadata can be revised (with validation)", {
   expect_error(updateMetadata(md, dates=""), "dates must be a non-empty string")
   expect_error(updateMetadata(md, flow.units="w"), "unexpected unit")
   expect_error(updateMetadata(md, conc.units="x"), "unexpected unit")
-  expect_error(updateMetadata(md, load.units="y"), "unexpected unit")
+  expect_error(updateMetadata(md, load.units="y"), "load.units are invalid")
 })
 
 
