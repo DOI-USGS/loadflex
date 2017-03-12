@@ -273,6 +273,27 @@ validDim <- function(dimstr, dim.type=c("ANY","volume","time","mass","count","ar
   }
 }
 
+#' Return a data.frame describing each dimension of the units (1 row per dimension)
+#' 
+#' @param unitstr A single string representing one set of units dimension
+#' @importFrom unitted unitbundle separate_units
+#' @examples 
+#' loadflex:::dimInfo('kg') # 'mg'
+#' loadflex:::dimInfo('ha') # 'km^2'
+#' loadflex:::dimInfo('kg d^-1') # NA
+#' loadflex:::dimInfo('m^3') # NA
+#' loadflex:::dimInfo('kk') # NA
+dimInfo <- function(unitstr) {
+  unitbundle(unitstr) %>%
+    separate_units() %>%
+    mutate(
+      Str = mapply(function(u, p) {
+        get_units(unitbundle(data.frame(Unit=u, Power=abs(p))))
+      }, Unit, Power),
+      Pos = ifelse(Power > 0, 'numerator', 'denominator')) %>%
+    left_join(rename(valid.metadata.units, Dim=dimension, Std=standard), by=c("Str"="unit"))
+}
+
 #' Convert units from a greater variety of forms, including rloadest form, to 
 #' unitted form
 #' 
