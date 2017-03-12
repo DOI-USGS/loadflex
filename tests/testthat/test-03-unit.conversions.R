@@ -37,8 +37,16 @@ test_that("flowUnitsConversion works", {
     flowUnitsConversion(old.units='ft^3 s^-1', new.units='dL d^-1', attach.units = TRUE),
     expected.units = 'dL d^-1 ft^-3 s'))
   expect_error(flowUnitsConversion(old.units='g m^-3', new.units='mg L^-1')) # error because not flow
+test_that("convertUnits works", {
+  expect_equal(loadflex:::convertUnits('mg/L', 'mg/m^3'), 1000)
+  expect_equal(loadflex:::convertUnits('mg/L', 'kg/L'), 0.000001)
+  expect_equal(loadflex:::convertUnits('mg/L', 'kg/m^3'), 0.001)
+  expect_equal(loadflex:::convertUnits('kg d^-1', 'kg/yr'), 365.25)
+  expect_equal(loadflex:::convertUnits('kg/d', 'kg/y', attach.units = TRUE), unitted::u(365.25, 'd y^-1'))
   
   qConvert <- flowUnitsConversion('cfs', 'cms')
+  expect_error(loadflex:::convertUnits('mg/L', 'm^3/d'), "dimensions must match")
+  expect_error(loadflex:::convertUnits(unitted::unitbundle('ft^3 g L^-1 s^-1'), 'kg/d'), "still failed")
   expect_true(qConvert < 0.03 & qConvert > 0.01)
 })
 
