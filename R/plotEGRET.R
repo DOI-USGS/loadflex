@@ -101,11 +101,15 @@ plotEGRET <- function(plot.name,
     boxConcMonth = ,
     plotConcTime = ,
     plotConcQ = ,
-    plotFluxQ = is.null(load.model) && (is.null(data) || is.null(meta)),
+    plotFluxQ =  
+      is.null(load.model) && (is.null(data) || is.null(meta)),
+    
+    # require data, newdata, & meta
+    boxQTwice = ,
+    multiPlotDataOverview = 
+      (is.null(load.model) && (is.null(data) || is.null(meta))) || is.null(newdata),
     
     # require load.model and newdata
-    boxQTwice = ,
-    multiPlotDataOverview = ,
     plotConcTimeDaily = ,
     plotFluxTimeDaily = ,
     plotConcPred = , 
@@ -117,7 +121,8 @@ plotEGRET <- function(plot.name,
     boxConcThree = , 
     plotConcHist = , 
     plotFluxHist = ,
-    fluxBiasMulti = is.null(load.model) || is.null(newdata),
+    fluxBiasMulti = 
+      is.null(load.model) || is.null(newdata),
     
     # default if no name matches
     FALSE)
