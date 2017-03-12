@@ -52,12 +52,12 @@ test_that("convertUnits works", {
 
 test_that("flowconcToFluxConversion works", {
   cf1 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = TRUE)
-  expect_equivalent(v(cf1), 2.8317e-05)
-  expect_equal(get_units(cf1), "kg L ft^-3 mg^-1")
+  expect_equivalent(unitted::v(cf1), 2.8317e-05)
+  expect_equal(unitted::get_units(cf1), "kg L ft^-3 mg^-1")
   
   cf2 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = FALSE)
   expect_equivalent(cf2, 2.8317e-05)
-  expect_equal(get_units(cf2), NA)
+  expect_equal(unitted::get_units(cf2), NA)
 
   # Comparisons to the sister rloadest function
   expect_equal(flowconcToFluxConversion("cfs","ug/l","kg/d"), rloadest::loadConvFactor("cfs","ug/L","kg"))
@@ -73,14 +73,14 @@ test_that("observeSolute generates fluxes with the expected units & format", {
   # See whether observeSolute can calculate fluxes
   # cms * mg/L = m^3 mg / (L s). To get to mg/day, multiply by 1000 L/m^3 and 60*60*24 s/day
   expect_that(observeSolute(obs, "flux", md), equals(obs$MyConc*obs$MyFlow*1000*60*60*24))
-  expect_that(get_units(observeSolute(obs, "flux", md, attach.units=TRUE)), equals("mg d^-1"))
+  expect_that(unitted::get_units(observeSolute(obs, "flux", md, attach.units=TRUE)), equals("mg d^-1"))
   
   # If we're also converting to kg, divide by 1000000
   expect_that(observeSolute(obs, "flux", updateMetadata(md, load.units="kg", load.rate.units="kg/day"), attach.units=TRUE), 
-              equals(u(obs$MyConc*obs$MyFlow*1000*60*60*24/1000000, units="kg d^-1")))
+              equals(unitted::u(obs$MyConc*obs$MyFlow*1000*60*60*24/1000000, units="kg d^-1")))
   # If we're converting from flow units of cfs, we need 28.317 L/ft^3 instead of 1000 L/m^3
   expect_that(observeSolute(obs, "flux", updateMetadata(md, flow.units="cfs"), attach.units=TRUE), 
-              equals(u(obs$MyConc*obs$MyFlow*28.317*60*60*24, units="mg d^-1")))
+              equals(unitted::u(obs$MyConc*obs$MyFlow*28.317*60*60*24, units="mg d^-1")))
 
   # See whether observeSolute can find fluxes
   obs$MyFlux <- 7 #intentionally wrong
@@ -100,7 +100,7 @@ test_that("observeSolute generates concentrations with the expected units & form
                        flow.units="cms", conc.units="mg/l", load.units="mg", load.rate.units="mg/day")
   
   # Now observeSolute
-  expect_equal(observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE), u(obs$MyFlux / obs$MyFlow / (1000*60*60*24), units="mg L^-1"))
+  expect_equal(observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE), unitted::u(obs$MyFlux / obs$MyFlow / (1000*60*60*24), units="mg L^-1"))
   expect_equal(observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE), formatPreds(obs$MyFlux / obs$MyFlow, from.format="flux/flow", to.format="conc", metadata=md, attach.units=TRUE))
   expect_equal(observeSolute(obs, "conc", md, calculate=TRUE, attach.units=FALSE), formatPreds(obs$MyFlux / obs$MyFlow, from.format="flux/flow", to.format="conc", metadata=md, attach.units=FALSE))
   
@@ -129,6 +129,6 @@ test_that("formatPreds gets predictions into the right format", {
   expect_equal(formatPreds(preds=obs$MyFlux, from.format="flux", to.format="flux", newdata=NA, metadata=md), obs$MyFlux)
   
   # Check that units get attached when requested
-  expect_equal(formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, attach.units=TRUE), u(obs$MyConc, "mg L^-1"))
-  expect_equal(formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=NA, metadata=md, attach.units=TRUE), u(obs$MyFlux, units="mg d^-1"))
+  expect_equal(formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, attach.units=TRUE), unitted::u(obs$MyConc, "mg L^-1"))
+  expect_equal(formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=NA, metadata=md, attach.units=TRUE), unitted::u(obs$MyFlux, units="mg d^-1"))
 })
