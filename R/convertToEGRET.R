@@ -229,7 +229,7 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
 expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
   
   # Get the conversion factor. EGRET expects cms for all flow values
-  qconvert <- 1/flowUnitsConversion(flow.units, 'cms')
+  qconvert <- 1/convertUnits(flow.units, 'cms')
   
   # Convert to EGRET format with many columns describing flow
   flowdat_corrected <- flowdat %>% 

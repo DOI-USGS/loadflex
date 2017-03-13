@@ -45,121 +45,135 @@ NULL
 #' combined) R/sysdata.rda. These are then saved with the package.
 #' 
 #' @importFrom stats setNames
+#' @import dplyr
 #' @keywords data units internal
 generateUnitsData <- function() {
   # valid.metadata.units
   
-  valid.metadata.units <- rbind(
-    data.frame(
+  valid.metadata.units <- bind_rows(
+    data_frame(
       dimension="volume",
+      standard="L",
       unit=c("m^3", "ft^3", "dL", "L")),
-    data.frame(
+    data_frame(
       dimension="time",
-      unit=c("s", "d")),
-    data.frame(
+      standard="d",
+      unit=c("s", "d", "y")),
+    data_frame(
       dimension="mass",
+      standard="mg",
       unit=c("lb", "ton", "ng", "ug", "mg", "g", "kg", "Mg")),
-    data.frame(
+    data_frame(
       dimension="count",
+      standard="million_colonies",
       unit=c("colonies", "million_colonies")),
-    data.frame(
+    data_frame(
       dimension="area",
+      standard="km^2",
       unit=c("m^2", "ha", "km^2", "ft^2", "ac", "mi^2")
     )
-  )
+  ) %>% as.data.frame(stringsAsFactors=FALSE)
   save(valid.metadata.units, file="data/valid.metadata.units.RData")
 
   # freeform.unit.translations
-  freeform.unit.translations <- rbind(
+  freeform.unit.translations <- bind_rows(
     # Volumes
-    data.frame(new="m^3", old=c("cubic meter", "cubic meters", "m^3")),
-    data.frame(new="ft^3", old=c("cubic foot", "cubic feet", "ft^3")),
-    data.frame(new="dL", old=c("100mL", "dL")),
-    data.frame(new="L", old=c("liter", "l", "L")),
+    data_frame(new="m^3", old=c("cubic meter", "cubic meters", "m^3")),
+    data_frame(new="ft^3", old=c("cubic foot", "cubic feet", "ft^3")),
+    data_frame(new="dL", old=c("100mL", "dL")),
+    data_frame(new="L", old=c("liter", "l", "L")),
     
     # Times
-    data.frame(new="s", old=c("second", "sec", "s")),
-    data.frame(new="d", old=c("day", "d")),
+    data_frame(new="s", old=c("second", "sec", "s")),
+    data_frame(new="d", old=c("day", "d")),
+    data_frame(new="y", old=c("year", "yr", "y")),
     
     # Masses and counts
-    data.frame(new="lb", old=c("pounds", "lbs", "lb")),
-    data.frame(new="ton", old=c("tons")),
-    data.frame(new="ng", old=c("nanograms", "ng")),
-    data.frame(new="ug", old=c("micrograms", "ug")),
-    data.frame(new="mg", old=c("milligrams", "mg")),
-    data.frame(new="g", old=c("grams", "g")),
-    data.frame(new="kg", old=c("kilograms", "kg")),
-    data.frame(new="Mg", old=c("metric tons", "Mg")),
-    data.frame(new="colonies", old=c("col", "colonies")),
-    data.frame(new="million_colonies", old=c("million colonies")),
+    data_frame(new="lb", old=c("pounds", "lbs", "lb")),
+    data_frame(new="ton", old=c("tons")),
+    data_frame(new="ng", old=c("nanograms", "ng")),
+    data_frame(new="ug", old=c("micrograms", "ug")),
+    data_frame(new="mg", old=c("milligrams", "mg")),
+    data_frame(new="g", old=c("grams", "g")),
+    data_frame(new="kg", old=c("kilograms", "kg")),
+    data_frame(new="Mg", old=c("metric tons", "Mg")),
+    data_frame(new="colonies", old=c("col", "colonies")),
+    data_frame(new="million_colonies", old=c("million colonies")),
     
     # Abbreviations
-    data.frame(new="m^3 s^-1", old=c("cubic meter per second", "cms")),
-    data.frame(new="ft^3 s^-1", old=c("cubic feet per second", "cubic foot per second", "cfs"))
-  )
+    data_frame(new="m^3 s^-1", old=c("cubic meter per second", "cms")),
+    data_frame(new="ft^3 s^-1", old=c("cubic feet per second", "cubic foot per second", "cfs"))
+  ) %>% as.data.frame(stringsAsFactors=FALSE)
   save(freeform.unit.translations, file="data/freeform.unit.translations.RData")
   
   # unit.conversions
-  unit.conversions <- setNames(rbind(
+  unit.conversions <- setNames(bind_rows(
     # Volumes
-    data.frame(num="L", rbind(
-      data.frame(den="m^3", val=1000),
-      data.frame(den="ft^3", val=28.317),
-      data.frame(den="dL", val=0.1),
-      data.frame(den="L", val=1))
+    data.frame(num="L", bind_rows(
+      data_frame(den="m^3", val=1000),
+      data_frame(den="ft^3", val=28.317),
+      data_frame(den="dL", val=0.1),
+      data_frame(den="L", val=1)),
+      stringsAsFactors=FALSE
     ),
     
     # Times
-    data.frame(num="d", rbind(
-      data.frame(den="s", val=1/(60*60*24)),
-      data.frame(den="d", val=1))
+    data.frame(num="d", bind_rows(
+      data_frame(den="s", val=1/(60*60*24)),
+      data_frame(den="d", val=1),
+      data_frame(den="y", val=365.25)),
+      stringsAsFactors=FALSE
     ),
     
     # Masses and counts
-    data.frame(den="mg", rbind(
-      data.frame(num="lb", val=2.204623e-6),
-      data.frame(num="ton", val=1.102311e-9),
-      data.frame(num="ng", val=1.0e6),
-      data.frame(num="ug", val=1.0e3),
-      data.frame(num="mg", val=1),
-      data.frame(num="g", val=1.0e-3),
-      data.frame(num="kg", val=1.0e-6),
-      data.frame(num="Mg", val=1.0e-9))
+    data.frame(den="mg", bind_rows(
+      data_frame(num="lb", val=2.204623e-6),
+      data_frame(num="ton", val=1.102311e-9),
+      data_frame(num="ng", val=1.0e6),
+      data_frame(num="ug", val=1.0e3),
+      data_frame(num="mg", val=1),
+      data_frame(num="g", val=1.0e-3),
+      data_frame(num="kg", val=1.0e-6),
+      data_frame(num="Mg", val=1.0e-9)),
+      stringsAsFactors=FALSE
     )[,c(2,1,3)],
     
-    data.frame(num="million_colonies", rbind(
-      data.frame(den="colonies", val=1.0e-6),
-      data.frame(den="million_colonies", val=1)
-    )),
+    data.frame(num="million_colonies", bind_rows(
+      data_frame(den="colonies", val=1.0e-6),
+      data_frame(den="million_colonies", val=1)),
+      stringsAsFactors=FALSE
+    ),
     
     # Areas
-    data.frame(num="km^2", rbind(
-      data.frame(den="ft^2", val=9.290304e-8),
-      data.frame(den="ac", val=0.0040468564224),
-      data.frame(den="mi^2", val=2.589988110336),
-      data.frame(den="m^2", val=1e-6),
-      data.frame(den="ha", val=0.01),
-      data.frame(den="km^2", val=1))
+    data.frame(num="km^2", bind_rows(
+      data_frame(den="ft^2", val=9.290304e-8),
+      data_frame(den="ac", val=0.0040468564224),
+      data_frame(den="mi^2", val=2.589988110336),
+      data_frame(den="m^2", val=1e-6),
+      data_frame(den="ha", val=0.01),
+      data_frame(den="km^2", val=1)),
+      stringsAsFactors=FALSE
     )
   ), c("numerator", "denominator", "value"))
   # Append the reverse conversions
   numerator<-denominator<-value<-".transform.var"
   
-  unit.conversions <- rbind(
+  unit.conversions <- bind_rows(
     unit.conversions,
-    transform(unit.conversions, 
-              numerator=denominator,
-              denominator=numerator,
-              value=1/value))
+    transform( # mutate would overwrite numerator prematurely
+      unit.conversions, 
+      numerator=denominator,
+      denominator=numerator,
+      value=1/value))
   unit.conversions$numerator <- as.character(unit.conversions$numerator)
   unit.conversions$denominator <- as.character(unit.conversions$denominator)
-  unit.conversions <- unique(unit.conversions)
+  unit.conversions <- unique(unit.conversions) %>% as.data.frame(stringsAsFactors=FALSE)
   save(unit.conversions, file="data/unit.conversions.RData")
   
-  # The two above save calls (all commented out) put the data into a 
-  # user-accessible location (the data folder). But the following is the
-  # important line for the functionality of flowconcToFluxConversion(), 
-  # translateFreeformToUnitted(), and validMetadataUnits():
+  # The above save calls put the data into a user-accessible location (the data 
+  # folder). But the following is the important line for the functionality of 
+  # flowconcToFluxConversion(), translateFreeformToUnitted(), 
+  # validMetadataUnits(), etc.:
   save(valid.metadata.units, unit.conversions, freeform.unit.translations, file="R/sysdata.rda")
   
 }
@@ -178,6 +192,7 @@ generateUnitsData <- function() {
 #' @export
 #' @examples
 #' validMetadataUnits("colonies d^-1") # TRUE
+#' validMetadataUnits("m^3 s^-1", unit.type="ANY") # TRUE
 #' validMetadataUnits("nonsensical") # FALSE
 #' validMetadataUnits("g", unit.type="load.units") # TRUE
 #' validMetadataUnits("g", unit.type="flow.units") # FALSE
@@ -188,34 +203,157 @@ validMetadataUnits <- function(unitstr, unit.type=c("ANY","flow.units","conc.uni
   unitpieces <- separate_units(unitbundle(unitstr))
   numerator <- get_units(unitbundle(unitpieces[which(unitpieces$Power > 0),]))
   denominator <- get_units(1/unitbundle(unitpieces[which(unitpieces$Power < 0),]))
-  
-  # A useful helper function: returns TRUE iif oneunit is present in valid.metadata.units
-  # and has a dimension that's in dims
-  unit <- "subset.var"
-  hasDim <- function(oneunit, dims) {
-    unit_row <- subset(valid.metadata.units, unit==oneunit)
-    if(nrow(unit_row) != 1) {
-      return(FALSE)
-    } else if(!(unit_row$dimension %in% dims)) {
-      return(FALSE)
-    } else {
-      return(TRUE)
-    }
-  }
 
   # The numerator (and denominator if it exists) should have specific dimensions
   # for each units type. Check.
   switch(
     unit.type,
-    "ANY" = any(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
-        validMetadataUnits(unitstr, eachtype)
-      })),
-    flow.units = hasDim(numerator, "volume") & hasDim(denominator, "time"),
-    conc.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, "volume"),
-    load.units = hasDim(numerator, c("mass","count")) & denominator=="",
-    load.rate.units = hasDim(numerator, c("mass","count")) & hasDim(denominator, c("time")),
-    basin.area.units = hasDim(numerator, c("area")) & denominator==""
+    "ANY" = !is.na(unitType(unitstr)) && validMetadataUnits(unitstr, unitType(unitstr)),
+    flow.units = validDim(numerator, "volume") & validDim(denominator, "time"),
+    conc.units = validDim(numerator, c("mass","count")) & validDim(denominator, "volume"),
+    load.units = validDim(numerator, c("mass","count")) & denominator=="",
+    load.rate.units = validDim(numerator, c("mass","count")) & validDim(denominator, c("time")),
+    basin.area.units = validDim(numerator, c("area")) & denominator==""
   )
+}
+
+#' Return the unit.type of a unit string
+#' 
+#' @param unitstr A string representing units (just one at a time, please)
+#' @examples
+#' loadflex:::unitType('kg') # 'load.units'
+#' loadflex:::unitType('kg/d') # NA
+#' loadflex:::unitType(loadflex:::translateFreeformToUnitted('kg/d')) # 'load.rate.units'
+#' loadflex:::unitType('nothing') # NA
+unitType <- function(unitstr) {
+  unit.type <- names(which(sapply(c("flow.units","conc.units","load.units","load.rate.units","basin.area.units"), function(eachtype) {
+    validMetadataUnits(unitstr, eachtype)
+  })))
+  if(length(unit.type) == 0) unit.type <- NA
+  return(unit.type)
+}
+
+#' Determine whether a 1D dimension string is known and of the expected
+#' dimension type
+#' 
+#' @param dimstr A string representing one units dimension (just one at a time, 
+#'   please). For example: kg, d, or m^3, but not kg/d or d^-1
+#' @param dim.type One or more acceptable dimension types
+#' @examples 
+#' loadflex:::validDim('kg') # TRUE
+#' loadflex:::validDim('kg', 'mass') # TRUE
+#' loadflex:::validDim('kg', 'volume') # FALSE
+#' loadflex:::validDim('whoknows') # FALSE
+#' loadflex:::validDim('whoknows', 'time') # FALSE
+validDim <- function(dimstr, dim.type=c("ANY","volume","time","mass","count","area")) {
+  # settle on 1+ dimensions to expect
+  dim.type <- match.arg(dim.type, several.ok=TRUE)
+  if('ANY' %in% dim.type) dim.type <- setdiff(eval(formals(validDim)$dim.type), 'ANY')
+  
+  unit <- '.subset.var'
+  dim_row <- subset(valid.metadata.units, unit==dimstr)
+  if(nrow(dim_row) != 1 || !(dim_row$dimension %in% dim.type)) {
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
+}
+
+#' Return a data.frame describing each dimension of the units (1 row per dimension)
+#' 
+#' @param unitstr A single string representing one set of units dimension
+#' @importFrom unitted unitbundle separate_units
+#' @examples 
+#' loadflex:::dimInfo('kg') # 'mg'
+#' loadflex:::dimInfo('ha') # 'km^2'
+#' loadflex:::dimInfo('kg d^-1') # NA
+#' loadflex:::dimInfo('m^3') # NA
+#' loadflex:::dimInfo('kk') # NA
+dimInfo <- function(unitstr) {
+  Unit <- Power <- dimension <- standard <- '.dplyr.var'
+  unitbundle(unitstr) %>%
+    separate_units() %>%
+    mutate(
+      Str = mapply(function(u, p) {
+        get_units(unitbundle(data.frame(Unit=u, Power=abs(p))))
+      }, Unit, Power),
+      Pos = ifelse(Power > 0, 'numerator', 'denominator')) %>%
+    left_join(rename(valid.metadata.units, Dim=dimension, Std=standard), by=c("Str"="unit"))
+}
+
+#' Produce conversion factor to multiply old.units by to get new.units
+#' 
+#' Converts units; units can be arbitrarily complex as long as every dimension 
+#' of each unit is present in unit.conversions
+#' 
+#' @param old.units character. The units to convert from.
+#' @param new.units character. The units to convert to.
+#' @param attach.units logical. Should units be attached to the conversion 
+#'   factor?
+#' @return a conversion factor that can be multiplied with data in the old.units
+#'   to achieve data in the new.units
+#' @importFrom unitted separate_units get_units unitbundle u
+#' @importFrom methods is
+#' @import dplyr
+#' @examples 
+#' loadflex:::convertUnits('mg/L', 'kg/m^3')
+#' loadflex:::convertUnits('kg d^-1', 'kg/yr')
+#' loadflex:::convertUnits('kg/yr', 'kg/d', attach.units = TRUE)
+#' \dontrun{
+#' loadflex:::convertUnits('mg/L', 'm^3/d') # error: dimensions must match
+#' loadflex:::convertUnits(unitbundle('ft^3 g L^-1 s^-1'), 'kg/d') # error: too complicated
+#' }
+convertUnits <- function(old.units, new.units, attach.units = FALSE) {
+  # Translate units - goes quickly if they're good already
+  if(!is(old.units, 'unitbundle')) old.units <- translateFreeformToUnitted(old.units, attach.units = TRUE)
+  if(!is(new.units, 'unitbundle')) new.units <- translateFreeformToUnitted(new.units, attach.units = TRUE)
+  
+  # split the units into pieces and identify the dimension, etc. of each piece
+  old.info <- dimInfo(old.units)
+  new.info <- dimInfo(new.units)
+  
+  # combine if possible
+  Dim <- Pos <- '.dplyr.var'
+  old.dimunits <- unitbundle(transmute(old.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
+  new.dimunits <- unitbundle(transmute(new.info, Unit=Dim, Power=ifelse(Pos=='numerator', 1, -1)))
+  if(old.dimunits != new.dimunits) {
+    stop("dimensions must match between old.units (", get_units(old.dimunits), ") and new.units (", get_units(new.dimunits), ")")
+  }
+  conv.info <- full_join(old.info, new.info, suffix=c('.old','.new'), by=c('Pos','Dim','Std'))
+  if(any(is.na(conv.info$Unit.old))  || any(is.na(conv.info$Unit.new)) || 
+     nrow(old.info) != nrow(conv.info) || nrow(new.info) != nrow(conv.info)) {
+    # e.g., convertUnits(unitbundle('ft^3 g L^-1 s^-1'), 'kg/d')
+    stop("despite equal dimensions, still failed to match old and new units")
+  }
+  
+  # find the conversion from Str.old. into Str.std
+  numerator <- denominator <- '.dplyr.var'
+  conv.info$old2std <- mapply(
+    function(num, den) { filter(unit.conversions, numerator==num, denominator==den)$value },
+    num=conv.info$Std, den=conv.info$Str.old)
+  conv.info$std2new <- mapply(
+    function(num, den) { filter(unit.conversions, numerator==num, denominator==den)$value },
+    num=conv.info$Str.new, den=conv.info$Std)
+  conv.info$Value <- conv.info$old2std * conv.info$std2new
+  conv.info$Unit <- mapply(function(n, o) unitbundle(n)/unitbundle(o), n=conv.info$Str.new, o=conv.info$Str.old, USE.NAMES=FALSE)
+  # conv.info is now unprintable because Unit is S4, but you can print cols 1:12
+  # and use all the cols in the calcs that follow
+  
+  # combine into a single conversion factor and unitbundle
+  Conv <- u(1, NA)
+  for(i in seq_len(nrow(conv.info))) {
+    iConv <- u(conv.info$Value[[i]], conv.info$Unit[[i]])
+    if(conv.info$Pos[[i]] == 'numerator') {
+      Conv <- Conv * iConv
+    } else {
+      Conv <- Conv / iConv
+    }
+  }
+  # confirm the direction/completeness of our conversion factor: Unit*old.units
+  # should get us new.units
+  stopifnot(old.units*unitbundle(get_units(Conv)) == new.units)
+  
+  return(if(attach.units) Conv else v(Conv))
 }
 
 
@@ -279,7 +417,7 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' function may also be used to convert from flux units to the units of the 
 #' product of flow and concentration.
 #' 
-#' @importFrom unitted separate_units get_units unitbundle u
+#' @importFrom unitted separate_units get_units unitbundle u v
 #' @export
 #' @param flow.units character. The units of flow.
 #' @param conc.units character. The units of concentration.
@@ -291,127 +429,29 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #' flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
 #' flowconcToFluxConversion("cfs", "g/L", "kg/d") # 2446.589
 #' library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * 
-#' flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
+#'   flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
 flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, attach.units=FALSE) {
-  ## Code inspired by rloadest::loadConvFactor code by DLLorenz and ldecicco
-  ## Makes heavy use of unitted package by A Appling
-  
   
   # Translate units - goes quickly if they're good already
   flow.units <- translateFreeformToUnitted(flow.units, TRUE)
   conc.units <- translateFreeformToUnitted(conc.units, TRUE)
   load.rate.units <- translateFreeformToUnitted(load.rate.units, TRUE)
   
-  # split the flow.units*conc.units into numerator and denominator
-  flow.conc.units <- flow.units * conc.units
-  fcu_separated <- separate_units(flow.conc.units)
-  fcu_numerstrs <- strsplit(get_units(unitbundle(fcu_separated[which(fcu_separated$Power > 0),])), " ")[[1]]
-  fcu_denomstrs <- strsplit(get_units(1/unitbundle(fcu_separated[which(fcu_separated$Power < 0),])), " ")[[1]]
+  # Get the conversion that turns flow*conc into a simple mass/time unit
+  Dim <- . <- '.dplyr.var'
+  vol.flow <- dimInfo(flow.units) %>% filter(Dim=='volume') %>% .$Str
+  vol.conc <- dimInfo(conc.units) %>% filter(Dim=='volume') %>% .$Str
+  conv.vol.flow2conc <- convertUnits(vol.flow, vol.conc, attach.units = TRUE)
   
-  # split the load.rate.units into numerator and denominator
-  lru_separated <- separate_units(load.rate.units)
-  lru_numerstr <- strsplit(get_units(unitbundle(lru_separated[which(lru_separated$Power > 0),])), " ")[[1]]
-  lru_denomstr <- strsplit(get_units(1/unitbundle(lru_separated[which(lru_separated$Power < 0),])), " ")[[1]]
+  # Get the conversion that turns the simple mass/time unit into load.rate.units
+  conv.masstime <- convertUnits(
+    get_units(flow.units*unitbundle(get_units(conv.vol.flow2conc))*conc.units), 
+    get_units(load.rate.units), 
+    attach.units=TRUE)
   
-  # Identify the right components of the multiplier. Components that are
-  # unavailable will be omitted from the multipliers data.frame
-  #data(unit.conversions)
-  numerator <- denominator <- "rbind.var"
-  multipliers <- rbind(
-    # Convert to mg/day
-    numer_to_mg = subset(unit.conversions, numerator == "mg" & denominator %in% fcu_numerstrs),
-    numer_to_L = subset(unit.conversions, numerator == "L" & denominator %in% fcu_numerstrs),
-    denom_to_L = subset(unit.conversions, denominator == "L" & numerator %in% fcu_denomstrs),
-    denom_to_d = subset(unit.conversions, denominator == "d" & numerator %in% fcu_denomstrs),
-    # Convert mg/day to load.rate.units
-    mg_to_load = subset(unit.conversions, numerator == lru_numerstr & denominator == "mg"),
-    d_to_load = subset(unit.conversions, numerator == "d" & denominator == lru_denomstr)
-  )
-  
-  # Combine the component multipliers into a single multiplier
-  multiplier <- u(1,"")
-  for(row in 1:nrow(multipliers)) {
-    multrow <- multipliers[row,]
-    multiplier <- multiplier * u(multrow$value, unitbundle(multrow$numerator)/unitbundle(multrow$denominator)) 
-  }
-  
-  # If the conversion isn't right yet, look for conversions that don't pass through "mg"
-  if(unitbundle(get_units(u(1,flow.conc.units) * multiplier)) != load.rate.units) {
-    # Identify the numerator still to be converted
-    residual_units <- load.rate.units / unitbundle(get_units(u(1,flow.conc.units) * multiplier))
-    ru_separated <- separate_units(residual_units)
-    ru_numerstr <- strsplit(get_units(unitbundle(ru_separated[which(ru_separated$Power > 0),])), " ")[[1]]
-    ru_denomstr <- strsplit(get_units(1/unitbundle(ru_separated[which(ru_separated$Power < 0),])), " ")[[1]]
-    # We want the multiplier with the same units as residual_units
-    num_to_load <- subset(unit.conversions, denominator == ru_denomstr & numerator == ru_numerstr)
-    # Do the additional conversion
-    if(nrow(num_to_load) == 1) {
-      multiplier <- multiplier * u(num_to_load$value, unitbundle(num_to_load$numerator)/unitbundle(num_to_load$denominator))
-    }
-    
-    # Now confirm that the conversion will work - it really should now.
-    if(unitbundle(get_units(u(1,flow.conc.units) * multiplier)) != load.rate.units) {
-      stop("Failed to identify the right multiplier. Check that all units are valid")
-    }
-  }
-   
-  return(if(attach.units) multiplier else v(multiplier))
-}
-
-#' Get a conversion factor to convert between flow units
-#' 
-#' @importFrom unitted separate_units unitbundle get_units u v
-#' @export
-#' @param old.units character. The current units of flow.
-#' @param new.units character. The desired units of flow.
-#' @param attach.units logical. If TRUE, the conversion factor is returned with 
-#'   units attached.
-#' @return numeric conversion factor, to be multiplied by values in old units to
-#'   determine the values in new units.
-#' @examples 
-#' flowUnitsConversion(old.units='cfs', new.units='cms')
-#' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1')
-#' flowUnitsConversion(old.units='m^3 s^-1', new.units='ft^3 s^-1', attach.units=TRUE)
-#' 
-#' # use this multiplier to convert a vector
-#' Q_cfs <- seq(10, 12, length.out=10) # example data
-#' Q_cms <- Q_cfs * flowUnitsConversion(old.units='cfs', new.units='cms')
-flowUnitsConversion <- function(old.units, new.units, attach.units=FALSE) {
-  # Translate units - goes quickly if they're good already
-  old.units <- translateFreeformToUnitted(old.units, TRUE)
-  new.units <- translateFreeformToUnitted(new.units, TRUE)
-  
-  # Separate the units into numerator and denominator
-  old_separated <- separate_units(old.units)
-  old_numerstrs <- strsplit(get_units(unitbundle(old_separated[which(old_separated$Power > 0),])), " ")[[1]]
-  old_denomstrs <- strsplit(get_units(1/unitbundle(old_separated[which(old_separated$Power < 0),])), " ")[[1]]
-  new_separated <- separate_units(new.units)
-  new_numerstrs <- strsplit(get_units(unitbundle(new_separated[which(new_separated$Power > 0),])), " ")[[1]]
-  new_denomstrs <- strsplit(get_units(1/unitbundle(new_separated[which(new_separated$Power < 0),])), " ")[[1]]
-  
-  # Identify the volumetric pieces of the conversion from the units table
-  numerator <- denominator <- "subset.var"
-  toL <- subset(unit.conversions, denominator == old_numerstrs & numerator == 'L')
-  fromL <- subset(unit.conversions, denominator == 'L' & numerator == new_numerstrs)
-  if(nrow(toL) != 1 || nrow(fromL) != 1) {
-    stop("couldn't find a path between the volume units")
-  }
-  volConv <- u(toL$value, toL$numerator) / u(1, toL$denominator) *
-    u(fromL$value, fromL$numerator) / u(1, fromL$denominator)
-  
-  # Identify the time pieces of the conversion from the units table
-  tod <- subset(unit.conversions, numerator == old_denomstrs & denominator == 'd')
-  fromd <- subset(unit.conversions, numerator == 'd' & denominator == new_denomstrs)
-  if(nrow(tod) != 1 || nrow(fromd) != 1) {
-    stop("couldn't find a path between the time units")
-  }
-  timeConv <- u(tod$value, tod$numerator) / u(1, tod$denominator) *
-    u(fromd$value, fromd$numerator) / u(1, fromd$denominator)
-
-  # For now, just require that the old.units are cfs and the new ones are cms
-  conv <- volConv*timeConv
-  if(!attach.units) conv <- v(conv)
-  return(conv)
+  # The final conversion is the product of the two preceding conversion factors
+  conv.full <- conv.vol.flow2conc * conv.masstime
+  return(if(attach.units) conv.full else v(conv.full))
 }
 
 #' observeSolute - instantaneous loads or concentrations

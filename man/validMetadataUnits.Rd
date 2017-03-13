@@ -22,6 +22,7 @@ Check whether these units are acceptable (without translation) for inclusion in 
 }
 \examples{
 validMetadataUnits("colonies d^-1") # TRUE
+validMetadataUnits("m^3 s^-1", unit.type="ANY") # TRUE
 validMetadataUnits("nonsensical") # FALSE
 validMetadataUnits("g", unit.type="load.units") # TRUE
 validMetadataUnits("g", unit.type="flow.units") # FALSE
