@@ -5,11 +5,12 @@
 \title{Create an EGRET-style plot}
 \usage{
 plotEGRET(plot.name, load.model = NULL, newdata = NULL, data = NULL,
-  meta = NULL, moreTitle = "loadflex", plotFlowNorm = FALSE, ...)
+  meta = NULL, eList = NULL, moreTitle = "loadflex",
+  plotFlowNorm = FALSE, ...)
 }
 \arguments{
-\item{plot.name}{the name of the plot the user wants to create. See 
-Details for current options. For now, only one allowed at time.}
+\item{plot.name}{the name of the plot the user wants to create. See Details 
+for current options. For now, only one allowed at time.}
 
 \item{load.model}{a load model (loadReg2, loadComp, loadInterp, loadLm, etc.)
 whose data and predictions are to be converted to EGRET format}
@@ -24,12 +25,16 @@ load.model is omitted}
 dates, conc.units, site.id, and consti.name. only required if load.model is
 omitted}
 
-\item{moreTitle}{additional text to include in the fluxBiasMulti plot 
-title. The EGRET default is "WRTDS", so this changes the default to "loadflex".}
+\item{eList}{an EGRET eList, as output from EGRET or 
+loadflex::convertToEGRET, to override separate inputs of \code{load.model},
+\code{newdata}, \code{data}, and/or \code{meta}}
 
-\item{plotFlowNorm}{logical indicating whether or not to plot the normalized flow
-lines. This defaults to FALSE, which overrides the EGRET default TRUE. Applicable 
-in plotFluxHist and plotConcHist.}
+\item{moreTitle}{additional text to include in the fluxBiasMulti plot title. 
+The EGRET default is "WRTDS", so this changes the default to "loadflex".}
+
+\item{plotFlowNorm}{logical indicating whether or not to plot the normalized 
+flow lines. This defaults to FALSE, which overrides the EGRET default TRUE.
+Applicable in plotFluxHist and plotConcHist.}
 
 \item{...}{additional arguments to pass to the plot}
 }
@@ -37,30 +42,13 @@ in plotFluxHist and plotConcHist.}
 Use loadflex data frames, but create an EGRET plot.
 }
 \details{
-EGRET plots that require \code{data, meta}:
-\itemize{
-  \item boxConcMonth
-  \item plotConcTime
-  \item plotConcQ
-  \item plotFluxQ
-}
-EGRET plots that require \code{data, newdata, preds, meta}:
-\itemize{
-  \item boxQTwice
-  \item multiPlotDataOverview
-  \item plotConcTimeDaily
-  \item plotFluxTimeDaily
-  \item plotConcPred 
-  \item plotFluxPred 
-  \item plotResidPred
-  \item plotResidQ  
-  \item plotResidTime
-  \item boxResidMonth
-  \item boxConcThree 
-  \item plotConcHist 
-  \item plotFluxHist
-  \item fluxBiasMulti 
-}
+EGRET plots that require \code{data, meta}: \itemize{ \item 
+  boxConcMonth \item plotConcTime \item plotConcQ \item plotFluxQ } EGRET 
+  plots that require \code{data, newdata, preds, meta}: \itemize{ \item 
+  boxQTwice \item multiPlotDataOverview \item plotConcTimeDaily \item 
+  plotFluxTimeDaily \item plotConcPred \item plotFluxPred \item plotResidPred
+  \item plotResidQ \item plotResidTime \item boxResidMonth \item boxConcThree
+  \item plotConcHist \item plotFluxHist \item fluxBiasMulti }
 }
 \examples{
 
