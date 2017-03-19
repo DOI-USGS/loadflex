@@ -12,6 +12,7 @@
 #'   dates, conc.units, site.id, and consti.name. only required if load.model is
 #'   omitted
 #' @importFrom EGRET as.egret
+#' @export
 #' @examples
 #' data(lamprey_nitrate)
 #' fitdat <- lamprey_nitrate
