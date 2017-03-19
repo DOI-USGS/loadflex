@@ -234,7 +234,7 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
   retDF <- data.frame(
     eqn = capture.output(loadReg.fit$call[[2]]),
     RMSE = rmse(load.model, model=loadReg.model),
-    r.squared = loadReg.fit$RSQ, # R-square needs to change when censored values are present!! see print.loadReg.R line 131 in rloadest. is this adjusted?
+    r.squared = rlmetricRsq(loadReg.fit),
     p.value = rlmetricPVal(loadReg.fit),
     cor.resid = loadReg.fit$SCORR,
     PPCC = rlmetricPPCC(loadReg.fit),
@@ -242,6 +242,19 @@ summarizeModel.loadReg <- function(load.model, flux.or.conc=c("flux", "conc"), .
     stringsAsFactors=FALSE
   )
   return(retDF)
+}
+
+#' Compute the [generalized] R squared of a loadReg fit
+#' 
+#' Helper function to compute the R squared like rloadest does in print.loadReg
+#' @param fit the loadReg lfit or cfit object
+#' @keywords internal
+rlmetricRsq <- function(fit) {
+  if(length(which(fit$CENSFLAG)) == 0) {
+    fit$RSQ/100 # R squared for no censored data
+  } else {
+    1 - exp((fit$LLR1 - fit$LLR)*2/fit$NOBSC) # Generalized R squared for censored data
+  }
 }
 
 #' Compute the p-value of a loadReg fit

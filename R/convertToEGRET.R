@@ -12,6 +12,7 @@
 #'   dates, conc.units, site.id, and consti.name. only required if load.model is
 #'   omitted
 #' @importFrom EGRET as.egret
+#' @export
 #' @examples
 #' data(lamprey_nitrate)
 #' fitdat <- lamprey_nitrate
@@ -185,7 +186,11 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   
   # Generate concentration predictions in both linear and log space
   preds_lin <- predictSolute(load.model, 'conc', newdata=newdata, date=TRUE, lin.or.log='linear')
-  preds_log <- predictSolute(load.model, 'conc', newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log')
+  preds_log <- tryCatch(
+    predictSolute(load.model, 'conc', newdata=newdata, se.pred=TRUE, date=TRUE, lin.or.log='log'),
+    error=function(e) predictSolute(load.model, 'conc', newdata=newdata, se.pred=FALSE, date=TRUE, lin.or.log='log') %>%
+      mutate(se.pred=NA)
+  )
     
   # Merge daily_df with preds. from
   # https://github.com/USGS-R/EGRET/blob/0a44aa92c8f473ffd67742c866588d45e3e4d8c9/R/estSurfaces.R#L5-L8:

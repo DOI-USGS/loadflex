@@ -180,6 +180,7 @@ loadComp <- function(reg.model,
 #' \code{\link{predictSolute}} for details.
 #' 
 #' @importFrom stats qnorm
+#' @import dplyr
 #' @inheritParams predictSolute
 #' @param load.model A loadComp object.
 #' @param newdata \code{data.frame}, optional. Predictor data, including any 
@@ -252,7 +253,7 @@ predictSolute.loadComp <- function(
     newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
   
   # Add uncertainty if requested
-  if(interval != "none" | se.fit | se.pred) {
+  if(interval != "none" | se.fit | se.pred | lin.or.log == 'log') {
     # Do early checks to send useful messages if we can't supply the requested
     # type of uncertainty
     if(interval == "confidence") {
@@ -262,9 +263,9 @@ predictSolute.loadComp <- function(
       stop("se.fit not implemented for loadComp")
     }
     if(isTRUE(all.equal(dim(load.model@MSE), c(0,0)))) {
-      stop("Uncertainty estimates are unavailable. Try fitting the model with store=c('uncertainty')")
-    }
-    if(is.na(load.model@MSE["mean", flux.or.conc])) {
+      warning("Uncertainty estimates are unavailable. Proceeding with NAs")
+      load.model@MSE <- matrix(NA, nrow=2, ncol=2, dimnames=list(c('mean','sd'), c('conc','flux')))
+    } else if(is.na(load.model@MSE["mean", flux.or.conc])) {
       stop("Uncertainty estimates are unavailable for ",flux.or.conc,". Try fitting the model with data that include discharge.")
     }
     
@@ -581,11 +582,12 @@ summarizeModel.loadComp <- function(
   
   # create a data.frame of model metrics
   out <- NextMethod(load.model, ...) # site.id, constituent, etc.
-  if(resid.args$use.log) {
-    out$RMSE.log <- sqrt(load.model@MSE["mean", resid.args$flux.or.conc])
+  RMSE <- if(0 %in% dim(load.model@MSE)) {
+    NA
   } else {
-    out$RMSE.lin <- sqrt(load.model@MSE["mean", resid.args$flux.or.conc])
+    sqrt(load.model@MSE["mean", resid.args$flux.or.conc])
   }
+  if(resid.args$use.log) out$RMSE.log <- RMSE else out$RMSE.lin <- RMSE
   out$reg.durbin.watson <- do.call(residDurbinWatson, resid.args)
   resid.args$irregular.timesteps.ok <- TRUE # we checked on the first call but will now skip to avoid replicate warnings
   out$reg.rho <- do.call(estimateRho, resid.args)$rho
