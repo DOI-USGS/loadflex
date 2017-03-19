@@ -111,6 +111,15 @@ aggregateSolute <- function(
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
   na.rm=FALSE, attach.units=FALSE, min.n = 0) {
   
+  # Warn users about flaws in uncertainty
+  warning("Shoot, we've discovered a big problem in aggregateSolute. ",
+          "The Values are fine, but the uncertainty estimates (SE, CI_lower, CI_upper) ",
+          "are too low by a factor of 3 to 10 or more. ",
+          "We'll be working on this over the coming year (it's not a trivial challenge). ",
+          "In the meantime, please consider reporting instantaneous uncertainties only, ",
+          "or using predLoad(getFittedModel(load.model), by=[format]) ",
+          "if you need aggregated uncertainties from a loadReg2 model. Sorry about this!")
+  
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
   attach.units <- match.arg.loadflex(attach.units)
