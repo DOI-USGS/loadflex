@@ -74,7 +74,7 @@
 #'   predictions (FALSE)?
 #' @param attach.units logical. If true, units will be attached as an attribute 
 #'   of the second column of the returned data.frame.
-#' @param complete.threshold numeric number of observations below which an \code{agg.by}
+#' @param min.n numeric number of observations below which an \code{agg.by}
 #'  value, e.g. a year, will be considered incomplete and be discarded 
 #' @return A data.frame with two columns. The first contains the aggregation 
 #'   period or custom aggregation unit and is named after the value of 
@@ -109,7 +109,7 @@ aggregateSolute <- function(
   se.preds, dates, custom=NA, 
   cormat.function=cormat1DayBand,
   ci.agg=TRUE, level=0.95, deg.free=NA, ci.distrib=c("lognormal","normal"), se.agg=TRUE,
-  na.rm=FALSE, attach.units=FALSE, complete.threshold = 0) {
+  na.rm=FALSE, attach.units=FALSE, min.n = 0) {
   
   # Validate arguments
   format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
@@ -211,7 +211,7 @@ aggregateSolute <- function(
     .dots=as.list(agg.by)) 
   groupsInRecord <- n_groups(preds_grp)
   # Remove grouping periods with insufficient data
-  preds_filt <- filter(preds_grp, n() > complete.threshold)
+  preds_filt <- filter(preds_grp, n() >= min.n)
   groupsComplete <- n_groups(preds_filt)
   # Compute the means and SEs values in each group
   agg_preds <- as.data.frame(summarise(
