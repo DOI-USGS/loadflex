@@ -9,7 +9,7 @@ loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
   lat = as.numeric(NA), lon = as.numeric(NA), basin.area = as.numeric(NA),
   flow.site.name = "", flow.site.id = "", flow.lat = as.numeric(NA),
   flow.lon = as.numeric(NA), flow.basin.area = as.numeric(NA),
-  basin.area.units = "km^2", custom, ...)
+  basin.area.units = "km^2", custom = NULL, ...)
 }
 \arguments{
 \item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This 

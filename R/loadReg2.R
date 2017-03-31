@@ -86,7 +86,7 @@ loadReg2 <- function(
   consti.name="", load.rate="", 
   site.id="", lat=as.numeric(NA), lon=as.numeric(NA), basin.area=as.numeric(NA),
   flow.site.name="", flow.site.id="", flow.lat=as.numeric(NA), flow.lon=as.numeric(NA), flow.basin.area=as.numeric(NA),
-  basin.area.units="km^2", custom,                     
+  basin.area.units="km^2", custom=NULL,                     
   ...) {
   
   # Validate arguments
@@ -154,8 +154,13 @@ loadReg2 <- function(
   
   # Get the metadata, which we'll need to do the following data checks
   meta <- getMetadata(load.reg)
-  # Fill the site.id field if given in args, since rloadest only has a site.name equivalent
-  meta <- updateMetadata(meta, site.id = site.id)
+  # Fill the metadata fields not fixed by the rloadest loadReg object
+  meta <- updateMetadata(
+    meta, 
+    consti.name=consti.name, load.rate=load.rate, 
+    site.id=site.id, lat=lat, lon=lon, basin.area=basin.area,
+    flow.site.name=flow.site.name, flow.site.id=flow.site.id, flow.lat=flow.lat, flow.lon=flow.lon, flow.basin.area=flow.basin.area,
+    basin.area.units=basin.area.units, custom=custom)
   
   # Parse the loadReg call, attaching argument names as needed. This will be
   # useful both for the refitting function and for saving the original data.
