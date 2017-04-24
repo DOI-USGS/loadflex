@@ -181,32 +181,53 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
   
 }
 
-#' @section Metrics:
-#'   
-#'   \describe{
-#'   
-#'   \item{\code{Intercept}, \code{lnQ}, \code{DECTIME}, \code{sin.DECTIME}, 
-#'   \code{cos.DECTIME}, etc.}{Coefficient estimates for the named terms. The 
-#'   model formula determines which terms are included. Recall that log(Q) was 
-#'   centered before the coefficients were fit.}
-#'   
-#'   \item{\code{RMSE}}{The root mean squared error of the difference between 
-#'   observed and predicted values of concentration.}
-#'   
-#'   \item{\code{r.squared}}{The proportion of variation explained by the 
-#'   model.}
-#'   
-#'   \item{\code{p.value}}{}
-#'   
-#'   }
-#' @rdname summarizeModel.loadReg2
+#' Extract model summary statistics from an [rloadest::loadReg()] model
+#' 
+#' Produce a 1-row data.frame of model metrics. The relevant metrics for loadReg
+#' models are largely the same as those reported by the `rloadest` package, 
+#' though reported in this streamlined data.frame format for bulk reporting. 
+#' `summarizeModel.loadReg` should rarely be accessed directly; instead, call 
+#' `summarizeModel()` on a [loadReg] object.
+#' 
+#' @md
+#' @inheritParams summarizeModel
 #' @param flux.or.conc character. Which internal model (the flux model or the 
-#'   concentration model) should be summarized? A \pkg{rloadest} model, and 
-#'   therefore also a \code{loadReg2} model, is actually two different models 
-#'   for (1) flux and (2) concentration, each fitted to the same data and with 
-#'   the same model structure except for whether the left-hand side of the model
-#'   formula is flux or concentration. Some of the model metrics differ between 
-#'   these two internal models.
+#'   concentration model) should be summarized? An [rloadest::loadReg] model is 
+#'   actually two different models for (1) flux and (2) concentration, each 
+#'   fitted to the same data and with the same model structure except for 
+#'   whether the left-hand side of the model formula is flux or concentration. 
+#'   Some of the model metrics differ between these two internal models.
+#' @return Returns a 1-row data frame with the following columns:
+#'   
+#'   * `eqn` - the regression equation, possibly in the form `const ~ model(x)`
+#'   where `x` is the `Number` of a pre-defined equation in [rloadest::Models]
+#'   
+#'   * `RMSE` - the square root of the mean squared error. Errors will be 
+#'   computed from either fluxes or concentrations, as determined by the value 
+#'   of `pred.format` that was passed to [loadReg2()] when this model was 
+#'   created
+#'   
+#'   * `r.squared` - the r-squared value, generalized for censored data, 
+#'   describing the amount of observed variation explained by the model
+#'   
+#'   * `p.value` - the p-value for the overall model fit
+#'   
+#'   * `cor.resid` - the correlation of the model residuals
+#'   
+#'   * `PPCC` - the probability plot correlation coefficient measuring the 
+#'   normality of the residuals
+#'   
+#'   * `Intercept`, `lnQ`, `lnQ2`, `DECTIME`, `DECTIME2`, `sin.DECTIME`, 
+#'   `cos.DECTIME`, etc. - the fitted value of the intercept and other terms 
+#'   included in this model (list differs by model equation)
+#'   
+#'   * `Intercept.SE`, `lnQ.SE`, `lnQ2.SE`, `DECTIME.SE`, `DECTIME2.SE`, 
+#'   `sin.DECTIME.SE`, `cos.DECTIME.SE`, etc. - the standard error of the fitted
+#'   estimates of these terms
+#'   
+#'   * `Intercept.p.value`, `lnQ.p.value`, `lnQ2.p.value`, `DECTIME.p.value`, 
+#'   `DECTIME2.p.value`, `sin.DECTIME.p.value`, `cos.DECTIME.p.value` - the 
+#'   p-values for each of these model terms
 #' @importFrom smwrStats rmse
 #' @importFrom utils capture.output
 #' @importFrom stats coef

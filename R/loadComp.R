@@ -551,6 +551,7 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
 #' the regression residuals, one for the 'residuals' used to do the composite 
 #' correction).
 #' 
+#' @md
 #' @inheritParams summarizeModel
 #' @param newdata data.frame of data that was/will be used to predict 
 #'   concentration or load; should be the same as the \code{newdata} argument to
@@ -564,7 +565,34 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
 #'   timesteps are found to be irregular. Tests and estimates of autocorrelation
 #'   are weak to wrong when timesteps are irregular, but timesteps are often at 
 #'   least a bit irregular in the real world.
-#' @return A 1-row data.frame of model metrics
+#' @return Returns a 1-row data frame with the following columns:
+#'   
+#'   * `site.id` - the unique identifier of the site, as in [metadata()]
+#'   
+#'   * `constituent` - the unique identifier of the constituent, as in 
+#'   [metadata()]
+#'   
+#'   * `RMSE.lin` or `RMSE.log` - the square root of the mean squared error, in
+#'   log space (`RMSE.log`) if the `use.log` equalled `TRUE` in the call to 
+#'   [loadComp()] that created this model.
+#'   
+#'   * `reg.durbin.watson` - the Durbin Watson test statistic as applied to the 
+#'   residuals from the regression model fitting process
+#'   
+#'   * `reg.rho` - the autocorrelation coefficient of the residuals from the 
+#'   regression model fitting process
+#'   
+#'   * `int.durbin.watson` - the Durbin Watson test statistic as applied to the 
+#'   residuals from the interpolation model fitting process. See 
+#'   [residDurbinWatson()]
+#'   
+#'   * `int.rho` - the autocorrelation coefficient of the residuals from the 
+#'   interpolation model fitting process. See [estimateRho()]
+#'   
+#'   * `correction.frac` - the correction fraction, i.e., the fraction of total 
+#'   concentration or flux prediction that is attributable to a correction such 
+#'   as the residuals correction of composite method models. See 
+#'   [getCorrectionFraction()]
 #' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel

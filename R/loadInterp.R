@@ -427,6 +427,7 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
 #' Produce a 1-row data.frame of model metrics. The relevant metrics for 
 #' loadInterp models include RMSE, p-values, and others TBD.
 #' 
+#' @md
 #' @inheritParams summarizeModel
 #' @param irregular.timesteps.ok logical. If FALSE, this function requires that 
 #'   the timesteps between observations are identical to one another, and a plot
@@ -436,7 +437,20 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
 #'   timesteps are found to be irregular. Tests and estimates of autocorrelation
 #'   are weak to wrong when timesteps are irregular, but timesteps are often at 
 #'   least a bit irregular in the real world.
-#' @return A 1-row data.frame of model metrics
+#' @return Returns a 1-row data frame with the following columns:
+#'   
+#'   * `site.id` - the unique identifier of the site, as in [metadata()]
+#'   
+#'   * `constituent` - the unique identifier of the constituent, as in 
+#'   [metadata()]
+#'   
+#'   * `RMSE.lin`- the square root of the mean squared error
+#'   
+#'   * `durbin.watson` - the Durbin Watson test statistic as applied to the 
+#'   observations used to fit the interpolation model
+#'   
+#'   * `rho`, `acf1`, `acf1demean`, `corlag` - measures of the autocorrelation
+#'   of the observations used to fit the model
 #' @importFrom dplyr select everything
 #' @importFrom car durbinWatsonTest
 #' @importFrom stats arima

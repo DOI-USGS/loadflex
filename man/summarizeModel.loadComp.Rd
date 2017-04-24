@@ -11,35 +11,56 @@
 \item{load.model}{A load model object, typically inheriting from loadModel 
 and always implementing the loadModelInterface.}
 
-\item{newdata}{data.frame of data that was/will be used to predict 
+\item{newdata}{data.frame of data that was/will be used to predict
 concentration or load; should be the same as the \code{newdata} argument to
 \code{predictSolute}, e.g. a data.frame of daily or instantaneous dates and
 discharges.}
 
-\item{irregular.timesteps.ok}{logical. If FALSE, this function requires that 
+\item{irregular.timesteps.ok}{logical. If FALSE, this function requires that
 the timesteps between observations are identical to one another, and a plot
-is generated and an error is thrown if this requirement is not met. If 
-TRUE, the check is not performed. If NA (the default), the check is 
-performed but the function proceeds with a warning and no plot if the 
+is generated and an error is thrown if this requirement is not met. If
+TRUE, the check is not performed. If NA (the default), the check is
+performed but the function proceeds with a warning and no plot if the
 timesteps are found to be irregular. Tests and estimates of autocorrelation
-are weak to wrong when timesteps are irregular, but timesteps are often at 
+are weak to wrong when timesteps are irregular, but timesteps are often at
 least a bit irregular in the real world.}
 
 \item{...}{Other arguments passed to model-specific methods}
 }
 \value{
-A 1-row data.frame of model metrics
+Returns a 1-row data frame with the following columns:
+\itemize{
+\item \code{site.id} - the unique identifier of the site, as in \code{\link[=metadata]{metadata()}}
+\item \code{constituent} - the unique identifier of the constituent, as in
+\code{\link[=metadata]{metadata()}}
+\item \code{RMSE.lin} or \code{RMSE.log} - the square root of the mean squared error, in
+log space (\code{RMSE.log}) if the \code{use.log} equalled \code{TRUE} in the call to
+\code{\link[=loadComp]{loadComp()}} that created this model.
+\item \code{reg.durbin.watson} - the Durbin Watson test statistic as applied to the
+residuals from the regression model fitting process
+\item \code{reg.rho} - the autocorrelation coefficient of the residuals from the
+regression model fitting process
+\item \code{int.durbin.watson} - the Durbin Watson test statistic as applied to the
+residuals from the interpolation model fitting process. See
+\code{\link[=residDurbinWatson]{residDurbinWatson()}}
+\item \code{int.rho} - the autocorrelation coefficient of the residuals from the
+interpolation model fitting process. See \code{\link[=estimateRho]{estimateRho()}}
+\item \code{correction.frac} - the correction fraction, i.e., the fraction of total
+concentration or flux prediction that is attributable to a correction such
+as the residuals correction of composite method models. See
+\code{\link[=getCorrectionFraction]{getCorrectionFraction()}}
+}
 }
 \description{
-Produce a 1-row data.frame of model metrics. The relevant metrics for 
+Produce a 1-row data.frame of model metrics. The relevant metrics for
 loadComp models include two sets of statistics about autocorrelation (one for
-the regression residuals, one for the 'residuals' used to do the composite 
+the regression residuals, one for the 'residuals' used to do the composite
 correction).
 }
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadInterp}},
   \code{\link{summarizeModel.loadLm}},
   \code{\link{summarizeModel.loadModel}},
-  \code{\link{summarizeModel.loadReg}},
+  \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }

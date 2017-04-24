@@ -23,6 +23,6 @@ loadLm models include RMSE, p-values, and others TBD.
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadInterp}},
   \code{\link{summarizeModel.loadModel}},
-  \code{\link{summarizeModel.loadReg}},
+  \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }

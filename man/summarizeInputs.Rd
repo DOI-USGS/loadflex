@@ -7,18 +7,81 @@
 summarizeInputs(metadata, fitdat, estdat)
 }
 \arguments{
-\item{metadata}{metadata, used to access the appropriate columns of data. At 
+\item{metadata}{metadata, used to access the appropriate columns of data. At
 a minimum, \code{metadata} should correctly specify the date column and the
 column indicated by \code{interp.format}.}
 
-\item{fitdat}{data frame record of constituent+discharge measurements, for
-fitting a model}
+\item{fitdat}{data frame of constituent+discharge measurements, for fitting a
+model}
 
-\item{estdat}{data frame record of discharge measurements, for making
-predictions from a model}
+\item{estdat}{data frame of discharge measurements, for making predictions
+(estimations) from a model}
 }
 \value{
-data frame of the following information:
+Returns a 1-row data frame with the following columns:
+\itemize{
+\item \code{site.name} - the long name of the site, as in \code{\link[=metadata]{metadata()}}
+\item \code{site.id} - the unique identifier of the site, as in \code{\link[=metadata]{metadata()}}
+\item \code{constituent} - the unique identifier of the constituent, as in
+\code{\link[=metadata]{metadata()}}
+\item \code{consti.name} - the long name of the constituent, as in \code{\link[=metadata]{metadata()}}
+\item \code{conc.units} - the units of concentration data, as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.units} - the units of discharge data, as in \code{\link[=metadata]{metadata()}}
+\item \code{load.units} - the units of load estimates, as in \code{\link[=metadata]{metadata()}}
+\item \code{load.rate.units} - the units of load rate units, as in \code{\link[=metadata]{metadata()}}
+\item \code{lat} - the decimal latitude of the station where concentration (and
+possibly also discharge) was measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{lon} - the decimal longitude of the station where concentration (and
+possibly also discharge) was measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{basin.area} - the area of the drainage basin contributing water to the
+site where concentrations were measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.site.name} - the long name of the station where flow was monitored,
+as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.site.id} - the unique identifier of the station where flow was
+monitored, as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.lat} - the decimal latitude of the station where discharge was
+measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.lon} - the decimal longitude of the station where discharge was
+measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{flow.basin.area} - the area of the drainage basin contributing water to
+the site where discharge was measured, as in \code{\link[=metadata]{metadata()}}
+\item \code{basin.area.units} - the units of the values in \code{basin.area} and
+\code{flow.basin.area} (same for both), as in \code{\link[=metadata]{metadata()}}
+\item \code{[custom]} - if the \code{custom} slot of \code{metadata} is a 1-row data.frame or
+a list of length-1 elements, the columns of that data.frame are included in
+this summary
+\item \code{basin.area.ratio.QC} - the ratio of \code{flow.basin.area} to \code{basin.area}
+\item \code{fitdat.start} - the date of the first observation in the model fitting
+data
+\item \code{fitdat.end} - the date/time of the last observation in the model fitting
+data
+\item \code{fitdat.num.total} - the total number of observations in the model
+fitting data
+\item \code{fitdat.num.incomplete} - the number of NA observations in the model
+fitting data
+\item \code{fitdat.num.censored} - this field is currently a placeholder (will
+always be NA) for the number of censored observations in the model fitting
+data
+\item \code{fitdat.min.gap.days} - the length in days of the smallest gap between
+any two successive observations in the model fitting data
+\item \code{fitdat.max.gap.days} - the length in days of the largest gap between any
+two successive observations in the model fitting data
+\item \code{fitdat.median.gap.days} - the length in days of the median gap between
+successive observations in the model fitting data
+\item \code{estdat.start} - the date of the first observation in the estimation data
+\item \code{estdat.end} - the date/time of the last observation in the estimation
+data
+\item \code{estdat.num.total} - the total number of observations in the estimation
+data
+\item \code{estdat.num.incomplete} - the number of incomplete (NA) observations in
+the estimation data
+\item \code{estdat.min.gap.days} - the length in days of the smallest gap between
+any two successive observations in the estimation data
+\item \code{estdat.max.gap.days} - the length in days of the largest gap between any
+two successive observations in the estimation data
+\item \code{estdat.median.gap.days} - the length in days of the median gap between
+successive observations in the estimation data
+}
 }
 \description{
 Summarize the site and input data
