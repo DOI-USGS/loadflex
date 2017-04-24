@@ -532,13 +532,50 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' Extract model summary statistics from a loadReg2 model
 #' 
 #' Produce a 1-row data.frame of model metrics. The relevant metrics for 
-#' loadReg2 models are largely the same as those reported by the \code{rloadest}
+#' loadReg2 models are largely the same as those reported by the `rloadest` 
 #' package, though reported in this streamlined data.frame format for bulk 
-#' reporting. \code{summarizeModel.loadReg} should rarely be accessed directly;
-#' instead, call \code{summarizeModel()} on a \code{loadReg2} object.
+#' reporting. `summarizeModel.loadReg2` should rarely be accessed directly; 
+#' instead, call `summarizeModel()` on a [loadReg2] object.
 #' 
+#' @md
 #' @inheritParams summarizeModel
-#' @return A 1-row data.frame of model metrics
+#' @return Returns a 1-row data frame with the following columns:
+#'   
+#'   * `site.id` - the unique identifier of the site, as in [metadata()]
+#'   
+#'   * `constituent` - the unique identifier of the constituent, as in 
+#'   [metadata()]
+#'   
+#'   * `eqn` - the regression equation, possibly in the form `const ~ model(x)` 
+#'   where `x` is the `Number` of a pre-defined equation in [rloadest::Models]
+#'   
+#'   * `RMSE` - the square root of the mean squared error. Errors will be 
+#'   computed from either fluxes or concentrations, as determined by the value 
+#'   of `pred.format` that was passed to [loadReg2()] when this model was 
+#'   created
+#'   
+#'   * `r.squared` - the r-squared value, generalized for censored data, 
+#'   describing the amount of observed variation explained by the model
+#'   
+#'   * `p.value` - the p-value for the overall model fit
+#'   
+#'   * `cor.resid` - the correlation of the model residuals
+#'   
+#'   * `PPCC` - the probability plot correlation coefficient measuring the 
+#'   normality of the residuals
+#'   
+#'   * `Intercept`, `lnQ`, `lnQ2`, `DECTIME`, `DECTIME2`, `sin.DECTIME`, 
+#'   `cos.DECTIME`, etc. - the fitted value of the intercept and other terms 
+#'   included in this model (list differs by model equation)
+#'   
+#'   * `Intercept.SE`, `lnQ.SE`, `lnQ2.SE`, `DECTIME.SE`, `DECTIME2.SE`, 
+#'   `sin.DECTIME.SE`, `cos.DECTIME.SE`, etc. - the standard error of the fitted
+#'   estimates of these terms
+#'   
+#'   * `Intercept.p.value`, `lnQ.p.value`, `lnQ2.p.value`, `DECTIME.p.value`, 
+#'   `DECTIME2.p.value`, `sin.DECTIME.p.value`, `cos.DECTIME.p.value` - the 
+#'   p-values for each of these model terms
+#'   
 #' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel

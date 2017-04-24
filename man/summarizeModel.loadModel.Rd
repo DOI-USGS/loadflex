@@ -25,6 +25,6 @@ correction).
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadInterp}},
   \code{\link{summarizeModel.loadLm}},
-  \code{\link{summarizeModel.loadReg}},
+  \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }
