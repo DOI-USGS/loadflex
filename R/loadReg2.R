@@ -81,6 +81,13 @@ setClass(
 #' @importFrom rloadest loadReg
 #' @export
 #' @family load.model.inits
+#' @examples 
+#' library(rloadest)
+#' no3_lr <- suppressWarnings(
+#'   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
+#'     flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+#'     flow.units="cfs", conc.units="mg/L", load.units="kg",
+#'     station='Lamprey River, NH')))
 loadReg2 <- function(
   load.reg, pred.format=c("flux","conc"), store=c("data","fitting.function"),
   consti.name="", load.rate="", 
@@ -357,8 +364,11 @@ predictSolute.loadReg2 <- function(
   # assumption, as in predLoad and predConc, that the Ferguson (1986) method is
   # adequate for re-retransformation. (predLoad and predConc use these to
   # compute prediction intervals)
+  preds_log_raw <- preds_lin_raw[,1,drop=FALSE]
+  preds_log_raw$meanlog <- preds_log_raw$sdlog <- NA
   KDays <- !is.na(preds_lin_raw[["SEP"]])
-  preds_log_raw <- linToLog(meanlin=preds_lin_raw[[preds_col]][KDays], sdlin=preds_lin_raw$SEP[KDays])
+  preds_log_raw[KDays,c("meanlog","sdlog")] <- 
+    linToLog(meanlin=preds_lin_raw[[preds_col]][KDays], sdlin=preds_lin_raw$SEP[KDays])
   
   # Format predictions; add intervals if requested
   if(interval == "none") {
@@ -559,7 +569,7 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #'   
 #'   * `p.value` - the p-value for the overall model fit
 #'   
-#'   * `cor.resid` - the correlation of the model residuals
+#'   * `cor.resid` - the serial correlation of the model residuals
 #'   
 #'   * `PPCC` - the probability plot correlation coefficient measuring the 
 #'   normality of the residuals
@@ -579,6 +589,14 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel
+#' @examples
+#' library(rloadest)
+#' no3_lr <- suppressWarnings(
+#'   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
+#'   flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+#'   flow.units="cfs", conc.units="mg/L", load.units="kg",
+#'   station='Lamprey River, NH')))
+#' summarizeModel(no3_lr)
 summarizeModel.loadReg2 <- function(load.model, ...) {
   
   # collect and combine the default summary and the loadReg summary

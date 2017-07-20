@@ -32,7 +32,7 @@ created
 \item \code{r.squared} - the r-squared value, generalized for censored data,
 describing the amount of observed variation explained by the model
 \item \code{p.value} - the p-value for the overall model fit
-\item \code{cor.resid} - the correlation of the model residuals
+\item \code{cor.resid} - the serial correlation of the model residuals
 \item \code{PPCC} - the probability plot correlation coefficient measuring the
 normality of the residuals
 \item \code{Intercept}, \code{lnQ}, \code{lnQ2}, \code{DECTIME}, \code{DECTIME2}, \code{sin.DECTIME},

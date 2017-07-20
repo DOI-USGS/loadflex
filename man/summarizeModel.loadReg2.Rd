@@ -27,7 +27,7 @@ created
 \item \code{r.squared} - the r-squared value, generalized for censored data,
 describing the amount of observed variation explained by the model
 \item \code{p.value} - the p-value for the overall model fit
-\item \code{cor.resid} - the correlation of the model residuals
+\item \code{cor.resid} - the serial correlation of the model residuals
 \item \code{PPCC} - the probability plot correlation coefficient measuring the
 normality of the residuals
 \item \code{Intercept}, \code{lnQ}, \code{lnQ2}, \code{DECTIME}, \code{DECTIME2}, \code{sin.DECTIME},
@@ -47,6 +47,15 @@ loadReg2 models are largely the same as those reported by the \code{rloadest}
 package, though reported in this streamlined data.frame format for bulk
 reporting. \code{summarizeModel.loadReg2} should rarely be accessed directly;
 instead, call \code{summarizeModel()} on a \link{loadReg2} object.
+}
+\examples{
+library(rloadest)
+no3_lr <- suppressWarnings(
+  loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
+  flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+  flow.units="cfs", conc.units="mg/L", load.units="kg",
+  station='Lamprey River, NH')))
+summarizeModel(no3_lr)
 }
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
