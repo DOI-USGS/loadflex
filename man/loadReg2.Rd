@@ -85,6 +85,14 @@ loadReg2s are wrappers for loadReg objects produced by the USGS
 call; entries that can be edited may be given as arguments to the loadReg2()
 call (e.g., site.id, lat, lon, basin.area).
 }
+\examples{
+library(rloadest)
+no3_lr <- suppressWarnings(
+  loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
+    flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+    flow.units="cfs", conc.units="mg/L", load.units="kg",
+    station='Lamprey River, NH')))
+}
 \seealso{
 Other load.model.inits: \code{\link{loadComp}},
   \code{\link{loadInterp}}, \code{\link{loadLm}},

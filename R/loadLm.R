@@ -431,15 +431,88 @@ simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), new
 
 #' Extract model summary statistics from a loadLm model
 #' 
-#' Produce a 1-row data.frame of model metrics. The relevant metrics for 
-#' loadLm models include RMSE, p-values, and others TBD.
+#' Produce a 1-row data.frame of model metrics.
 #' 
+#' @md
 #' @inheritParams summarizeModel
+#' @return Returns a 1-row data frame with the following columns:
+#'   
+#'   * `site.id` - the unique identifier of the site, as in [metadata()]
+#'   
+#'   * `constituent` - the unique identifier of the constituent, as in 
+#'   [metadata()]
+#'   
+#'   * `eqn` - the regression equation, possibly in the form `const ~ model(x)` 
+#'   where `x` is the `Number` of a pre-defined equation in [rloadest::Models]
+#'   
+#'   * `RMSE` - the square root of the mean squared error. Errors will be 
+#'   computed from either fluxes or concentrations, as determined by the value 
+#'   of `pred.format` that was passed to [loadReg2()] when this model was 
+#'   created
+#'   
+#'   * `r.squared` - the r-squared value, generalized for censored data, 
+#'   describing the amount of observed variation explained by the model
+#'   
+#'   * `p.value` - the p-value for the overall model fit
+#'   
+#'   * `cor.resid` - the serial correlation of the model residuals
+#'   
+#'   * `PPCC` - the probability plot correlation coefficient measuring the 
+#'   normality of the residuals
+#'   
+#'   * `Intercept`, `lnQ`, `lnQ2`, `DECTIME`, `DECTIME2`, `sin.DECTIME`, 
+#'   `cos.DECTIME`, etc. - the fitted value of the intercept and other terms 
+#'   included in this model (list differs by model equation)
+#'   
+#'   * `Intercept.SE`, `lnQ.SE`, `lnQ2.SE`, `DECTIME.SE`, `DECTIME2.SE`, 
+#'   `sin.DECTIME.SE`, `cos.DECTIME.SE`, etc. - the standard error of the fitted
+#'   estimates of these terms
+#'   
+#'   * `Intercept.p.value`, `lnQ.p.value`, `lnQ2.p.value`, `DECTIME.p.value`, 
+#'   `DECTIME2.p.value`, `sin.DECTIME.p.value`, `cos.DECTIME.p.value` - the 
+#'   p-values for each of these model terms
+#'   
+
 #' @return A 1-row data.frame of model metrics
 #' @importFrom dplyr select everything
 #' @export
 #' @family summarizeModel
+#' @examples 
+#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
+#'   data=get(data(lamprey_nitrate)), metadata=exampleMetadata(), retrans=exp)
+#' summarizeModel(no3_lm)
 summarizeModel.loadLm <- function(load.model, ...) {
-  warning("summarizeModel.loadLm isn't implemented yet")
-  data.frame(site.id=getMetadata(load.model)@site.id)
+  # collect the default summary
+  out <- NextMethod()
+  
+  # add coefs and other overall statistics, maintaining a single 1-row data.frame
+  fit <- getFittedModel(load.model)
+  sumfit <- summary(fit)
+  out$eqn <- capture.output({
+    ft <- fit$terms
+    attributes(ft) <- NULL
+    print(ft)  
+  })
+  out$RMSE = smwrStats::rmse(fit)
+  out$r.squared = sumfit$r.squared
+  out$p.value = stats::pf(sumfit$fstatistic[[1]], sumfit$fstatistic[[2]], sumfit$fstatistic[[3]], lower.tail=FALSE)
+  out$cor.resid = cor(sumfit$residuals[-1], sumfit$residuals[-length(sumfit$residuals)])
+  out$PPCC = smwrStats::ppcc.test(fit$residuals)$statistic[['r']]
+  
+  # summarize the coefficient estimates, standard errors, and p-values
+  coefs <- coef(summary(fit))
+  coefsDF <- setNames(
+    data.frame(
+      t(coefs[,'Estimate']),
+      SE=t(coefs[,'Std. Error']),
+      pval=t(coefs[,'Pr(>|t|)'])
+    ),
+    nm = paste0(
+      rep(gsub('(Intercept)', 'Intercept', row.names(coefs), fixed=TRUE), 3), # coefficient names
+      rep(c('', '.SE', '.p.value'), each=nrow(coefs))) # aspect of coefficient being described
+  )
+  out <- data.frame(out, coefsDF, check.names=FALSE, stringsAsFactors=FALSE)
+  
+  # return
+  return(out)
 }

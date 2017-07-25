@@ -212,7 +212,7 @@ resampleCoefficients.loadReg <- function(fit, flux.or.conc) {
 #'   
 #'   * `p.value` - the p-value for the overall model fit
 #'   
-#'   * `cor.resid` - the correlation of the model residuals
+#'   * `cor.resid` - the serial correlation of the model residuals
 #'   
 #'   * `PPCC` - the probability plot correlation coefficient measuring the 
 #'   normality of the residuals

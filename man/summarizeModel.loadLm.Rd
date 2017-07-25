@@ -13,11 +13,43 @@ and always implementing the loadModelInterface.}
 \item{...}{Other arguments passed to model-specific methods}
 }
 \value{
+Returns a 1-row data frame with the following columns:
+\itemize{
+\item \code{site.id} - the unique identifier of the site, as in \code{\link[=metadata]{metadata()}}
+\item \code{constituent} - the unique identifier of the constituent, as in
+\code{\link[=metadata]{metadata()}}
+\item \code{eqn} - the regression equation, possibly in the form \code{const ~ model(x)}
+where \code{x} is the \code{Number} of a pre-defined equation in \link[rloadest:Models]{rloadest::Models}
+\item \code{RMSE} - the square root of the mean squared error. Errors will be
+computed from either fluxes or concentrations, as determined by the value
+of \code{pred.format} that was passed to \code{\link[=loadReg2]{loadReg2()}} when this model was
+created
+\item \code{r.squared} - the r-squared value, generalized for censored data,
+describing the amount of observed variation explained by the model
+\item \code{p.value} - the p-value for the overall model fit
+\item \code{cor.resid} - the serial correlation of the model residuals
+\item \code{PPCC} - the probability plot correlation coefficient measuring the
+normality of the residuals
+\item \code{Intercept}, \code{lnQ}, \code{lnQ2}, \code{DECTIME}, \code{DECTIME2}, \code{sin.DECTIME},
+\code{cos.DECTIME}, etc. - the fitted value of the intercept and other terms
+included in this model (list differs by model equation)
+\item \code{Intercept.SE}, \code{lnQ.SE}, \code{lnQ2.SE}, \code{DECTIME.SE}, \code{DECTIME2.SE},
+\code{sin.DECTIME.SE}, \code{cos.DECTIME.SE}, etc. - the standard error of the fitted
+estimates of these terms
+\item \code{Intercept.p.value}, \code{lnQ.p.value}, \code{lnQ2.p.value}, \code{DECTIME.p.value},
+\code{DECTIME2.p.value}, \code{sin.DECTIME.p.value}, \code{cos.DECTIME.p.value} - the
+p-values for each of these model terms
+}
+
 A 1-row data.frame of model metrics
 }
 \description{
-Produce a 1-row data.frame of model metrics. The relevant metrics for 
-loadLm models include RMSE, p-values, and others TBD.
+Produce a 1-row data.frame of model metrics.
+}
+\examples{
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
+  data=get(data(lamprey_nitrate)), metadata=exampleMetadata(), retrans=exp)
+summarizeModel(no3_lm)
 }
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
