@@ -27,7 +27,7 @@ Imports:
     smwrBase (>= 1.1.2),
     smwrStats,
     smwrQW,
-    unitted (>= 0.2.5),
+    unitted (>= 0.2.8),
     car,
     dplyr,
     EGRET,
@@ -40,15 +40,17 @@ Imports:
 Suggests:
     knitr,
     testthat
+LazyData: true
 License: GPL (>= 2)
 URL: https://github.com/USGS-R/loadflex
-Collate:
+Collate: 
     'aaa_onLoad.R'
     'aggregateSolute.R'
     'convertToEGRET.R'
     'covariance.R'
-    'dataDocumentation.R'
+    'deprecated.R'
     'diagnostics.R'
+    'examples.R'
     'getResiduals.R'
     'interpolations.R'
     'loadModelInterface.R'

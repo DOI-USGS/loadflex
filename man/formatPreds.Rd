@@ -43,18 +43,23 @@ according to the metadata.
 }
 \examples{
 obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), 
-MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
-md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
-load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", load.units="kg", 
-load.rate.units="kg/d", custom=NULL)
+  MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
+md <- metadata(constituent="MyConc", flow="MyFlow", 
+  load.rate="MyFlux", dates="none", flow.units="m^3 s^-1", conc.units="mg L^-1",
+  load.units="kg", load.rate.units="kg/d", site.name='My River', custom=NULL)
   
-formatPreds(preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, 
-metadata=md) # == obs$MyFlux
-formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=obs, 
-metadata=md) # == obs$MyFlux
-formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, 
-metadata=md) # == obs$MyConc
-formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, 
-attach.units=TRUE) # == u(obs$MyConc, "mg L^-1")
+all.equal(obs$MyFlux, formatPreds(
+  preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, metadata=md))
+\dontrun{
+# these examples take too long to build regularly
+all.equal(obs$MyFlux, formatPreds(
+  preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux",
+    newdata=obs, metadata=md))
+all.equal(obs$MyConc, formatPreds(
+  preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md))
+all.equal(unitted::u(obs$MyConc, "mg L^-1"), formatPreds(
+  preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, 
+  attach.units=TRUE))
+}
 }
 \keyword{units}
