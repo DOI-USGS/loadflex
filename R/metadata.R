@@ -449,21 +449,6 @@ updateMetadata <- function(metadata, new.metadata=NA, ..., validate=TRUE) {
   return(metadata)
 }
 
-#' \code{exampleMetadata} produces an example metadata object, useful in testing
-#' or to see how a complete metadata object looks.
-#' 
-#' @rdname metadata
-#' @return \code{exampleMetadata} returns a metadata object with example entries.
-#' @export
-#' @examples
-#' exampleMetadata()
-exampleMetadata <- function() {
-  metadata("NO3","Q","NO3_FLUX","DATE","mg/L","cms","kg","kg/day",
-           site.name="Lamprey River @ Wiswall Dam, Durham, New Hampshire",
-           custom=list(a="anything you want goes here", b=1:10))  
-}
-
-
 #### Use metadata to access data ####
 
 #' Access information about a load model.
