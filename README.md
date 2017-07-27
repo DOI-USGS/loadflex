@@ -84,7 +84,7 @@ Regularly, it is a good idea to update *ALL* your packages in R. If using RStudi
 
 ![update](images/update.png)
 
-### Install Development version:
+### Install Development Version:
 
 To install the current development version of the package*:
 ```r
@@ -96,18 +96,7 @@ devtools::install_github("USGS-R/loadflex")
 Also please see the installation FAQ on the wiki
 (https://github.com/USGS-R/loadflex/wiki/Installation-FAQ) if you run into trouble.
 
-### Updates
 
-After the first-time installation, you can update with these commands:
-```r
-update.packages(
-  oldPkgs=c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", "smwrQW", "rloadest", "unitted"),
-  dependencies=TRUE, repos=c("https://owi.usgs.gov/R", "https://cran.rstudio.com"))
-update.packages(
-  oldPkgs=c("car", "dplyr", "ggplot2", "lubridate", "MASS", "Matrix"),
-  dependencies=TRUE, type="both")
-devtools::install_github("USGS-R/loadflex")
-```
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page:
