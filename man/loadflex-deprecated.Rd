@@ -3,7 +3,7 @@
 \name{loadflex-deprecated}
 \alias{loadflex-deprecated}
 \alias{exampleMetadata}
-\title{Deprecated functions in loadflex package}
+\title{Deprecated functions in the \pkg{loadflex} package}
 \usage{
 exampleMetadata()
 }
@@ -14,4 +14,7 @@ look instead.
 }
 \details{
 \code{exampleMetadata} has been replaced by \code{data(eg_metadata)}
+}
+\seealso{
+loadflex-deprecated-data
 }
