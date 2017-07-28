@@ -335,16 +335,16 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
 #' @export
 #' @keywords units
 #' @examples
+#' data(eg_metadata)
 #' obs <- data.frame(MyConc=(1:10)/10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent
-#' # between conc*flow and flux
-#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
-#' load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", 
-#' load.units="g", load.rate.units="g/s", custom=NULL)
-#'   
-#' observeSolute(obs, "flux", md, attach.units=TRUE) # calculate flux from conc & flow
-#' observeSolute(obs, "flux", md, calculate=FALSE, attach.units=TRUE) # read flux from data column
-#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate conc 
-#' # from flow & flux
+#' md <- updateMetadata(eg_metadata, constituent="MyConc", flow="MyFlow", 
+#'   load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", 
+#'   load.units="g", load.rate.units="g/s", custom=NULL)
+#' 
+#' observeSolute(obs, "flux", md, attach.units=TRUE) # calculate from conc & flow
+#' observeSolute(obs, "flux", md, calculate=FALSE, attach.units=TRUE) # read flux from data
+#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate from flow & flux
+#' observeSolute(obs, "conc", md, calculate=FALSE, attach.units=TRUE) # read conc from data
 observeSolute <- function(
   data, flux.or.conc=c("flux","conc"), metadata, 
   calculate=isTRUE(flux.or.conc=="flux"), 

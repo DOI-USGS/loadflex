@@ -2,7 +2,8 @@ tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=func
 
 library(rloadest)
 data(app2.est)
-md <- updateMetadata(exampleMetadata(), flow="FLOW", dates="DATES")
+data(eg_metadata)
+md <- updateMetadata(eg_metadata, flow="FLOW", dates="DATES")
 library(ggplot2)
 
 #method hysep is commented out mcl - 1-22-16

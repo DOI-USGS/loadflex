@@ -2,11 +2,11 @@
 #' 
 #' \code{metadata} objects store metadata for a load model of any type (e.g., 
 #' \code{\link{loadModel}}, \code{\link{loadInterp}}, \code{\link{loadReg2}}, or
-#' \code{\link{loadComp}}). Metadata can be created and modified by calls to 
-#' \code{\link{metadata}}, \code{\link{updateMetadata}}, or 
-#' \code{\link{exampleMetadata}}. Values and relevant information can be 
-#' accessed by \code{\link{getCol}}, \code{\link{getUnits}}, or 
-#' \code{\link{getInfo}}.
+#' \code{\link{loadComp}}). See an example object at
+#' \code{data(\link{eg_metadata})}. Metadata can be created and modified by
+#' calls to \code{\link{metadata}} or \code{\link{updateMetadata}}. Values and
+#' relevant information can be accessed by \code{\link{getCol}},
+#' \code{\link{getUnits}}, or \code{\link{getInfo}}.
 #' 
 #' @rdname metadata-class
 #' @name metadata-class

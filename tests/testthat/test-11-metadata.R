@@ -24,35 +24,29 @@ test_that("metadata can be initialized", {
   # After all arguments are supplied, they're still checked for validity
   expect_error(metadata("", "Q", "NO3_FLUX", "DATE", "mg/L", "cms", "kg", "kg/day"), "constituent must be a non-empty string")
   expect_error(metadata("NO3", "Q", "NO3_FLUX", "DATE", "mg/L", "cms", "kg", "kg/month"), "unexpected unit 'month'")
-    
-  # exampleMetadata can be used to construct a valid metadata object without 
-  # typing in arguments. It's only useful for testing, of course, not for use
-  # with actual data.
-  expect_is(exampleMetadata(), "metadata")  
-  expect_true(validObject(exampleMetadata()))
 })
 
 test_that("metadata can be revised (with validation)", {
+  data(eg_metadata)
   # updateMetadata won't create a metadata object
   expect_error(updateMetadata(
     constituent="NO3", flow="Q", load.rate="NO3_FLUX", dates="DATE",
     conc.units="mg/L", flow.units="cms", load.units="kg", load.rate.units="kg/day",
     station="Lamprey River @ Wiswall Dam, Durham, New Hampshire", 
     custom=list(a="anything you want goes here", b=1:10)), 'argument "metadata" is missing, with no default')
-  expect_is(updateMetadata(exampleMetadata(), constituent="solute", flow="FLOW", dates="DATES"), "metadata")
-  expect_is(updateMetadata(exampleMetadata(), constituent="TSS", flow="FLOW", dates="DATES", flow.units="cfs", load.units="kg", conc.units="mg/L"), "metadata")
-  expect_is(updateMetadata(updateMetadata(exampleMetadata(), constituent="solute", flow="FLOW", dates="DATES"), load.units="g", load.rate.units="g/day"), "metadata")
-  expect_equal(updateMetadata(exampleMetadata(), constituent="solute", flow="FLOW", dates="DATES")@flow.units, "m^3 s^-1")
+  expect_is(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), "metadata")
+  expect_is(updateMetadata(eg_metadata, constituent="TSS", flow="FLOW", dates="DATES", flow.units="cfs", load.units="kg", conc.units="mg/L"), "metadata")
+  expect_is(updateMetadata(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), load.units="g", load.rate.units="g/day"), "metadata")
+  expect_equal(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES")@flow.units, "ft^3 s^-1")
   
   # Revisions are checked within updateMetadata
-  md <- exampleMetadata()
-  expect_error(updateMetadata(md, nonsense=""), "unrecognized metadata element: nonsense")
-  expect_error(updateMetadata(md, constituent=""), "constituent must be a non-empty string")
-  expect_error(updateMetadata(md, flow=""), "flow must be a non-empty string")
-  expect_error(updateMetadata(md, dates=""), "dates must be a non-empty string")
-  expect_error(updateMetadata(md, flow.units="w"), "unexpected unit")
-  expect_error(updateMetadata(md, conc.units="x"), "unexpected unit")
-  expect_error(updateMetadata(md, load.units="y"), "load.units are invalid")
+  expect_error(updateMetadata(eg_metadata, nonsense=""), "unrecognized metadata element: nonsense")
+  expect_error(updateMetadata(eg_metadata, constituent=""), "constituent must be a non-empty string")
+  expect_error(updateMetadata(eg_metadata, flow=""), "flow must be a non-empty string")
+  expect_error(updateMetadata(eg_metadata, dates=""), "dates must be a non-empty string")
+  expect_error(updateMetadata(eg_metadata, flow.units="w"), "unexpected unit")
+  expect_error(updateMetadata(eg_metadata, conc.units="x"), "unexpected unit")
+  expect_error(updateMetadata(eg_metadata, load.units="y"), "load.units are invalid")
 })
 
 
@@ -63,7 +57,8 @@ test_that("metadata units are standardized during creation/update", {
 
 
 test_that("metadata can be accessed by getCol", {
-  md <- exampleMetadata()
+  data(eg_metadata)
+  md <- eg_metadata
   da <- data.frame(NO3=1:3, Q=4:6, NO3_FLUX="hi", DATE=as.Date("2007-03-14"))
   
   # Confirm partial matching and case insensitivity
@@ -84,7 +79,8 @@ test_that("metadata can be accessed by getCol", {
 })
 
 test_that("metadata can be accessed by getUnits", {
-  md <- exampleMetadata()
+  data(eg_metadata)
+  md <- eg_metadata
   
   # Confirm partial matching and case insensitivity
   expect_equal(getUnits(md, "con"), getUnits(md, "conc"))
@@ -104,7 +100,8 @@ test_that("metadata can be accessed by getUnits", {
 })
 
 test_that("metadata can be accessed by getInfo", {
-  md <- exampleMetadata()
+  data(eg_metadata)
+  md <- eg_metadata
   
   # Confirm partial matching and case insensitivity
   expect_equal(getInfo(md, "da"), getInfo(md, "dates"))
@@ -122,11 +119,13 @@ test_that("metadata can be accessed by getInfo", {
 })
 
 test_that("metadata can be displayed", {
-  expect_output(show(exampleMetadata()), "constituent(.*)flow(.*)dates")
+  data(eg_metadata)
+  expect_output(show(eg_metadata), "constituent(.*)flow(.*)dates")
 })
 
 test_that("metadata can be tested for equality", {
-  md <- updateMetadata(exampleMetadata(), flow="Q", custom=NULL)
+  data(eg_metadata)
+  md <- updateMetadata(eg_metadata, flow="Q", custom=NULL)
   expect_true(md == md)
   expect_true(md == updateMetadata(md, flow="Q"))
   expect_false(md == updateMetadata(md, flow="discharge"))

@@ -9,7 +9,8 @@ test_that("loadInterp models can be created", {
   expect_true(validObject(new("interpModel", dates.in=1:10, y.in=11:20, interp.function=function(x) x)))
   
   mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10,datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
-  mymd <- updateMetadata(exampleMetadata(), constituent="conc", flow="discharge", dates="datetime")
+  data(eg_metadata)
+  mymd <- updateMetadata(eg_metadata, constituent="conc", flow="discharge", dates="datetime")
     
   # This is the interpolation you'd compare to a regression or composite method
   lic <- loadInterp(interp.format="conc", 
