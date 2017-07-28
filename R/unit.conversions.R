@@ -1,41 +1,46 @@
+#### Data Documentation ####
+
+#' @name units_loadflex
+#' @aliases valid.metadata.units freeform.unit.translations unit.conversions
+#' @title Units-related datasets for the \pkg{loadflex} package
+#' @description These datasets are provided for managing units within the 
+#'   \pkg{loadflex} package. It is recommended NOT to use these datasets 
+#'   directly within your code, as they may change structure or contents in the 
+#'   future.
+#' @section Datasets:
+#'   
+#'   \describe{
+#'   
+#'   \item{\code{valid.metadata.units}}{A data.frame with character columns 
+#'   "unit", "standard", and "dimension". Used (1) to determine whether units in
+#'   slots of a `metadata` object have the appropriate dimensionality; e.g., 
+#'   \code{conc.units} must have dimensions of mass or count per volume, and (2)
+#'   to convert among units of the same dimensionality.}
+#'   
+#'   \item{\code{freeform.unit.translations}}{A data.frame with character 
+#'   columns "new" and "old". Used for mapping freeform units ("old") to the 
+#'   specific format required by \pkg{loadflex} ("new").}
+#'   
+#'   \item{\code{unit.conversions}}{A data.frame with character columns 
+#'   "numerator", "denominator", and numeric column "value", one conversion per 
+#'   row. Used for converting among }
+#'   
+#'   }
+#' @docType data
+NULL
+
 #### Data ####
 
-#' Defines the units (or pieces of units) that are permissible in valid load
-#' models
-#' 
-#' Contains a dictionary of valid units and their dimensions
-#' 
-#' @name valid.metadata.units
-#' @docType data
-#' @format A data.frame with character columns "unit" and "dimension"
-#' @examples
-#' data(valid.metadata.units); valid.metadata.units
-NULL
-
-#' Defines the units that are permissible to pass to load models
-#' 
-#' Contains a dictionary with which we will translate a range of possibilities
-#' into a smaller, more uniform set of units
-#' 
-#' @name freeform.unit.translations
-#' @docType data
-#' @format A data.frame with character columns "new" and "old"
-#' @keywords data units
-#' @examples
-#' data(freeform.unit.translations); freeform.unit.translations
-NULL
-
-#' Defines the units that are permissible in load models, along with the 
-#' multiplers that will allow common conversions among units
-#' 
-#' @name unit.conversions
-#' @docType data
-#' @format A data.frame with character columns "numerator", "denominator", and
-#'   numeric column "value", one conversion per row
-#' @keywords data units
-#' @examples
-#' data(unit.conversions); unit.conversions
-NULL
+#' @rdname loadflex-deprecated-internal
+#' @details `generateUnitsData` (defunct as of v1.2.0) has been replaced by the
+#'   script at data-raw/createUnitsData.R
+#' @md
+#' @importFrom stats setNames
+#' @import dplyr
+#' @keywords internal
+generateUnitsData <- function() {
+  stop('Defunct. To regenerate units data, run the script in the GitHub repo at data-raw/createUnitsData.R')
+}
 
 #### Functions ####
 
