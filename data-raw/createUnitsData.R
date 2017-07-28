@@ -32,7 +32,6 @@ valid.metadata.units <- bind_rows(
     unit=c("m^2", "ha", "km^2", "ft^2", "ac", "mi^2")
   )
 ) %>% as.data.frame(stringsAsFactors=FALSE)
-save(valid.metadata.units, file="data/valid.metadata.units.RData")
 
 #### freeform.unit.translations ####
 
@@ -64,7 +63,6 @@ freeform.unit.translations <- bind_rows(
   data_frame(new="m^3 s^-1", old=c("cubic meter per second", "cms")),
   data_frame(new="ft^3 s^-1", old=c("cubic feet per second", "cubic foot per second", "cfs"))
 ) %>% as.data.frame(stringsAsFactors=FALSE)
-save(freeform.unit.translations, file="data/freeform.unit.translations.RData")
 
 #### unit.conversions ####
 
@@ -129,7 +127,14 @@ unit.conversions <- bind_rows(
 unit.conversions$numerator <- as.character(unit.conversions$numerator)
 unit.conversions$denominator <- as.character(unit.conversions$denominator)
 unit.conversions <- unique(unit.conversions) %>% as.data.frame(stringsAsFactors=FALSE)
-save(unit.conversions, file="data/unit.conversions.RData")
+
+#### save data ####
+
+devtools::use_data(
+  valid.metadata.units, freeform.unit.translations, unit.conversions,
+  overwrite=TRUE, compress='gzip')
+
+tools::checkRdaFiles('data')
 
 #### sysdata.rda ####
 
@@ -137,4 +142,6 @@ save(unit.conversions, file="data/unit.conversions.RData")
 # folder). But the following is the important line for the functionality of 
 # flowconcToFluxConversion(), translateFreeformToUnitted(), 
 # validMetadataUnits(), etc.:
-save(valid.metadata.units, unit.conversions, freeform.unit.translations, file="R/sysdata.rda")
+devtools::use_data(
+  valid.metadata.units, unit.conversions, freeform.unit.translations,
+  overwrite=TRUE, compress='gzip', internal=TRUE)
