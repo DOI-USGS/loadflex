@@ -1,8 +1,8 @@
 #### Documentation ####
 
 #' @name eg_loadflex
-#' @aliases lamprey_discharge lamprey_nitrate eg_metadata eg_loadInterp 
-#'   eg_loadLm eg_loadReg2 eg_loadComp
+#' @aliases lamprey_discharge lamprey_nitrate eg_fitdat eg_estdat eg_metadata
+#'   eg_loadInterp eg_loadLm eg_loadReg2 eg_loadComp
 #' @title Example datasets and objects for the \pkg{loadflex} package
 #' @description These datasets and pre-created objects are provided for 
 #'   exploring and testing the \pkg{loadflex} package.
@@ -43,7 +43,7 @@
 #'   
 #'   \item{\code{eg_loadLm}}{Example linear regression model object.}
 #'   
-#'   \item{\code{eg_loadReg2}}{Example model object containing an inner
+#'   \item{\code{eg_loadReg2}}{Example model object containing an inner 
 #'   \pkg{rloadest} model.}
 #'   
 #'   \item{\code{eg_loadComp}}{Example composite method model object.}
@@ -60,11 +60,12 @@ NULL
 #' @rdname loadflex-deprecated
 #' @details `exampleMetadata` has been replaced by `data(eg_metadata)`
 #' @md
+#' @importFrom utils data
 #' @export
 exampleMetadata <- function() {
   .Deprecated('eg_metadata', package='loadflex',
               'exampleMetadata() takes too long; use data(eg_metadata) instead')
-  data(eg_metadata)
-  return(eg_metadata)
+  eg_metadata_name <- data("eg_metadata", envir=environment())
+  return(get(eg_metadata_name))
 }
 

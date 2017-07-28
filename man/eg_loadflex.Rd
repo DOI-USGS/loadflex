@@ -5,6 +5,8 @@
 \alias{eg_loadflex}
 \alias{lamprey_discharge}
 \alias{lamprey_nitrate}
+\alias{eg_fitdat}
+\alias{eg_estdat}
 \alias{eg_metadata}
 \alias{eg_loadInterp}
 \alias{eg_loadLm}
@@ -55,7 +57,7 @@ These datasets and pre-created objects are provided for
   
   \item{\code{eg_loadLm}}{Example linear regression model object.}
   
-  \item{\code{eg_loadReg2}}{Example model object containing an inner
+  \item{\code{eg_loadReg2}}{Example model object containing an inner 
   \pkg{rloadest} model.}
   
   \item{\code{eg_loadComp}}{Example composite method model object.}
