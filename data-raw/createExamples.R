@@ -1,5 +1,6 @@
 # Create example datasets and R objects for use in exploring and testing 
 # loadflex. Only needs to be run when re-creating the .rda objects
+library(dplyr)
 data(lamprey_nitrate)
 data(lamprey_discharge)
 date_range <- as.POSIXct(c("2008-10-01 00:00:00", "2012-10-01 00:00:00"), tz="EST5EDT")
@@ -16,7 +17,7 @@ eg_estdat <- lamprey_discharge %>%
   slice(seq(1, n(), 16))
 
 eg_metadata <- metadata(
-  constituent="NO3", flow="DISCHARGE", 
+  constituent="NO3", flow="DISCHARGE", load.rate='NO3_FLUX',
   dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
   load.rate.units="kg d^-1", site.name="Lamprey River, NH",
   consti.name="Nitrate", site.id='01073500', lat=43.10259, lon=-70.95256)

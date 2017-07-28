@@ -112,10 +112,10 @@ test_that("metadata can be accessed by getInfo", {
   expect_error(getInfo(md, "spaghetti"), "should be one of")
   
   # Confirm error checking for empty values
-  expect_error(getInfo(md, "site.id", TRUE), "must be a non-empty string")
-  expect_equal(getInfo(md, "site.id", FALSE), '')
-  expect_equal(getInfo(md, "load.rate", TRUE), 'NO3_FLUX')
-  expect_equal(getInfo(md, "load.rate", FALSE), 'NO3_FLUX')
+  expect_error(getInfo(md, "station", stop.on.empty=TRUE), "must be a non-empty string")
+  expect_equal(getInfo(md, "station", stop.on.empty=FALSE), '')
+  expect_equal(getInfo(md, "load.rate", stop.on.empty=TRUE), 'NO3_FLUX')
+  expect_equal(getInfo(md, "load.rate", stop.on.empty=FALSE), 'NO3_FLUX')
 })
 
 test_that("metadata can be displayed", {
