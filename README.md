@@ -41,6 +41,21 @@ To get started, load the package and type `?loadflex`.
 | Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/USGS-R/loadflex/badge.svg?branch=master)](https://coveralls.io/r/USGS-R/loadflex?branch=master) |
 | USGS Status: | [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)|
 
+### Reporting bugs
+
+Please consider reporting bugs and asking questions on the Issues page:
+[https://github.com/USGS-R/loadflex/issues](https://github.com/USGS-R/loadflex/issues)
+
+Follow `@USGS_R` on Twitter for updates on USGS R packages:
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/USGS_R.svg?style=social&label=Follow%20USGS_R)](https://twitter.com/USGS_R)
+
+### Package Support
+
+The Water Mission Area of the USGS supports maintenance of `loadflex` through Summer 2018, and likely further into the future. Resources are available primarily for maintenance and responding to user questions. Some new features may be added as prioritized by the `loadflex` development team.
+
+![USGS](http://usgs-r.github.io/images/usgs.png)
+
 ## Installation of R and RStudio
 
 This section should only need to be done once per computer.
