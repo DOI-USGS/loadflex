@@ -109,7 +109,8 @@ However, we will deviate from the above equation to accommodate the lognormal
 distribution of each flux prediction.
 }
 \examples{
-metadata_example <- updateMetadata(exampleMetadata(), dates="date")
+data(eg_metadata)
+metadata_example <- updateMetadata(eg_metadata, dates="date")
 preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
   date=seq(as.Date("2018-05-15"), as.Date("2019-05-14"), by=as.difftime(1, units="days")))
 aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month")

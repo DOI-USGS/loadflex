@@ -7,7 +7,8 @@ test_that("loadLm models can be created", {
   
   # tester data
   mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10,datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
-  mymd <- updateMetadata(exampleMetadata(), constituent="conc", flow="discharge", dates="datetime")
+  data(eg_metadata)
+  mymd <- updateMetadata(eg_metadata, constituent="conc", flow="discharge", dates="datetime")
   
   # Create a conc model
   lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", metadata=updateMetadata(mymd))

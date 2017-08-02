@@ -68,7 +68,8 @@ test_that("flowconcToFluxConversion works", {
 test_that("observeSolute generates fluxes with the expected units & format", {
   obs <- data.frame(MyConc=1:10, MyFlow=rep(10,10))
   row.names(obs) <- paste(11:20)
-  md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", dates="none",
+  data(eg_metadata)
+  md <- updateMetadata(eg_metadata, constituent="MyConc", flow="MyFlow", dates="none",
                        flow.units="cms", conc.units="mg/l", load.units="mg", load.rate.units="mg/day")
   
   # See whether observeSolute can calculate fluxes
@@ -97,7 +98,8 @@ test_that("observeSolute generates fluxes with the expected units & format", {
 test_that("observeSolute generates concentrations with the expected units & format", {
   obs <- data.frame(MyConc=1:10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent
   row.names(obs) <- paste(11:20)
-  md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
+  data(eg_metadata)
+  md <- updateMetadata(eg_metadata, constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
                        flow.units="cms", conc.units="mg/l", load.units="mg", load.rate.units="mg/day")
   
   # Now observeSolute
@@ -114,7 +116,8 @@ test_that("observeSolute generates concentrations with the expected units & form
 test_that("formatPreds gets predictions into the right format", {
   obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "mg") )
   row.names(obs) <- paste(11:20)
-  md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
+  data(eg_metadata)
+  md <- updateMetadata(eg_metadata, constituent="MyConc", flow="MyFlow", load.rate="MyFlux", dates="none",
                        flow.units="cms", conc.units="mg/l", load.units="mg", load.rate.units="mg/day")
   
   # get conc from a variety of inputs

@@ -2,22 +2,23 @@ tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function
 
 test_that("Unit aggregation works", {
   ex <- data.frame(preds=1:15, se.preds=1, dates=seq(as.Date("2000/1/1"), by = "week", length.out = 15))
+  data(eg_metadata)
   
-  aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=exampleMetadata(), agg.by="unit")
+  aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=eg_metadata, agg.by="unit")
   
   # check that units are not attached by default
-  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=exampleMetadata(), agg.by="unit")$Conc, 1:15)
-  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=exampleMetadata(), agg.by="unit")$Flux_Rate, 1:15)
+  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=eg_metadata, agg.by="unit")$Conc, 1:15)
+  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=eg_metadata, agg.by="unit")$Flux_Rate, 1:15)
   # unit fluxes are calculated for the period beginning in that row and
   # extending to the next; hence, the last row gets NAs because we don't know
   # how long that period lasts.
-  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux total", metadata=exampleMetadata(), agg.by="unit")$Flux, c(1:14*7, NA))
+  expect_equal(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux total", metadata=eg_metadata, agg.by="unit")$Flux, c(1:14*7, NA))
   
   # check that units can be attached
   library(unitted)
-  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=exampleMetadata(), agg.by="unit", attach.units=TRUE)$Conc), "mg L^-1")
-  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=exampleMetadata(), agg.by="unit", attach.units=TRUE)$Flux_Rate), "kg d^-1")
-  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux total", metadata=exampleMetadata(), agg.by="unit", attach.units=TRUE)$Flux), "kg")
+  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Conc), "mg L^-1")
+  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Flux_Rate), "kg d^-1")
+  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux total", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Flux), "kg")
 })
 
 test_that("Aggregations by unit line up with rloadest counterparts", {

@@ -47,9 +47,8 @@ A 1-row data.frame of model metrics
 Produce a 1-row data.frame of model metrics.
 }
 \examples{
-no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
-  data=get(data(lamprey_nitrate)), metadata=exampleMetadata(), retrans=exp)
-summarizeModel(no3_lm)
+data(eg_loadLm)
+summarizeModel(eg_loadLm)
 }
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},

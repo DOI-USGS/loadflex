@@ -86,6 +86,10 @@ setClass(
 #' @return A fitted loadLm model.
 #' @export
 #' @family load.model.inits
+#' @examples 
+#' data(eg_fitdat, eg_metadata)
+#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
+#'   data=eg_fitdat, metadata=eg_metadata, retrans=exp)
 loadLm <- function(formula, pred.format=c("flux","conc"),
                    data, metadata, fitting_function=NULL, 
                    y.trans.function=NULL, retrans.function=exp,
@@ -478,9 +482,8 @@ simulateSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), new
 #' @export
 #' @family summarizeModel
 #' @examples 
-#' no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
-#'   data=get(data(lamprey_nitrate)), metadata=exampleMetadata(), retrans=exp)
-#' summarizeModel(no3_lm)
+#' data(eg_loadLm)
+#' summarizeModel(eg_loadLm)
 summarizeModel.loadLm <- function(load.model, ...) {
   # collect the default summary
   out <- NextMethod()

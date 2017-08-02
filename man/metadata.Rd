@@ -3,7 +3,6 @@
 \name{metadata}
 \alias{metadata}
 \alias{updateMetadata}
-\alias{exampleMetadata}
 \title{Create or modify the metadata for a load model.}
 \usage{
 metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
@@ -14,8 +13,6 @@ metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
   flow.basin.area = basin.area, basin.area.units = "km^2")
 
 updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
-
-exampleMetadata()
 }
 \arguments{
 \item{constituent}{character. The name of the solute or suspended material 
@@ -112,17 +109,12 @@ names may be any of those accepted by \code{metadata()}.}
   values in the initial \code{metadata} with EITHER the non-empty elements of
   \code{new.metadata} OR the elements specified in \code{...}, depending on
   whether \code{new.metadata} is provided.
-
-\code{exampleMetadata} returns a metadata object with example entries.
 }
 \description{
 \code{metadata} creates a new metadata object (see \link{metadata-class}) 
 from scratch.
 
 \code{updateMetadata} modifies an existing metadata object.
-
-\code{exampleMetadata} produces an example metadata object, useful in testing
-or to see how a complete metadata object looks.
 }
 \details{
 By default, newly created metadata objects are checked for validity. This 
@@ -257,7 +249,6 @@ md1 <- metadata(constituent="NO3", flow="DISCHARGE",
   load.rate.units="kg d^-1", site.name="Lamprey River, NH")
 md2 <- updateMetadata(md1, site.id="1073500", 
   custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
-exampleMetadata()
 }
 \seealso{
 Other metadata: \code{\link{metadata-getters}}

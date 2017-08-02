@@ -39,8 +39,9 @@ test_that("loadModel models implement the loadModel interface", {
 })
 
 test_that("loadModel models make predictions in the expected units", {
+  data(eg_metadata)
   mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10+rnorm(10,0,0.2),datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
-  mymd <- updateMetadata(exampleMetadata(), constituent="conc", flow="discharge", dates="datetime")
+  mymd <- updateMetadata(eg_metadata, constituent="conc", flow="discharge", dates="datetime")
   myff <- function(training.data) { lm(log(conc)-7 ~ discharge, data=training.data) }
   myloadModel <- loadModel(inner.fit.function=myff, pred.format="conc", data=mydat, metadata=mymd, retrans.function=function(preds) { exp(preds + 7) })
 
