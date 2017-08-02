@@ -277,13 +277,17 @@ predictSolute.loadReg2 <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata, 
   interval=c("none","confidence","prediction"), level=0.95, 
   lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-  date=FALSE, attach.units=FALSE, ...) {
+  date=FALSE, attach.units=FALSE, 
+  #do mean water/calendar year need to be custom options now?
+  #or remove them?  how are they different from total?
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
+           "mean water year", "mean calendar year", "[custom]"), ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   lin.or.log <- match.arg.loadflex(lin.or.log)
-  
+  agg.by <- match.arg(agg.by)
   # Validate rloadest status
   checkRloadestStatus()
   
@@ -348,12 +352,12 @@ predictSolute.loadReg2 <- function(
       flux.or.conc,
       "flux"={
         # ... may contain seopt, print
-        predLoad(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level, ...)
+        predLoad(fit=load.model@fit, newdata=datachunk, by=agg.by, allow.incomplete=FALSE, conf.int=level, ...)
       }, 
       "conc"={
         predLoad_args <- intersect(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
         if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
-        predConc(fit=load.model@fit, newdata=datachunk, by="unit", allow.incomplete=FALSE, conf.int=level) 
+        predConc(fit=load.model@fit, newdata=datachunk, by=agg.by, allow.incomplete=FALSE, conf.int=level) 
       }
     )
   })
@@ -444,14 +448,17 @@ predictSolute.loadReg2 <- function(
       }
     }
   }
-  
   # Add dates if requested
   if(date) {
     if(!is.data.frame(preds)) {
       preds <- data.frame(fit=preds)
     }
     # prepend the date column
-    preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
+    #preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
+    #predLoad returns the dates, don't need to get them from metadata
+    #output column names changes depending on period
+    date_col_name <- intersect(names(preds_lin_raw), c("Period", "Date"))
+    preds <- data.frame(date=preds_lin_raw[date_col_name], preds)
   }
   
   # Bring out units if hidden in a data.frame
