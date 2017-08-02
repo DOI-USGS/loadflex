@@ -1,3 +1,4 @@
+context("load model interface")
 test_that("validLoadModelInterface reports validity for all base load model types", {
   
   # Verbose mode is nice if you're running this manually

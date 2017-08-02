@@ -1,9 +1,10 @@
+context('loadReg2')
+
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 # loadReg2 is a wrapper for loadReg produced by rloadest; it's required to load
 # the library explicitly
 library(rloadest)
-
 # Setup from intro_to_loadflex.Rmd
 data(lamprey_nitrate)
 intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
@@ -55,7 +56,6 @@ test_that("loadReg2 can make predictions", {
   expect_equal(names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE)),
                names(predictSolute(no3_lr, flux.or.conc='conc', interval='prediction', date=TRUE, se.pred=TRUE, lin.or.log='log')))
 })
-
 # 
 # test_that("loadReg2 models can be created", {
 #   

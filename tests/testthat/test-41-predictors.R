@@ -1,3 +1,4 @@
+context("predictors")
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 library(rloadest)

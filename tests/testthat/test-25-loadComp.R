@@ -1,3 +1,4 @@
+context('loadComp')
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 # Define & munge dataset
@@ -20,10 +21,11 @@ test_that("loadComp models can be created", {
   ### (WHERE DATES ARE REPEATED). THIS IS HIGHLY INCONVENIENT.
   
   # Create the composite model
-  load.model <- loadComp(reg.model=reg.model, interp.format="flux", interp.data=simpledata2, interp.function=linearInterpolation)
+  load.model <- loadComp(reg.model=reg.model, interp.format="flux", 
+                         interp.data=simpledata2, interp.function=linearInterpolation)
   expect_is(load.model, "loadComp")
 })
-
+print('created')
 test_that("loadComp preds can be made in log or linear space", {
   # Create the regression and composite models
   reg.model <- loadReg2(loadReg(Atrazine ~ center(log(FLOW)), data = simpledata, flow = "FLOW", dates = "DATES", conc.units="mg/L"), pred.format = 'conc')
@@ -104,7 +106,7 @@ test_that("loadComp preds can be made in log or linear space", {
   gcl
   
 })
-
+print("loglin done")
 # getting error mcl 1-22-16
 # # Test composite method predictions for a variety of interpolation methods
 # checkLoadCompInterpPreds <- function(interp.fun, abs.or.rel.resids, use.log, flux.or.conc) {
@@ -207,46 +209,46 @@ test_that("loadComp models can estimate their uncertainty", {
   
   # Fit the loadComp with store=c("data","uncertainty") (to calculate uncertainty) for many
   # combinations of interp.functions, abs/rel, log/lin options
-  system.time(MSEresults <- do.call("rbind", lapply(
-    1:6, function(funID) { do.call("rbind", lapply(
-        c("conc", "flux"), function(interpformat) { do.call("rbind", lapply(
-          c("absolute", "relative"), function(absrel) { do.call("rbind", lapply(
-            c(FALSE, TRUE), function(uselog) {
-              fun <- list(linearInterpolation, triangularInterpolation, rectangularInterpolation, 
-                          splineInterpolation, getSmoothSplineInterpolation(nknots=22), distanceWeightedInterpolation)[[funID]]
-              load.model.rl <- loadComp(
-                reg.model=rl.model, interp.format=interpformat, interp.data=simpledata, 
-                interp.function=fun, abs.or.rel.resids=absrel, use.log=uselog, store=c("data","uncertainty"))
-              load.model.lm <- loadComp(
-                reg.model=lm.model, interp.format=interpformat, interp.data=simpledata, 
-                interp.function=fun, abs.or.rel.resids=absrel, use.log=uselog, store=c("data","uncertainty"))
-              data.frame(
-                fun=c("linear","triangular","rectangular","spline","smoothspline","distanceweighted")[funID],
-                interpby=interpformat,
-                absrel=absrel,
-                uselog=uselog,
-                MSElog_rl_m=if(uselog) load.model.rl@MSE["mean","conc"] else NA,
-                MSElog_lm_m=if(uselog) load.model.lm@MSE["mean","conc"] else NA,
-                #MSElog_s=if(uselog) load.model@MSE["sd","conc"] else NA,
-                # don't need the "flux" col of log MSE because it's the same as the "conc" col
-                MSElin_rl_mc=if(!uselog) load.model.rl@MSE["mean","conc"] else NA,
-                MSElin_lm_mc=if(!uselog) load.model.lm@MSE["mean","conc"] else NA,
-                #MSElin_sc=if(!uselog) load.model@MSE["sd","conc"] else NA,
-                MSElin_rl_mf=if(!uselog) load.model.rl@MSE["mean","flux"] else NA,
-                MSElin_lm_mf=if(!uselog) load.model.lm@MSE["mean","flux"] else NA)
-                #MSElin_sf=if(!uselog) load.model@MSE["sd","flux"] else NA)
-            }))
-          }))
-        }))
-    }))
-  )
-  print(subset(MSEresults, uselog==FALSE)[c(1:4,7:10)])
-  expect_manual_OK("linear-space MSEs make sense")
-  print(subset(MSEresults, uselog==TRUE)[1:6])
-  expect_manual_OK("log-space MSEs make sense")
+  # system.time(MSEresults <- do.call("rbind", lapply(
+  #   1:6, function(funID) { do.call("rbind", lapply(
+  #       c("conc", "flux"), function(interpformat) { do.call("rbind", lapply(
+  #         c("absolute", "relative"), function(absrel) { do.call("rbind", lapply(
+  #           c(FALSE, TRUE), function(uselog) {
+  #             fun <- list(linearInterpolation, triangularInterpolation, rectangularInterpolation, 
+  #                         splineInterpolation, getSmoothSplineInterpolation(nknots=22), distanceWeightedInterpolation)[[funID]]
+  #             load.model.rl <- loadComp(
+  #               reg.model=rl.model, interp.format=interpformat, interp.data=simpledata, 
+  #               interp.function=fun, abs.or.rel.resids=absrel, use.log=uselog, store=c("data","uncertainty"))
+  #             load.model.lm <- loadComp(
+  #               reg.model=lm.model, interp.format=interpformat, interp.data=simpledata, 
+  #               interp.function=fun, abs.or.rel.resids=absrel, use.log=uselog, store=c("data","uncertainty"))
+  #             data.frame(
+  #               fun=c("linear","triangular","rectangular","spline","smoothspline","distanceweighted")[funID],
+  #               interpby=interpformat,
+  #               absrel=absrel,
+  #               uselog=uselog,
+  #               MSElog_rl_m=if(uselog) load.model.rl@MSE["mean","conc"] else NA,
+  #               MSElog_lm_m=if(uselog) load.model.lm@MSE["mean","conc"] else NA,
+  #               #MSElog_s=if(uselog) load.model@MSE["sd","conc"] else NA,
+  #               # don't need the "flux" col of log MSE because it's the same as the "conc" col
+  #               MSElin_rl_mc=if(!uselog) load.model.rl@MSE["mean","conc"] else NA,
+  #               MSElin_lm_mc=if(!uselog) load.model.lm@MSE["mean","conc"] else NA,
+  #               #MSElin_sc=if(!uselog) load.model@MSE["sd","conc"] else NA,
+  #               MSElin_rl_mf=if(!uselog) load.model.rl@MSE["mean","flux"] else NA,
+  #               MSElin_lm_mf=if(!uselog) load.model.lm@MSE["mean","flux"] else NA)
+  #               #MSElin_sf=if(!uselog) load.model@MSE["sd","flux"] else NA)
+  #           }))
+  #         }))
+  #       }))
+  #   }))
+  # )
+  # print(subset(MSEresults, uselog==FALSE)[c(1:4,7:10)])
+  # expect_manual_OK("linear-space MSEs make sense")
+  # print(subset(MSEresults, uselog==TRUE)[1:6])
+  # expect_manual_OK("log-space MSEs make sense")
   
 })
-
+print('start reporting makes sense')
 
 test_that("loadComp uncertainty reporting makes sense", {
   
@@ -294,7 +296,7 @@ test_that("loadComp uncertainty reporting makes sense", {
   expect_manual_OK("conc preds & pred intervals look good")
   
 })
-
+print("uncertainty done")
 test_that("loadComp uncertainties make sense for all sorts of abs/reg, lin/log, conc/flux combinations", {
   # Example data & models
   library(rloadest)
