@@ -54,7 +54,7 @@ Follow `@USGS_R` on Twitter for updates on USGS R packages:
 
 The Water Mission Area of the USGS supports maintenance of `loadflex` through September 2018, and likely further into the future. Resources are available primarily for maintenance and responding to user questions. Some new features may be added as prioritized by the `loadflex` development team.
 
-![USGS](http://usgs-r.github.io/images/usgs.png)
+[![USGS](http://usgs-r.github.io/images/usgs.png)](https://www.usgs.gov/)
 
 ## Installation of R and RStudio
 
