@@ -106,7 +106,6 @@ test_that("loadComp preds can be made in log or linear space", {
   gcl
   
 })
-print("loglin done")
 # getting error mcl 1-22-16
 # # Test composite method predictions for a variety of interpolation methods
 # checkLoadCompInterpPreds <- function(interp.fun, abs.or.rel.resids, use.log, flux.or.conc) {
@@ -248,7 +247,6 @@ test_that("loadComp models can estimate their uncertainty", {
   # expect_manual_OK("log-space MSEs make sense")
   
 })
-print('start reporting makes sense')
 
 test_that("loadComp uncertainty reporting makes sense", {
   
@@ -296,7 +294,6 @@ test_that("loadComp uncertainty reporting makes sense", {
   expect_manual_OK("conc preds & pred intervals look good")
   
 })
-print("uncertainty done")
 test_that("loadComp uncertainties make sense for all sorts of abs/reg, lin/log, conc/flux combinations", {
   # Example data & models
   library(rloadest)

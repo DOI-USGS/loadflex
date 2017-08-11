@@ -278,8 +278,6 @@ predictSolute.loadReg2 <- function(
   interval=c("none","confidence","prediction"), level=0.95, 
   lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
   date=FALSE, attach.units=FALSE, 
-  #do mean water/calendar year need to be custom options now?
-  #or remove them?  how are they different from total?
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
            "mean water year", "mean calendar year", "[custom]"), ...) {
   
@@ -335,6 +333,22 @@ predictSolute.loadReg2 <- function(
     # errors on this point.
   }
   
+  #deal with mean water/calendar year options
+  #need to filter data down to compelete years, and then send 'total' option to rloadest
+  #data freq, leap years, whatever is in newdata ob
+  if(agg.by %in% c("mean water year", "mean calendar year")) {
+    newdata <- filterCompleteYears(data = newdata, time.step = load.model@fit$time.step, 
+                                   agg.by = agg.by)
+    agg.by = "total" #going to rloadest
+    if(nrow(newdata) > 176000) {
+      stop(paste(strwrap("Sorry, rloadest can't handle more than 176,000 data points, 
+                          and loadflex does not currently support aggregating uncertainties. 
+                          Please change the agg.by argument to a shorter period, or else 
+                         supply a shorter period of data for newdata"), collapse = "\n"))
+    }
+  }
+  
+  
   # Get around data size constraints of predLoad and predConc by splitting the 
   # prediction into smaller chunks as necessary. chunk.size is the maximum
   # number of values per chunk; rloadest can handle at most 176000 values by
@@ -344,7 +358,6 @@ predictSolute.loadReg2 <- function(
   datachunks <- lapply(1:nchunks, function(i) {
     newdata[((i-1)*chunk.size + 1):min(i*chunk.size, nrow(newdata)),]
   })
-  
   # Now do the prediction for each chunk and then reassemble the full set of
   # predictions
   preds_lin_raw <- lapply(datachunks, function(datachunk) {
@@ -357,6 +370,7 @@ predictSolute.loadReg2 <- function(
       "conc"={
         predLoad_args <- intersect(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
         if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
+        #will fail here if agg.by != 'unit' - don't want to change aggregation behind user's back
         predConc(fit=load.model@fit, newdata=datachunk, by=agg.by, allow.incomplete=FALSE, conf.int=level) 
       }
     )
@@ -613,4 +627,25 @@ summarizeModel.loadReg2 <- function(load.model, ...) {
   
   # return
   return(out)
+}
+
+#remove incomplete water/calendar years
+filterCompleteYears <- function(data, time.step, agg.by) {
+  if(agg.by == "mean water year") {
+    data <- dplyr::mutate(data, year = smwrBase::waterYear(DATE, numeric = TRUE))
+  } else {
+    data <- dplyr::mutate(data, year = lubridate::year(DATE))
+  }
+  daySteps <- ifelse(time.step == "instantaneous", yes = 96, no = 1)
+  data_summary <- dplyr::group_by(data, year) %>% 
+                 dplyr::summarise(n = n()) %>% 
+                  dplyr::mutate(leap = lubridate::leap_year(year),
+                                completeThresh = daySteps * 365 + leap * daySteps)
+                                                        
+  completeYears <- filter(data_summary, n >= completeThresh)
+  returnData <- filter(data, year %in% completeYears$year) %>% select(-year)
+  if(nrow(returnData) == 0) {
+    stop("No complete years.  Please select a different aggregation period")
+  }
+  return(returnData)
 }

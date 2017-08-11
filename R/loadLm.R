@@ -165,13 +165,17 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
                                  interval=c("none","confidence","prediction"), level=0.95,
                                  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-                                 date=FALSE, attach.units=FALSE, ...) {
+                                 date=FALSE, attach.units=FALSE, 
+                                 agg.by=c("unit", "day", "month", "water year", 
+                                          "calendar year", "total", "mean water year", 
+                                          "mean calendar year", "[custom]"), ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
   lin.or.log <- match.arg.loadflex(lin.or.log)
+  agg.by <- match.arg(agg.by)
   
   # Check the model - can we confirm that y is logged?
   if(!load.model@ylog) {
@@ -311,7 +315,25 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
     preds <- preds$fit
   }
   
-  # Return
+  #TODO: use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
+  #also include which arg to change to not get the warning
+  #can this be a function?
+  if(agg.by != "unit") {
+    agged <- suppressWarnings(aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
+                             format = flux.or.conc))
+    cols_to_na <- intersect(names(agged), c("SE", "CI_lower", "CI_upper")) #inaccurate
+    agged[cols_to_na] <- NA
+    warning("Shoot, we've discovered a big problem in aggregateSolute. ",
+            "The Values are fine, but the uncertainty estimates (SE, CI_lower, CI_upper) ",
+            "are too low by a factor of 3 to 10 or more. As a result, we are returning NAs",
+            "for standard errors and confidence intervals with this aggregation period.",
+            "We'll be working on this over the coming year (it's not a trivial challenge). ",
+            "In the meantime, please consider reporting instantaneous uncertainties only, ",
+            "or using predLoad(getFittedModel(load.model), by=[format]) ",
+            "if you need aggregated uncertainties from a loadReg2 model. Sorry about this!")
+    preds <- agged
+  }
+ 
   return(preds)
 }
 

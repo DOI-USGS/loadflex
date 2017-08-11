@@ -7,7 +7,9 @@
 \method{predictSolute}{loadLm}(load.model, flux.or.conc = c("flux", "conc"),
   newdata, interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, ...)
+  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
+  "water year", "calendar year", "total", "mean water year",
+  "mean calendar year", "[custom]"), ...)
 }
 \arguments{
 \item{load.model}{A loadLm object.}
@@ -51,6 +53,8 @@ named "date" containing the dates of the predictions.}
 
 \item{attach.units}{logical. Should the units be attached to columns in the 
 resulting data.frame?}
+
+\item{agg.by}{character Time period to aggregate results by.}
 
 \item{...}{Additional arguments passed to class-specific implementations of 
 the \code{predictSolute} generic function.}

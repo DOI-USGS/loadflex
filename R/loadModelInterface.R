@@ -143,6 +143,7 @@ getFittedModel <- function(load.model) {
 #'   named "date" containing the dates of the predictions.
 #' @param attach.units logical. Should the units be attached to columns in the 
 #'   resulting data.frame?
+#' @param agg.by character Time period to aggregate results by.  
 #' @param ... Additional arguments passed to class-specific implementations of 
 #'   the \code{predictSolute} generic function.
 #' @return If interval=="none" and both se.fit and se.pred are FALSE, a vector 
