@@ -353,11 +353,12 @@ predictSolute.loadReg2 <- function(
   # prediction into smaller chunks as necessary. chunk.size is the maximum
   # number of values per chunk; rloadest can handle at most 176000 values by
   # default. nchunks is the number of chunks required.
-  chunk.size <- 176000
+  chunk.size <- 175872 #multiple of 96, so breaks iv data on day boundaries
   nchunks <- ceiling(nrow(newdata) / chunk.size)
   datachunks <- lapply(1:nchunks, function(i) {
     newdata[((i-1)*chunk.size + 1):min(i*chunk.size, nrow(newdata)),]
   })
+  browser()
   # Now do the prediction for each chunk and then reassemble the full set of
   # predictions
   preds_lin_raw <- lapply(datachunks, function(datachunk) {
@@ -632,20 +633,22 @@ summarizeModel.loadReg2 <- function(load.model, ...) {
 #remove incomplete water/calendar years
 filterCompleteYears <- function(data, time.step, agg.by) {
   if(agg.by == "mean water year") {
-    data <- dplyr::mutate(data, year = smwrBase::waterYear(DATE, numeric = TRUE))
+    data$year <- smwrBase::waterYear(data$DATE, numeric = TRUE)
   } else {
-    data <- dplyr::mutate(data, year = lubridate::year(DATE))
+    data$year <- lubridate::year(data$DATE)
   }
   daySteps <- ifelse(time.step == "instantaneous", yes = 96, no = 1)
   data_summary <- dplyr::group_by(data, year) %>% 
                  dplyr::summarise(n = n()) %>% 
                   dplyr::mutate(leap = lubridate::leap_year(year),
                                 completeThresh = daySteps * 365 + leap * daySteps)
-                                                        
+  completeThresh <- '.dplyrvar'  
+  year <- '.dplyrvar'
+  leap <- '.dplyrvar'
   completeYears <- filter(data_summary, n >= completeThresh)
   returnData <- filter(data, year %in% completeYears$year) %>% select(-year)
   if(nrow(returnData) == 0) {
-    stop("No complete years.  Please select a different aggregation period")
+    stop("No complete periods.  Please select a different aggregation period")
   }
   return(returnData)
 }
