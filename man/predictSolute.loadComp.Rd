@@ -8,7 +8,9 @@
   interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
   date = FALSE, attach.units = FALSE, fit.reg = FALSE,
-  fit.resid = FALSE, fit.resid.raw = FALSE, ...)
+  fit.resid = FALSE, fit.resid.raw = FALSE, agg.by = c("unit", "day",
+  "month", "water year", "calendar year", "total", "mean water year",
+  "mean calendar year", "[custom]"), ...)
 }
 \arguments{
 \item{load.model}{A loadComp object.}
@@ -70,6 +72,8 @@ so that fit = fit.reg + fit.resid.}
 as returned from the interpolation model. These may be in log space and/or 
 unitless, depending on the type of residual correction specified when the
 loadComp model was created.}
+
+\item{agg.by}{character Time period to aggregate results by.}
 
 \item{...}{Additional arguments passed to class-specific implementations of 
 the \code{predictSolute} generic function.}
