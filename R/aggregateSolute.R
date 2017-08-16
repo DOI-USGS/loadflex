@@ -83,6 +83,7 @@
 #'   second column will be in the units specified by \code{metadata}.
 #'   
 #' @examples
+#' \dontrun{
 #' data(eg_metadata)
 #' metadata_example <- updateMetadata(eg_metadata, dates="date")
 #' preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
@@ -101,8 +102,7 @@
 #' time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
 #' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
 #'                 cormat.function=new_correlation_assumption)
-#' 
-#' @export
+#' }
 aggregateSolute <- function(
   preds, metadata, format=c("conc", "flux rate", "flux total"), 
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
@@ -115,10 +115,11 @@ aggregateSolute <- function(
   # Warn users about flaws in uncertainty
   warning("Shoot, we've discovered a big problem in aggregateSolute. ",
           "The Values are fine, but the uncertainty estimates (SE, CI_lower, CI_upper) ",
-          "are too low by a factor of 3 to 10 or more. ",
+          "are too low by a factor of 3 to 10 or more. Consequently we are returning NAs",
+          "for standard errors and confidence intervals (SE, CI_lower, and CI_upper).",
           "We'll be working on this over the coming year (it's not a trivial challenge). ",
-          "In the meantime, please consider reporting instantaneous uncertainties only, ",
-          "or using predLoad(getFittedModel(load.model), by=[format]) ",
+          "In the meantime, please consider reporting instantaneous uncertainties only",
+          "(by setting agg.by = \"unit\"), or using predLoad(getFittedModel(load.model), by=[format]) ",
           "if you need aggregated uncertainties from a loadReg2 model. Sorry about this!")
   
   # Validate arguments
@@ -227,7 +228,7 @@ aggregateSolute <- function(
   agg_preds <- as.data.frame(summarise(
     preds_filt, 
     Value = mean(preds), 
-    SE = if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA, # why isn't SEofSum divided by n()??
+    SE = NA, # why isn't SEofSum divided by n()??  #returning NAs since this is not accurate
     n = n()))
   
   ### Notes on Uncertainty ### 
@@ -291,8 +292,9 @@ aggregateSolute <- function(
       } else {
         CI_quantile <- qnorm(1 - (1 - level)/2)
       }
-      agg_preds$CI_lower <- agg_preds$Value - CI_quantile*agg_preds$SE
-      agg_preds$CI_upper <- agg_preds$Value + CI_quantile*agg_preds$SE
+      #returning NAs since this is not accurate
+      agg_preds$CI_lower <- NA
+      agg_preds$CI_upper <- NA
     } 
   }
   
