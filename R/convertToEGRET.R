@@ -241,7 +241,7 @@ expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) 
     rename_("value" = flow.colname,
             "dateTime" = date.colname) %>% 
     mutate(code = "") %>% 
-    populateDaily(qConvert = qconvert, interactive = FALSE) %>%
+    populateDaily(qConvert = qconvert, verbose = FALSE) %>%
     mutate(dateTime = flowdat[[date.colname]])
   
   return(flowdat_corrected)
