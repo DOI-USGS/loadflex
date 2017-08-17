@@ -2,11 +2,11 @@
 #' 
 #' \code{metadata} objects store metadata for a load model of any type (e.g., 
 #' \code{\link{loadModel}}, \code{\link{loadInterp}}, \code{\link{loadReg2}}, or
-#' \code{\link{loadComp}}). Metadata can be created and modified by calls to 
-#' \code{\link{metadata}}, \code{\link{updateMetadata}}, or 
-#' \code{\link{exampleMetadata}}. Values and relevant information can be 
-#' accessed by \code{\link{getCol}}, \code{\link{getUnits}}, or 
-#' \code{\link{getInfo}}.
+#' \code{\link{loadComp}}). See an example object at
+#' \code{data(\link{eg_metadata})}. Metadata can be created and modified by
+#' calls to \code{\link{metadata}} or \code{\link{updateMetadata}}. Values and
+#' relevant information can be accessed by \code{\link{getCol}},
+#' \code{\link{getUnits}}, or \code{\link{getInfo}}.
 #' 
 #' @rdname metadata-class
 #' @name metadata-class
@@ -448,21 +448,6 @@ updateMetadata <- function(metadata, new.metadata=NA, ..., validate=TRUE) {
   
   return(metadata)
 }
-
-#' \code{exampleMetadata} produces an example metadata object, useful in testing
-#' or to see how a complete metadata object looks.
-#' 
-#' @rdname metadata
-#' @return \code{exampleMetadata} returns a metadata object with example entries.
-#' @export
-#' @examples
-#' exampleMetadata()
-exampleMetadata <- function() {
-  metadata("NO3","Q","NO3_FLUX","DATE","mg/L","cms","kg","kg/day",
-           site.name="Lamprey River @ Wiswall Dam, Durham, New Hampshire",
-           custom=list(a="anything you want goes here", b=1:10))  
-}
-
 
 #### Use metadata to access data ####
 

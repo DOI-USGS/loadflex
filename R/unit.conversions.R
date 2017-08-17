@@ -1,183 +1,46 @@
+#### Data Documentation ####
+
+#' @name units_loadflex
+#' @aliases valid.metadata.units freeform.unit.translations unit.conversions
+#' @title Units-related datasets for the \pkg{loadflex} package
+#' @description These datasets are provided for managing units within the 
+#'   \pkg{loadflex} package. It is recommended NOT to use these datasets 
+#'   directly within your code, as they may change structure or contents in the 
+#'   future.
+#' @section Datasets:
+#'   
+#'   \describe{
+#'   
+#'   \item{\code{valid.metadata.units}}{A data.frame with character columns 
+#'   "unit", "standard", and "dimension". Used (1) to determine whether units in
+#'   slots of a `metadata` object have the appropriate dimensionality; e.g., 
+#'   \code{conc.units} must have dimensions of mass or count per volume, and (2)
+#'   to convert among units of the same dimensionality.}
+#'   
+#'   \item{\code{freeform.unit.translations}}{A data.frame with character 
+#'   columns "new" and "old". Used for mapping freeform units ("old") to the 
+#'   specific format required by \pkg{loadflex} ("new").}
+#'   
+#'   \item{\code{unit.conversions}}{A data.frame with character columns 
+#'   "numerator", "denominator", and numeric column "value", one conversion per 
+#'   row. Used for converting among }
+#'   
+#'   }
+#' @docType data
+NULL
+
 #### Data ####
 
-#' Defines the units (or pieces of units) that are permissible in valid load
-#' models
-#' 
-#' Contains a dictionary of valid units and their dimensions
-#' 
-#' @name valid.metadata.units
-#' @docType data
-#' @format A data.frame with character columns "unit" and "dimension"
-#' @examples
-#' data(valid.metadata.units); valid.metadata.units
-NULL
-
-#' Defines the units that are permissible to pass to load models
-#' 
-#' Contains a dictionary with which we will translate a range of possibilities
-#' into a smaller, more uniform set of units
-#' 
-#' @name freeform.unit.translations
-#' @docType data
-#' @format A data.frame with character columns "new" and "old"
-#' @keywords data units
-#' @examples
-#' data(freeform.unit.translations); freeform.unit.translations
-NULL
-
-#' Defines the units that are permissible in load models, along with the 
-#' multiplers that will allow common conversions among units
-#' 
-#' @name unit.conversions
-#' @docType data
-#' @format A data.frame with character columns "numerator", "denominator", and
-#'   numeric column "value", one conversion per row
-#' @keywords data units
-#' @examples
-#' data(unit.conversions); unit.conversions
-NULL
-
-#' Generate units conversion & parsing data
-#' 
-#' Should only need to be run once on a change in the function contents.
-#' Generates the units data to be saved in data/valid.metadata.units, 
-#' data/freeform.unit.translations, data/unit.conversions, and (all three 
-#' combined) R/sysdata.rda. These are then saved with the package.
-#' 
+#' @rdname loadflex-deprecated-internal
+#' @details `generateUnitsData` (defunct as of v1.2.0) has been replaced by the
+#'   script at data-raw/createUnitsData.R
+#' @md
 #' @importFrom stats setNames
 #' @import dplyr
-#' @keywords data units internal
+#' @keywords internal
 generateUnitsData <- function() {
-  # valid.metadata.units
-  
-  valid.metadata.units <- bind_rows(
-    data_frame(
-      dimension="volume",
-      standard="L",
-      unit=c("m^3", "ft^3", "dL", "L")),
-    data_frame(
-      dimension="time",
-      standard="d",
-      unit=c("s", "d", "y")),
-    data_frame(
-      dimension="mass",
-      standard="mg",
-      unit=c("lb", "ton", "ng", "ug", "mg", "g", "kg", "Mg")),
-    data_frame(
-      dimension="count",
-      standard="million_colonies",
-      unit=c("colonies", "million_colonies")),
-    data_frame(
-      dimension="area",
-      standard="km^2",
-      unit=c("m^2", "ha", "km^2", "ft^2", "ac", "mi^2")
-    )
-  ) %>% as.data.frame(stringsAsFactors=FALSE)
-  save(valid.metadata.units, file="data/valid.metadata.units.RData")
-
-  # freeform.unit.translations
-  freeform.unit.translations <- bind_rows(
-    # Volumes
-    data_frame(new="m^3", old=c("cubic meter", "cubic meters", "m^3")),
-    data_frame(new="ft^3", old=c("cubic foot", "cubic feet", "ft^3")),
-    data_frame(new="dL", old=c("100mL", "dL")),
-    data_frame(new="L", old=c("liter", "l", "L")),
-    
-    # Times
-    data_frame(new="s", old=c("second", "sec", "s")),
-    data_frame(new="d", old=c("day", "d")),
-    data_frame(new="y", old=c("year", "yr", "y")),
-    
-    # Masses and counts
-    data_frame(new="lb", old=c("pounds", "lbs", "lb")),
-    data_frame(new="ton", old=c("tons")),
-    data_frame(new="ng", old=c("nanograms", "ng")),
-    data_frame(new="ug", old=c("micrograms", "ug")),
-    data_frame(new="mg", old=c("milligrams", "mg")),
-    data_frame(new="g", old=c("grams", "g")),
-    data_frame(new="kg", old=c("kilograms", "kg")),
-    data_frame(new="Mg", old=c("metric tons", "Mg")),
-    data_frame(new="colonies", old=c("col", "colonies")),
-    data_frame(new="million_colonies", old=c("million colonies")),
-    
-    # Abbreviations
-    data_frame(new="m^3 s^-1", old=c("cubic meter per second", "cms")),
-    data_frame(new="ft^3 s^-1", old=c("cubic feet per second", "cubic foot per second", "cfs"))
-  ) %>% as.data.frame(stringsAsFactors=FALSE)
-  save(freeform.unit.translations, file="data/freeform.unit.translations.RData")
-  
-  # unit.conversions
-  unit.conversions <- setNames(bind_rows(
-    # Volumes
-    data.frame(num="L", bind_rows(
-      data_frame(den="m^3", val=1000),
-      data_frame(den="ft^3", val=28.317),
-      data_frame(den="dL", val=0.1),
-      data_frame(den="L", val=1)),
-      stringsAsFactors=FALSE
-    ),
-    
-    # Times
-    data.frame(num="d", bind_rows(
-      data_frame(den="s", val=1/(60*60*24)),
-      data_frame(den="d", val=1),
-      data_frame(den="y", val=365.25)),
-      stringsAsFactors=FALSE
-    ),
-    
-    # Masses and counts
-    data.frame(den="mg", bind_rows(
-      data_frame(num="lb", val=2.204623e-6),
-      data_frame(num="ton", val=1.102311e-9),
-      data_frame(num="ng", val=1.0e6),
-      data_frame(num="ug", val=1.0e3),
-      data_frame(num="mg", val=1),
-      data_frame(num="g", val=1.0e-3),
-      data_frame(num="kg", val=1.0e-6),
-      data_frame(num="Mg", val=1.0e-9)),
-      stringsAsFactors=FALSE
-    )[,c(2,1,3)],
-    
-    data.frame(num="million_colonies", bind_rows(
-      data_frame(den="colonies", val=1.0e-6),
-      data_frame(den="million_colonies", val=1)),
-      stringsAsFactors=FALSE
-    ),
-    
-    # Areas
-    data.frame(num="km^2", bind_rows(
-      data_frame(den="ft^2", val=9.290304e-8),
-      data_frame(den="ac", val=0.0040468564224),
-      data_frame(den="mi^2", val=2.589988110336),
-      data_frame(den="m^2", val=1e-6),
-      data_frame(den="ha", val=0.01),
-      data_frame(den="km^2", val=1)),
-      stringsAsFactors=FALSE
-    )
-  ), c("numerator", "denominator", "value"))
-  # Append the reverse conversions
-  numerator<-denominator<-value<-".transform.var"
-  
-  unit.conversions <- bind_rows(
-    unit.conversions,
-    transform( # mutate would overwrite numerator prematurely
-      unit.conversions, 
-      numerator=denominator,
-      denominator=numerator,
-      value=1/value))
-  unit.conversions$numerator <- as.character(unit.conversions$numerator)
-  unit.conversions$denominator <- as.character(unit.conversions$denominator)
-  unit.conversions <- unique(unit.conversions) %>% as.data.frame(stringsAsFactors=FALSE)
-  save(unit.conversions, file="data/unit.conversions.RData")
-  
-  # The above save calls put the data into a user-accessible location (the data 
-  # folder). But the following is the important line for the functionality of 
-  # flowconcToFluxConversion(), translateFreeformToUnitted(), 
-  # validMetadataUnits(), etc.:
-  save(valid.metadata.units, unit.conversions, freeform.unit.translations, file="R/sysdata.rda")
-  
+  stop('Defunct. To regenerate units data, run the script in the GitHub repo at data-raw/createUnitsData.R')
 }
-
 
 #### Functions ####
 
@@ -386,7 +249,6 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
   units <- gsub(" per ", "/", freeform.units)
   unitslist <- strsplit(units, "/")
   # for each bundle of units, find each element in the dictionary and translate if needed
-  #data(freeform.unit.translations)
   old <- "tidyunit.var"
   units <- lapply(unitslist, function(units) {
     units <- lapply(units, function(unit) {
@@ -426,7 +288,6 @@ translateFreeformToUnitted <- function(freeform.units, attach.units=FALSE) {
 #'   units attached.
 #' @return numeric, or unitted numeric if unitted=TRUE. The conversion factor.
 #' @examples
-#' flowconcToFluxConversion("L/d", "g/L", "g/d") # 1
 #' flowconcToFluxConversion("cfs", "g/L", "kg/d") # 2446.589
 #' library(unitted); u(10, "ft^3 s^-1") * u(2, "mg L^-1") * 
 #'   flowconcToFluxConversion("cfs", "mg/L", "kg/d", attach.units=TRUE) # u(48.9 ,"kg d^-1")
@@ -474,16 +335,16 @@ flowconcToFluxConversion <- function(flow.units, conc.units, load.rate.units, at
 #' @export
 #' @keywords units
 #' @examples
+#' data(eg_metadata)
 #' obs <- data.frame(MyConc=(1:10)/10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent
-#' # between conc*flow and flux
-#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
-#' load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", 
-#' load.units="g", load.rate.units="g/s", custom=NULL)
-#'   
-#' observeSolute(obs, "flux", md, attach.units=TRUE) # calculate flux from conc & flow
-#' observeSolute(obs, "flux", md, calculate=FALSE, attach.units=TRUE) # read flux from data column
-#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate conc 
-#' # from flow & flux
+#' md <- updateMetadata(eg_metadata, constituent="MyConc", flow="MyFlow", 
+#'   load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", 
+#'   load.units="g", load.rate.units="g/s", custom=NULL)
+#' 
+#' observeSolute(obs, "flux", md, attach.units=TRUE) # calculate from conc & flow
+#' observeSolute(obs, "flux", md, calculate=FALSE, attach.units=TRUE) # read flux from data
+#' observeSolute(obs, "conc", md, calculate=TRUE, attach.units=TRUE) # calculate from flow & flux
+#' observeSolute(obs, "conc", md, calculate=FALSE, attach.units=TRUE) # read conc from data
 observeSolute <- function(
   data, flux.or.conc=c("flux","conc"), metadata, 
   calculate=isTRUE(flux.or.conc=="flux"), 
@@ -565,19 +426,24 @@ observeSolute <- function(
 #' @keywords units
 #' @examples
 #' obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), 
-#' MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
-#' md <- updateMetadata(exampleMetadata(), constituent="MyConc", flow="MyFlow", 
-#' load.rate="MyFlux", dates="none", flow.units="cms", conc.units="mg/l", load.units="kg", 
-#' load.rate.units="kg/d", custom=NULL)
+#'   MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "kg") )
+#' md <- metadata(constituent="MyConc", flow="MyFlow", 
+#'   load.rate="MyFlux", dates="none", flow.units="m^3 s^-1", conc.units="mg L^-1",
+#'   load.units="kg", load.rate.units="kg/d", site.name='My River', custom=NULL)
 #'   
-#' formatPreds(preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, 
-#' metadata=md) # == obs$MyFlux
-#' formatPreds(preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux", newdata=obs, 
-#' metadata=md) # == obs$MyFlux
-#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, 
-#' metadata=md) # == obs$MyConc
-#' formatPreds(preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, 
-#' attach.units=TRUE) # == u(obs$MyConc, "mg L^-1")
+#' all.equal(obs$MyFlux, formatPreds(
+#'   preds=obs$MyConc, from.format="conc", to.format="flux", newdata=obs, metadata=md))
+#' \dontrun{
+#' # these examples take too long to build regularly
+#' all.equal(obs$MyFlux, formatPreds(
+#'   preds=obs$MyConc*obs$MyFlow, from.format="conc*flow", to.format="flux",
+#'     newdata=obs, metadata=md))
+#' all.equal(obs$MyConc, formatPreds(
+#'   preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md))
+#' all.equal(unitted::u(obs$MyConc, "mg L^-1"), formatPreds(
+#'   preds=obs$MyFlux, from.format="flux", to.format="conc", newdata=obs, metadata=md, 
+#'   attach.units=TRUE))
+#' }
 formatPreds <- function(preds, 
                         from.format=c("flux","conc*flow","flux/flow","conc"), 
                         to.format=c("flux","conc"), 

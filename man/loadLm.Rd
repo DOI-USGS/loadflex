@@ -60,6 +60,11 @@ Generates a new model of class loadInterp (\code{\link{loadLm-class}}) which
 can connect observations of concentration or flux using a linear regression 
 model.
 }
+\examples{
+data(eg_fitdat, eg_metadata)
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
+  data=eg_fitdat, metadata=eg_metadata, retrans=exp)
+}
 \seealso{
 Other load.model.inits: \code{\link{loadComp}},
   \code{\link{loadInterp}}, \code{\link{loadModel}},
