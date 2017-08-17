@@ -104,7 +104,7 @@
 #'                 cormat.function=new_correlation_assumption)
 #' }
 aggregateSolute <- function(
-  preds, metadata, format=c("conc", "flux rate", "flux total"), 
+  preds, metadata, format=c("conc", "flux rate"), 
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
            "mean water year", "mean calendar year", "[custom]"),
   se.preds, dates, custom=NA, 
@@ -123,7 +123,10 @@ aggregateSolute <- function(
           "if you need aggregated uncertainties from a loadReg2 model. Sorry about this!")
   
   # Validate arguments
-  format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
+  if(format == "flux total") {
+    warning("format == \"flux total\" is deprecated.  Flux rate can be multiplied by duration to get total flux")
+  }
+  format <- match.arg.loadflex(format, c("conc", "flux rate"))
   attach.units <- match.arg.loadflex(attach.units)
   default_agg.by <- c("unit", "day", "month", "water year", "calendar year", 
                         "total", "mean water year", "mean calendar year")
@@ -168,7 +171,6 @@ aggregateSolute <- function(
       format,
       "conc"=metadata@conc.units,
       "flux rate"=metadata@load.rate.units,
-      "flux total"=metadata@load.rate.units # sic - we'll convert to load.units later
     )
     if(pred_units != expected_pred_units) {
       stop(paste0("The units of preds should be ", expected_pred_units, 
@@ -242,29 +244,7 @@ aggregateSolute <- function(
   # for m weighted sums of n correlated lognormal random variables", Lars 
   # Rasmusson, 2002, Swedish Institute of Compute Science, Report T2002:01,
   # ISRN: SICS-T-2002/01-SE, ISSN:110-3154)
-  
-  # If format="flux total", put flux into load.units
-  if(format=="flux total") {  
-    # For "flux total" we need to identify the duration of each period so we can
-    # find total = rate * duration. The following lines should work if dates is 
-    # a chronological sequence of dates, sort(aggregate_by)==aggregate_by, and 
-    # each aggregation period flows smoothly into the next (without unusually 
-    # large or small gaps). That's a lot of assumptions, and possibly not all of
-    # them, so consider this code block preliminary.
-    interval_bounds <- aggregate(list(start_date=v(dates)), by=aggregate_by, FUN=min)
-    last_interval <- dates[aggregate_by[[1]] == interval_bounds[nrow(interval_bounds),1]]
-    start_dates <- c(interval_bounds$start_date, max(last_interval) + mean(diff(last_interval))) # assume last interval ends one average timestep after its last time point
-    days_per_interval <- as.numeric(diff(start_dates, units="days"))
-    if(isTRUE(any(days_per_interval <= 0))) warning("Highly suspicious (<=0) Durations inferred from sequence of dates and aggregation groups")
-    agg_preds$Duration <- u(days_per_interval, "days")
-    # adjust both the prediction and the SE for each aggregation interval
-    if(se.agg) {
-      agg_preds[,c("Value","SE")] <- agg_preds[,c("Value","SE")] * days_per_interval
-    } else {
-      agg_preds[,"Value"] <- agg_preds[,"Value"] * days_per_interval
-    }
-  }
-  
+ 
   # Compute prediction intervals if requested. 
   if(ci.agg) {
     if(ci.distrib == "lognormal") {
@@ -306,7 +286,6 @@ aggregateSolute <- function(
       format,
       "conc"=metadata@conc.units,
       "flux rate"=metadata@load.rate.units,
-      "flux total"=metadata@load.units
     )
     retDF <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
   } else {
