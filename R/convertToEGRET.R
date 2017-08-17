@@ -93,7 +93,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
     populateSampleColumns() %>% 
     mutate(
       dateTime = data[[date_col]],
-      Date = as.Date(Date))
+      Date = data[[date_col]])
   
   # Format the flow info
   flow_col <- getInfo(meta, 'flow', TRUE)
