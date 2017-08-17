@@ -170,7 +170,7 @@ aggregateSolute <- function(
     expected_pred_units <- switch(
       format,
       "conc"=metadata@conc.units,
-      "flux rate"=metadata@load.rate.units,
+      "flux rate"=metadata@load.rate.units
     )
     if(pred_units != expected_pred_units) {
       stop(paste0("The units of preds should be ", expected_pred_units, 
@@ -230,7 +230,7 @@ aggregateSolute <- function(
   agg_preds <- as.data.frame(summarise(
     preds_filt, 
     Value = mean(preds), 
-    SE = NA, # why isn't SEofSum divided by n()??  #returning NAs since this is not accurate
+    SE = NA, #returning NAs since this is not accurate
     n = n()))
   
   ### Notes on Uncertainty ### 
@@ -245,37 +245,11 @@ aggregateSolute <- function(
   # Rasmusson, 2002, Swedish Institute of Compute Science, Report T2002:01,
   # ISRN: SICS-T-2002/01-SE, ISSN:110-3154)
  
-  # Compute prediction intervals if requested. 
+  # Compute prediction intervals if requested.
+  #Returning NAs until implemented correctly
   if(ci.agg) {
-    if(ci.distrib == "lognormal") {
-      # This calculation is appropriate to lognormally distributed loads or
-      # concentrations. This code is modified from rloadest::predLoad, with
-      # thanks to David Lorenz of the USGS.
-      SE_log <- sqrt(log(1 + (agg_preds$SE/agg_preds$Value)^2)) # calculate the log-space SE
-      mean_log <- log(agg_preds$Value) - 0.5*SE_log^2 # calculate the log-space mean
-      # rloadest computes CI_quantile with a t distribution. When we don't know
-      # the degrees of freedom, we will use a normal distribution rather than a
-      # t.
-      if(!is.na(deg.free)) {
-        CI_quantile <- qt(1 - (1 - level)/2, df=deg.free)
-      } else {
-        CI_quantile <- qnorm(1 - (1 - level)/2)
-      }
-      agg_preds$CI_lower <- exp(mean_log - CI_quantile*SE_log)
-      agg_preds$CI_upper <- exp(mean_log + CI_quantile*SE_log)
-    } else { # ci.distrib == "normal"
-      # This calculation is appropriate to normally distributed loads or concs. 
-      # rloadest computes CI_quantile with a t distribution. When we don't know
-      # the degrees of freedom, we will use a normal distribution instead.
-      if(!is.na(deg.free)) {
-        CI_quantile <- qt(1 - (1 - level)/2, df=deg.free)
-      } else {
-        CI_quantile <- qnorm(1 - (1 - level)/2)
-      }
-      #returning NAs since this is not accurate
       agg_preds$CI_lower <- NA
       agg_preds$CI_upper <- NA
-    } 
   }
   
   # If requested, determine the new units for the conc/flux/fluxrate columns.
@@ -285,7 +259,7 @@ aggregateSolute <- function(
     new_units <- switch(
       format,
       "conc"=metadata@conc.units,
-      "flux rate"=metadata@load.rate.units,
+      "flux rate"=metadata@load.rate.units
     )
     retDF <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
   } else {
