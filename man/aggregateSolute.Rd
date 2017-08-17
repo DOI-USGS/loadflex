@@ -4,13 +4,12 @@
 \alias{aggregateSolute}
 \title{Aggregate loads by the time periods specified by the user}
 \usage{
-aggregateSolute(preds, metadata, format = c("conc", "flux rate",
-  "flux total"), agg.by = c("unit", "day", "month", "water year",
-  "calendar year", "total", "mean water year", "mean calendar year",
-  "[custom]"), se.preds, dates, custom = NA,
-  cormat.function = cormat1DayBand, ci.agg = TRUE, level = 0.95,
-  deg.free = NA, ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
-  na.rm = FALSE, attach.units = FALSE, min.n = 0)
+aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
+  agg.by = c("unit", "day", "month", "water year", "calendar year", "total",
+  "mean water year", "mean calendar year", "[custom]"), se.preds, dates,
+  custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
+  level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
+  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE, min.n = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 

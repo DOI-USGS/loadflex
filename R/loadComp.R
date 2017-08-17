@@ -208,9 +208,9 @@ loadComp <- function(reg.model,
 predictSolute.loadComp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
   level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
-  attach.units=FALSE, fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
-           "mean water year", "mean calendar year", "[custom]"), ...) {
+  attach.units=FALSE, agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
+                               "mean water year", "mean calendar year", "[custom]"),
+  fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)

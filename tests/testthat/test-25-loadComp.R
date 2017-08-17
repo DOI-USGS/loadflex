@@ -25,7 +25,6 @@ test_that("loadComp models can be created", {
                          interp.data=simpledata2, interp.function=linearInterpolation)
   expect_is(load.model, "loadComp")
 })
-print('created')
 test_that("loadComp preds can be made in log or linear space", {
   # Create the regression and composite models
   reg.model <- loadReg2(loadReg(Atrazine ~ center(log(FLOW)), data = simpledata, flow = "FLOW", dates = "DATES", conc.units="mg/L"), pred.format = 'conc')

@@ -341,10 +341,9 @@ predictSolute.loadReg2 <- function(
                                    agg.by = agg.by)
     agg.by = "total" #going to rloadest
     if(nrow(newdata) > 176000) {
-      stop(paste(strwrap("Sorry, rloadest can't handle more than 176,000 data points, 
-                          and loadflex does not currently support aggregating uncertainties. 
+      stop(paste(strwrap("Sorry, rloadest can't handle more than 176,000 data points at a time. 
                           Please change the agg.by argument to a shorter period, or else 
-                         supply a shorter period of data for newdata"), collapse = "\n"))
+                          supply a shorter period of data for newdata"), collapse = "\n"))
     }
   }
   
@@ -358,7 +357,6 @@ predictSolute.loadReg2 <- function(
   datachunks <- lapply(1:nchunks, function(i) {
     newdata[((i-1)*chunk.size + 1):min(i*chunk.size, nrow(newdata)),]
   })
-  browser()
   # Now do the prediction for each chunk and then reassemble the full set of
   # predictions
   preds_lin_raw <- lapply(datachunks, function(datachunk) {
