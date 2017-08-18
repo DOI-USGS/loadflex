@@ -91,9 +91,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   sample_data <- sample_data %>% # use transform b/c mutate breaks with smwrQW columns
     mutate(Uncen = as.numeric(!is.na(ConcLow) & !is.na(ConcHigh) & ConcHigh == ConcLow)) %>% 
     populateSampleColumns() %>% 
-    mutate(
-      dateTime = data[[date_col]],
-      Date = data[[date_col]])
+    mutate(Date = data[[date_col]])
   
   # Format the flow info
   flow_col <- getInfo(meta, 'flow', TRUE)
@@ -103,11 +101,11 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
       flow.colname = flow_col,
       date.colname = date_col,
       flow.units = getUnits(meta, 'flow', 'EGRET')) %>% 
-    select(Date, Q, dateTime)
+    select(Date, Q)
   
   # Combine the sample and flow info
   sample_df <- sample_data %>%
-    left_join(flow_data, by=c('dateTime', 'Date'))
+    left_join(flow_data, by=c('Date'))
   
   # Add in predictions if available. The sample-specific model predictions
   # created by EGRET are actually leave-one-out estimates where yHat, SE, and
@@ -120,8 +118,8 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   if(!is.null(dailydat) && all(c('yHat','SE','ConcDay') %in% names(dailydat))) {
     sample_df <- left_join(
       sample_df, 
-      select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay), 
-      by='dateTime')
+      select(dailydat, Date, yHat, SE, ConcHat=ConcDay), 
+      by='Date')
   }
   
   return(sample_df)
@@ -200,8 +198,8 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   #   (3) is the estimated concentration (ConcHat). 
   fit <- se.pred <- '.dplyr.var'
   daily_df <- daily_df %>%
-    left_join(select(preds_log, date, yHat = fit, SE = se.pred), by=c("dateTime" = "date")) %>%
-    left_join(select(preds_lin, date, ConcDay = fit), by=c("dateTime" = "date"))
+    left_join(select(preds_log, date, yHat = fit, SE = se.pred), by=c("Date" = "date")) %>%
+    left_join(select(preds_lin, date, ConcDay = fit), by=c("Date" = "date"))
   
   # Fill in the Flux preds based on the Conc preds
   meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
@@ -242,7 +240,7 @@ expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) 
             "dateTime" = date.colname) %>% 
     mutate(code = "") %>% 
     populateDaily(qConvert = qconvert, verbose = FALSE) %>%
-    mutate(dateTime = flowdat[[date.colname]])
+    mutate(Date = flowdat[[date.colname]])
   
   return(flowdat_corrected)
 }

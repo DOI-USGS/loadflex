@@ -78,11 +78,11 @@ test_that("convertToEGRETSample returns NA without fitdat", {
 test_that("convertToEGRETSample correctly converts", {
   Sample <- loadflex:::convertToEGRETSample(meta = meta, data = fitdat)
   expect_equal(nrow(Sample), nrow(fitdat))
-  expect_equal(ncol(Sample), 15)
+  expect_equal(ncol(Sample), 14)
   
   expected_cols <- c("Date", "ConcLow", "ConcHigh", "Uncen", "ConcAve", "Julian", 
                      "Month", "Day", "DecYear", "MonthSeq", "waterYear", "SinDY", 
-                     "CosDY", "dateTime", "Q")
+                     "CosDY", "Q")
   expect_equal(sort(names(Sample)), sort(expected_cols))
 })
 
@@ -95,16 +95,16 @@ test_that("convertToEGRETDaily returns NA without estdat or preds", {
 
 test_that("convertToEGRETDaily returns partial info without preds", {
   Daily <- loadflex:::convertToEGRETDaily(meta = meta, newdata = estdat)
-  expect_equal(ncol(Daily), 14)
+  expect_equal(ncol(Daily), 13)
 })
 
 test_that("convertToEGRETDaily correctly converts", {
   Daily <- loadflex:::convertToEGRETDaily(newdata = estdat, load.model = conc_lm)
   expect_equal(nrow(Daily), nrow(estdat))
-  expect_equal(ncol(Daily), 18)
+  expect_equal(ncol(Daily), 17)
   
   expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",  
-                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime",
+                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30",
                      "ConcDay", "SE", "FluxDay", "yHat")
   expect_equal(sort(names(Daily)), sort(expected_cols))
 })
@@ -115,8 +115,8 @@ context("expandFlowForEGRET")
 test_that("expandFlowForEGRET returns correct columns", {
   corrected_flow_df <- loadflex:::expandFlowForEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1')
   expect_equal(nrow(corrected_flow_df), nrow(estdat))
-  expect_equal(ncol(corrected_flow_df), 14)
+  expect_equal(ncol(corrected_flow_df), 13)
   expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",
-                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime")
+                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30")
   expect_equal(sort(names(corrected_flow_df)), sort(expected_cols))
 })
