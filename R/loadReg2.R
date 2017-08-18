@@ -369,7 +369,7 @@ predictSolute.loadReg2 <- function(
       "conc"={
         predLoad_args <- intersect(c('seopt','print'), names(list(...))) # load.units and conf.int have already been rejected above
         if(length(predLoad_args) > 0) warning(paste("these args are ignored for flux.or.conc='conc':", paste(predLoad_args, collapse=', ')))
-        #will fail here if agg.by != 'unit' - don't want to change aggregation behind user's back
+        #will fail here if agg.by != 'unit' or 'day' 
         predConc(fit=load.model@fit, newdata=datachunk, by=agg.by, allow.incomplete=FALSE, conf.int=level) 
       }
     )
@@ -467,8 +467,7 @@ predictSolute.loadReg2 <- function(
       preds <- data.frame(fit=preds)
     }
     # prepend the date column
-    #preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
-    #predLoad returns the dates, don't need to get them from metadata
+    preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
     #output column names changes depending on period
     date_col_name <- intersect(names(preds_lin_raw), c("Period", "Date"))
     preds <- data.frame(date=preds_lin_raw[date_col_name], preds)
