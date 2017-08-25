@@ -148,14 +148,13 @@ aggregateSolute <- function(
   ci.distrib <- match.arg.loadflex(ci.distrib, c("lognormal","normal"))
   if(is.data.frame(preds)) {
     # check for required columns
-    need_col <- c('date', 'se.pred', 'fit')
+    need_col <- c('date', 'fit')
     missing_col <- need_col[!need_col %in% colnames(preds)]
     if(length(missing_col) > 0) 
       stop(paste0("missing column[s] ", paste0("'", missing_col, "'", collapse=' & '), " in the preds data.frame"))
     
     # extract columns into vectors
     dates <- preds[,'date']
-    se.preds <- preds[,'se.pred']
     preds <- preds[,'fit']
   }
   
@@ -220,7 +219,7 @@ aggregateSolute <- function(
   
   # Group the estimates as requested
   preds_grp <- group_by_(
-    v(data.frame(preds, se.preds, dates, aggregate_by)), 
+    v(data.frame(preds, dates, aggregate_by)), 
     .dots=as.list(agg.by)) 
   groupsInRecord <- n_groups(preds_grp)
   # Remove grouping periods with insufficient data

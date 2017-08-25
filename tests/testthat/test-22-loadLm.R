@@ -1,3 +1,5 @@
+context('loadLm')
+
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("loadLm models can be created", {
@@ -187,6 +189,21 @@ test_that("resampleCoefficients.lm looks OK", {
   #   cloud(intercept ~ dtsimple * discharge, data=new_coefs, alpha=0.6)
   print(cov.scaled <- (summary(mylm)$sigma)^2*summary(mylm)$cov.unscaled)
   expect_manual_OK("resampled coefficients follow the expected covariance structure")
+})
+
+test_that("predictSolute.loadlm agg.by argument works", {
+  mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10,datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
+  data(eg_metadata)
+  mymd <- updateMetadata(eg_metadata, constituent="conc", flow="discharge", dates="datetime")
+  newdates <- data.frame(
+    datetime=seq(from=strptime("2000-04-30", format="%Y-%m-%d"), to=strptime("2000-05-12", format="%Y-%m-%d"), length.out=150), 
+    discharge=mean(mydat$discharge)+rnorm(150))
+  lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", 
+                metadata=updateMetadata(mymd, dates = "datetime"))
+  expect_warning(preds <- predictSolute(lmc, "flux", newdates, agg.by = "month", date = TRUE))
+  expect_is(preds, 'data.frame')
+  expect_gt(nrow(preds), 1)
+  expect_true(all(is.na(preds$CI_upper)))
 })
 
 # test_that("simulateSolute.loadLm looks OK", {
