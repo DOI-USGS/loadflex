@@ -7,8 +7,10 @@
 \method{predictSolute}{loadComp}(load.model, flux.or.conc, newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, fit.reg = FALSE,
-  fit.resid = FALSE, fit.resid.raw = FALSE, ...)
+  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
+  "water year", "calendar year", "total", "mean water year",
+  "mean calendar year", "[custom]"), fit.reg = FALSE, fit.resid = FALSE,
+  fit.resid.raw = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadComp object.}
@@ -54,6 +56,8 @@ named "date" containing the dates of the predictions.}
 
 \item{attach.units}{logical. Should the units be attached to columns in the 
 resulting data.frame?}
+
+\item{agg.by}{character Time period to aggregate results by.}
 
 \item{fit.reg}{logical. If TRUE, a column for the regression predictions 
 before interpolation will be included in the data.frame that is returned. 

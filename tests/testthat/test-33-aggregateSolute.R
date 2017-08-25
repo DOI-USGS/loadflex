@@ -1,3 +1,4 @@
+context("aggregateSolute")
 tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("Unit aggregation works", {

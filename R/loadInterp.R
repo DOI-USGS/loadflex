@@ -225,7 +225,9 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 predictSolute.loadInterp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
   level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
-  attach.units=FALSE, ...) {
+  attach.units=FALSE, agg.by=c("unit", "day", "month", "water year", "calendar year", 
+                               "total", "mean water year", "mean calendar year", 
+                               "[custom]"), ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -323,6 +325,12 @@ predictSolute.loadInterp <- function(
       preds$lwr <- if(interval == "prediction") log(preds$lwr) else NULL
       preds$upr <- if(interval == "prediction") log(preds$upr) else NULL
     }
+  }
+  
+  #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
+  if(agg.by != "unit") {
+    preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
+                             format = flux.or.conc, dates = dates.out)
   }
   
   return(preds)

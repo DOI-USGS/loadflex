@@ -1,3 +1,4 @@
+context("getResiduals")
 test_that("getResiduals works", {
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 

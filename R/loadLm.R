@@ -165,13 +165,17 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
                                  interval=c("none","confidence","prediction"), level=0.95,
                                  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-                                 date=FALSE, attach.units=FALSE, ...) {
+                                 date=FALSE, attach.units=FALSE, 
+                                 agg.by=c("unit", "day", "month", "water year", 
+                                          "calendar year", "total", "mean water year", 
+                                          "mean calendar year", "[custom]"), ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
   lin.or.log <- match.arg.loadflex(lin.or.log)
+  agg.by <- match.arg(agg.by)
   
   # Check the model - can we confirm that y is logged?
   if(!load.model@ylog) {
@@ -311,7 +315,12 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
     preds <- preds$fit
   }
   
-  # Return
+  #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
+  if(agg.by != "unit") {
+    preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
+                             format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
+  }
+ 
   return(preds)
 }
 

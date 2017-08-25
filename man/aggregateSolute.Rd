@@ -4,13 +4,12 @@
 \alias{aggregateSolute}
 \title{Aggregate loads by the time periods specified by the user}
 \usage{
-aggregateSolute(preds, metadata, format = c("conc", "flux rate",
-  "flux total"), agg.by = c("unit", "day", "month", "water year",
-  "calendar year", "total", "mean water year", "mean calendar year",
-  "[custom]"), se.preds, dates, custom = NA,
-  cormat.function = cormat1DayBand, ci.agg = TRUE, level = 0.95,
-  deg.free = NA, ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
-  na.rm = FALSE, attach.units = FALSE, min.n = 0)
+aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
+  agg.by = c("unit", "day", "month", "water year", "calendar year", "total",
+  "mean water year", "mean calendar year", "[custom]"), se.preds, dates,
+  custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
+  level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
+  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE, min.n = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
@@ -109,6 +108,7 @@ However, we will deviate from the above equation to accommodate the lognormal
 distribution of each flux prediction.
 }
 \examples{
+\dontrun{
 data(eg_metadata)
 metadata_example <- updateMetadata(eg_metadata, dates="date")
 preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
@@ -127,5 +127,5 @@ new_correlation_assumption <- getCormatFirstOrder(rho=0.9,
 time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
 aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
                 cormat.function=new_correlation_assumption)
-
+}
 }

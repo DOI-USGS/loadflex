@@ -83,6 +83,7 @@
 #'   second column will be in the units specified by \code{metadata}.
 #'   
 #' @examples
+#' \dontrun{
 #' data(eg_metadata)
 #' metadata_example <- updateMetadata(eg_metadata, dates="date")
 #' preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
@@ -101,10 +102,9 @@
 #' time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
 #' aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
 #'                 cormat.function=new_correlation_assumption)
-#' 
-#' @export
+#' }
 aggregateSolute <- function(
-  preds, metadata, format=c("conc", "flux rate", "flux total"), 
+  preds, metadata, format=c("conc", "flux rate"), 
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
            "mean water year", "mean calendar year", "[custom]"),
   se.preds, dates, custom=NA, 
@@ -115,14 +115,18 @@ aggregateSolute <- function(
   # Warn users about flaws in uncertainty
   warning("Shoot, we've discovered a big problem in aggregateSolute. ",
           "The Values are fine, but the uncertainty estimates (SE, CI_lower, CI_upper) ",
-          "are too low by a factor of 3 to 10 or more. ",
+          "are too low by a factor of 3 to 10 or more. Consequently we are returning NAs",
+          "for standard errors and confidence intervals (SE, CI_lower, and CI_upper).",
           "We'll be working on this over the coming year (it's not a trivial challenge). ",
-          "In the meantime, please consider reporting instantaneous uncertainties only, ",
-          "or using predLoad(getFittedModel(load.model), by=[format]) ",
+          "In the meantime, please consider reporting instantaneous uncertainties only",
+          "(by setting agg.by = \"unit\"), or using predLoad(getFittedModel(load.model), by=[format]) ",
           "if you need aggregated uncertainties from a loadReg2 model. Sorry about this!")
   
   # Validate arguments
-  format <- match.arg.loadflex(format, c("conc", "flux rate", "flux total"))
+  if(format == "flux total") {
+    warning("format == \"flux total\" is deprecated.  Flux rate can be multiplied by duration to get total flux")
+  }
+  format <- match.arg.loadflex(format, c("conc", "flux rate"))
   attach.units <- match.arg.loadflex(attach.units)
   default_agg.by <- c("unit", "day", "month", "water year", "calendar year", 
                         "total", "mean water year", "mean calendar year")
@@ -144,14 +148,13 @@ aggregateSolute <- function(
   ci.distrib <- match.arg.loadflex(ci.distrib, c("lognormal","normal"))
   if(is.data.frame(preds)) {
     # check for required columns
-    need_col <- c('date', 'se.pred', 'fit')
+    need_col <- c('date', 'fit')
     missing_col <- need_col[!need_col %in% colnames(preds)]
     if(length(missing_col) > 0) 
       stop(paste0("missing column[s] ", paste0("'", missing_col, "'", collapse=' & '), " in the preds data.frame"))
     
     # extract columns into vectors
     dates <- preds[,'date']
-    se.preds <- preds[,'se.pred']
     preds <- preds[,'fit']
   }
   
@@ -166,8 +169,7 @@ aggregateSolute <- function(
     expected_pred_units <- switch(
       format,
       "conc"=metadata@conc.units,
-      "flux rate"=metadata@load.rate.units,
-      "flux total"=metadata@load.rate.units # sic - we'll convert to load.units later
+      "flux rate"=metadata@load.rate.units
     )
     if(pred_units != expected_pred_units) {
       stop(paste0("The units of preds should be ", expected_pred_units, 
@@ -217,7 +219,7 @@ aggregateSolute <- function(
   
   # Group the estimates as requested
   preds_grp <- group_by_(
-    v(data.frame(preds, se.preds, dates, aggregate_by)), 
+    v(data.frame(preds, dates, aggregate_by)), 
     .dots=as.list(agg.by)) 
   groupsInRecord <- n_groups(preds_grp)
   # Remove grouping periods with insufficient data
@@ -227,7 +229,7 @@ aggregateSolute <- function(
   agg_preds <- as.data.frame(summarise(
     preds_filt, 
     Value = mean(preds), 
-    SE = if(se.agg | ci.agg) SEofSum(dates, se.preds, cormat.function) else NA, # why isn't SEofSum divided by n()??
+    SE = NA, #returning NAs since this is not accurate
     n = n()))
   
   ### Notes on Uncertainty ### 
@@ -241,59 +243,12 @@ aggregateSolute <- function(
   # for m weighted sums of n correlated lognormal random variables", Lars 
   # Rasmusson, 2002, Swedish Institute of Compute Science, Report T2002:01,
   # ISRN: SICS-T-2002/01-SE, ISSN:110-3154)
-  
-  # If format="flux total", put flux into load.units
-  if(format=="flux total") {  
-    # For "flux total" we need to identify the duration of each period so we can
-    # find total = rate * duration. The following lines should work if dates is 
-    # a chronological sequence of dates, sort(aggregate_by)==aggregate_by, and 
-    # each aggregation period flows smoothly into the next (without unusually 
-    # large or small gaps). That's a lot of assumptions, and possibly not all of
-    # them, so consider this code block preliminary.
-    interval_bounds <- aggregate(list(start_date=v(dates)), by=aggregate_by, FUN=min)
-    last_interval <- dates[aggregate_by[[1]] == interval_bounds[nrow(interval_bounds),1]]
-    start_dates <- c(interval_bounds$start_date, max(last_interval) + mean(diff(last_interval))) # assume last interval ends one average timestep after its last time point
-    days_per_interval <- as.numeric(diff(start_dates, units="days"))
-    if(isTRUE(any(days_per_interval <= 0))) warning("Highly suspicious (<=0) Durations inferred from sequence of dates and aggregation groups")
-    agg_preds$Duration <- u(days_per_interval, "days")
-    # adjust both the prediction and the SE for each aggregation interval
-    if(se.agg) {
-      agg_preds[,c("Value","SE")] <- agg_preds[,c("Value","SE")] * days_per_interval
-    } else {
-      agg_preds[,"Value"] <- agg_preds[,"Value"] * days_per_interval
-    }
-  }
-  
-  # Compute prediction intervals if requested. 
+ 
+  # Compute prediction intervals if requested.
+  #Returning NAs until implemented correctly
   if(ci.agg) {
-    if(ci.distrib == "lognormal") {
-      # This calculation is appropriate to lognormally distributed loads or
-      # concentrations. This code is modified from rloadest::predLoad, with
-      # thanks to David Lorenz of the USGS.
-      SE_log <- sqrt(log(1 + (agg_preds$SE/agg_preds$Value)^2)) # calculate the log-space SE
-      mean_log <- log(agg_preds$Value) - 0.5*SE_log^2 # calculate the log-space mean
-      # rloadest computes CI_quantile with a t distribution. When we don't know
-      # the degrees of freedom, we will use a normal distribution rather than a
-      # t.
-      if(!is.na(deg.free)) {
-        CI_quantile <- qt(1 - (1 - level)/2, df=deg.free)
-      } else {
-        CI_quantile <- qnorm(1 - (1 - level)/2)
-      }
-      agg_preds$CI_lower <- exp(mean_log - CI_quantile*SE_log)
-      agg_preds$CI_upper <- exp(mean_log + CI_quantile*SE_log)
-    } else { # ci.distrib == "normal"
-      # This calculation is appropriate to normally distributed loads or concs. 
-      # rloadest computes CI_quantile with a t distribution. When we don't know
-      # the degrees of freedom, we will use a normal distribution instead.
-      if(!is.na(deg.free)) {
-        CI_quantile <- qt(1 - (1 - level)/2, df=deg.free)
-      } else {
-        CI_quantile <- qnorm(1 - (1 - level)/2)
-      }
-      agg_preds$CI_lower <- agg_preds$Value - CI_quantile*agg_preds$SE
-      agg_preds$CI_upper <- agg_preds$Value + CI_quantile*agg_preds$SE
-    } 
+      agg_preds$CI_lower <- NA
+      agg_preds$CI_upper <- NA
   }
   
   # If requested, determine the new units for the conc/flux/fluxrate columns.
@@ -303,8 +258,7 @@ aggregateSolute <- function(
     new_units <- switch(
       format,
       "conc"=metadata@conc.units,
-      "flux rate"=metadata@load.rate.units,
-      "flux total"=metadata@load.units
+      "flux rate"=metadata@load.rate.units
     )
     retDF <- u(agg_preds, replace(rep(NA, ncol(agg_preds)), names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"), new_units))
   } else {

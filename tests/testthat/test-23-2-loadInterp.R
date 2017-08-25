@@ -214,3 +214,20 @@ test_that("loadInterp models can find and report their uncertainty", {
   
 })
 
+test_that("predictSolute agg.by arguments work", {
+  mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10,datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
+  mymd <- metadata(constituent="conc", flow="discharge", load.rate="", dates="datetime",
+                   conc.units="mg/L", flow.units="cfs", load.units="kg", load.rate.units="kg/day",
+                   site.id="", custom=NULL)
+  
+  ### This is the interpolation you'd compare to a regression or composite method
+  lic <- loadInterp(interp.format="conc", data=mydat, interp.function=linearInterpolation, metadata=updateMetadata(mymd))
+  expect_warning(monthAgg <- predictSolute(lic, "flux", agg.by = "month"))
+  expect_warning(watYearAgg <- predictSolute(lic, "flux", agg.by = "water year", date = TRUE))
+  expect_is(monthAgg, 'data.frame')
+  expect_equal(nrow(monthAgg), 1)
+  expect_true(all(is.na(monthAgg$CI_upper)))
+  expect_is(watYearAgg, 'data.frame')
+  expect_equal(nrow(watYearAgg), 1)
+  expect_true(all(is.na(watYearAgg$CI_upper)))
+})
