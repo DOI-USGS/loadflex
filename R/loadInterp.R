@@ -330,7 +330,7 @@ predictSolute.loadInterp <- function(
   #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
-                             format = flux.or.conc)
+                             format = flux.or.conc, dates = dates.out)
   }
   
   return(preds)

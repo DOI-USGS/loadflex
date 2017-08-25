@@ -318,7 +318,7 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
   #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
-                             format = flux.or.conc)
+                             format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
   }
  
   return(preds)
