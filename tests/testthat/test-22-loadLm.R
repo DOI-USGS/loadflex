@@ -200,7 +200,7 @@ test_that("predictSolute.loadlm agg.by argument works", {
     discharge=mean(mydat$discharge)+rnorm(150))
   lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", 
                 metadata=updateMetadata(mymd, dates = "datetime"))
-  expect_warning(preds <- predictSolute(lmc, "flux", newdates, agg.by = "month", date = TRUE))
+  expect_warning(preds <- predictSolute(lmc, "flux", newdates, agg.by = "month"))
   expect_is(preds, 'data.frame')
   expect_gt(nrow(preds), 1)
   expect_true(all(is.na(preds$CI_upper)))
