@@ -217,6 +217,7 @@ predictSolute.loadComp <- function(
   interval <- match.arg.loadflex(interval)
   attach.units <- match.arg.loadflex(attach.units)
   lin.or.log <- match.arg.loadflex(lin.or.log)
+  agg.by <- match.arg(agg.by)
   match.arg.loadflex(fit.reg, c(TRUE, FALSE))
   match.arg.loadflex(fit.resid, c(TRUE, FALSE))
   match.arg.loadflex(fit.resid.raw, c(TRUE, FALSE))
