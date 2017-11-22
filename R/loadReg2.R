@@ -82,12 +82,14 @@ setClass(
 #' @export
 #' @family load.model.inits
 #' @examples 
+#' \dontrun{
 #' library(rloadest)
 #' no3_lr <- suppressWarnings(
 #'   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
 #'     flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
 #'     flow.units="cfs", conc.units="mg/L", load.units="kg",
 #'     station='Lamprey River, NH')))
+#' }
 loadReg2 <- function(
   load.reg, pred.format=c("flux","conc"), store=c("data","fitting.function"),
   consti.name="", load.rate="", 
@@ -609,6 +611,7 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #' @export
 #' @family summarizeModel
 #' @examples
+#' \dontrun{
 #' library(rloadest)
 #' no3_lr <- suppressWarnings(
 #'   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
@@ -616,6 +619,7 @@ simulateSolute.loadReg2 <- function(load.model, flux.or.conc=c("flux","conc"), n
 #'   flow.units="cfs", conc.units="mg/L", load.units="kg",
 #'   station='Lamprey River, NH')))
 #' summarizeModel(no3_lr)
+#' }
 summarizeModel.loadReg2 <- function(load.model, ...) {
   
   # collect and combine the default summary and the loadReg summary

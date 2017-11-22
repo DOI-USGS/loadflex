@@ -49,6 +49,7 @@ reporting. \code{summarizeModel.loadReg2} should rarely be accessed directly;
 instead, call \code{summarizeModel()} on a \link{loadReg2} object.
 }
 \examples{
+\dontrun{
 library(rloadest)
 no3_lr <- suppressWarnings(
   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
@@ -56,6 +57,7 @@ no3_lr <- suppressWarnings(
   flow.units="cfs", conc.units="mg/L", load.units="kg",
   station='Lamprey River, NH')))
 summarizeModel(no3_lr)
+}
 }
 \seealso{
 Other summarizeModel: \code{\link{summarizeModel.loadComp}},
