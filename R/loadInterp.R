@@ -233,6 +233,7 @@ predictSolute.loadInterp <- function(
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
   interval <- match.arg.loadflex(interval)
   lin.or.log <- match.arg.loadflex(lin.or.log)
+  agg.by <- match.arg(agg.by)
   
   meta <- load.model@metadata
   fit <- load.model@fit
