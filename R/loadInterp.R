@@ -218,16 +218,15 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 #'   data.frame of dates or date-times. Column names should match those given in
 #'   the \code{loadInterp} metadata. If \code{newdata} is not supplied, the 
 #'   original fitting data will be used.
-#' @return A vector of data.frame of predictions, as for the generic 
-#'   \code{\link{predictSolute}}.
+#' @return If agg.by=="unit" and only  the result is a vector or data.frame of predictions; otherwise
 #' @export
 #' @family predictSolute
 predictSolute.loadInterp <- function(
   load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
-  attach.units=FALSE, agg.by=c("unit", "day", "month", "water year", "calendar year", 
-                               "total", "mean water year", "mean calendar year", 
-                               "[custom]"), ...) {
+  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE,
+  attach.units=FALSE,
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"),
+  ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -264,7 +263,7 @@ predictSolute.loadInterp <- function(
   # Add uncertainty if requested. As noted in the documentation above, we're
   # assuming that prediction errors are normally distributed and that no
   # retransformation is necessary.
-  if(interval != "none" | se.fit | se.pred) {
+  if(interval != "none" || se.fit || se.pred || lin.or.log == "log") {
     # If there's any sort of uncertainty reporting, we'll need to return a
     # data.frame rather than a vector.
     preds_lin <- data.frame(fit=preds_lin)
@@ -284,54 +283,104 @@ predictSolute.loadInterp <- function(
       stop("Uncertainty estimates are unavailable. Try fitting the model with store=c('uncertainty').")
     }
     if(is.na(load.model@MSE["mean", flux.or.conc])) {
-      stop("Uncertainty estimates are unavailable for ",flux.or.conc,". Try fitting the model with data that include discharge.")
+      has_discharge <- tryCatch({
+        discharge <- getCol(load.model@metadata, data=load.model@data, field='flow')
+        return(!is.null(discharge))
+      }, error=function(e) FALSE)
+      recommendation <- if(!has_discharge) {
+        "Try fitting the model with data that include discharge."
+      } else {
+        "Make sure there are no NAs in your input data."
+      }
+      stop("Uncertainty estimates are unavailable for ",flux.or.conc,". ", recommendation)
     }
     
-    # Now add uncertainty info
+    # begin to add uncertainty info
     se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
-    preds_log <- linToLog(meanlin=preds_lin$fit, sdlin=se_lin) # we only need preds_log if lin.or.log='log'
+    
+    # we can start to prepare a log version of the preds here if needed, now
+    # that we have se_lin
+    if(lin.or.log == 'log') {
+      # in general we'll be setting preds=preds_log, but we'll also make
+      # modifications to accommodate the weirdness of bias correction combined
+      # with the intuition that interpolation has residuals of 0:
+      preds_log <- linToLog(meanlin=preds_lin$fit, sdlin=se_lin) %>%
+        mutate(fit = log(preds_lin$fit)) %>% # this is NOT the mean in log space, but it's the only way to get residuals of 0 in log space
+        rename(fit.meanlog = meanlog) %>% # include the mean in log space for a tiny bit more clarity
+        select(fit, fit.meanlog, sdlog) # get the columns ordered right
+    }
+    
     # confidence intervals
     if(interval == "prediction") {
       # degrees of freedom are not straightforward for interpolation models, so
-      # use qnorm instead of qt to get quantiles.
+      # use qnorm instead of qt to get quantiles
       ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-      preds_lin$lwr <- preds_lin$fit + ci_quantiles[1]*se_lin 
-      preds_lin$upr <- preds_lin$fit + ci_quantiles[2]*se_lin
-      preds_log$lwr <- log(preds_lin$lwr) 
-      preds_log$upr <- log(preds_lin$upr)
+      preds_lin <- preds_lin %>% dplyr::mutate(
+        lwr = fit + ci_quantiles[1]*se_lin,
+        upr = fit + ci_quantiles[2]*se_lin)
+      if(lin.or.log == 'log') {
+        preds_log <- preds_log %>% dplyr::mutate(
+          lwr = log(preds_lin$lwr),
+          upr = log(preds_lin$upr))
+      }
     }
-    # The SEs:
+    
+    # SEs (se.fit is disallowed above, so we only compute se.pred here)
     if(se.pred) {
       preds_lin$se.pred <- se_lin
-      preds_log$se.pred <- preds_log$sdlog
+      if(lin.or.log == 'log') {
+        preds_log <- preds_log %>% dplyr::rename(se.pred=sdlog)
+      }
     }
-  }
-  
-  # Add dates if requested
-  if(date) {
-    if(!is.data.frame(preds_lin)) {
-      preds_lin <- data.frame(fit=preds_lin)
+    
+    # now settle on either linear or log predictions. from here on we can use
+    # `preds` as the final choice of predictions
+    preds <- if(lin.or.log == "linear") preds_lin else preds_log
+    
+    # simplify back to vector format if we didn't add any uncertainty columns
+    if(!any(c('lwr','upr','se.fit','se.pred') %in% names(preds))) {
+      preds <- preds$fit
     }
-    # prepend the date column
-    preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
+    
+  } else {
+    # if we didn't compute uncertainty or a log version of predictions, we still
+    # need to assign our results to `preds` for further processing. in this case
+    # we already know that lin.or.log=='linear' and it's not a data.frame
+    preds <- preds_lin
   }
-  
-  preds <- preds_lin
-  if(lin.or.log == "log") {
-    if(is.data.frame(preds)) {
-      preds$fit <- log(preds$fit) # this is NOT the mean in log space, but it's the only way to get residuals of 0 in log space
-      preds$fit.meanlog <- preds_log$meanlog # include the mean in log space for a tiny bit more clarity
-      preds$se.fit <- if(se.fit) NA else NULL
-      preds$se.pred <- if(se.pred) preds_log$se.pred else NULL
-      preds$lwr <- if(interval == "prediction") log(preds$lwr) else NULL
-      preds$upr <- if(interval == "prediction") log(preds$upr) else NULL
+
+  # next steps depend on whether we're aggregating. dates/timeperiods are
+  # handled differently for agg.by='unit' or other, and if agg.by!='unit', we'll
+  # need to do a bunch of other processing to get the right values and columns
+  if(agg.by == "unit") {
+    # error check for count, which should not be set to TRUE
+    if(count) stop("'count' must be FALSE when agg.by=='unit'")
+    # Add dates if requested
+    if(date) {
+      if(!is.data.frame(preds)) {
+        preds <- data.frame(fit=preds)
+      }
+      # prepend the date column
+      preds <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds)
     }
-  }
-  
-  #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
-  if(agg.by != "unit") {
-    preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
-                             format = flux.or.conc, dates = dates.out)
+  } else if(agg.by != "unit") {
+    # use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty if it was requested
+    unit_preds <- if(is.data.frame(preds)) preds$fit else preds
+    preds <- aggregateSolute(
+      unit_preds, metadata = getMetadata(load.model), agg.by = agg.by,
+      format = flux.or.conc, dates = dates.out) %>%
+      dplyr::rename(Count=n)
+    if(interval != "none" || se.fit || se.pred) {
+      warning("Uncertainty for aggregated predictions is unavailable for loadInterp models")
+    } else {
+      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
+    }
+    all_names <- names(preds)
+    drop_names <- c(
+      if(!date) all_names[1],
+      if(!count) "Count")
+    keep_names <- setdiff(all_names, drop_names)
+    preds <- preds[ , keep_names] # drops to vector if the only thing in keep_names is the fit column
   }
   
   return(preds)

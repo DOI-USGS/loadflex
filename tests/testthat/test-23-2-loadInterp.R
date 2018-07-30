@@ -58,7 +58,7 @@ test_that("loadInterp models make reasonable predictions", {
   mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=10,datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
   mymd <- metadata(constituent="conc", flow="discharge", load.rate="", dates="datetime",
     conc.units="mg/L", flow.units="cfs", load.units="kg", load.rate.units="kg/day",
-    station="", custom=NULL)
+    site.name="", custom=NULL)
   
   ### This is the interpolation you'd compare to a regression or composite method
   lic <- loadInterp(interp.format="conc", data=mydat, interp.function=linearInterpolation, metadata=updateMetadata(mymd))
@@ -72,15 +72,15 @@ test_that("loadInterp models make reasonable predictions", {
   # Predict fluxes for new dates
   newdates <- data.frame(datetime=seq(from=strptime("2000-04-30", format="%Y-%m-%d"), to=strptime("2000-05-12", format="%Y-%m-%d"), length.out=150), discharge=10)
   expect_equal(length(predictSolute(lic, "flux", newdates)), nrow(newdates))
-  #print(ggplot(cbind(newdates, Flux=predictSolute(lic, "flux", newdates)), aes(x=datetime, y=Flux)) + geom_point(color="pink") + 
+  # print(ggplot(cbind(newdates, Flux=predictSolute(lic, "flux", newdates)), aes(x=datetime, y=Flux)) + geom_point(color="pink") +
   #  geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + theme_bw())
-  expect_manual_OK("Flux: the linear interpolation (pink dots) passes through each calibration point (blue X's)")
+  # expect_manual_OK("Flux: the linear interpolation (pink dots) passes through each calibration point (blue X's)")
   
   # Predict concs for new dates
   expect_equal(length(predictSolute(lic, "conc", newdates)), nrow(newdates))
   #print(ggplot(cbind(newdates, Conc=predictSolute(lic, "conc", newdates)), aes(x=datetime, y=Conc)) + geom_point(color="pink") + 
   #  geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + theme_bw())
-  expect_manual_OK("Conc: the linear interpolation (pink dots) passes through each calibration point (X's)")
+  # expect_manual_OK("Conc: the linear interpolation (pink dots) passes through each calibration point (X's)")
     
   # This is the interpolation you'd use within a composite model - same thing 
   # except for the load.rate column name. And the type of interpolation can be 
@@ -93,20 +93,21 @@ test_that("loadInterp models make reasonable predictions", {
   expect_true(length(predictSolute(lif, "flux", newdates[c("datetime","discharge")])) == nrow(newdates))
   #print(ggplot(cbind(newdates, Flux=predictSolute(lif, "flux", newdates)), aes(x=datetime, y=Flux)) + 
   #        geom_point(color="pink") + geom_point(data=mydat, aes(x=datetime, y=Resid), pch=4, color="blue") + theme_bw())
-  expect_manual_OK("Spline interpolation by load (resids) to predict fluxes (resids)")
+  # expect_manual_OK("Spline interpolation by load (resids) to predict fluxes (resids)")
   # Now for concs
   expect_true(length(predictSolute(lif, "conc", newdates[c("datetime","discharge")])) == nrow(newdates))
   #print(ggplot(cbind(newdates, Conc=predictSolute(lif, "conc", newdates)), aes(x=datetime, y=Conc)) + 
   #        geom_point(color="pink") + theme_bw() + 
   #        geom_point(data=transform(mydat, Conc=observeSolute(mydat, "conc", updateMetadata(mymd, load.rate="Resid"), calculate=TRUE)), pch=4, color="blue"))
-  expect_manual_OK("Spline interpolation by load (resids) can be converted back to concs (resids)")
+  # expect_manual_OK("Spline interpolation by load (resids) can be converted back to concs (resids)")
   
   # This one uses a write-your-own interpolation method
-  lif <- loadInterp(interp.format="flux", 
-                    interp.function=function(dates.in, y.in, dates.out) {
-                      approx(x=dates.in, y=rep(mean(y.in),length(dates.in)), xout=dates.out, method="linear", rule=2)$y 
-                    }, 
-                    data=mydat, metadata=updateMetadata(mymd, load.rate="Resid"))
+  lif <- loadInterp(
+    interp.format="flux", 
+    interp.function=function(dates.in, y.in, dates.out) {
+      approx(x=dates.in, y=rep(mean(y.in),length(dates.in)), xout=dates.out, method="linear", rule=2)$y 
+    }, 
+    data=mydat, metadata=updateMetadata(mymd, load.rate="Resid"))
   expect_equivalent(predictSolute(lif, "flux", mydat), rep(mean(mydat$Resid), nrow(mydat)))
   
   # Confirm that error checking gets done
@@ -123,7 +124,7 @@ test_that("loadInterp models can find and report their uncertainty", {
   mydat <- data.frame(conc=c(5,4,2,6,9,8,9,7,4,3),discharge=c(4,3,3,7,10,8,9,6,5,2),datetime=strptime(paste0("2000-05-",1:10),format="%Y-%m-%d"))
   mymd <- metadata(constituent="conc", flow="discharge", load.rate="", dates="datetime",
                    conc.units="mg/L", flow.units="cfs", load.units="kg", load.rate.units="kg/day",
-                   station="", custom=NULL)
+                   site.name="", custom=NULL)
   mydat$flux <- observeSolute(mydat, "flux", mymd, calc=TRUE)
   
   # non-null retrans.function should raise warnings and ultimately errors
@@ -137,10 +138,12 @@ test_that("loadInterp models can find and report their uncertainty", {
   # predictions with uncertainty intervals
   expect_equal(length(predictSolute(lic, flux.or.conc="flux", interval="none")), nrow(mydat))
   expect_equal(ncol(predictSolute(lic, flux.or.conc="flux", se.pred=TRUE)), 2)
+  expect_equal(ncol(predictSolute(lic, flux.or.conc="flux", se.pred=TRUE, date=TRUE)), 3)
   expect_equal(ncol(predictSolute(lic, flux.or.conc="flux", interval="prediction")), 3)
   expect_equal(ncol(predictSolute(lic, flux.or.conc="flux", interval="prediction", se.pred=TRUE)), 4)
   # options including interval="confidence" or se.fit=TRUE aren't permitted, at least for now
   expect_error(predictSolute(lic, flux.or.conc="flux", se.fit=TRUE))
+  expect_error(predictSolute(lic, flux.or.conc="flux", count=TRUE))
   expect_error(predictSolute(lic, flux.or.conc="flux", interval="confidence"))
   expect_error(predictSolute(lic, flux.or.conc="flux", interval="confidence", se.fit=TRUE))
   expect_error(predictSolute(lic, flux.or.conc="flux", interval="prediction", se.fit=TRUE))
@@ -191,7 +194,7 @@ test_that("loadInterp models can find and report their uncertainty", {
       # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
       # theme_bw() + ggtitle("flux from lif")
   # )
-  expect_manual_OK("loadInterp predictions (green dots & bars) match the observations (pink X's)")
+  # expect_manual_OK("loadInterp predictions (green dots & bars) match the observations (pink X's)")
   
   # If you make the models with less complete data, uncertainty should be calculated for one format only
   lic <- loadInterp("conc", linearInterpolation, mydat[c("conc","datetime")], mymd)
@@ -222,12 +225,14 @@ test_that("predictSolute agg.by arguments work", {
   
   ### This is the interpolation you'd compare to a regression or composite method
   lic <- loadInterp(interp.format="conc", data=mydat, interp.function=linearInterpolation, metadata=updateMetadata(mymd))
-  expect_warning(monthAgg <- predictSolute(lic, "flux", agg.by = "month"))
-  expect_warning(watYearAgg <- predictSolute(lic, "flux", agg.by = "water year", date = TRUE))
+  monthAgg <- predictSolute(lic, "flux", agg.by = "month")
+  watYearAgg <- predictSolute(lic, "flux", agg.by = "water year", date = TRUE, count=TRUE)
   expect_is(monthAgg, 'data.frame')
   expect_equal(nrow(monthAgg), 1)
-  expect_true(all(is.na(monthAgg$CI_upper)))
   expect_is(watYearAgg, 'data.frame')
+  expect_true('Count' %in% names(watYearAgg))
   expect_equal(nrow(watYearAgg), 1)
-  expect_true(all(is.na(watYearAgg$CI_upper)))
+  expect_warning(monthAgg2 <- predictSolute(lic, "flux", agg.by = "month",se.pred=TRUE), "uncertainty for aggregated predictions is unavailable")
+  expect_true(all(is.na(monthAgg2$CI_upper)))
+  
 })

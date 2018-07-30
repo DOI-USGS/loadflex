@@ -7,14 +7,14 @@
 \method{predictSolute}{loadInterp}(load.model, flux.or.conc, newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
-  "water year", "calendar year", "total", "mean water year",
+  date = FALSE, count = FALSE, attach.units = FALSE, agg.by = c("unit",
+  "day", "month", "water year", "calendar year", "total", "mean water year",
   "mean calendar year", "[custom]"), ...)
 }
 \arguments{
 \item{load.model}{A loadInterp object.}
 
-\item{flux.or.conc}{character. Should the predictions be reported as flux 
+\item{flux.or.conc}{character. Should the predictions be reported as flux
 rates or concentrations?}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data. Because 
@@ -27,39 +27,45 @@ original fitting data will be used.}
 \item{interval}{character. The type of interval desired. Confidence intervals
 are not currently available for loadInterp models.}
 
-\item{level}{numeric. Fraction of density distribution to include within 
+\item{level}{numeric. Fraction of density distribution to include within
 confidence or prediction interval}
 
 \item{lin.or.log}{character. Either "linear" or "log" to say whether the
 predictions should be converted to log space or not. If converted to log
-space, a bias correction will be applied, see \code{\link{linToLog}}.}
+space, a bias correction will be applied to regression model predictions;
+see \code{\link{linToLog}}.}
 
 \item{se.fit}{logical, but should be FALSE because se.fit is not currently
 available for loadInterp models.}
 
-\item{se.pred}{logical. If TRUE, the output data.frame will include a column 
-named "se.pred" describing the standard error of the prediction for each 
-row of predictors. The values in the se.pred column will be larger than 
-those in the se.fit column, because the se.pred values are standard errors 
-of prediction (SEPs) and take into account not only the parameter 
-uncertainty associated with the model coefficients (also covered by 
-se.fit), but also the random error associated with any given observation 
-(the epsilon term in a typical regression model).}
+\item{se.pred}{logical. If TRUE, the output data.frame will include a column
+named "se.pred" (for agg.by=="unit") or "SE" (for agg.by!="unit")
+describing the standard error of the prediction for each row of predictors.
+Only one of se.fit or se.pred is permitted for agg.by!="unit". The se.pred
+values are standard errors of prediction (SEPs) and take into account not
+only the parameter uncertainty associated with the model coefficients (also
+covered by se.fit), but also the random error associated with any given
+observation (the epsilon term in a typical regression model).}
 
-\item{date}{logical. If TRUE, the output data.frame will include a column 
-named "date" containing the dates of the predictions.}
+\item{date}{logical. If TRUE, the output data.frame will include a column
+named "date" containing the dates of the predictions (for agg.by=="unit"),
+or a period description such as "Water_Year" if the predictions have been
+aggregated (for agg.by!="unit").}
 
-\item{attach.units}{logical. Should the units be attached to columns in the 
+\item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
+will include a column named 'Count' containing the number of unit
+predictions going into each aggregated prediction (row).}
+
+\item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
 \item{agg.by}{character Time period to aggregate results by.}
 
-\item{...}{Additional arguments passed to class-specific implementations of 
+\item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
 }
 \value{
-A vector of data.frame of predictions, as for the generic 
-  \code{\link{predictSolute}}.
+If agg.by=="unit" and only  the result is a vector or data.frame of predictions; otherwise
 }
 \description{
 Makes instantaneous predictions (at the temporal resolution of 
