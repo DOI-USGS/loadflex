@@ -473,7 +473,12 @@ estimateMSE.loadInterp <- function(load.model, n.out, n.iter=floor(nrow(getFitti
       c(mean(conc_resids^2), mean(flux_resids^2))
       
     }))
-  
+
+  # Do some error checking so users know if their MSE is coming out with NAs
+  if(any(is.na(residuals_MSE))) {
+    warning('getting NAs when calculating interpolation model error; check for NA or negative values in the input data')
+  }
+    
   # Return the distribution of the MSE from all those leave-n-out interations in
   # a 2x2 matrix
   rbind(mean=apply(residuals_MSE, 2, mean), sd=apply(residuals_MSE, 2, sd))

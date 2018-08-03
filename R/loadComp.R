@@ -544,6 +544,11 @@ estimateMSE.loadComp <- function(load.model, n.iter=100, method="parametric", rh
       
     }))
   
+  # Do some error checking so users know if their MSE is coming out with NAs
+  if(any(is.na(complete_MSE))) {
+    warning('getting NAs when calculating composite model error; check for NA or negative values in the input data')
+  }
+  
   # Return the distribution of the MSE from all those leave-n-out interations
   # in a 2x2 matrix. The errors have have been calculated are already in the
   # right log/linear space and flux/conc format, so our only remaining job is
