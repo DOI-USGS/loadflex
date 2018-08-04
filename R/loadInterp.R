@@ -193,40 +193,46 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 }
 
 #' Make flux or concentration predictions from a loadInterp model.
-#' 
-#' Makes instantaneous predictions (at the temporal resolution of 
-#' \code{newdata}) from a fitted \code{\link{loadInterp}} model. See 
-#' \code{\link{predictSolute}} for details.
-#' 
-#' loadInterps are currently assumed to have normally distributed residuals. An 
-#' unwitting user might violate this assumption without being caught by the 
+#'
+#' Makes instantaneous predictions (at the temporal resolution of
+#' \code{newdata}) from a fitted \code{\link{loadInterp}} model. See
+#' \code{\link{predictSolute}} for details. For loadInterp models in particular, 
+#'
+#' loadInterps are currently assumed to have normally distributed residuals. An
+#' unwitting user might violate this assumption without being notified by the
 #' code, so be careful! This assumption is mainly relevant to the calculation of
-#' confidence or prediction intervals. Also, where other models such as loadReg 
-#' and loadLm will retransform predictions back into linear space, loadInterps 
-#' will not.
-#' 
+#' prediction intervals. Also, where other models such as loadReg and loadLm
+#' will retransform predictions back into linear space, loadInterps will not.
+#'
 #' @importFrom stats qnorm
+#' @import dplyr
 #' @inheritParams predictSolute
 #' @param load.model A loadInterp object.
-#' @param interval character. The type of interval desired. Confidence intervals
-#'   are not currently available for loadInterp models.
-#' @param se.fit logical, but should be FALSE because se.fit is not currently
-#'   available for loadInterp models.
-#' @param newdata \code{data.frame}, optional. Predictor data. Because 
-#'   loadInterp models interpolate in time among the observations to which they 
-#'   have been "fitted", \code{newdata} is usually simply a one-column 
+#' @param interval character set to "none" or "prediction". Prediction intervals
+#'   are unavailable when `agg.by=TRUE`, and confidence intervals are not
+#'   available for any loadInterp predictions. If "prediction", the interval
+#'   bounds will be returned in columns named "lwr" and "upr". Prediction bounds
+#'   describe the expected distribution of observations at each prediction
+#'   point.
+#' @param se.fit logical set to FALSE because se.fit is not currently available
+#'   for loadInterp models.
+#' @param newdata \code{data.frame}, optional. Predictor data. Because
+#'   loadInterp models interpolate in time among the observations to which they
+#'   have been "fitted", \code{newdata} is usually simply a one-column
 #'   data.frame of dates or date-times. Column names should match those given in
-#'   the \code{loadInterp} metadata. If \code{newdata} is not supplied, the 
+#'   the \code{loadInterp} metadata. If \code{newdata} is not supplied, the
 #'   original fitting data will be used.
-#' @return If agg.by=="unit" and only  the result is a vector or data.frame of predictions; otherwise
+#' @return Returns a vector or data.frame of predictions preditions. The result
+#'   is a vector if interval is "none" and all of se.fit, se.pred, date, and
+#'   count are FALSE; otherwise, the result is a data.frame.
 #' @export
 #' @family predictSolute
 predictSolute.loadInterp <- function(
-  load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE,
-  attach.units=FALSE,
+  load.model, flux.or.conc=c("flux","conc"), newdata,
+  interval=c("none","prediction"), level=0.95, lin.or.log=c("linear","log"),
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE, attach.units=FALSE,
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"),
-  ...) {
+  min.count=0, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -366,21 +372,17 @@ predictSolute.loadInterp <- function(
   } else if(agg.by != "unit") {
     # use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty if it was requested
     unit_preds <- if(is.data.frame(preds)) preds$fit else preds
-    preds <- aggregateSolute(
-      unit_preds, metadata = getMetadata(load.model), agg.by = agg.by,
-      format = flux.or.conc, dates = dates.out) %>%
-      dplyr::rename(Count=n)
-    if(interval != "none" || se.fit || se.pred) {
-      warning("Uncertainty for aggregated predictions is unavailable for loadInterp models")
-    } else {
-      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
+    agg_args <- list(
+      preds=unit_preds, metadata=getMetadata(load.model), format=flux.or.conc,
+      agg.by=agg.by, dates=dates.out, custom=newdata,
+      level=level, na.rm=na.rm, attach.units=attach.units, 
+      agg.cols=date, count=count, min.count=min.count)
+    multi_year <- any(grepl(pattern = "^mean.*year$", x = agg.by))
+    if(multi_year) {
+      agg_args$ci.agg <- (interval == "confidence")
+      agg_args$se.agg <- se.fit
     }
-    all_names <- names(preds)
-    drop_names <- c(
-      if(!date) all_names[1],
-      if(!count) "Count")
-    keep_names <- setdiff(all_names, drop_names)
-    preds <- preds[ , keep_names] # drops to vector if the only thing in keep_names is the fit column
+    preds <- do.call(aggregateSolute, agg_args)
   }
   
   return(preds)
