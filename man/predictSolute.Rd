@@ -7,13 +7,15 @@
 predictSolute(load.model, flux.or.conc = c("flux", "conc"), newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, count = FALSE, attach.units = FALSE, agg.by = c("unit",
-  "day", "month", "water year", "calendar year", "total", "mean water year",
-  "mean calendar year", "[custom]"), ...)
+  date = FALSE, count = FALSE, attach.units = FALSE,
+  agg.by = c("unit", "day", "month", "water year", "calendar year",
+  "total", "mean water year", "mean calendar year", "[custom]"),
+  na.rm = FALSE, min.count = 0, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel
-and always implementing the loadModelInterface.}
+\item{load.model}{A load model object, probably a loadInterp, loadReg2,
+loadComp, or loadLm. The object should typically inherit from the loadModel
+class and must always implement the loadModelInterface.}
 
 \item{flux.or.conc}{character. Should the predictions be reported as flux
 rates or concentrations? If the output is a data.frame, the column name for
@@ -59,14 +61,26 @@ or a period description such as "Water_Year" if the predictions have been
 aggregated (for agg.by!="unit").}
 
 \item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
-will include a column named 'Count' containing the number of unit
-predictions going into each aggregated prediction (row).}
+will include, for most values of `agg.by`, a column named 'Count'
+containing the number of unit predictions going into each aggregated
+prediction (row). If `agg.by` is 'mean water year' or 'mean calendar year',
+the columns included when `count=TRUE` are `Years_Record` (the number of
+years for which annual values were potentially available) and
+`Years_Complete` (the number of years considered complete and used to
+compute the mean year).}
 
 \item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
 \item{agg.by}{character Time period to aggregate results by. To do no
 aggregation, use the default of `agg.by='unit'`.}
+
+\item{na.rm}{logical. Should NA values be ignored during aggregation (TRUE),
+or should NA be returned for intervals that contain one or more NA
+predictions (FALSE)?}
+
+\item{min.count}{numeric number of observations below which an \code{agg.by}
+value, e.g. a year, will be considered incomplete and be discarded}
 
 \item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
@@ -108,3 +122,5 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadModel}},
   \code{\link{predictSolute.loadReg2}}
 }
+\concept{loadModelInterface}
+\concept{predictSolute}

@@ -6,8 +6,8 @@
 \usage{
 residDurbinWatson(load.model, flux.or.conc = c("flux", "conc"),
   abs.or.rel.resids = c("absolute", "relative"), use.log = FALSE,
-  newdata = NULL, plot.acf = TRUE, timestep.tol = .Machine$double.eps^0.5,
-  irregular.timesteps.ok = NA)
+  newdata = NULL, plot.acf = TRUE,
+  timestep.tol = .Machine$double.eps^0.5, irregular.timesteps.ok = NA)
 }
 \arguments{
 \item{load.model}{a loadModel descendant}
@@ -51,3 +51,4 @@ car::durbinWatsonTest
 Other diagnostics: \code{\link{estimateRho}},
   \code{\link{getCorrectionFraction}}
 }
+\concept{diagnostics}

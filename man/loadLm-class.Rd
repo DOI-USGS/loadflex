@@ -26,3 +26,4 @@ Other load.model.classes: \code{\link{loadComp-class}},
   \code{\link{loadModel-class}},
   \code{\link{loadReg2-class}}
 }
+\concept{load.model.classes}

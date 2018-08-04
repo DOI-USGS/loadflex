@@ -5,9 +5,9 @@
 \title{Create plots for examining the results from the composite method}
 \usage{
 plotCM(flux.or.conc, show.observations, load.model, finalloads,
-  observations = NULL, composite = TRUE, linear.interpolation = FALSE,
-  regression = TRUE, xrange = "none", dateField = "Date",
-  verbose = FALSE)
+  observations = NULL, composite = TRUE,
+  linear.interpolation = FALSE, regression = TRUE, xrange = "none",
+  dateField = "Date", verbose = FALSE)
 }
 \arguments{
 \item{flux.or.conc}{character indicating whether the plots are of 

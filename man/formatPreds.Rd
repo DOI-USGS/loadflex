@@ -4,9 +4,9 @@
 \alias{formatPreds}
 \title{formatPreds raw to final predictions}
 \usage{
-formatPreds(preds, from.format = c("flux", "conc*flow", "flux/flow", "conc"),
-  to.format = c("flux", "conc"), newdata, metadata, lin.or.log = c("linear",
-  "log"), attach.units = FALSE)
+formatPreds(preds, from.format = c("flux", "conc*flow", "flux/flow",
+  "conc"), to.format = c("flux", "conc"), newdata, metadata,
+  lin.or.log = c("linear", "log"), attach.units = FALSE)
 }
 \arguments{
 \item{preds}{raw prediction values}

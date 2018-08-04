@@ -4,12 +4,13 @@
 \alias{predictSolute.loadInterp}
 \title{Make flux or concentration predictions from a loadInterp model.}
 \usage{
-\method{predictSolute}{loadInterp}(load.model, flux.or.conc, newdata,
-  interval = c("none", "confidence", "prediction"), level = 0.95,
+\method{predictSolute}{loadInterp}(load.model, flux.or.conc = c("flux",
+  "conc"), newdata, interval = c("none", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, count = FALSE, attach.units = FALSE, agg.by = c("unit",
-  "day", "month", "water year", "calendar year", "total", "mean water year",
-  "mean calendar year", "[custom]"), ...)
+  date = FALSE, count = FALSE, attach.units = FALSE,
+  agg.by = c("unit", "day", "month", "water year", "calendar year",
+  "total", "mean water year", "mean calendar year", "[custom]"),
+  min.count = 0, ...)
 }
 \arguments{
 \item{load.model}{A loadInterp object.}
@@ -27,8 +28,12 @@ data.frame of dates or date-times. Column names should match those given in
 the \code{loadInterp} metadata. If \code{newdata} is not supplied, the
 original fitting data will be used.}
 
-\item{interval}{character. The type of interval desired. Confidence intervals
-are not currently available for loadInterp models.}
+\item{interval}{character set to "none" or "prediction". Prediction intervals
+are unavailable when `agg.by=TRUE`, and confidence intervals are not
+available for any loadInterp predictions. If "prediction", the interval
+bounds will be returned in columns named "lwr" and "upr". Prediction bounds
+describe the expected distribution of observations at each prediction
+point.}
 
 \item{level}{numeric. Fraction of density distribution to include within
 confidence or prediction interval}
@@ -38,8 +43,8 @@ predictions should be converted to log space or not. If converted to log
 space, a bias correction will be applied to regression model predictions;
 see \code{\link{linToLog}}.}
 
-\item{se.fit}{logical, but should be FALSE because se.fit is not currently
-available for loadInterp models.}
+\item{se.fit}{logical set to FALSE because se.fit is not currently available
+for loadInterp models.}
 
 \item{se.pred}{logical. If TRUE, the output data.frame will include a column
 named "se.pred" (for agg.by=="unit") or "SE" (for agg.by!="unit")
@@ -56,14 +61,22 @@ or a period description such as "Water_Year" if the predictions have been
 aggregated (for agg.by!="unit").}
 
 \item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
-will include a column named 'Count' containing the number of unit
-predictions going into each aggregated prediction (row).}
+will include, for most values of `agg.by`, a column named 'Count'
+containing the number of unit predictions going into each aggregated
+prediction (row). If `agg.by` is 'mean water year' or 'mean calendar year',
+the columns included when `count=TRUE` are `Years_Record` (the number of
+years for which annual values were potentially available) and
+`Years_Complete` (the number of years considered complete and used to
+compute the mean year).}
 
 \item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
 \item{agg.by}{character Time period to aggregate results by. To do no
 aggregation, use the default of `agg.by='unit'`.}
+
+\item{min.count}{numeric number of observations below which an \code{agg.by}
+value, e.g. a year, will be considered incomplete and be discarded}
 
 \item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
@@ -76,15 +89,14 @@ Returns a vector or data.frame of predictions preditions. The result
 \description{
 Makes instantaneous predictions (at the temporal resolution of
 \code{newdata}) from a fitted \code{\link{loadInterp}} model. See
-\code{\link{predictSolute}} for details.
+\code{\link{predictSolute}} for details. For loadInterp models in particular,
 }
 \details{
 loadInterps are currently assumed to have normally distributed residuals. An
-unwitting user might violate this assumption without being caught by the
+unwitting user might violate this assumption without being notified by the
 code, so be careful! This assumption is mainly relevant to the calculation of
-confidence or prediction intervals. Also, where other models such as loadReg
-and loadLm will retransform predictions back into linear space, loadInterps
-will not.
+prediction intervals. Also, where other models such as loadReg and loadLm
+will retransform predictions back into linear space, loadInterps will not.
 }
 \seealso{
 Other predictSolute: \code{\link{predictSolute.loadComp}},
@@ -93,3 +105,4 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadReg2}},
   \code{\link{predictSolute}}
 }
+\concept{predictSolute}

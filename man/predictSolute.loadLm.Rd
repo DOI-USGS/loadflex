@@ -4,12 +4,13 @@
 \alias{predictSolute.loadLm}
 \title{Make flux or concentration predictions from a loadLm model.}
 \usage{
-\method{predictSolute}{loadLm}(load.model, flux.or.conc = c("flux", "conc"),
-  newdata, interval = c("none", "confidence", "prediction"), level = 0.95,
-  lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
+\method{predictSolute}{loadLm}(load.model, flux.or.conc = c("flux",
+  "conc"), newdata, interval = c("none", "confidence", "prediction"),
+  level = 0.95, lin.or.log = c("linear", "log"), se.fit = FALSE,
+  se.pred = FALSE, date = FALSE, count = FALSE,
+  attach.units = FALSE, agg.by = c("unit", "day", "month",
   "water year", "calendar year", "total", "mean water year",
-  "mean calendar year", "[custom]"), ...)
+  "mean calendar year", "[custom]"), min.count = 0, ...)
 }
 \arguments{
 \item{load.model}{A loadLm object.}
@@ -57,11 +58,23 @@ named "date" containing the dates of the predictions (for agg.by=="unit"),
 or a period description such as "Water_Year" if the predictions have been
 aggregated (for agg.by!="unit").}
 
+\item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
+will include, for most values of `agg.by`, a column named 'Count'
+containing the number of unit predictions going into each aggregated
+prediction (row). If `agg.by` is 'mean water year' or 'mean calendar year',
+the columns included when `count=TRUE` are `Years_Record` (the number of
+years for which annual values were potentially available) and
+`Years_Complete` (the number of years considered complete and used to
+compute the mean year).}
+
 \item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
 \item{agg.by}{character Time period to aggregate results by. To do no
 aggregation, use the default of `agg.by='unit'`.}
+
+\item{min.count}{numeric number of observations below which an \code{agg.by}
+value, e.g. a year, will be considered incomplete and be discarded}
 
 \item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
@@ -82,3 +95,4 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadReg2}},
   \code{\link{predictSolute}}
 }
+\concept{predictSolute}

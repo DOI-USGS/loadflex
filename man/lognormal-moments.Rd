@@ -35,13 +35,6 @@ linear scale.}
 \code{logToLin} makes the transformation from the moments of a lognormal 
 distribution in log space to the moments of the same distribution in linear 
 space.
-
-\code{linToLog} makes the opposite transformation, from the moments of a 
-lognormal distribution in linear space to the moments of the same 
-distribution in log space.
-
-\code{mixedToLog} transforms from a mixed pair - either meanlin and sdlog, or
-meanlog and sdlin - and returns meanlog and sdlog.
 }
 \details{
 \subsection{Terminology}{

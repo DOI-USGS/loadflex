@@ -33,3 +33,4 @@ Other loadModelInterface: \code{\link{estimateMSE}},
   \code{\link{simulateSolute}},
   \code{\link{summarizeModel}}
 }
+\concept{loadModelInterface}

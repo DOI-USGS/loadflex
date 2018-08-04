@@ -64,3 +64,5 @@ Other simulateSolute: \code{\link{simulateSolute.loadLm}},
   \code{\link{simulateSolute.loadModel}},
   \code{\link{simulateSolute.loadReg2}}
 }
+\concept{loadModelInterface}
+\concept{simulateSolute}
