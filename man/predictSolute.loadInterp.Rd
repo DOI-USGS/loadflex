@@ -15,13 +15,16 @@
 \item{load.model}{A loadInterp object.}
 
 \item{flux.or.conc}{character. Should the predictions be reported as flux
-rates or concentrations?}
+rates or concentrations? If the output is a data.frame, the column name for
+flux predictions will be "fit" when `agg.by='unit'` and "Flux_Rate"
+otherwise; the column name for concentration predictions will be "fit" when
+`agg.by='unit'` and "Conc" otherwise.}
 
-\item{newdata}{\code{data.frame}, optional. Predictor data. Because 
-loadInterp models interpolate in time among the observations to which they 
-have been "fitted", \code{newdata} is usually simply a one-column 
+\item{newdata}{\code{data.frame}, optional. Predictor data. Because
+loadInterp models interpolate in time among the observations to which they
+have been "fitted", \code{newdata} is usually simply a one-column
 data.frame of dates or date-times. Column names should match those given in
-the \code{loadInterp} metadata. If \code{newdata} is not supplied, the 
+the \code{loadInterp} metadata. If \code{newdata} is not supplied, the
 original fitting data will be used.}
 
 \item{interval}{character. The type of interval desired. Confidence intervals
@@ -59,25 +62,28 @@ predictions going into each aggregated prediction (row).}
 \item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
-\item{agg.by}{character Time period to aggregate results by.}
+\item{agg.by}{character Time period to aggregate results by. To do no
+aggregation, use the default of `agg.by='unit'`.}
 
 \item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
 }
 \value{
-If agg.by=="unit" and only  the result is a vector or data.frame of predictions; otherwise
+Returns a vector or data.frame of predictions preditions. The result
+  is a vector if interval is "none" and all of se.fit, se.pred, date, and
+  count are FALSE; otherwise, the result is a data.frame.
 }
 \description{
-Makes instantaneous predictions (at the temporal resolution of 
-\code{newdata}) from a fitted \code{\link{loadInterp}} model. See 
+Makes instantaneous predictions (at the temporal resolution of
+\code{newdata}) from a fitted \code{\link{loadInterp}} model. See
 \code{\link{predictSolute}} for details.
 }
 \details{
-loadInterps are currently assumed to have normally distributed residuals. An 
-unwitting user might violate this assumption without being caught by the 
+loadInterps are currently assumed to have normally distributed residuals. An
+unwitting user might violate this assumption without being caught by the
 code, so be careful! This assumption is mainly relevant to the calculation of
-confidence or prediction intervals. Also, where other models such as loadReg 
-and loadLm will retransform predictions back into linear space, loadInterps 
+confidence or prediction intervals. Also, where other models such as loadReg
+and loadLm will retransform predictions back into linear space, loadInterps
 will not.
 }
 \seealso{

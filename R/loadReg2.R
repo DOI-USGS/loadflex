@@ -276,12 +276,11 @@ loadReg2 <- function(
 #' @export
 #' @family predictSolute
 predictSolute.loadReg2 <- function(
-  load.model, flux.or.conc=c("flux","conc"), newdata, 
-  interval=c("none","confidence","prediction"), level=0.95, 
-  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-  date=FALSE, attach.units=FALSE, 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
-           "mean water year", "mean calendar year", "[custom]"), ...) {
+  load.model, flux.or.conc=c("flux","conc"), newdata,
+  interval=c("none","confidence","prediction"), level=0.95, lin.or.log=c("linear","log"),
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE, attach.units=FALSE,
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"),
+  min.count=0, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -376,7 +375,7 @@ predictSolute.loadReg2 <- function(
       }
     )
   })
-  preds_lin_raw <- do.call(rbind, preds_lin_raw)
+  preds_lin_raw <- bind_rows(preds_lin_raw)
   preds_col <- .sentenceCase(flux.or.conc)
   
   # Generate predictions in log space in case these were requested. Uses the 

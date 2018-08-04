@@ -99,68 +99,89 @@ getFittedModel <- function(load.model) {
 }
 
 #' Make flux or concentration predictions from a load model.
-#' 
-#' A function in the loadModelInterface. Uses a load model and a predictor 
-#' dataset (which may differ from the original model-fitting dataset) to make 
-#' predictions for loads or concentrations at the time points in the new 
+#'
+#' A function in the loadModelInterface. Uses a load model and a predictor
+#' dataset (which may differ from the original model-fitting dataset) to make
+#' predictions for loads or concentrations at the time points in the new
 #' dataset.
-#' 
-#' This is the S3 generic predictSolute(), for which specific methods should be 
-#' implemented for each load model class (e.g., \code{\link{loadModel}}. Unlike 
-#' rloadest::predLoad() and predConc(), and more like most other predict 
+#'
+#' This is the S3 generic predictSolute(), for which specific methods should be
+#' implemented for each load model class (e.g., \code{\link{loadModel}}. Unlike
+#' rloadest::predLoad() and predConc(), and more like most other predict
 #' functions in R, this function makes no attempt to aggregate the results.
-#' 
-#' @param load.model A load model object, typically inheriting from loadModel 
-#'   and always implementing the loadModelInterface.
-#' @param flux.or.conc character. Should the predictions be reported as flux 
-#'   rates or concentrations?
-#' @param newdata An optional data.frame of predictor observations. The column 
-#'   names in this data.frame must match those specified in the load model's 
+#'
+#' @param load.model A load model object, probably a loadInterp, loadReg2,
+#'   loadComp, or loadLm. The object should typically inherit from the loadModel
+#'   class and must always implement the loadModelInterface.
+#' @param flux.or.conc character. Should the predictions be reported as flux
+#'   rates or concentrations? If the output is a data.frame, the column name for
+#'   flux predictions will be "fit" when `agg.by='unit'` and "Flux_Rate"
+#'   otherwise; the column name for concentration predictions will be "fit" when
+#'   `agg.by='unit'` and "Conc" otherwise.
+#' @param newdata An optional data.frame of predictor observations. The column
+#'   names in this data.frame must match those specified in the load model's
 #'   metadata.
-#' @param interval character. One of "none", "confidence" or "prediction". If 
-#'   "confidence" or "prediction", the interval bounds will be returned in 
-#'   columns named "lwr" and "upr". Confidence intervals describe confidence in 
-#'   the model prediction for the mean value given a set of predictors, whereas 
-#'   prediction bounds describe the expected distribution of observations at 
+#' @param interval character. One of "none", "confidence" or "prediction". If
+#'   "confidence" or "prediction", the interval bounds will be returned in
+#'   columns named "lwr" and "upr". Confidence intervals describe confidence in
+#'   the model prediction for the mean value given a set of predictors, whereas
+#'   prediction bounds describe the expected distribution of observations at
 #'   that prediction point.
-#' @param level numeric. Fraction of density distribution to include within 
+#' @param level numeric. Fraction of density distribution to include within
 #'   confidence or prediction interval
 #' @param lin.or.log character. Either "linear" or "log" to say whether the
 #'   predictions should be converted to log space or not. If converted to log
-#'   space, a bias correction will be applied, see \code{\link{linToLog}}.
-#' @param se.fit logical. If TRUE, the output data.frame will include a column 
-#'   named "se.fit" describing the standard error of the model fit for each row 
-#'   of predictors.
-#' @param se.pred logical. If TRUE, the output data.frame will include a column 
-#'   named "se.pred" describing the standard error of the prediction for each 
-#'   row of predictors. The values in the se.pred column will be larger than 
-#'   those in the se.fit column, because the se.pred values are standard errors 
-#'   of prediction (SEPs) and take into account not only the parameter 
-#'   uncertainty associated with the model coefficients (also covered by 
-#'   se.fit), but also the random error associated with any given observation 
-#'   (the epsilon term in a typical regression model).
-#' @param date logical. If TRUE, the output data.frame will include a column 
-#'   named "date" containing the dates of the predictions.
-#' @param attach.units logical. Should the units be attached to columns in the 
+#'   space, a bias correction will be applied to regression model predictions;
+#'   see \code{\link{linToLog}}.
+#' @param se.fit logical. If TRUE, the output data.frame will include a column
+#'   named "se.fit" (for agg.by=="unit") or "SE" (for agg.by!="unit") describing
+#'   the standard error of the model fit for each row of predictors.
+#' @param se.pred logical. If TRUE, the output data.frame will include a column
+#'   named "se.pred" (for agg.by=="unit") or "SE" (for agg.by!="unit")
+#'   describing the standard error of the prediction for each row of predictors.
+#'   Only one of se.fit or se.pred is permitted for agg.by!="unit". The se.pred
+#'   values are standard errors of prediction (SEPs) and take into account not
+#'   only the parameter uncertainty associated with the model coefficients (also
+#'   covered by se.fit), but also the random error associated with any given
+#'   observation (the epsilon term in a typical regression model).
+#' @param date logical. If TRUE, the output data.frame will include a column
+#'   named "date" containing the dates of the predictions (for agg.by=="unit"),
+#'   or a period description such as "Water_Year" if the predictions have been
+#'   aggregated (for agg.by!="unit").
+#' @param count logical. If TRUE, and if agg.by!='unit', the output data.frame
+#'   will include, for most values of `agg.by`, a column named 'Count'
+#'   containing the number of unit predictions going into each aggregated
+#'   prediction (row). If `agg.by` is 'mean water year' or 'mean calendar year',
+#'   the columns included when `count=TRUE` are `Years_Record` (the number of
+#'   years for which annual values were potentially available) and
+#'   `Years_Complete` (the number of years considered complete and used to
+#'   compute the mean year).
+#' @param attach.units logical. Should the units be attached to columns in the
 #'   resulting data.frame?
-#' @param agg.by character Time period to aggregate results by.  
-#' @param ... Additional arguments passed to class-specific implementations of 
+#' @param agg.by character Time period to aggregate results by. To do no
+#'   aggregation, use the default of `agg.by='unit'`.
+#' @inheritParams aggregateSolute
+#' @param min.count numeric number of observations below which an \code{agg.by}
+#'   value, e.g. a year, will be considered incomplete and be discarded
+#' @param ... Additional arguments passed to class-specific implementations of
 #'   the \code{predictSolute} generic function.
-#' @return If interval=="none" and both se.fit and se.pred are FALSE, a vector 
-#'   of predictions. Otherwise, a data.frame with a column called "fit" 
-#'   containing the predictions for the solute. Values associated with interval,
-#'   se.fit, and se.pred are additional columns with names noted in those 
-#'   argument descriptions.
+#' @return If interval=="none" and all of dates, se.fit, se.pred, and count are
+#'   FALSE, returns a vector of predictions. Otherwise, returns a data.frame. If
+#'   agg.by=="unit" then the data.frame will have a column called "fit"
+#'   containing the predictions for the solute, and optional columns associated
+#'   with datetimes, interval, se.fit, and se.pred are additional columns with
+#'   names noted in those argument descriptions. If `agg.by!="unit"`, the
+#'   returned column names differ: they are capitalized, and the name of the
+#'   date column will reflect the selected value of `agg.by`
 #' @export
 #' @family loadModelInterface
 #' @family predictSolute
 predictSolute <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata, 
-  interval=c("none","confidence","prediction"), level=0.95, 
-  lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-  date=FALSE, attach.units=FALSE, 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
-            "mean water year", "mean calendar year", "[custom]"), ...) {
+  interval=c("none","confidence","prediction"), level=0.95, lin.or.log=c("linear","log"),
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE, attach.units=FALSE, 
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"), na.rm=FALSE, min.count=0,
+  ...) {
 
   UseMethod("predictSolute")
 }

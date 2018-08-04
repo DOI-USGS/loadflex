@@ -9,7 +9,7 @@ aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
   "mean water year", "mean calendar year", "[custom]"), se.preds, dates,
   custom = NA, cormat.function = cormat1DayBand, ci.agg = TRUE,
   level = 0.95, deg.free = NA, ci.distrib = c("lognormal", "normal"),
-  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE, min.n = 0)
+  se.agg = TRUE, na.rm = FALSE, attach.units = FALSE, min.count = 0)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or 
@@ -75,7 +75,7 @@ predictions (FALSE)?}
 \item{attach.units}{logical. If true, units will be attached as an attribute 
 of the second column of the returned data.frame.}
 
-\item{min.n}{numeric number of observations below which an \code{agg.by}
+\item{min.count}{numeric number of observations below which an \code{agg.by}
 value, e.g. a year, will be considered incomplete and be discarded}
 }
 \value{

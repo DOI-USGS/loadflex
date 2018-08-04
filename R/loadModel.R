@@ -253,7 +253,8 @@ predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), n
   
   # Add intervals if requested
   if(interval == "none") {
-    preds <- formatPreds(preds, from.format=load.model@pred.format, to.format=flux.or.conc, newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
+    preds <- formatPreds(preds, from.format=load.model@pred.format, to.format=flux.or.conc,
+                         newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
   } else if(interval == "confidence") {
     stop("confidence intervals not implemented for generic loadModel")
   } else if(interval=="prediction") {
@@ -269,7 +270,7 @@ predictSolute.loadModel <- function(load.model, flux.or.conc=c("flux","conc"), n
   # Lines commented out in this block could be useful in new implementations of
   # predictSolute.loadXX for new loadXX classes that extend loadModel and
   # implement the loadModelInterface.
-  if(se.fit | se.pred) {
+  if(se.fit || se.pred) {
     ## UNCOMMENT THESE LINES for loadModel extensions ##
     # if(!is.data.frame(preds)) {
     #   preds <- data.frame(fit=preds)

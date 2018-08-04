@@ -206,10 +206,11 @@ loadComp <- function(reg.model,
 #' @export
 #' @family predictSolute
 predictSolute.loadComp <- function(
-  load.model, flux.or.conc, newdata, interval=c("none","confidence","prediction"), 
-  level=0.95, lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, date=FALSE, 
-  attach.units=FALSE, agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
-                               "mean water year", "mean calendar year", "[custom]"),
+  load.model, flux.or.conc=c("flux","conc"), newdata,
+  interval=c("none","confidence","prediction"), level=0.95, lin.or.log=c("linear","log"),
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE, attach.units=FALSE,
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"),
+  min.count=0,
   fit.reg=FALSE, fit.resid=FALSE, fit.resid.raw=FALSE, ...) {
   
   # Validate arguments
@@ -383,10 +384,15 @@ predictSolute.loadComp <- function(
     }
   }
   
-  #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
+  # use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty if it was requested
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
                              format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
+    if(interval != "none" || se.fit || se.pred) {
+      warning("Uncertainty for aggregated predictions is currently unavailable for loadComp models")
+    } else {
+      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
+    }
   }
   
   # Return

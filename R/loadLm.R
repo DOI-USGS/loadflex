@@ -153,6 +153,7 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 #' \code{\link{predictSolute}} for details.
 #' 
 #' @importFrom stats qnorm qt
+#' @import dplyr
 #' @inheritParams predictSolute
 #' @param load.model A loadLm object.
 #' @param newdata \code{data.frame}, optional. Predictor data. Column names
@@ -162,13 +163,12 @@ loadLm <- function(formula, pred.format=c("flux","conc"),
 #'   \code{\link{predictSolute}}.
 #' @export
 #' @family predictSolute
-predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newdata, 
-                                 interval=c("none","confidence","prediction"), level=0.95,
-                                 lin.or.log=c("linear","log"), se.fit=FALSE, se.pred=FALSE, 
-                                 date=FALSE, attach.units=FALSE, 
-                                 agg.by=c("unit", "day", "month", "water year", 
-                                          "calendar year", "total", "mean water year", 
-                                          "mean calendar year", "[custom]"), ...) {
+predictSolute.loadLm <- function(
+  load.model, flux.or.conc=c("flux","conc"), newdata,
+  interval=c("none","confidence","prediction"), level=0.95, lin.or.log=c("linear","log"),
+  se.fit=FALSE, se.pred=FALSE, date=FALSE, count=FALSE, attach.units=FALSE,
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "mean water year", "mean calendar year", "[custom]"),
+  min.count=0, ...) {
   
   # Validate arguments
   flux.or.conc <- match.arg.loadflex(flux.or.conc)
@@ -209,7 +209,7 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
 
   # Calculate se.pred if needed. At least while loadLm only permits logged
   # left-hand sides, we will always need se.pred
-  if(TRUE | se.pred) {
+  if(TRUE || se.pred) {
     # This calculation of se.pred is consistent with the predict.lm code.
     # Lines pulled & slightly modified from predict.lm:
     #       object <- load.model@fit
@@ -315,10 +315,15 @@ predictSolute.loadLm <- function(load.model, flux.or.conc=c("flux","conc"), newd
     preds <- preds$fit
   }
   
-  #use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty
+  # use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty if it was requested
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
                              format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
+    if(interval != "none" || se.fit || se.pred) {
+      warning("Uncertainty for aggregated predictions is currently unavailable for loadLm models")
+    } else {
+      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
+    }
   }
  
   return(preds)

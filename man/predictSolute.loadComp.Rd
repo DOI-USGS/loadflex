@@ -15,8 +15,11 @@
 \arguments{
 \item{load.model}{A loadComp object.}
 
-\item{flux.or.conc}{character. Should the predictions be reported as flux 
-rates or concentrations?}
+\item{flux.or.conc}{character. Should the predictions be reported as flux
+rates or concentrations? If the output is a data.frame, the column name for
+flux predictions will be "fit" when `agg.by='unit'` and "Flux_Rate"
+otherwise; the column name for concentration predictions will be "fit" when
+`agg.by='unit'` and "Conc" otherwise.}
 
 \item{newdata}{\code{data.frame}, optional. Predictor data, including any 
 predictor columns needed for the regression model and any needed for the 
@@ -24,40 +27,44 @@ interpolation model. Column names should match those given in the
 \code{loadComp} metadata. If \code{newdata} is not supplied, the original 
 fitting data will be used.}
 
-\item{interval}{character. One of "none", "confidence" or "prediction". If 
-"confidence" or "prediction", the interval bounds will be returned in 
-columns named "lwr" and "upr". Confidence intervals describe confidence in 
-the model prediction for the mean value given a set of predictors, whereas 
-prediction bounds describe the expected distribution of observations at 
+\item{interval}{character. One of "none", "confidence" or "prediction". If
+"confidence" or "prediction", the interval bounds will be returned in
+columns named "lwr" and "upr". Confidence intervals describe confidence in
+the model prediction for the mean value given a set of predictors, whereas
+prediction bounds describe the expected distribution of observations at
 that prediction point.}
 
-\item{level}{numeric. Fraction of density distribution to include within 
+\item{level}{numeric. Fraction of density distribution to include within
 confidence or prediction interval}
 
 \item{lin.or.log}{character. Either "linear" or "log" to say whether the
 predictions should be converted to log space or not. If converted to log
-space, a bias correction will be applied, see \code{\link{linToLog}}.}
+space, a bias correction will be applied to regression model predictions;
+see \code{\link{linToLog}}.}
 
-\item{se.fit}{logical. If TRUE, the output data.frame will include a column 
-named "se.fit" describing the standard error of the model fit for each row 
-of predictors.}
+\item{se.fit}{logical. If TRUE, the output data.frame will include a column
+named "se.fit" (for agg.by=="unit") or "SE" (for agg.by!="unit") describing
+the standard error of the model fit for each row of predictors.}
 
-\item{se.pred}{logical. If TRUE, the output data.frame will include a column 
-named "se.pred" describing the standard error of the prediction for each 
-row of predictors. The values in the se.pred column will be larger than 
-those in the se.fit column, because the se.pred values are standard errors 
-of prediction (SEPs) and take into account not only the parameter 
-uncertainty associated with the model coefficients (also covered by 
-se.fit), but also the random error associated with any given observation 
-(the epsilon term in a typical regression model).}
+\item{se.pred}{logical. If TRUE, the output data.frame will include a column
+named "se.pred" (for agg.by=="unit") or "SE" (for agg.by!="unit")
+describing the standard error of the prediction for each row of predictors.
+Only one of se.fit or se.pred is permitted for agg.by!="unit". The se.pred
+values are standard errors of prediction (SEPs) and take into account not
+only the parameter uncertainty associated with the model coefficients (also
+covered by se.fit), but also the random error associated with any given
+observation (the epsilon term in a typical regression model).}
 
-\item{date}{logical. If TRUE, the output data.frame will include a column 
-named "date" containing the dates of the predictions.}
+\item{date}{logical. If TRUE, the output data.frame will include a column
+named "date" containing the dates of the predictions (for agg.by=="unit"),
+or a period description such as "Water_Year" if the predictions have been
+aggregated (for agg.by!="unit").}
 
-\item{attach.units}{logical. Should the units be attached to columns in the 
+\item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
-\item{agg.by}{character Time period to aggregate results by.}
+\item{agg.by}{character Time period to aggregate results by. To do no
+aggregation, use the default of `agg.by='unit'`.}
 
 \item{fit.reg}{logical. If TRUE, a column for the regression predictions 
 before interpolation will be included in the data.frame that is returned. 
@@ -75,7 +82,7 @@ as returned from the interpolation model. These may be in log space and/or
 unitless, depending on the type of residual correction specified when the
 loadComp model was created.}
 
-\item{...}{Additional arguments passed to class-specific implementations of 
+\item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
 }
 \value{
