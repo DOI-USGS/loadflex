@@ -19,6 +19,7 @@ Description: Implements several of the most common methods for
     interface for any model type, with which you can quickly fit models,
     generate predictions, and aggregate to monthly or annual values.
 VignetteBuilder: knitr
+Encoding: UTF-8
 Depends:
     R(>= 3.0),
     methods,
