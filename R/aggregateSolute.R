@@ -45,53 +45,32 @@
 #'   ignored and the entire vector \code{preds} will be aggregated. If
 #'   agg.by="[custom]", aggregation will occur for each unique value in
 #'   \code{dates}.
-#' @param se.preds Defunct; was a vector of standard errors of prediction for
-#'   instantaneous flux or concentration predictions. This data may also be
-#'   given as a column named "se.pred" in preds when preds is a data.frame.
 #' @param dates A vector, of the same length as preds, containing the dates to
 #'   aggregate over. This data may also be given as a column named "date" in
 #'   preds when preds is a data.frame.
 #' @param custom An optional data.frame of one or more columns each containing
 #'   factors or other labels on which to aggregate. The columns to be used are
 #'   set by \code{agg.by}.
-#' @param cormat.function A function that takes a vector of datetimes (Date,
-#'   POSIXct, chron, etc.) and returns a Matrix indicating the assumed/estimated
-#'   correlation between prediction errors on each pair of datetimes. See
-#'   \link{correlations-2D} for predefined options.
-#' @param ci.agg Only available when agg.by is "mean water year" or "mean
-#'   calendar year". logical. Should confidence intervals for the aggregate
-#'   predictions be returned? Computes CIs based on the distribution of annual
-#'   estimates, without regard for the uncertainty in those annual estimates.
-#' @param level numeric. The interval to span with the confidence intervals.
-#' @param deg.free Defunct (ignored); was numeric. The degrees of freedom to use
-#'   in calculating confidence intervals from SEPs. If NA, a normal distribution
-#'   is used rather than the more standard t distribution.
-#' @param ci.distrib Defunct (ignored); was character. The distribution to
-#'   assume for uncertainty in the aggregate flux or concentration distribution.
-#'   The default is "lognormal".
-#' @param se.agg Only available when agg.by is "mean water year" or "mean
-#'   calendar year". logical. Should standard errors of the aggregate
-#'   predictions be returned? Computes CIs based on the distribution of annual
-#'   estimates, without regard for the uncertainty in those annual estimates.
-#' @param na.rm logical. Should NA values be ignored during aggregation (TRUE),
-#'   or should NA be returned for intervals that contain one or more NA
-#'   predictions (FALSE)?
-#' @param attach.units logical. If true, units will be attached as an attribute
-#'   of the second column of the returned data.frame.
 #' @param agg.cols logical. Should the output data.frame include a column or
 #'   columns specifying the aggregation group/s for each row? TRUE is
 #'   recommended.
 #' @param count logical. Should a count of the number of observations per group
 #'   be included? For most values of agg.by, when count=TRUE there will be a new
-#'   column called Count. When agg.by is "mean water year" or "mean calendar
-#'   year", the new columns will be Years_Record and Years_Complete instead.
-#' @param min.count numeric number of observations below which an \code{agg.by}
-#'   value, e.g. a year, will be considered incomplete and be discarded
-#' @return A data.frame with two columns. The first contains the aggregation
-#'   period or custom aggregation unit and is named after the value of
-#'   \code{agg.by}. The second contains the aggregate flux or concentration
-#'   estimates and is named after the value of \code{format}. The values in the
-#'   second column will be in the units specified by \code{metadata}.
+#'   column called Count.
+#' @param na.rm logical. Should NA values be ignored during aggregation (TRUE),
+#'   or should NA be returned for intervals that contain one or more NA
+#'   predictions (FALSE)?
+#' @param attach.units logical. If true, units will be attached as an attribute
+#'   of the second column of the returned data.frame.
+#' @param ... Defunct and ignored arguments. Defunct arguments include
+#'   'se.preds', 'ci.agg', 'deg.free', 'ci.distrib', 'se.agg', and
+#'   'cormat.function'.
+#' @return A data.frame with 2+ columns. The first column or set of columns
+#'   contains the aggregation period or custom aggregation unit and is named
+#'   after the value of \code{agg.by}. The second contains the aggregate flux or
+#'   concentration estimates and is named after the value of \code{format}. The
+#'   values in the second column will be in the units specified by
+#'   \code{metadata}.
 #'
 #' @examples
 #' \dontrun{
@@ -110,36 +89,32 @@
 #' }
 aggregateSolute <- function(
   preds, metadata, format=c("conc", "flux rate"), 
-  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", 
-           "mean water year", "mean calendar year", "[custom]"),
-  se.preds="defunct", dates, custom=NA, 
-  cormat.function=cormat1DayBand,
-  ci.agg, level=0.95, deg.free="defunct", ci.distrib="defunct", se.agg,
-  na.rm=FALSE, attach.units=FALSE, agg.cols=TRUE, count=TRUE, min.count = 0) {
+  agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
+  dates, custom=NA, na.rm=FALSE, attach.units=FALSE, agg.cols=TRUE, count=TRUE,
+  ...) {
+  
+  # Check for defunct arguments
+  dots <- names(eval(substitute(alist(...))))
+  defunct_args <- dots[which(dots %in% c('se.preds','ci.agg','deg.free','ci.distrib','se.agg','cormat.function'))]
+  if(length(defunct_args) > 0) {
+    warning(sprintf(
+      "ignoring these defunct argument%s: %s",
+      if(length(defunct_args) > 1) 's' else '',
+      paste(defunct_args, collapse=', ')
+    ))
+  }
   
   # Validate arguments
   if(format == "flux total") {
-    warning("format=\"flux total\" is deprecated. Flux rate can be multiplied by duration to get total flux")
+    warning("format=\"flux total\" is no longer supported Flux rate can be multiplied by duration to get total flux")
   }
   format <- match.arg.loadflex(format, c("conc", "flux rate"))
   attach.units <- match.arg.loadflex(attach.units)
-  default_agg.by <- c("unit", "day", "month", "water year", "calendar year", 
-                        "total", "mean water year", "mean calendar year")
+  default_agg.by <- c("unit", "day", "month", "water year", "calendar year", "total")
   for(abi in 1:length(agg.by)) {
     agg.by[abi] <- match.arg.loadflex(agg.by[abi], c(default_agg.by, colnames(custom)))
   }
   agg.by <- .reSpace(agg.by,"_") # replace spaces with underscores to use agg.by as a column name
-  if(!is(custom, "data.frame")) {
-    if(!is.na(custom)) {
-      stop("Custom must be NA or a data.frame")
-    }
-  } else {
-    numpreds <- if(is.data.frame(preds)) nrow(preds) else length(preds)
-    if(nrow(custom) != numpreds) {
-      stop("When custom is a data.frame, it must have as many rows as there are values in preds, etc.")
-    }
-    colnames(custom) <- .reSpace(colnames(custom),"_") # do this after the match.arg.loadflex call
-  }
   if(is.data.frame(preds)) {
     # check for required columns
     need_col <- c('date', 'fit')
@@ -147,17 +122,22 @@ aggregateSolute <- function(
     if(length(missing_col) > 0) 
       stop(paste0("missing column[s] ", paste0("'", missing_col, "'", collapse=' & '), " in the preds data.frame"))
     
-    # extract columns into vectors
+    # extract columns into vectors and, if appropriate, a custom data.frame
     dates <- preds[,'date']
     preds <- preds[,'fit']
+    if(is.na(custom) && length(setdiff(names(preds), c('fit','se.pred','date'))) > 0) {
+      custom <- preds
+    }
   }
-  if(!missing(se.preds)) stop("se.preds is no longer supported; leave blank")  
-  if(!missing(deg.free)) stop("deg.free is no longer supported; leave blank")
-  if(!missing(ci.distrib)) stop("ci.distrib is no longer supported; leave blank")
-  multi_year <- any(grepl(pattern = "^mean.*year$", x = agg.by))
-  if(!multi_year) {
-    if(!missing(ci.agg)) stop("ci.agg is no longer supported; leave blank")
-    if(!missing(se.agg)) stop("se.agg is no longer supported; leave blank")
+  if(!is(custom, "data.frame")) {
+    if(!is.na(custom)) {
+      stop("Custom must be NA or a data.frame")
+    }
+  } else {
+    if(nrow(custom) != length(preds)) {
+      stop("When custom is a data.frame, it must have as many rows as there are values in preds")
+    }
+    colnames(custom) <- .reSpace(colnames(custom),"_") # do this after the match.arg.loadflex call
   }
   
   # Check that dates contains actual dates
@@ -192,9 +172,6 @@ aggregateSolute <- function(
           "water_year"=waterYear(dates),
           "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
-          # 2-phase aggregation:
-          "mean_water_year"=waterYear(dates),
-          "mean_calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
           stop("")
         )),
       agg.by)
@@ -240,27 +217,9 @@ aggregateSolute <- function(
     retDF <- v(agg_preds)
   }
   
-  # Aggregate to multi year if asked
-  if(multi_year) {
-    # Treat the final mean as a normal distribution
-    multiSE <- sqrt(sum(retDF$SE ^ 2)) / nrow(retDF)
-    CI_quantile <- qnorm(1 - (1 - level)/2)
-    retDF <- data.frame(
-      Value = mean(retDF$Value, na.rm=TRUE),
-      SE = multiSE, 
-      CI_lower = mean(retDF$Value) - CI_quantile*multiSE,
-      CI_upper = mean(retDF$Value) + CI_quantile*multiSE,
-      Years_Record = groupsInRecord,
-      Years_Complete = groupsComplete,
-      stringsAsFactors = FALSE)
-    if(!isTRUE(ci.agg)) retDF <- select(retDF)
-  }
-  
   # Exclude any un-requested names
   all_names <- names(retDF)
   drop_names <- c(
-    if(!se.agg) c('SE'),
-    if(!ci.agg) c('CI_lower','CI_upper'),
     if(!agg.cols) agg.by,
     if(!count) c("Count", "Years_Record", "Years_Complete"))
   keep_names <- setdiff(all_names, drop_names)

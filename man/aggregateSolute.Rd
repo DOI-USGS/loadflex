@@ -6,12 +6,8 @@
 \usage{
 aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
   agg.by = c("unit", "day", "month", "water year", "calendar year",
-  "total", "mean water year", "mean calendar year", "[custom]"),
-  se.preds = "defunct", dates, custom = NA,
-  cormat.function = cormat1DayBand, ci.agg, level = 0.95,
-  deg.free = "defunct", ci.distrib = "defunct", se.agg,
-  na.rm = FALSE, attach.units = FALSE, agg.cols = TRUE,
-  count = TRUE, min.count = 0)
+  "total", "[custom]"), dates, custom = NA, na.rm = FALSE,
+  attach.units = FALSE, agg.cols = TRUE, count = TRUE, ...)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or
@@ -37,10 +33,6 @@ ignored and the entire vector \code{preds} will be aggregated. If
 agg.by="[custom]", aggregation will occur for each unique value in
 \code{dates}.}
 
-\item{se.preds}{Defunct; was a vector of standard errors of prediction for
-instantaneous flux or concentration predictions. This data may also be
-given as a column named "se.pred" in preds when preds is a data.frame.}
-
 \item{dates}{A vector, of the same length as preds, containing the dates to
 aggregate over. This data may also be given as a column named "date" in
 preds when preds is a data.frame.}
@@ -48,31 +40,6 @@ preds when preds is a data.frame.}
 \item{custom}{An optional data.frame of one or more columns each containing
 factors or other labels on which to aggregate. The columns to be used are
 set by \code{agg.by}.}
-
-\item{cormat.function}{A function that takes a vector of datetimes (Date,
-POSIXct, chron, etc.) and returns a Matrix indicating the assumed/estimated
-correlation between prediction errors on each pair of datetimes. See
-\link{correlations-2D} for predefined options.}
-
-\item{ci.agg}{Only available when agg.by is "mean water year" or "mean
-calendar year". logical. Should confidence intervals for the aggregate
-predictions be returned? Computes CIs based on the distribution of annual
-estimates, without regard for the uncertainty in those annual estimates.}
-
-\item{level}{numeric. The interval to span with the confidence intervals.}
-
-\item{deg.free}{Defunct (ignored); was numeric. The degrees of freedom to use
-in calculating confidence intervals from SEPs. If NA, a normal distribution
-is used rather than the more standard t distribution.}
-
-\item{ci.distrib}{Defunct (ignored); was character. The distribution to
-assume for uncertainty in the aggregate flux or concentration distribution.
-The default is "lognormal".}
-
-\item{se.agg}{Only available when agg.by is "mean water year" or "mean
-calendar year". logical. Should standard errors of the aggregate
-predictions be returned? Computes CIs based on the distribution of annual
-estimates, without regard for the uncertainty in those annual estimates.}
 
 \item{na.rm}{logical. Should NA values be ignored during aggregation (TRUE),
 or should NA be returned for intervals that contain one or more NA
@@ -87,18 +54,19 @@ recommended.}
 
 \item{count}{logical. Should a count of the number of observations per group
 be included? For most values of agg.by, when count=TRUE there will be a new
-column called Count. When agg.by is "mean water year" or "mean calendar
-year", the new columns will be Years_Record and Years_Complete instead.}
+column called Count.}
 
-\item{min.count}{numeric number of observations below which an \code{agg.by}
-value, e.g. a year, will be considered incomplete and be discarded}
+\item{...}{Defunct and ignored arguments. Defunct arguments include
+'se.preds', 'ci.agg', 'deg.free', 'ci.distrib', 'se.agg', and
+'cormat.function'.}
 }
 \value{
-A data.frame with two columns. The first contains the aggregation
-  period or custom aggregation unit and is named after the value of
-  \code{agg.by}. The second contains the aggregate flux or concentration
-  estimates and is named after the value of \code{format}. The values in the
-  second column will be in the units specified by \code{metadata}.
+A data.frame with 2+ columns. The first column or set of columns
+  contains the aggregation period or custom aggregation unit and is named
+  after the value of \code{agg.by}. The second contains the aggregate flux or
+  concentration estimates and is named after the value of \code{format}. The
+  values in the second column will be in the units specified by
+  \code{metadata}.
 }
 \description{
 This will aggregate the total loads or mean concentrations per aggregation
