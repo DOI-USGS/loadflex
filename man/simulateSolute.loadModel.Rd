@@ -2,7 +2,7 @@
 % Please edit documentation in R/loadModel.R
 \name{simulateSolute.loadModel}
 \alias{simulateSolute.loadModel}
-\title{Produce a set of predictions that reflect the coefficient uncertainty and 
+\title{Produce a set of predictions that reflect the coefficient uncertainty and
 natural variation.}
 \usage{
 \method{simulateSolute}{loadModel}(load.model, flux.or.conc = c("flux",
@@ -19,35 +19,35 @@ rates or concentrations?}
 should match those given in the \code{loadModel} metadata. If
 \code{newdata} is not supplied, the original fitting data will be used.}
 
-\item{method}{character. The method by which the model should be 
+\item{method}{character. The method by which the model should be
 bootstrapped. "non-parametric": resample with replacement from the original
 fitting data, refit the model, and make new predictions. "parametric":
 resample the model coefficients based on the covariance matrix originally
 estimated for those coefficients, then make new predictions.}
 
-\item{from.interval}{character. The interval type from which to resample 
-(simulate) the solute. If "confidence", the regression model coefficients 
-are resampled from their multivariate normal distribution and predictions 
-are made from the new coefficients. If "prediction", an additional vector 
+\item{from.interval}{character. The interval type from which to resample
+(simulate) the solute. If "confidence", the regression model coefficients
+are resampled from their multivariate normal distribution and predictions
+are made from the new coefficients. If "prediction", an additional vector
 of noise is added to those "confidence"-based predictions.}
 
-\item{rho}{An autocorrelation coefficient to assume for the residuals, 
-applicable when from.interval=="prediction". If rho is missing and 
+\item{rho}{An autocorrelation coefficient to assume for the residuals,
+applicable when from.interval=="prediction". If rho is missing and
 interval=="prediction", rho will be estimated from the residuals calculated
 from newdata with the fitted (not yet resampled) load.model.}
 
 \item{...}{Other arguments passed to inheriting methods}
 }
 \value{
-A vector of data.frame of predictions, as for the generic 
+A vector of data.frame of predictions, as for the generic
   \code{\link{predictSolute}}.
 
-A vector of predictions that are distributed according to the 
-  uncertainty of the coefficients and the estimated natural variability + 
+A vector of predictions that are distributed according to the
+  uncertainty of the coefficients and the estimated natural variability +
   measurement error.
 }
 \description{
-This function resamples the coefficients from their joint distribution, then 
+This function resamples the coefficients from their joint distribution, then
 makes predictions whose individual errors are sampled from a time series with
 the same first-order autocorrelation as the original series of errors.
 }

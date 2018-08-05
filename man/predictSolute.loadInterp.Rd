@@ -5,12 +5,11 @@
 \title{Make flux or concentration predictions from a loadInterp model.}
 \usage{
 \method{predictSolute}{loadInterp}(load.model, flux.or.conc = c("flux",
-  "conc"), newdata, interval = c("none", "prediction"), level = 0.95,
-  lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, count = FALSE, attach.units = FALSE,
-  agg.by = c("unit", "day", "month", "water year", "calendar year",
-  "total", "mean water year", "mean calendar year", "[custom]"),
-  min.count = 0, ...)
+  "conc"), newdata, date = TRUE, count = TRUE, se.fit = FALSE,
+  se.pred = FALSE, interval = c("none", "prediction"), level = 0.95,
+  lin.or.log = c("linear", "log"), agg.by = c("unit", "day", "month",
+  "water year", "calendar year", "total", "[custom]"), na.rm = FALSE,
+  attach.units = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadInterp object.}
@@ -28,14 +27,34 @@ data.frame of dates or date-times. Column names should match those given in
 the \code{loadInterp} metadata. If \code{newdata} is not supplied, the
 original fitting data will be used.}
 
-\item{interval}{character set to "none" or "prediction". Prediction intervals
-are unavailable when `agg.by=TRUE`, and confidence intervals are not
-available for any loadInterp predictions. If "prediction", the interval
-bounds will be returned in columns named "lwr" and "upr". Prediction bounds
-describe the expected distribution of observations at each prediction
-point.}
+\item{date}{logical. If TRUE, the output data.frame will include a column
+containing the dates or grouping variables of the predictions. For
+agg.by=="unit", the resulting column will be "date"; for agg.by=="water
+year", the column will be "water.year", and so on.}
 
-\item{level}{numeric. Fraction of density distribution to include within
+\item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
+will include a column named 'count' containing the number of unit
+predictions going into each aggregated prediction (row).}
+
+\item{se.fit}{logical. Must be FALSE because se.fit is unavailable for
+loadInterp models.}
+
+\item{se.pred}{logical. If TRUE, the output data.frame will include a column
+named "se.pred" describing the standard error of the prediction for each
+row of predictors. The se.pred values are standard errors of prediction
+(SEPs) and take into account not only the parameter uncertainty associated
+with the model coefficients (also covered by se.fit), but also the random
+error associated with any given observation (the epsilon term in a typical
+regression model).}
+
+\item{interval}{character specifying the type of interval to include, if any. Prediction intervals
+are only available when `agg.by=="unit"`, and confidence intervals are not
+available for any loadInterp predictions. If "prediction", the interval
+bounds will be returned in columns named "lwr.pred" and "upr.pred". Prediction bounds
+describe the expected distribution of observations at each prediction
+point. The extent of the}
+
+\item{level}{numeric. Fraction of density distribution to include within the
 confidence or prediction interval}
 
 \item{lin.or.log}{character. Either "linear" or "log" to say whether the
@@ -43,40 +62,23 @@ predictions should be converted to log space or not. If converted to log
 space, a bias correction will be applied to regression model predictions;
 see \code{\link{linToLog}}.}
 
-\item{se.fit}{logical set to FALSE because se.fit is not currently available
-for loadInterp models.}
+\item{agg.by}{character. The date interval or other grouping variable to
+aggregate results by. To do no aggregation, use the default of
+`agg.by='unit'`. If agg.by is one of "day", "month", "water year", or
+"calendar year", the dates vector will be split into periods corresponding
+to those intervals, and the flux or concentration will be computed for each
+period. If agg.by="total", \code{dates} will be ignored and the entire
+vector \code{preds} will be aggregated, weighting each point prediction
+equally. If agg.by is set to one or most custom values not in the list of
+default values, the values should be names of columns in `newdata`, and
+predictions will be grouped according to the values in those columns.}
 
-\item{se.pred}{logical. If TRUE, the output data.frame will include a column
-named "se.pred" (for agg.by=="unit") or "SE" (for agg.by!="unit")
-describing the standard error of the prediction for each row of predictors.
-Only one of se.fit or se.pred is permitted for agg.by!="unit". The se.pred
-values are standard errors of prediction (SEPs) and take into account not
-only the parameter uncertainty associated with the model coefficients (also
-covered by se.fit), but also the random error associated with any given
-observation (the epsilon term in a typical regression model).}
-
-\item{date}{logical. If TRUE, the output data.frame will include a column
-named "date" containing the dates of the predictions (for agg.by=="unit"),
-or a period description such as "Water_Year" if the predictions have been
-aggregated (for agg.by!="unit").}
-
-\item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
-will include, for most values of `agg.by`, a column named 'Count'
-containing the number of unit predictions going into each aggregated
-prediction (row). If `agg.by` is 'mean water year' or 'mean calendar year',
-the columns included when `count=TRUE` are `Years_Record` (the number of
-years for which annual values were potentially available) and
-`Years_Complete` (the number of years considered complete and used to
-compute the mean year).}
+\item{na.rm}{logical. Should NA values be removed before aggregation (TRUE),
+or should NA be returned for intervals that contain one or more NA
+predictions (FALSE)?}
 
 \item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
-
-\item{agg.by}{character Time period to aggregate results by. To do no
-aggregation, use the default of `agg.by='unit'`.}
-
-\item{min.count}{numeric number of observations below which an \code{agg.by}
-value, e.g. a year, will be considered incomplete and be discarded}
 
 \item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}

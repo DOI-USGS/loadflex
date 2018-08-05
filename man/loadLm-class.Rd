@@ -13,9 +13,9 @@ loadLms can take any lm formula.
 \describe{
 \item{\code{fit}}{the interpolation model to be used.}
 
-\item{\code{ylog}}{logical. If TRUE, this constitutes affirmation that the values 
-passed to the left-hand side of the model formula will be in log space. If 
-missing, the value of \code{ylog} will be inferred from the values of 
+\item{\code{ylog}}{logical. If TRUE, this constitutes affirmation that the values
+passed to the left-hand side of the model formula will be in log space. If
+missing, the value of \code{ylog} will be inferred from the values of
 \code{formula} and \code{y.trans.function}, but be warned that this
 inference is fallible.}
 }}

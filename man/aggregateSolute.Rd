@@ -54,7 +54,7 @@ recommended.}
 
 \item{count}{logical. Should a count of the number of observations per group
 be included? For most values of agg.by, when count=TRUE there will be a new
-column called Count.}
+column called count.}
 
 \item{...}{Defunct and ignored arguments. Defunct arguments include
 'se.preds', 'ci.agg', 'deg.free', 'ci.distrib', 'se.agg', and

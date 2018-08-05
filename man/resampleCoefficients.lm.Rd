@@ -18,7 +18,7 @@ A new lm object with resampled coefficients such that predict.lm()
 Returns a new linear model given their original covariance and uncertainty
 }
 \details{
-(Although the name suggests otherwise, resampleCoefficients is not currently 
+(Although the name suggests otherwise, resampleCoefficients is not currently
 an S3 generic. You should refer to this function by its complete name.)
 }
 \references{

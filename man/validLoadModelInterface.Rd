@@ -9,14 +9,14 @@ validLoadModelInterface(object, stop.on.error = TRUE, verbose = TRUE)
 \arguments{
 \item{object}{an object with a LoadModelInterface}
 
-\item{stop.on.error}{logical. If the interface is invalid, should the 
+\item{stop.on.error}{logical. If the interface is invalid, should the
 function throw an error (TRUE) or quietly return a warning object (FALSE)?}
 
 \item{verbose}{logical. turn on or off verbose messages.}
 }
 \value{
-TRUE if interface for given load.model is well defined; otherwise, 
-  either throws an error (if stop.on.error=TRUE) or returns a vector of 
+TRUE if interface for given load.model is well defined; otherwise,
+  either throws an error (if stop.on.error=TRUE) or returns a vector of
   character strings describing the errors (if stop.on.error=FALSE).
 }
 \description{

@@ -13,22 +13,22 @@ getResiduals(load.model, flux.or.conc = c("flux", "conc"),
 
 \item{flux.or.conc}{The format in which residuals should be calculated}
 
-\item{abs.or.rel.resids}{Should residuals be computed as the difference 
-("absolute") or the ratio ("relative") of the observed and predicted 
+\item{abs.or.rel.resids}{Should residuals be computed as the difference
+("absolute") or the ratio ("relative") of the observed and predicted
 values?}
 
-\item{use.log}{logical. Should residuals be computed in log space (TRUE) or 
+\item{use.log}{logical. Should residuals be computed in log space (TRUE) or
 linear space (FALSE)?}
 
 \item{newdata}{New data for prediction and calculation of residuals}
 
-\item{raw}{logical. [not yet implemented] If TRUE, the residuals are 
-calculated for predictions as they emerge from the inner model. If FALSE, 
+\item{raw}{logical. [not yet implemented] If TRUE, the residuals are
+calculated for predictions as they emerge from the inner model. If FALSE,
 those outputs are retransformed if appropriate (e.g., from log to linear
 space) and converted to the specified format (flux or conc).}
 }
 \value{
-return The residuals between model predictions and the observations 
+return The residuals between model predictions and the observations
   in newdata
 }
 \description{

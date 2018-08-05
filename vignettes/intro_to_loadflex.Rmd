@@ -90,10 +90,10 @@ getFittingData(no3_lc)
 Now generate point predictions from each model.
 
 ```{r fig_1C}
-preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE, lin.or.log="linear")
-preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE)
+preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, lin.or.log="linear")
+preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE)
+preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE)
 ```
 
 A few lines from one of the resulting prediction data.frames (they're all structured the same way):
@@ -115,7 +115,7 @@ getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 ```
 
 
-The `loadflex` process for aggregation from point predictions to monthly predictions has changed since we published our 2015 manuscript, so `aggregateSolute` from that manuscript is no longer offered as a function in loadflex. Instead, you can use the `agg.by` argument to `predictSolute` to generate predictions at the time interval of interest. You can aggregate for mean concentration or flux rate, and for months, water years, calendar years, or other time intervals. `n` reports the number of observations going into the aggregated estimate in each row. Some examples:
+The `loadflex` process for aggregation of point predictions (to monthly, annual, etc.) has changed since we published our 2015 manuscript, so `aggregateSolute` from that manuscript is no longer offered as a function in loadflex. Instead, you can use the `agg.by` argument to `predictSolute` to generate predictions at the time interval of interest. You can aggregate for mean concentration or flux rate, and for months, water years, calendar years, or other time intervals. `n` reports the number of observations going into the aggregated estimate in each row. Some examples:
 ```{r}
 aggs_li <- predictSolute(no3_li, "flux", newdata=estdat, agg.by="month")
 aggs_lm <- predictSolute(no3_lm, "flux", newdata=estdat, agg.by="water year")

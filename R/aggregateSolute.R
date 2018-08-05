@@ -56,7 +56,7 @@
 #'   recommended.
 #' @param count logical. Should a count of the number of observations per group
 #'   be included? For most values of agg.by, when count=TRUE there will be a new
-#'   column called Count.
+#'   column called count.
 #' @param na.rm logical. Should NA values be ignored during aggregation (TRUE),
 #'   or should NA be returned for intervals that contain one or more NA
 #'   predictions (FALSE)?
@@ -88,11 +88,11 @@
 #'                 agg.by="simple.season", custom=preds_regrouped)
 #' }
 aggregateSolute <- function(
-  preds, metadata, format=c("conc", "flux rate"), 
+  preds, metadata, format=c("conc", "flux rate"),
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
   dates, custom=NA, na.rm=FALSE, attach.units=FALSE, agg.cols=TRUE, count=TRUE,
   ...) {
-  
+
   # Check for defunct arguments
   dots <- names(eval(substitute(alist(...))))
   defunct_args <- dots[which(dots %in% c('se.preds','ci.agg','deg.free','ci.distrib','se.agg','cormat.function'))]
@@ -103,7 +103,7 @@ aggregateSolute <- function(
       paste(defunct_args, collapse=', ')
     ))
   }
-  
+
   # Validate arguments
   if(format == "flux total") {
     warning("format=\"flux total\" is no longer supported Flux rate can be multiplied by duration to get total flux")
@@ -114,14 +114,14 @@ aggregateSolute <- function(
   for(abi in 1:length(agg.by)) {
     agg.by[abi] <- match.arg.loadflex(agg.by[abi], c(default_agg.by, colnames(custom)))
   }
-  agg.by <- .reSpace(agg.by,"_") # replace spaces with underscores to use agg.by as a column name
+  agg.by <- .reSpace(agg.by,".") # replace spaces with underscores to use agg.by as a column name
   if(is.data.frame(preds)) {
     # check for required columns
     need_col <- c('date', 'fit')
     missing_col <- need_col[!need_col %in% colnames(preds)]
-    if(length(missing_col) > 0) 
+    if(length(missing_col) > 0)
       stop(paste0("missing column[s] ", paste0("'", missing_col, "'", collapse=' & '), " in the preds data.frame"))
-    
+
     # extract columns into vectors and, if appropriate, a custom data.frame
     dates <- preds[,'date']
     preds <- preds[,'fit']
@@ -137,14 +137,14 @@ aggregateSolute <- function(
     if(nrow(custom) != length(preds)) {
       stop("When custom is a data.frame, it must have as many rows as there are values in preds")
     }
-    colnames(custom) <- .reSpace(colnames(custom),"_") # do this after the match.arg.loadflex call
+    colnames(custom) <- .reSpace(colnames(custom),".") # do this after the match.arg.loadflex call
   }
-  
+
   # Check that dates contains actual dates
   if(!(is(dates, "POSIXt") | is(dates, "Date") | is(dates, "chron"))) {
     stop("Unexpected format for dates - must be POSIXt, Date, or chron")
   }
-  
+
   # If possible, check the units of preds against the units implied by format and metadata
   pred_units <- get_units(preds)
   if(!is.na(pred_units)) {
@@ -154,11 +154,11 @@ aggregateSolute <- function(
       "flux rate"=metadata@load.rate.units
     )
     if(pred_units != expected_pred_units) {
-      stop(paste0("The units of preds should be ", expected_pred_units, 
+      stop(paste0("The units of preds should be ", expected_pred_units,
                   ", given the metadata and format==", format))
     }
   }
-  
+
   # Decide on the aggregation vector (the usual case) or list of vectors
   # (uncommon, but possible for "custom")
   if(length(agg.by) == 1 & all(agg.by %in% gsub(" ", "_", default_agg.by))) {
@@ -169,8 +169,8 @@ aggregateSolute <- function(
           "unit"=1:length(preds),
           "day"=strftime(dates, "%Y-%m-%d", tz=tz(dates)),
           "month"=strftime(dates, "%Y-%m", tz=tz(dates)),
-          "water_year"=waterYear(dates),
-          "calendar_year"=strftime(dates, "%Y", tz=tz(dates)),
+          "water.year"=waterYear(dates),
+          "calendar.year"=strftime(dates, "%Y", tz=tz(dates)),
           "total"=rep(1,length(preds)),
           stop("")
         )),
@@ -178,25 +178,22 @@ aggregateSolute <- function(
   }  else {
     aggregate_by <- custom[agg.by]
   }
-  
+
   # Group the estimates as requested
   preds_grp <- group_by_(
-    v(data.frame(preds, dates, aggregate_by)), 
-    .dots=as.list(agg.by)) 
-  groupsInRecord <- n_groups(preds_grp) # Compute the number of groups before filtering
-  
+    v(data.frame(preds, dates, aggregate_by)),
+    .dots=as.list(agg.by))
+
   # Remove grouping periods with insufficient non-NA data
   preds_filt <- preds_grp %>%
-    filter(if(isTRUE(na.rm)) complete.cases(.) else TRUE) %>%
-    filter(n() >= min.count)
-  groupsComplete <- n_groups(preds_filt) # Compute the number of groups after filtering
-  
+    filter(if(isTRUE(na.rm)) complete.cases(.) else TRUE)
+
   # Compute the means and counts in each group
   agg_preds <- as.data.frame(summarise(
-    preds_filt, 
-    Value = mean(preds), 
-    Count = n()))
-  
+    preds_filt,
+    Value = mean(preds),
+    count = n()))
+
   # If requested, determine the new units for the conc/flux/fluxrate columns.
   # Other columns (e.g., Period, Duration) are either non-unitted or already
   # have units attached.
@@ -210,24 +207,24 @@ aggregateSolute <- function(
       agg_preds,
       replace(
         rep(NA, ncol(agg_preds)),
-        names(agg_preds) %in% c("Value","SE","CI_lower","CI_upper"),
+        names(agg_preds) %in% c("Value"),
         new_units))
   } else {
     # Shake off any pre-existing units - e.g., those attached to Duration
     retDF <- v(agg_preds)
   }
-  
+
   # Exclude any un-requested names
   all_names <- names(retDF)
   drop_names <- c(
     if(!agg.cols) agg.by,
-    if(!count) c("Count", "Years_Record", "Years_Complete"))
+    if(!count) "count")
   keep_names <- setdiff(all_names, drop_names)
   retDF <- retDF[ , keep_names] # drops to vector if the only thing in keep_names is the Value column
 
   # Give the data.frame nice column names
-  names(retDF)[1] <- .reSpace(.sentenceCase(names(retDF)[1]), "_")
-  names(retDF)[match("Value", names(retDF))] <- .reSpace(.sentenceCase(format), "_")
-  
+  names(retDF)[1] <- .reSpace(names(retDF)[1], ".")
+  names(retDF)[match("Value", names(retDF))] <- .reSpace(format, ".")
+
   return(retDF)
 }

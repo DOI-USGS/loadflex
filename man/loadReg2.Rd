@@ -13,20 +13,20 @@ loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
   basin.area.units = "km^2", custom = NULL, ...)
 }
 \arguments{
-\item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This 
-call will be parsed and evaluated within \code{loadReg2} to create a fully 
+\item{load.reg}{An unevaluated call to \code{\link[rloadest]{loadReg}}. This
+call will be parsed and evaluated within \code{loadReg2} to create a fully
 functional load model for use within \pkg{loadflex}.}
 
-\item{pred.format}{character. Should predictions be made for 'flux' (load 
-rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2, 
+\item{pred.format}{character. Should predictions be made for 'flux' (load
+rate) or 'conc' (concentration)? \pkg{rloadest}, and therefore loadReg2,
 uses different models for flux and concentration, though fitted to the same
-data and with the same model structure except for whether the left-hand 
+data and with the same model structure except for whether the left-hand
 side of the model formula is load rate or concentration. The model specific
 to \code{pred.format} will be used to generate predictions.}
 
-\item{store}{One or more character strings specifying which information to 
-write within the model. Options are 'data': the original fitting data; 
-'fitting.function': a fitting function that can produce a new loadComp 
+\item{store}{One or more character strings specifying which information to
+write within the model. Options are 'data': the original fitting data;
+'fitting.function': a fitting function that can produce a new loadComp
 object from new data}
 
 \item{consti.name}{character. Consituent long name, for use in plots and 
@@ -78,10 +78,10 @@ additional data the user wants to track.}
 A fitted loadReg2 model.
 }
 \description{
-Generates a new model of class loadReg2 (\code{\link{loadReg2-class}}). 
-loadReg2s are wrappers for loadReg objects produced by the USGS 
-\pkg{rloadest} package. \code{loadReg2}s can implement the 
-\code{\link{loadModelInterface}} more reliably than is possible for a 
+Generates a new model of class loadReg2 (\code{\link{loadReg2-class}}).
+loadReg2s are wrappers for loadReg objects produced by the USGS
+\pkg{rloadest} package. \code{loadReg2}s can implement the
+\code{\link{loadModelInterface}} more reliably than is possible for a
 \code{loadReg} object. Some metadata information is set within the loadReg()
 call; entries that can be edited may be given as arguments to the loadReg2()
 call (e.g., site.id, lat, lon, basin.area).
@@ -91,7 +91,7 @@ call (e.g., site.id, lat, lon, basin.area).
 library(rloadest)
 no3_lr <- suppressWarnings(
   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
-    flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+    flow="DISCHARGE", dates="DATE", time.step="instantaneous",
     flow.units="cfs", conc.units="mg/L", load.units="kg",
     station='Lamprey River, NH')))
 }
