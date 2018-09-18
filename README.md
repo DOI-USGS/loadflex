@@ -20,7 +20,7 @@ Lamprey River was provied by the EPA, NH Water Resources Research Center, NH
 Agricultural Experiment Station, NH Sea Grant, USGS, and NSF. This work is 
 described in
 
-> Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex. Ecosphere 6(12):269. http://dx.doi.org/10.1890/ES14-00517.1
+> Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex. Ecosphere 6(12):269. https://doi.org/10.1890/ES14-00517.1
 
 Additional development and maintenance in 2016-present is being done by 
 [Alison Appling](https://github.com/aappling-usgs), [Lindsay
