@@ -469,7 +469,7 @@ predictSolute.loadReg2 <- function(
       preds <- data.frame(fit=preds)
     }
     # prepend the date column
-    preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
+    preds <- data.frame(date=getCol(metadata, newdata, "date")[KDays], preds)
     #output column names changes depending on period
     date_col_name <- intersect(names(preds_lin_raw), c("Period", "Date"))
     preds <- data.frame(date=preds_lin_raw[date_col_name], preds)
