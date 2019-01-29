@@ -5,8 +5,8 @@
 \title{Produce a set of predictions that reflect the coefficient uncertainty and 
 natural variation.}
 \usage{
-\method{simulateSolute}{loadLm}(load.model, flux.or.conc = c("flux", "conc"),
-  newdata, method = c("parametric", "non-parametric"),
+\method{simulateSolute}{loadLm}(load.model, flux.or.conc = c("flux",
+  "conc"), newdata, method = c("parametric", "non-parametric"),
   from.interval = c("confidence", "prediction"), rho, ...)
 }
 \arguments{
@@ -56,3 +56,4 @@ Other simulateSolute: \code{\link{simulateSolute.loadModel}},
   \code{\link{simulateSolute.loadReg2}},
   \code{\link{simulateSolute}}
 }
+\concept{simulateSolute}

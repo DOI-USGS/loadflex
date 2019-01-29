@@ -5,8 +5,8 @@
 \alias{updateMetadata}
 \title{Create or modify the metadata for a load model.}
 \usage{
-metadata(constituent, flow, load.rate = "", dates, conc.units, flow.units,
-  load.units, load.rate.units, station = "", custom = NULL,
+metadata(constituent, flow, load.rate = "", dates, conc.units,
+  flow.units, load.units, load.rate.units, station = "", custom = NULL,
   validate = TRUE, consti.name = "", site.name = "", site.id = "",
   lat = NA, lon = NA, basin.area = NA, flow.site.name = site.name,
   flow.site.id = site.id, flow.lat = lat, flow.lon = lon,
@@ -113,8 +113,6 @@ names may be any of those accepted by \code{metadata()}.}
 \description{
 \code{metadata} creates a new metadata object (see \link{metadata-class}) 
 from scratch.
-
-\code{updateMetadata} modifies an existing metadata object.
 }
 \details{
 By default, newly created metadata objects are checked for validity. This 
@@ -253,3 +251,4 @@ md2 <- updateMetadata(md1, site.id="1073500",
 \seealso{
 Other metadata: \code{\link{metadata-getters}}
 }
+\concept{metadata}

@@ -7,8 +7,8 @@
 \method{predictSolute}{loadInterp}(load.model, flux.or.conc, newdata,
   interval = c("none", "confidence", "prediction"), level = 0.95,
   lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
-  "water year", "calendar year", "total", "mean water year",
+  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day",
+  "month", "water year", "calendar year", "total", "mean water year",
   "mean calendar year", "[custom]"), ...)
 }
 \arguments{
@@ -81,3 +81,4 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadReg2}},
   \code{\link{predictSolute}}
 }
+\concept{predictSolute}

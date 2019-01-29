@@ -15,3 +15,4 @@ Retrieve the fitted model, if appropriate, from a loadModel load model
 \seealso{
 Other getFittedModel: \code{\link{getFittedModel}}
 }
+\concept{getFittedModel}

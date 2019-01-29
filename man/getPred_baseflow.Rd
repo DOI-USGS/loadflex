@@ -74,4 +74,5 @@ Implementation of the 1- and 2-parameter digital filters was
 \seealso{
 Other predictors: \code{\link{getPred_isBaseflow}}
 }
+\concept{predictors}
 \keyword{internal}

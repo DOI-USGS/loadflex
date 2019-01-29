@@ -57,3 +57,4 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }
+\concept{summarizeModel}

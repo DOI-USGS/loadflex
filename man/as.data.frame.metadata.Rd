@@ -4,8 +4,8 @@
 \alias{as.data.frame.metadata}
 \title{Convert a metadata object to a 1-row data.frame}
 \usage{
-\method{as.data.frame}{metadata}(x, row.names = NULL, optional = FALSE, ...,
-  stringsAsFactors = FALSE)
+\method{as.data.frame}{metadata}(x, row.names = NULL, optional = FALSE,
+  ..., stringsAsFactors = FALSE)
 }
 \arguments{
 \item{x}{a loadflex metadata object}

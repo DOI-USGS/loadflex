@@ -31,3 +31,5 @@ Other loadModelInterface: \code{\link{estimateMSE}},
 Other getMetadata: \code{\link{getMetadata.loadModel}},
   \code{\link{getMetadata.loadReg}}
 }
+\concept{getMetadata}
+\concept{loadModelInterface}

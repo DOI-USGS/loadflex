@@ -19,3 +19,10 @@ logical value indicating whether the two metadata objects have
 \description{
 Compares the contents of each slot using the == operator.
 }
+\concept{metadata
+md1 <- metadata(constituent="NO3", flow="DISCHARGE", 
+  dates="DATE", conc.units="mg L^-1", flow.units="cfs", load.units="kg", 
+  load.rate.units="kg d^-1", site.name="Lamprey River, NH")
+md2 <- updateMetadata(md1, site.id="1073500", 
+  custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
+md1 == md2}

@@ -17,3 +17,4 @@ Retrieve metadata from a loadModel load model
 Other getMetadata: \code{\link{getMetadata.loadReg}},
   \code{\link{getMetadata}}
 }
+\concept{getMetadata}

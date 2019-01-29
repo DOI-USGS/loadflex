@@ -27,3 +27,5 @@ Other loadModelInterface: \code{\link{estimateMSE}},
 
 Other getFittingData: \code{\link{getFittingData.loadModel}}
 }
+\concept{getFittingData}
+\concept{loadModelInterface}

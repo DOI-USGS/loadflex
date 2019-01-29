@@ -4,8 +4,8 @@
 \alias{validMetadataUnits}
 \title{Check whether these units are acceptable (without translation) for inclusion in metadata}
 \usage{
-validMetadataUnits(unitstr, unit.type = c("ANY", "flow.units", "conc.units",
-  "load.units", "load.rate.units", "basin.area.units"))
+validMetadataUnits(unitstr, unit.type = c("ANY", "flow.units",
+  "conc.units", "load.units", "load.rate.units", "basin.area.units"))
 }
 \arguments{
 \item{unitstr}{A string representing units (just one bundle at a time, please)}

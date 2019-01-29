@@ -30,3 +30,5 @@ Other loadModelInterface: \code{\link{estimateMSE}},
 
 Other getFittingFunction: \code{\link{getFittingFunction.loadModel}}
 }
+\concept{getFittingFunction}
+\concept{loadModelInterface}

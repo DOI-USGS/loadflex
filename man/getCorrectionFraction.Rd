@@ -5,11 +5,11 @@
 \alias{getCorrectionFraction.loadComp}
 \title{The fraction of prediction that is due to a correction.}
 \usage{
-getCorrectionFraction(load.model, flux.or.conc = c("flux", "conc"), newdata,
-  ...)
+getCorrectionFraction(load.model, flux.or.conc = c("flux", "conc"),
+  newdata, ...)
 
-\method{getCorrectionFraction}{loadComp}(load.model, flux.or.conc = c("flux",
-  "conc"), newdata, na.rm = FALSE, ...)
+\method{getCorrectionFraction}{loadComp}(load.model,
+  flux.or.conc = c("flux", "conc"), newdata, na.rm = FALSE, ...)
 }
 \arguments{
 \item{load.model}{The load model from which to pull the correction fraction.}
@@ -49,3 +49,4 @@ represented by the predictions.
 Other diagnostics: \code{\link{estimateRho}},
   \code{\link{residDurbinWatson}}
 }
+\concept{diagnostics}

@@ -64,3 +64,4 @@ Other summarizeModel: \code{\link{summarizeModel.loadInterp}},
   \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }
+\concept{summarizeModel}
