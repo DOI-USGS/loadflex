@@ -16,4 +16,4 @@ and summarization.
 * This version is consistent with the description in Appling, A. P., M. C. Leon,
 and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed
 flux estimates: the R package loadflex. Ecosphere 6(12):269. 
-http://dx.doi.org/10.1890/ES14-00517.1.
+https://doi.org/10.1890/ES14-00517.1.
