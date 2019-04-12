@@ -4,8 +4,8 @@
 \alias{summarizeModel.loadInterp}
 \title{Extract model summary statistics from a loadInterp model}
 \usage{
-\method{summarizeModel}{loadInterp}(load.model, irregular.timesteps.ok = NA,
-  ...)
+\method{summarizeModel}{loadInterp}(load.model,
+  irregular.timesteps.ok = NA, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel 
@@ -46,3 +46,4 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadReg2}},
   \code{\link{summarizeModel}}
 }
+\concept{summarizeModel}

@@ -26,4 +26,5 @@ Internal for now; not yet ready to be a part of the official API
 \seealso{
 Other predictors: \code{\link{getPred_baseflow}}
 }
+\concept{predictors}
 \keyword{internal}

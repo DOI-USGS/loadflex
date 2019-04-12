@@ -4,12 +4,12 @@
 \alias{predictSolute.loadReg2}
 \title{Make flux or concentration predictions from a loadReg2 model.}
 \usage{
-\method{predictSolute}{loadReg2}(load.model, flux.or.conc = c("flux", "conc"),
-  newdata, interval = c("none", "confidence", "prediction"), level = 0.95,
-  lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day", "month",
-  "water year", "calendar year", "total", "mean water year",
-  "mean calendar year", "[custom]"), ...)
+\method{predictSolute}{loadReg2}(load.model, flux.or.conc = c("flux",
+  "conc"), newdata, interval = c("none", "confidence", "prediction"),
+  level = 0.95, lin.or.log = c("linear", "log"), se.fit = FALSE,
+  se.pred = FALSE, date = FALSE, attach.units = FALSE,
+  agg.by = c("unit", "day", "month", "water year", "calendar year",
+  "total", "mean water year", "mean calendar year", "[custom]"), ...)
 }
 \arguments{
 \item{load.model}{A loadReg2 object.}
@@ -75,3 +75,4 @@ Other predictSolute: \code{\link{predictSolute.loadComp}},
   \code{\link{predictSolute.loadModel}},
   \code{\link{predictSolute}}
 }
+\concept{predictSolute}

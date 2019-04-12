@@ -4,8 +4,8 @@
 \alias{getDistanceWeightedInterpolation}
 \title{Generate a distance-weighted interpolation function with the parameters of your choice.}
 \usage{
-getDistanceWeightedInterpolation(inv.dist.fun = function(a, b) {     1/((a -
-  b)^2) })
+getDistanceWeightedInterpolation(inv.dist.fun = function(a, b) {    
+  1/((a - b)^2) })
 }
 \arguments{
 \item{inv.dist.fun}{A function to calculate an inverse distance metric.

@@ -66,3 +66,4 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadModel}},
   \code{\link{summarizeModel}}
 }
+\concept{summarizeModel}

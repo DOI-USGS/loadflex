@@ -4,8 +4,8 @@
 \alias{summarizeModel.loadReg}
 \title{Extract model summary statistics from an \code{\link[rloadest:loadReg]{rloadest::loadReg()}} model}
 \usage{
-\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux", "conc"),
-  ...)
+\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux",
+  "conc"), ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel 

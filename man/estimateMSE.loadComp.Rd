@@ -44,3 +44,4 @@ regression predictions and residuals are calculated.
 Other estimateMSE: \code{\link{estimateMSE.loadInterp}},
   \code{\link{estimateMSE}}
 }
+\concept{estimateMSE}

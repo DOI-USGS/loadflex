@@ -32,3 +32,5 @@ Other summarizeModel: \code{\link{summarizeModel.loadComp}},
   \code{\link{summarizeModel.loadModel}},
   \code{\link{summarizeModel.loadReg2}}
 }
+\concept{loadModelInterface}
+\concept{summarizeModel}

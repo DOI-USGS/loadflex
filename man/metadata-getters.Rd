@@ -13,11 +13,12 @@ getCol(metadata, data, field = c("conc", "flow", "flux rate", "date"),
 getUnits(metadata, field = c("conc", "flow", "flux", "flux rate"),
   format = NA, stop.on.empty = FALSE)
 
-getInfo(metadata, field = c("constituent", "consti.name", "flow", "load.rate",
-  "dates", "conc.units", "flow.units", "load.units", "load.rate.units",
-  "station", "site.name", "site.id", "lat", "lon", "basin.area",
-  "flow.site.name", "flow.site.id", "flow.lat", "flow.lon", "flow.basin.area",
-  "basin.area.units", "custom"), stop.on.empty = FALSE)
+getInfo(metadata, field = c("constituent", "consti.name", "flow",
+  "load.rate", "dates", "conc.units", "flow.units", "load.units",
+  "load.rate.units", "station", "site.name", "site.id", "lat", "lon",
+  "basin.area", "flow.site.name", "flow.site.id", "flow.lat", "flow.lon",
+  "flow.basin.area", "basin.area.units", "custom"),
+  stop.on.empty = FALSE)
 }
 \arguments{
 \item{metadata}{a metadata object from which the information will be 
@@ -81,3 +82,4 @@ getInfo(md, 'site.name')
 \seealso{
 Other metadata: \code{\link{metadata}}
 }
+\concept{metadata}

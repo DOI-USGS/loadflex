@@ -5,9 +5,10 @@
 \title{Create a fitted loadReg2 object.}
 \usage{
 loadReg2(load.reg, pred.format = c("flux", "conc"), store = c("data",
-  "fitting.function"), consti.name = "", load.rate = "", site.id = "",
-  lat = as.numeric(NA), lon = as.numeric(NA), basin.area = as.numeric(NA),
-  flow.site.name = "", flow.site.id = "", flow.lat = as.numeric(NA),
+  "fitting.function"), consti.name = "", load.rate = "",
+  site.id = "", lat = as.numeric(NA), lon = as.numeric(NA),
+  basin.area = as.numeric(NA), flow.site.name = "",
+  flow.site.id = "", flow.lat = as.numeric(NA),
   flow.lon = as.numeric(NA), flow.basin.area = as.numeric(NA),
   basin.area.units = "km^2", custom = NULL, ...)
 }
@@ -100,3 +101,4 @@ Other load.model.inits: \code{\link{loadComp}},
   \code{\link{loadInterp}}, \code{\link{loadLm}},
   \code{\link{loadModel}}
 }
+\concept{load.model.inits}
