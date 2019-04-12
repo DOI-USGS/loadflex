@@ -9,19 +9,19 @@ expandFlowForEGRET(flowdat, flow.colname, date.colname, flow.units)
 \arguments{
 \item{flowdat}{data frame with discharge values to convert}
 
-\item{flow.colname}{character string giving the column name that corresponds 
+\item{flow.colname}{character string giving the column name that corresponds
 to flow}
 
-\item{date.colname}{character string giving the column name that corresponds 
+\item{date.colname}{character string giving the column name that corresponds
 to dates}
 
 \item{flow.units}{character string giving the current units of flow in
 flowdat}
 }
 \description{
-Use EGRET functions to convert a data.frame of date and 
-  discharge columns into "the basic Daily data frame used in WRTDS", i.e., a 
-  13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day 
-  smoothed Q, plus a column for dateTime. See 
+Use EGRET functions to convert a data.frame of date and
+  discharge columns into "the basic Daily data frame used in WRTDS", i.e., a
+  13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day
+  smoothed Q, plus a column for dateTime. See
   \code{\link[EGRET]{populateDaily}}
 }

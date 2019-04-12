@@ -18,10 +18,10 @@ whose data and predictions are to be converted to EGRET format}
 \item{newdata}{data.frame of data used to generate predictions from an
 already-fitted model}
 
-\item{data}{data.frame of data used to fit a model. only required if 
+\item{data}{data.frame of data used to fit a model. only required if
 load.model is omitted}
 
-\item{meta}{loadflex metadata object; it must include constituent, flow, 
+\item{meta}{loadflex metadata object; it must include constituent, flow,
 dates, conc.units, site.id, and consti.name. only required if load.model is
 omitted}
 

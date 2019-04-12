@@ -319,7 +319,7 @@ predictSolute.loadReg2 <- function(
   if(length(list(...)) > 0) {
     args <- list(...)
     argnames <- names(args)
-    accepted_argnames <- c("seopt", "print", "allow.incomplete") # "load.units","conf.int"
+    accepted_argnames <- c("seopt", "print") # "load.units","conf.int"
     if(is.null(argnames) || any(!(argnames %in% accepted_argnames))) {
       stop("unrecognized args: ", paste0(setdiff(argnames, accepted_argnames), collapse=", "),
            ". args in ... should be in this list: ", paste0(accepted_argnames, collapse=", "))
@@ -388,12 +388,12 @@ predictSolute.loadReg2 <- function(
       flux.or.conc,
       "flux"={
         # ... may contain seopt, print
-        predLoad(fit=load.model@fit, newdata=datachunk, by=agg.by, conf.int=level, ...)
+        predLoad(fit=load.model@fit, newdata=datachunk, by=agg.by, conf.int=level, allow.incomplete=allow.incomplete, ...)
       },
       "conc"={
         # check and warn for arguments allowed by predLoad but disallowed by
         # predConc. load.units and conf.int have already been rejected above
-        pred_args <- list(...)[c('seopt','print','allow.incomplete')]
+        pred_args <- list(...)[c('seopt','print')]
         predLoad_args <- intersect(c('seopt','print'), names(pred_args))
         if(length(predLoad_args) > 0) warning(paste(
           "these args are ignored for flux.or.conc='conc':",
@@ -402,11 +402,6 @@ predictSolute.loadReg2 <- function(
         # predConc will fail if agg.by != 'unit' or 'day'; give warning
         if(!(agg.by %in% c('unit','day'))) {
           warning('In predictSolute: rloadest::predConc (format="conc") only permits agg.by="unit" or "day"', call.=FALSE)
-        }
-        allow.incomplete=if('allow.incomplete' %in% pred_args) {
-          pred_args$allow.incomplete
-        } else {
-          FALSE # use the default=FALSE if unspecified
         }
         predConc(fit=load.model@fit, newdata=datachunk, by=agg.by, conf.int=level, allow.incomplete=allow.incomplete)
       }
@@ -520,21 +515,29 @@ predictSolute.loadReg2 <- function(
     if(!is.data.frame(preds)) {
       preds <- data.frame(fit=preds)
     }
-    # prepend the date column
-    # if(agg.by=='unit') {
-    # preds <- data.frame(date=getCol(metadata, newdata, "date"), preds)
-    # } else {}
-    # prepend the date or period column
     raw_date_colname <- intersect(names(preds_lin_raw), c("Period", "Date"))
+    raw_dates <- preds_lin_raw[[raw_date_colname]]
+    # rename the date/period values for consistency with other load models
+    dates <- switch(
+      agg.by,
+      "unit" = raw_dates,
+      "day" = as.Date(raw_dates),
+      "month" = strptime(sprintf("01 %s", raw_dates), format="%d %B %Y") %>%
+        strftime("%Y-%m", tz=tz(dates)),
+      "water year" = gsub("WY ", "", raw_dates),
+      "calendar year" = gsub("CY ", "", raw_dates),
+      raw_dates)
+    # prepend the date or period column
     final_date_colname <- if(agg.by=="unit") "date" else .reSpace(tolower(agg.by), '.')
     preds <- data.frame(
-      setNames(list(preds_lin_raw[[raw_date_colname]]), final_date_colname),
+      setNames(list(dates), final_date_colname),
       preds)
   }
 
   # Rename the `fit` column to describe the type of prediction
   if(is.data.frame(preds)) {
-    names(preds) <- replace(names(preds), names(preds)=='fit', .reSpace(tolower(preds_col), '.'))
+    final_fit_col <- if(flux.or.conc == "flux" && agg.by != "unit") "flux.rate" else flux.or.conc
+    names(preds) <- replace(names(preds), names(preds)=='fit', final_fit_col)
   }
 
   # Bring out units if hidden in a data.frame

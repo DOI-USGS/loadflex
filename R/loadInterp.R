@@ -297,14 +297,14 @@ predictSolute.loadInterp <- function(
       if(is.na(load.model@MSE["mean", flux.or.conc])) {
         has_discharge <- tryCatch({
           discharge <- getCol(load.model@metadata, data=load.model@data, field='flow')
-          return(!is.null(discharge))
+          !is.null(discharge)
         }, error=function(e) FALSE)
         recommendation <- if(!has_discharge) {
           "Try fitting the model with data that include discharge."
         } else {
           "Make sure there are no NAs in your input data."
         }
-        stop("Uncertainty estimates are unavailable for ",flux.or.conc,". ", recommendation)
+        stop("Uncertainty estimates are unavailable for ", flux.or.conc, ". ", recommendation)
       }
 
       # begin to add uncertainty info
@@ -419,6 +419,11 @@ predictSolute.loadInterp <- function(
       agg_args$custom <- newdata
     }
     preds <- do.call(aggregateSolute, agg_args)
+  }
+
+  # Rename the `fit` column to describe the type of prediction
+  if(is.data.frame(preds)) {
+    names(preds) <- replace(names(preds), names(preds)=='fit', flux.or.conc)
   }
 
   return(preds)

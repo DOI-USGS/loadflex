@@ -106,7 +106,7 @@ aggregateSolute <- function(
 
   # Validate arguments
   if(format == "flux total") {
-    warning("format=\"flux total\" is no longer supported Flux rate can be multiplied by duration to get total flux")
+    warning("format=\"flux total\" is no longer supported. Flux rate can be multiplied by duration to get total flux")
   }
   format <- match.arg.loadflex(format, c("conc", "flux rate"))
   attach.units <- match.arg.loadflex(attach.units)
@@ -114,10 +114,10 @@ aggregateSolute <- function(
   for(abi in 1:length(agg.by)) {
     agg.by[abi] <- match.arg.loadflex(agg.by[abi], c(default_agg.by, colnames(custom)))
   }
-  agg.by <- .reSpace(agg.by,".") # replace spaces with underscores to use agg.by as a column name
+  agg.by <- .reSpace(agg.by, ".") # replace spaces with underscores to use agg.by as a column name
   if(is.data.frame(preds)) {
     # check for required columns
-    need_col <- c('date', 'fit')
+    need_col <- c("date", "fit")
     missing_col <- need_col[!need_col %in% colnames(preds)]
     if(length(missing_col) > 0)
       stop(paste0("missing column[s] ", paste0("'", missing_col, "'", collapse=' & '), " in the preds data.frame"))
@@ -161,7 +161,7 @@ aggregateSolute <- function(
 
   # Decide on the aggregation vector (the usual case) or list of vectors
   # (uncommon, but possible for "custom")
-  if(length(agg.by) == 1 & all(agg.by %in% gsub(" ", "_", default_agg.by))) {
+  if(length(agg.by) == 1 & (agg.by %in% .reSpace(default_agg.by, "."))) {
     aggregate_by <- setNames(
       data.frame(
         switch(

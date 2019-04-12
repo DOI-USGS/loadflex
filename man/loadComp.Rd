@@ -7,8 +7,7 @@
 loadComp(reg.model, interp.format = c("flux", "conc"),
   abs.or.rel.resids = c("absolute", "relative"), use.log = TRUE,
   interp.data, interp.function = linearInterpolation, store = c("data",
-  "fitting.function", "uncertainty"), n.iter = 100,
-  MSE.method = "parametric")
+  "fitting.function"), n.iter = 100, MSE.method = "parametric")
 }
 \arguments{
 \item{reg.model}{The model, usually a regression model, to whose predictions

@@ -119,7 +119,7 @@ setClass(
 #' @family load.model.inits
 loadComp <- function(reg.model,
                      interp.format=c("flux","conc"), abs.or.rel.resids=c("absolute","relative"), use.log=TRUE,
-                     interp.data, interp.function=linearInterpolation, store=c("data","fitting.function","uncertainty"),
+                     interp.data, interp.function=linearInterpolation, store=c("data","fitting.function"),
                      n.iter=100, MSE.method="parametric") {
 
   # Validate arguments
@@ -231,9 +231,13 @@ predictSolute.loadComp <- function(
     newdata <- getFittingData(load.model@fit@reg.model)
   }
   reg_preds <- predictSolute(
-    load.model=load.model@fit@reg.model, flux.or.conc=load.model@pred.format, newdata=newdata, attach.units=attach.units, ...)
+    load.model=load.model@fit@reg.model, flux.or.conc=load.model@pred.format,
+    newdata=newdata, attach.units=attach.units,
+    date=FALSE, count=FALSE, se.fit=FALSE, se.pred=FALSE, ...)
   resid_preds <- predictSolute(
-    load.model=load.model@fit@resid.model, flux.or.conc=load.model@pred.format, newdata=newdata, attach.units=attach.units, ...)
+    load.model=load.model@fit@resid.model, flux.or.conc=load.model@pred.format,
+    newdata=newdata, attach.units=attach.units,
+    date=FALSE, count=FALSE, se.fit=FALSE, se.pred=FALSE, ...)
 
   # Do the composite correction: combine reg_preds with resid_preds. resid_preds
   # may be logged or not, absolute or relative. reg_preds will always be in
@@ -262,13 +266,18 @@ predictSolute.loadComp <- function(
     # Do early checks to send useful messages if we can't supply the requested
     # type of uncertainty
     if(interval == "confidence") {
-      stop("confidence intervals not implemented for loadComp")
+      stop("Confidence intervals not implemented for loadComp models")
     }
     if(se.fit) {
-      stop("se.fit not implemented for loadComp")
+      stop("se.fit not available for loadComp models")
     }
     if(isTRUE(all.equal(dim(load.model@MSE), c(0,0)))) {
-      warning("Uncertainty estimates are unavailable. Proceeding with NAs")
+      if(se.pred) {
+        stop("Uncertainty estimates were not stored with the model. ",
+             "Refit with 'uncertainty' in 'store' argument to enable se.pred=TRUE")
+      }
+      warning("Uncertainty estimates were not stored with the model, which produces NAs when lin.or.log='log'. ",
+              "Refit with 'uncertainty' in 'store' argument to enable predictions")
       load.model@MSE <- matrix(NA, nrow=2, ncol=2, dimnames=list(c('mean','sd'), c('conc','flux')))
     } else if(is.na(load.model@MSE["mean", flux.or.conc])) {
       stop("Uncertainty estimates are unavailable for ",flux.or.conc,". Try fitting the model with data that include discharge.")
@@ -298,10 +307,10 @@ predictSolute.loadComp <- function(
         # degrees of freedom are not straightforward for the interpolation part of
         # the model, so use qnorm instead of qt to get quantiles.
         ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-        preds_log$lwr <- preds_log$meanlog + ci_quantiles[1]*se_log
-        preds_log$upr <- preds_log$meanlog + ci_quantiles[2]*se_log
-        preds_lin$lwr <- exp(preds_log$lwr)
-        preds_lin$upr <- exp(preds_log$upr)
+        preds_log$lwr.pred <- preds_log$meanlog + ci_quantiles[1]*se_log
+        preds_log$upr.pred <- preds_log$meanlog + ci_quantiles[2]*se_log
+        preds_lin$lwr.pred <- exp(preds_log$lwr.pred)
+        preds_lin$upr.pred <- exp(preds_log$upr.pred)
       }
       # The SEs:
       if(se.pred) {
@@ -320,10 +329,10 @@ predictSolute.loadComp <- function(
         # degrees of freedom are not straightforward for the interpolation part of
         # the model, so use qnorm instead of qt to get quantiles.
         ci_quantiles <- qnorm(p=0.5+c(-1,1)*level/2)
-        preds_lin$lwr <- preds_lin$meanlin + ci_quantiles[1]*se_lin
-        preds_lin$upr <- preds_lin$meanlin + ci_quantiles[2]*se_lin
-        preds_log$lwr <- log(preds_lin$lwr)
-        preds_log$upr <- log(preds_lin$upr)
+        preds_lin$lwr.pred <- preds_lin$meanlin + ci_quantiles[1]*se_lin
+        preds_lin$upr.pred <- preds_lin$meanlin + ci_quantiles[2]*se_lin
+        preds_log$lwr.pred <- log(preds_lin$lwr.pred)
+        preds_log$upr.pred <- log(preds_lin$upr.pred)
       }
       # The SEs:
       if(se.pred) {
@@ -380,8 +389,8 @@ predictSolute.loadComp <- function(
       preds$fit.meanlog <- preds_log$meanlog # include the mean in log space for a tiny bit more clarity
       preds$se.fit <- if(se.fit) NA else NULL
       preds$se.pred <- if(se.pred) preds_log$se.pred else NULL
-      preds$lwr <- if(interval == "prediction") log(preds$lwr) else NULL
-      preds$upr <- if(interval == "prediction") log(preds$upr) else NULL
+      preds$lwr.pred <- if(interval == "prediction") log(preds$lwr.pred) else NULL
+      preds$upr.pred <- if(interval == "prediction") log(preds$upr.pred) else NULL
     }
   }
 
@@ -390,10 +399,16 @@ predictSolute.loadComp <- function(
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
                              format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
     if(interval != "none" || se.fit || se.pred) {
-      warning("Uncertainty for aggregated predictions is currently unavailable for loadComp models")
+      warning("Uncertainty for aggregated predictions is unavailable for loadComp models; returning NAs")
     } else {
-      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
+      extra_cols <- intersect(names(preds), c("SE", "CI_lower", "CI_upper"))
+      preds <- preds %>% dplyr::select(-!!extra_cols)
     }
+  }
+
+  # Rename the `fit` column to describe the type of prediction
+  if(is.data.frame(preds)) {
+    names(preds) <- replace(names(preds), names(preds)=='fit', flux.or.conc)
   }
 
   # Return
