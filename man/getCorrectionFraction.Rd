@@ -20,7 +20,7 @@ predictions of flux rate or concentration?}
 \item{newdata}{The data for which to compute the correction fraction, usually
 containing daily or instantaneous discharge.}
 
-\item{...}{Other arguments passed to class-specific implementations of 
+\item{...}{Other arguments passed to class-specific implementations of
 getCorrectionFraction.}
 
 \item{na.rm}{logical. Should predictions with NA values be excluded?}
@@ -30,8 +30,8 @@ A value between 0 and 1 indicating the fraction of total load that is
   attributed to a correction.
 }
 \description{
-Computes the fraction of total concentration or flux prediction that is 
-attributable to a correction such as the residuals correction of composite 
+Computes the fraction of total concentration or flux prediction that is
+attributable to a correction such as the residuals correction of composite
 method models.
 
 \code{\link{loadComp}} models: The correction fraction for a composite method
@@ -42,7 +42,7 @@ method models.
 where \eqn{\sum} indicates a sum over all predictions, \eqn{L} is the vector
 of composite predictions of flux or concentration, \eqn{R} is the vector of
 interpolated residuals in the same format (flux or concentration, non-log
-space) as \eqn{L}, and \eqn{\Delta t} is the vector of time periods 
+space) as \eqn{L}, and \eqn{\Delta t} is the vector of time periods
 represented by the predictions.
 }
 \seealso{

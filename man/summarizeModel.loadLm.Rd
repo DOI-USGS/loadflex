@@ -7,7 +7,7 @@
 \method{summarizeModel}{loadLm}(load.model, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{...}{Other arguments passed to model-specific methods}

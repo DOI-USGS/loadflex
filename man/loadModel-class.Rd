@@ -5,18 +5,18 @@
 \alias{loadModel-class}
 \title{A generic load model class.}
 \description{
-Class and function definitions for very generic load models that you can 
-create with a single function call (\code{\link{loadModel}}) or extend to 
-more specific model types (e.g., \code{\link{loadInterp}}, 
+Class and function definitions for very generic load models that you can
+create with a single function call (\code{\link{loadModel}}) or extend to
+more specific model types (e.g., \code{\link{loadInterp}},
 \code{\link{loadReg2}}, \code{\link{loadComp}})
 }
 \section{Slots}{
 
 \describe{
-\item{\code{fit}}{A statistical model, fit to the data and wrapped by the loadModel 
+\item{\code{fit}}{A statistical model, fit to the data and wrapped by the loadModel
 class for additional functionality specific to load models.}
 
-\item{\code{pred.format}}{A string indicating the format of predictions (flux or 
+\item{\code{pred.format}}{A string indicating the format of predictions (flux or
 conc).}
 
 \item{\code{metadata}}{A metadata object describing the load model.}

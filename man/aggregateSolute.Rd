@@ -6,99 +6,81 @@
 \usage{
 aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
   agg.by = c("unit", "day", "month", "water year", "calendar year",
-  "total", "mean water year", "mean calendar year", "[custom]"), se.preds,
-  dates, custom = NA, cormat.function = cormat1DayBand,
-  ci.agg = TRUE, level = 0.95, deg.free = NA,
-  ci.distrib = c("lognormal", "normal"), se.agg = TRUE,
-  na.rm = FALSE, attach.units = FALSE, min.n = 0)
+  "total", "[custom]"), dates, custom = NA, na.rm = FALSE,
+  attach.units = FALSE, agg.cols = TRUE, count = TRUE, ...)
 }
 \arguments{
-\item{preds}{Either a vector of predicted instantaneous fluxes or 
+\item{preds}{Either a vector of predicted instantaneous fluxes or
 concentrations or a data.frame containing the columns "fit", "se.pred", and
 "date"}
 
 \item{metadata}{A metadata object describing the model}
 
-\item{format}{character. The desired format of the aggregated values. If 
-"conc", preds is assumed to already be formatted as "conc". If "flux" or 
-"flux rate", preds is assumed to already be formatted as "flux rate". If 
-preds has a "units" attribute, that attribute is checked for consistency 
-with \code{format} and \code{metadata}, but if preds has no "units" 
+\item{format}{character. The desired format of the aggregated values. If
+"conc", preds is assumed to already be formatted as "conc". If "flux" or
+"flux rate", preds is assumed to already be formatted as "flux rate". If
+preds has a "units" attribute, that attribute is checked for consistency
+with \code{format} and \code{metadata}, but if preds has no "units"
 attribute then no such checks can be made.}
 
-\item{agg.by}{character. The date interval or grouping column by which to 
-aggregate. If agg.by="unit", values will be returned unaggregated but in 
-the standard post-aggregation format. If agg.by is one of "day", "month", 
-"water year", or "calendar year", the dates vector will be split into 
-periods corresponding to those intervals, and the flux or concentration 
-will be computed for each period. If agg.by="total", \code{dates} will be 
-ignored and the entire vector \code{preds} will be aggregated. If 
-agg.by="[custom]", aggregation will occur for each unique value in 
+\item{agg.by}{character. The date interval or grouping column by which to
+aggregate. If agg.by="unit", values will be returned unaggregated but in
+the standard post-aggregation format. If agg.by is one of "day", "month",
+"water year", or "calendar year", the dates vector will be split into
+periods corresponding to those intervals, and the flux or concentration
+will be computed for each period. If agg.by="total", \code{dates} will be
+ignored and the entire vector \code{preds} will be aggregated. If
+agg.by="[custom]", aggregation will occur for each unique value in
 \code{dates}.}
 
-\item{se.preds}{A vector of standard errors of prediction for instantaneous 
-flux or concentration predictions. This data may also be given as a column 
-named "se.pred" in preds when preds is a data.frame.}
-
-\item{dates}{A vector, of the same length as preds, containing the dates to 
-aggregate over. This data may also be given as a column named "date" in 
+\item{dates}{A vector, of the same length as preds, containing the dates to
+aggregate over. This data may also be given as a column named "date" in
 preds when preds is a data.frame.}
 
-\item{custom}{An optional data.frame of one or more columns each containing 
-factors or other labels on which to aggregate. The columns to be used are 
+\item{custom}{An optional data.frame of one or more columns each containing
+factors or other labels on which to aggregate. The columns to be used are
 set by \code{agg.by}.}
 
-\item{cormat.function}{A function that takes a vector of datetimes (Date, 
-POSIXct, chron, etc.) and returns a Matrix indicating the assumed/estimated
-correlation between prediction errors on each pair of datetimes. See 
-\link{correlations-2D} for predefined options.}
-
-\item{ci.agg}{logical. Should confidence intervals for the aggregate 
-predictions be returned?}
-
-\item{level}{numeric. The interval to span with the confidence intervals.}
-
-\item{deg.free}{numeric. The degrees of freedom to use in calculating 
-confidence intervals from SEPs. If NA, a normal distribution is used rather
-than the more standard t distribution.}
-
-\item{ci.distrib}{character. The distribution to assume for uncertainty in 
-the aggregate flux or concentration distribution. The default is 
-"lognormal".}
-
-\item{se.agg}{logical. Should standard errors of the aggregate predictions be
-returned?}
-
-\item{na.rm}{logical. Should NA values be ignored during aggregation (TRUE), 
-or should NA be returned for intervals that contain one or more NA 
+\item{na.rm}{logical. Should NA values be ignored during aggregation (TRUE),
+or should NA be returned for intervals that contain one or more NA
 predictions (FALSE)?}
 
-\item{attach.units}{logical. If true, units will be attached as an attribute 
+\item{attach.units}{logical. If true, units will be attached as an attribute
 of the second column of the returned data.frame.}
 
-\item{min.n}{numeric number of observations below which an \code{agg.by}
-value, e.g. a year, will be considered incomplete and be discarded}
+\item{agg.cols}{logical. Should the output data.frame include a column or
+columns specifying the aggregation group/s for each row? TRUE is
+recommended.}
+
+\item{count}{logical. Should a count of the number of observations per group
+be included? For most values of agg.by, when count=TRUE there will be a new
+column called count.}
+
+\item{...}{Defunct and ignored arguments. Defunct arguments include
+'se.preds', 'ci.agg', 'deg.free', 'ci.distrib', 'se.agg', and
+'cormat.function'.}
 }
 \value{
-A data.frame with two columns. The first contains the aggregation 
-  period or custom aggregation unit and is named after the value of 
-  \code{agg.by}. The second contains the aggregate flux or concentration 
-  estimates and is named after the value of \code{format}. The values in the 
-  second column will be in the units specified by \code{metadata}.
+A data.frame with 2+ columns. The first column or set of columns
+  contains the aggregation period or custom aggregation unit and is named
+  after the value of \code{agg.by}. The second contains the aggregate flux or
+  concentration estimates and is named after the value of \code{format}. The
+  values in the second column will be in the units specified by
+  \code{metadata}.
 }
 \description{
-This will aggregate the total loads or mean concentrations per aggregation 
-interval, specified by \code{agg.by}. The time frame specified by 
-\code{agg.by} can be "unit," "day," "month," "water year," "calendar year," 
-"total," or the name of a column in newdata that can be used to group the 
+This will aggregate the total loads or mean concentrations per aggregation
+interval, specified by \code{agg.by}. The time frame specified by
+\code{agg.by} can be "unit," "day," "month," "water year," "calendar year,"
+"total," or the name of a column in newdata that can be used to group the
 data.
 }
 \details{
-This also calculates the uncertainty in the sum over a regular time series 
-(loads) with known standard errors (loadsSEs) for each short-term load 
+This also calculates the uncertainty in the sum over a regular time series
+(loads) with known standard errors (loadsSEs) for each short-term load
 estimate.
 
-The general equation for propagation of error in a sum of potentially 
+The general equation for propagation of error in a sum of potentially
 autocorrelated values is:
 
 sum_t(var(x[t])) + 2*sum_a,b(cov(x_a,a_t+l))
@@ -112,21 +94,15 @@ distribution of each flux prediction.
 \dontrun{
 data(eg_metadata)
 metadata_example <- updateMetadata(eg_metadata, dates="date")
-preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)), se.pred=abs(rnorm(365, 1, 0.2)), 
+preds_example <- data.frame(fit=abs(rnorm(365, 5, 2)),
   date=seq(as.Date("2018-05-15"), as.Date("2019-05-14"), by=as.difftime(1, units="days")))
 aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month")
 
 # with a custom aggregation group
 preds_regrouped <- transform(preds_example, simple.season=ordered(
-  c("winter","spring","summer","fall")[floor(((as.numeric(strftime(date, "\%m"))+0)\%\%12)/3)+1], 
+  c("winter","spring","summer","fall")[floor(((as.numeric(strftime(date, "\%m"))+0)\%\%12)/3)+1],
   c("winter","spring","summer","fall")))
-aggregateSolute(preds_example, metadata=metadata_example, format="conc", 
+aggregateSolute(preds_example, metadata=metadata_example, format="conc",
                 agg.by="simple.season", custom=preds_regrouped)
-
-# with a custom prediction error correlation matrix
-new_correlation_assumption <- getCormatFirstOrder(rho=0.9, 
-time.step=as.difftime(1, units="days"), max.tao=as.difftime(10, units="days"))
-aggregateSolute(preds_example, metadata=metadata_example, format="conc", agg.by="month",
-                cormat.function=new_correlation_assumption)
 }
 }

@@ -8,7 +8,7 @@
   irregular.timesteps.ok = NA, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{irregular.timesteps.ok}{logical. If FALSE, this function requires that

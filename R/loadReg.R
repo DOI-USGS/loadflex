@@ -9,7 +9,7 @@ checkRloadestStatus <- function() {
   if(!rloadest_loaded) {
     stop("to use loadReg2(), please call library(rloadest) first")
   } else if(!pkg_env$rloadest_msg_given) {
-    message("You are fitting an rloadest model (loadReg). ",
+    message("You are using an rloadest model (loadReg). ",
             "Please remember to cite both citation('loadflex') and citation('rloadest').")
     pkg_env$rloadest_msg_given <- TRUE
   }

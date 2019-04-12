@@ -9,46 +9,46 @@ simulateSolute(load.model, flux.or.conc = c("flux", "conc"), newdata,
   from.interval = c("confidence", "prediction"), rho, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{flux.or.conc}{character. Should the simulations be reported as flux
 rates or concentrations?}
 
-\item{newdata}{An optional data.frame of predictor observations. The column 
-names in this data.frame must match those specified in the load model's 
+\item{newdata}{An optional data.frame of predictor observations. The column
+names in this data.frame must match those specified in the load model's
 metadata.}
 
-\item{method}{character. The method by which the model should be 
+\item{method}{character. The method by which the model should be
 bootstrapped. "non-parametric": resample with replacement from the original
 fitting data, refit the model, and make new predictions. "parametric":
 resample the model coefficients based on the covariance matrix originally
 estimated for those coefficients, then make new predictions.}
 
-\item{from.interval}{character. The interval type from which to resample 
-(simulate) the solute. If "confidence", the regression model coefficients 
-are resampled from their multivariate normal distribution and predictions 
-are made from the new coefficients. If "prediction", an additional vector 
+\item{from.interval}{character. The interval type from which to resample
+(simulate) the solute. If "confidence", the regression model coefficients
+are resampled from their multivariate normal distribution and predictions
+are made from the new coefficients. If "prediction", an additional vector
 of noise is added to those "confidence"-based predictions.}
 
-\item{rho}{An autocorrelation coefficient to assume for the residuals, 
-applicable when from.interval=="prediction". If rho is missing and 
+\item{rho}{An autocorrelation coefficient to assume for the residuals,
+applicable when from.interval=="prediction". If rho is missing and
 interval=="prediction", rho will be estimated from the residuals calculated
 from newdata with the fitted (not yet resampled) load.model.}
 
 \item{...}{Other arguments passed to inheriting methods}
 }
 \value{
-A vector or data.frame of predictions, as for the generic 
-  \code{\link{predictSolute}}. The simulated predictions are distributed 
-  according to the uncertainty of the coefficients (if 
-  from.interval=="confidence") and also the estimated natural variability + 
+A vector or data.frame of predictions, as for the generic
+  \code{\link{predictSolute}}. The simulated predictions are distributed
+  according to the uncertainty of the coefficients (if
+  from.interval=="confidence") and also the estimated natural variability +
   measurement error (if from.interval=="prediction").
 }
 \description{
-This function is an optional component of the \link{loadModelInterface}. It 
+This function is an optional component of the \link{loadModelInterface}. It
 is unnecessary for model fitting, assessment, and prediction except when used
-in conjunction with the composite method (i.e., within a 
+in conjunction with the composite method (i.e., within a
 \code{\link{loadComp}} model).
 }
 \seealso{

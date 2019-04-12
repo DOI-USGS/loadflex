@@ -8,7 +8,7 @@
   "conc"), ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{flux.or.conc}{character. Which internal model (the flux model or the

@@ -7,7 +7,7 @@
 \method{summarizeModel}{loadReg2}(load.model, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{...}{Other arguments passed to model-specific methods}
@@ -53,7 +53,7 @@ instead, call \code{summarizeModel()} on a \link{loadReg2} object.
 library(rloadest)
 no3_lr <- suppressWarnings(
   loadReg2(loadReg(NO3 ~ model(9), data=get(data(lamprey_nitrate)),
-  flow="DISCHARGE", dates="DATE", time.step="instantaneous", 
+  flow="DISCHARGE", dates="DATE", time.step="instantaneous",
   flow.units="cfs", conc.units="mg/L", load.units="kg",
   station='Lamprey River, NH')))
 summarizeModel(no3_lr)

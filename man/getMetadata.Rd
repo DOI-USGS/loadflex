@@ -15,7 +15,7 @@ Object of class "metadata" with slots reflecting the metadata for
   load.model
 }
 \description{
-A function in the loadModelInterface. Returns a load model's metadata, 
+A function in the loadModelInterface. Returns a load model's metadata,
 encapsulated as a \code{metadata} object.
 }
 \seealso{

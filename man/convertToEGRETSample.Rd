@@ -7,10 +7,10 @@
 convertToEGRETSample(data = NULL, meta = NULL, dailydat = NULL)
 }
 \arguments{
-\item{data}{data.frame of data used to fit a model. only required if 
+\item{data}{data.frame of data used to fit a model. only required if
 load.model is omitted}
 
-\item{meta}{loadflex metadata object; it must include constituent, flow, 
+\item{meta}{loadflex metadata object; it must include constituent, flow,
 dates, conc.units, site.id, and consti.name. only required if load.model is
 omitted}
 

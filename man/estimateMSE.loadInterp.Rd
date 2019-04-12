@@ -2,14 +2,14 @@
 % Please edit documentation in R/loadInterp.R
 \name{estimateMSE.loadInterp}
 \alias{estimateMSE.loadInterp}
-\title{Estimate uncertainty in an interpolation using leave-one-out cross 
+\title{Estimate uncertainty in an interpolation using leave-one-out cross
 validation.}
 \usage{
 \method{estimateMSE}{loadInterp}(load.model, n.out,
   n.iter = floor(nrow(getFittingData(load.model))/n.out), replace, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{n.out}{numeric. The number of observations in the fitting data to leave
@@ -24,14 +24,14 @@ observations (TRUE) or without replacement (FALSE)?}
 \item{...}{Other arguments passed to inheriting methods for estimateMSE}
 }
 \description{
-Calculates and returns the mean squared errors (MSEs) in the units and 
+Calculates and returns the mean squared errors (MSEs) in the units and
 transformation space (e.g., log space) of the left-hand side of the model fit
 equation.
 }
 \details{
-This method is leave-one-out cross validation (LOOCV) when n.out==1, 
-n.iter==nrow(getFittingData(load.model)), and with.replacement=FALSE. This 
-method is k-fold cross validation when 
+This method is leave-one-out cross validation (LOOCV) when n.out==1,
+n.iter==nrow(getFittingData(load.model)), and with.replacement=FALSE. This
+method is k-fold cross validation when
 n.out*n.iter==nrow(getFittingData(load.model)) and with.replacement==FALSE.
 }
 \seealso{

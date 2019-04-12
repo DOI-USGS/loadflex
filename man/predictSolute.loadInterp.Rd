@@ -4,75 +4,101 @@
 \alias{predictSolute.loadInterp}
 \title{Make flux or concentration predictions from a loadInterp model.}
 \usage{
-\method{predictSolute}{loadInterp}(load.model, flux.or.conc, newdata,
-  interval = c("none", "confidence", "prediction"), level = 0.95,
-  lin.or.log = c("linear", "log"), se.fit = FALSE, se.pred = FALSE,
-  date = FALSE, attach.units = FALSE, agg.by = c("unit", "day",
-  "month", "water year", "calendar year", "total", "mean water year",
-  "mean calendar year", "[custom]"), ...)
+\method{predictSolute}{loadInterp}(load.model, flux.or.conc = c("flux",
+  "conc"), newdata, date = TRUE, count = TRUE, se.fit = FALSE,
+  se.pred = FALSE, interval = c("none", "prediction"), level = 0.95,
+  lin.or.log = c("linear", "log"), agg.by = c("unit", "day", "month",
+  "water year", "calendar year", "total", "[custom]"), na.rm = FALSE,
+  attach.units = FALSE, ...)
 }
 \arguments{
 \item{load.model}{A loadInterp object.}
 
-\item{flux.or.conc}{character. Should the predictions be reported as flux 
-rates or concentrations?}
+\item{flux.or.conc}{character. Should the predictions be reported as flux
+rates or concentrations? If the output is a data.frame, the column name for
+flux predictions will be "fit" when `agg.by='unit'` and "Flux_Rate"
+otherwise; the column name for concentration predictions will be "fit" when
+`agg.by='unit'` and "Conc" otherwise.}
 
-\item{newdata}{\code{data.frame}, optional. Predictor data. Because 
-loadInterp models interpolate in time among the observations to which they 
-have been "fitted", \code{newdata} is usually simply a one-column 
+\item{newdata}{\code{data.frame}, optional. Predictor data. Because
+loadInterp models interpolate in time among the observations to which they
+have been "fitted", \code{newdata} is usually simply a one-column
 data.frame of dates or date-times. Column names should match those given in
-the \code{loadInterp} metadata. If \code{newdata} is not supplied, the 
+the \code{loadInterp} metadata. If \code{newdata} is not supplied, the
 original fitting data will be used.}
 
-\item{interval}{character. The type of interval desired. Confidence intervals
-are not currently available for loadInterp models.}
+\item{date}{logical. If TRUE, the output data.frame will include a column
+containing the dates or grouping variables of the predictions. For
+agg.by=="unit", the resulting column will be "date"; for agg.by=="water
+year", the column will be "water.year", and so on.}
 
-\item{level}{numeric. Fraction of density distribution to include within 
+\item{count}{logical. If TRUE, and if agg.by!='unit', the output data.frame
+will include a column named 'count' containing the number of unit
+predictions going into each aggregated prediction (row).}
+
+\item{se.fit}{logical. Must be FALSE because se.fit is unavailable for
+loadInterp models.}
+
+\item{se.pred}{logical. If TRUE, the output data.frame will include a column
+named "se.pred" describing the standard error of the prediction for each
+row of predictors. The se.pred values are standard errors of prediction
+(SEPs) and take into account not only the parameter uncertainty associated
+with the model coefficients (also covered by se.fit), but also the random
+error associated with any given observation (the epsilon term in a typical
+regression model).}
+
+\item{interval}{character specifying the type of interval to include, if any. Prediction intervals
+are only available when `agg.by=="unit"`, and confidence intervals are not
+available for any loadInterp predictions. If "prediction", the interval
+bounds will be returned in columns named "lwr.pred" and "upr.pred". Prediction bounds
+describe the expected distribution of observations at each prediction
+point. The extent of the}
+
+\item{level}{numeric. Fraction of density distribution to include within the
 confidence or prediction interval}
 
 \item{lin.or.log}{character. Either "linear" or "log" to say whether the
 predictions should be converted to log space or not. If converted to log
-space, a bias correction will be applied, see \code{\link{linToLog}}.}
+space, a bias correction will be applied to regression model predictions;
+see \code{\link{linToLog}}.}
 
-\item{se.fit}{logical, but should be FALSE because se.fit is not currently
-available for loadInterp models.}
+\item{agg.by}{character. The date interval or other grouping variable to
+aggregate results by. To do no aggregation, use the default of
+`agg.by='unit'`. If agg.by is one of "day", "month", "water year", or
+"calendar year", the dates vector will be split into periods corresponding
+to those intervals, and the flux or concentration will be computed for each
+period. If agg.by="total", \code{dates} will be ignored and the entire
+vector \code{preds} will be aggregated, weighting each point prediction
+equally. If agg.by is set to one or most custom values not in the list of
+default values, the values should be names of columns in `newdata`, and
+predictions will be grouped according to the values in those columns.}
 
-\item{se.pred}{logical. If TRUE, the output data.frame will include a column 
-named "se.pred" describing the standard error of the prediction for each 
-row of predictors. The values in the se.pred column will be larger than 
-those in the se.fit column, because the se.pred values are standard errors 
-of prediction (SEPs) and take into account not only the parameter 
-uncertainty associated with the model coefficients (also covered by 
-se.fit), but also the random error associated with any given observation 
-(the epsilon term in a typical regression model).}
+\item{na.rm}{logical. Should NA values be removed before aggregation (TRUE),
+or should NA be returned for intervals that contain one or more NA
+predictions (FALSE)?}
 
-\item{date}{logical. If TRUE, the output data.frame will include a column 
-named "date" containing the dates of the predictions.}
-
-\item{attach.units}{logical. Should the units be attached to columns in the 
+\item{attach.units}{logical. Should the units be attached to columns in the
 resulting data.frame?}
 
-\item{agg.by}{character Time period to aggregate results by.}
-
-\item{...}{Additional arguments passed to class-specific implementations of 
+\item{...}{Additional arguments passed to class-specific implementations of
 the \code{predictSolute} generic function.}
 }
 \value{
-A vector of data.frame of predictions, as for the generic 
-  \code{\link{predictSolute}}.
+Returns a vector or data.frame of predictions preditions. The result
+  is a vector if interval is "none" and all of se.fit, se.pred, date, and
+  count are FALSE; otherwise, the result is a data.frame.
 }
 \description{
-Makes instantaneous predictions (at the temporal resolution of 
-\code{newdata}) from a fitted \code{\link{loadInterp}} model. See 
-\code{\link{predictSolute}} for details.
+Makes instantaneous predictions (at the temporal resolution of
+\code{newdata}) from a fitted \code{\link{loadInterp}} model. See
+\code{\link{predictSolute}} for details. For loadInterp models in particular,
 }
 \details{
-loadInterps are currently assumed to have normally distributed residuals. An 
-unwitting user might violate this assumption without being caught by the 
+loadInterps are currently assumed to have normally distributed residuals. An
+unwitting user might violate this assumption without being notified by the
 code, so be careful! This assumption is mainly relevant to the calculation of
-confidence or prediction intervals. Also, where other models such as loadReg 
-and loadLm will retransform predictions back into linear space, loadInterps 
-will not.
+prediction intervals. Also, where other models such as loadReg and loadLm
+will retransform predictions back into linear space, loadInterps will not.
 }
 \seealso{
 Other predictSolute: \code{\link{predictSolute.loadComp}},

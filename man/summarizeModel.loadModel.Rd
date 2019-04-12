@@ -7,7 +7,7 @@
 \method{summarizeModel}{loadModel}(load.model, ...)
 }
 \arguments{
-\item{load.model}{A load model object, typically inheriting from loadModel 
+\item{load.model}{A load model object, typically inheriting from loadModel
 and always implementing the loadModelInterface.}
 
 \item{...}{Other arguments passed to model-specific methods}
@@ -16,7 +16,7 @@ and always implementing the loadModelInterface.}
 A 1-row data.frame of model metrics
 }
 \description{
-Produce a 1-row data.frame of model metrics. The relevant metrics for 
+Produce a 1-row data.frame of model metrics. The relevant metrics for
 loadModel models include two sets of statistics about autocorrelation (one for
 the regression residuals, one for the 'residuals' used to do the composite
 correction).

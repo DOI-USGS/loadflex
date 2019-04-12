@@ -6,10 +6,10 @@
 \title{loadInterp is a class of load models that hold interpolation functions.
 The engine of a loadInterp model.}
 \description{
-This is a model class to nest within loadInterp. This class, interpModel, is 
-lightweight relative to loadInterp: its focus is on the interpolation rather 
-than on units conversions, fitting, or other things that loadInterp does 
-better. This is also the class that is produced by a call to the fitting 
+This is a model class to nest within loadInterp. This class, interpModel, is
+lightweight relative to loadInterp: its focus is on the interpolation rather
+than on units conversions, fitting, or other things that loadInterp does
+better. This is also the class that is produced by a call to the fitting
 function stored in loadInterp.
 }
 \section{Slots}{
@@ -19,10 +19,10 @@ function stored in loadInterp.
 
 \item{\code{dates.in}}{Dates of the y.in data.}
 
-\item{\code{y.in}}{Data (usually fluxes, concentrations, or residuals) to 
+\item{\code{y.in}}{Data (usually fluxes, concentrations, or residuals) to
 interpolate.}
 
-\item{\code{interp.function}}{Function that accepts arguments \code{dates.in}, 
+\item{\code{interp.function}}{Function that accepts arguments \code{dates.in},
 \code{y.in}, and \code{dates.out}, then returns predictions \code{y.out}}
 }}
 

@@ -11,44 +11,44 @@ loadLm(formula, pred.format = c("flux", "conc"), data, metadata,
 \arguments{
 \item{formula}{A formula specifying the linear model to fit.}
 
-\item{pred.format}{In what format (flux or conc) does the lm object make 
+\item{pred.format}{In what format (flux or conc) does the lm object make
 predictions when predict.lm() is called?}
 
 \item{data}{data.frame. The data to be interpolated}
 
-\item{metadata}{metadata, used to access the appropriate columns of data. At 
+\item{metadata}{metadata, used to access the appropriate columns of data. At
 a minimum, \code{metadata} should correctly specify the date column.}
 
-\item{fitting_function}{a fitting function that can produce a new loadComp 
+\item{fitting_function}{a fitting function that can produce a new loadComp
 object from new data (this currently uses the same new data for both
 regression calibration and interpolation)}
 
-\item{y.trans.function}{function that accepts a vector of predictions 
-straight from the fitted model and retransforms them, if appropriate, to 
-predictions in linear space and with units of concentration*flow. Because 
-load models are frequently fit to log(y) ~ ..., the default is 
-retrans.function=exp. After retrans.function has been applied to the 
-predictions, the retransformed predictions will automatically undergo 
-further units conversion from conc*flow to load.rate, according to the 
+\item{y.trans.function}{function that accepts a vector of predictions
+straight from the fitted model and retransforms them, if appropriate, to
+predictions in linear space and with units of concentration*flow. Because
+load models are frequently fit to log(y) ~ ..., the default is
+retrans.function=exp. After retrans.function has been applied to the
+predictions, the retransformed predictions will automatically undergo
+further units conversion from conc*flow to load.rate, according to the
 metadata elements conc.units, flow.units, and load.rate.units.}
 
-\item{retrans.function}{function that accepts a vector of predictions 
-straight from the fitted model and retransforms them, if appropriate, to 
-predictions in linear space and with units of concentration*flow. Because 
-load models are frequently fit to log(y) ~ ..., the default is 
-retrans.function=exp. After retrans.function has been applied to the 
-predictions, the retransformed predictions will automatically undergo 
-further units conversion from conc*flow to load.rate, according to the 
+\item{retrans.function}{function that accepts a vector of predictions
+straight from the fitted model and retransforms them, if appropriate, to
+predictions in linear space and with units of concentration*flow. Because
+load models are frequently fit to log(y) ~ ..., the default is
+retrans.function=exp. After retrans.function has been applied to the
+predictions, the retransformed predictions will automatically undergo
+further units conversion from conc*flow to load.rate, according to the
 metadata elements conc.units, flow.units, and load.rate.units.}
 
-\item{store}{One or more character strings specifying which information to 
-write within the model. Options are 'data': the original fitting data; 
-'fitting.function': a fitting function that can produce a new loadComp 
+\item{store}{One or more character strings specifying which information to
+write within the model. Options are 'data': the original fitting data;
+'fitting.function': a fitting function that can produce a new loadComp
 object from new data}
 
-\item{ylog}{logical. If TRUE, this constitutes affirmation that the values 
-passed to the left-hand side of the model formula will be in log space. If 
-missing, the value of \code{ylog} will be inferred from the values of 
+\item{ylog}{logical. If TRUE, this constitutes affirmation that the values
+passed to the left-hand side of the model formula will be in log space. If
+missing, the value of \code{ylog} will be inferred from the values of
 \code{formula} and \code{y.trans.function}, but be warned that this
 inference is fallible.}
 }
@@ -56,13 +56,13 @@ inference is fallible.}
 A fitted loadLm model.
 }
 \description{
-Generates a new model of class loadInterp (\code{\link{loadLm-class}}) which 
-can connect observations of concentration or flux using a linear regression 
+Generates a new model of class loadInterp (\code{\link{loadLm-class}}) which
+can connect observations of concentration or flux using a linear regression
 model.
 }
 \examples{
 data(eg_fitdat, eg_metadata)
-no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc", 
+no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc",
   data=eg_fitdat, metadata=eg_metadata, retrans=exp)
 }
 \seealso{
