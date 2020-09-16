@@ -59,7 +59,7 @@ The Water Mission Area of the USGS supports maintenance of `loadflex` through Se
 ## Installation of loadflex
 
 To install the loadflex package, install from GitHub using the `remotes`
-packages:
+package:
 
 ``` r
 library(remotes)
