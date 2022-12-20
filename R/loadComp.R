@@ -230,13 +230,14 @@ predictSolute.loadComp <- function(
   if(missing(newdata)) {
     newdata <- getFittingData(load.model@fit@reg.model)
   }
+  combine_with_units <- attach.units && !load.model@fit@log.resids # only attach units if the residuals aren't in log space
   reg_preds <- predictSolute(
     load.model=load.model@fit@reg.model, flux.or.conc=load.model@pred.format,
-    newdata=newdata, attach.units=attach.units,
+    newdata=newdata, attach.units=combine_with_units,
     date=FALSE, count=FALSE, se.fit=FALSE, se.pred=FALSE, ...)
   resid_preds <- predictSolute(
     load.model=load.model@fit@resid.model, flux.or.conc=load.model@pred.format,
-    newdata=newdata, attach.units=attach.units,
+    newdata=newdata, attach.units=combine_with_units,
     date=FALSE, count=FALSE, se.fit=FALSE, se.pred=FALSE, ...)
 
   # Do the composite correction: combine reg_preds with resid_preds. resid_preds
@@ -256,10 +257,12 @@ predictSolute.loadComp <- function(
   # each residual.
   predvec_lin <- if(load.model@fit@log.resids) exp(preds) else preds
 
-  # Change flux/conc formats if appropriate. MSEs are already formatted.
+  # Change flux/conc formats if appropriate. MSEs are already formatted with
+  # respect to flux/conc, log/lin, but they may need some units added later.
   predvec_lin <- formatPreds(
     predvec_lin, from.format=load.model@pred.format, to.format=flux.or.conc,
     newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
+  pred_units <- unitted::get_units(predvec_lin)
 
   # Add uncertainty if requested
   if(interval != "none" | se.fit | se.pred | lin.or.log == 'log') {
@@ -299,7 +302,7 @@ predictSolute.loadComp <- function(
       se_log <- sqrt(load.model@MSE["mean", 1])
       # The mean: always use se.pred (rather than se.fit) to calculate the mean in
       # log space.
-      preds_log <- mixedToLog(meanlin=predvec_lin, sdlog=se_log)
+      preds_log <- mixedToLog(meanlin=unitted::v(predvec_lin), sdlog=se_log)
       preds_lin <- logToLin(mslist=preds_log)
 
       # The intervals:
@@ -311,17 +314,30 @@ predictSolute.loadComp <- function(
         preds_log$upr.pred <- preds_log$meanlog + ci_quantiles[2]*se_log
         preds_lin$lwr.pred <- exp(preds_log$lwr.pred)
         preds_lin$upr.pred <- exp(preds_log$upr.pred)
+        if(attach.units) {
+          preds_lin$lwr.pred <- unitted::u(preds_lin$lwr.pred, pred_units)
+          preds_lin$upr.pred <- unitted::u(preds_lin$upr.pred, pred_units)
+        }
       }
       # The SEs:
       if(se.pred) {
         preds_log$se.pred <- se_log
         preds_lin$se.pred <- preds_lin$sdlin
+        if(attach.units) {
+          preds_lin$se.pred <- unitted::u(preds_lin$se.pred, pred_units)
+        }
+      }
+      # The units:
+      if(attach.units) {
+        preds_lin$meanlin <- unitted::u(preds_lin$meanlin, pred_units)
+        preds_lin$sdlin <- unitted::u(preds_lin$sdlin, pred_units)
+        preds_lin <- unitted::u(preds_lin)
       }
     } else {
       # Compute uncertainty assuming a normal distribution of error around each
       # prediction
       se_lin <- sqrt(load.model@MSE["mean", flux.or.conc])
-      preds_lin <- data.frame(meanlin=predvec_lin, sdlin=se_lin)
+      preds_lin <- data.frame(meanlin=unitted::v(predvec_lin), sdlin=se_lin)
       preds_log <- linToLog(mslist=preds_lin) # we only need preds_log if lin.or.log='log'
 
       # The intervals:
@@ -333,16 +349,29 @@ predictSolute.loadComp <- function(
         preds_lin$upr.pred <- preds_lin$meanlin + ci_quantiles[2]*se_lin
         preds_log$lwr.pred <- log(preds_lin$lwr.pred)
         preds_log$upr.pred <- log(preds_lin$upr.pred)
+        if(attach.units) {
+          preds_lin$lwr.pred <- unitted::u(preds_lin$lwr.pred, pred_units)
+          preds_lin$upr.pred <- unitted::u(preds_lin$upr.pred, pred_units)
+        }
       }
       # The SEs:
       if(se.pred) {
         preds_lin$se.pred <- preds_lin$sdlin
         preds_log$se.pred <- preds_log$sdlog
+        if(attach.units) {
+          preds_lin$se.pred <- unitted::u(preds_lin$se.pred, pred_units)
+        }
+      }
+      # The units:
+      if(attach.units) {
+        preds_lin$meanlin <- unitted::u(preds_lin$meanlin, pred_units)
+        preds_lin$sdlin <- unitted::u(preds_lin$sdlin, pred_units)
+        preds_lin <- unitted::u(preds_lin)
       }
     }
 
     # Format the output
-    preds_lin$sdlin <- NULL # we've copied this to the se.pred column if we wanted it
+    preds_lin <- preds_lin[,which(names(preds_lin) != "sdlin")] # we've copied this to the se.pred column if we wanted it
     names(preds_lin)[1] <- "fit" # name consistently with other predictSolute outputs
   } else {
     # If we're not returning any uncertainty info, format as a vector rather than as a data.frame
@@ -356,6 +385,7 @@ predictSolute.loadComp <- function(
     }
     # prepend the date column
     preds_lin <- data.frame(date=getCol(load.model@metadata, newdata, "date"), preds_lin)
+    if(attach.units) preds_lin <- unitted::u(preds_lin)
   }
 
   # Add intermediate predictions (regression, residuals in linear and/or
@@ -368,23 +398,25 @@ predictSolute.loadComp <- function(
       formatPreds(
         reg_preds, from.format=load.model@pred.format, to.format=flux.or.conc,
         newdata=newdata, metadata=load.model@metadata, attach.units=attach.units)
-    }
+    } # else NULL
     fit_resid <- if(fit.resid) {
       preds_lin$fit - fit_reg
-    }
+    } # else NULL
     fit_resid_raw <- if(fit.resid.raw) {
       resid_preds
-    }
+    } # else NULL
     preds_lin <- data.frame(
       preds_lin,
       c(if(fit.reg) list(fit.reg=fit_reg),
         if(fit.resid) list(fit.resid=fit_resid),
         if(fit.resid.raw) list(fit.resid.raw=fit_resid_raw)))
+    if(attach.units) preds_lin <- unitted::u(preds_lin)
   }
 
   preds <- preds_lin
   if(lin.or.log == "log") {
     if(is.data.frame(preds)) {
+      preds <- unitted::v(preds)
       preds$fit <- log(preds$fit) # this is NOT the mean in log space, but it's the only way to get residuals of 0 in log space
       preds$fit.meanlog <- preds_log$meanlog # include the mean in log space for a tiny bit more clarity
       preds$se.fit <- if(se.fit) NA else NULL
@@ -397,12 +429,13 @@ predictSolute.loadComp <- function(
   # use aggregate solute to aggregate to agg.by, but warn and return NA for uncertainty if it was requested
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
-                             format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
+                             format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"),
+                             attach.units = attach.units)
     if(interval != "none" || se.fit || se.pred) {
       warning("Uncertainty for aggregated predictions is unavailable for loadComp models; returning NAs")
     } else {
-      extra_cols <- intersect(names(preds), c("SE", "CI_lower", "CI_upper"))
-      preds <- preds %>% dplyr::select(-!!extra_cols)
+      extra_cols <- c("SE", "CI_lower", "CI_upper")
+      preds <- preds[ , !(names(preds) %in% extra_cols)]
     }
   }
 
