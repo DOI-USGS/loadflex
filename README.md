@@ -58,12 +58,19 @@ The Water Mission Area of the USGS supports maintenance of `loadflex` through Se
 
 ## Installation of loadflex
 
-To install the loadflex package, install from GitHub using the `remotes`
-package:
+To install the loadflex package, use the `remotes`
+package (running `install.packages('remotes')` first if needed). You will also need a compiler to install `smwrStats`, `smwrQW`, and `rloadest` -- for Windows, see https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html. For Mac, see https://mac.r-project.org/tools/. 
 
 ``` r
 library(remotes)
-install_github("USGS-R/loadflex")
+remotes::install_gitlab("water/analysis-tools/smwrData", host = "code.usgs.gov")
+remotes::install_gitlab("water/analysis-tools/smwrBase", host = "code.usgs.gov")
+remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov")
+remotes::install_gitlab("water/analysis-tools/smwrStats", host = "code.usgs.gov") # needs compilation
+remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")    # needs compilation
+remotes::install_gitlab("water/analysis-tools/rloadest", host = "code.usgs.gov")  # needs compilation
+remotes::install_github("aappling/unitted")
+remotes::install_github("USGS-R/loadflex")
 ```
 
 Also please see the installation FAQ on the wiki
