@@ -69,7 +69,7 @@ remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov
 remotes::install_gitlab("water/analysis-tools/smwrStats", host = "code.usgs.gov") # needs compilation
 remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")    # needs compilation
 remotes::install_gitlab("water/analysis-tools/rloadest", host = "code.usgs.gov")  # needs compilation
-remotes::install_github("aappling/unitted")
+remotes::install_github("appling/unitted")
 remotes::install_github("USGS-R/loadflex")
 ```
 
