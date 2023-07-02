@@ -161,7 +161,7 @@ getFittedModel <- function(load.model) {
 #'   to those intervals, and the flux or concentration will be computed for each
 #'   period. If agg.by="total", \code{dates} will be ignored and the entire
 #'   vector \code{preds} will be aggregated, weighting each point prediction
-#'   equally. If agg.by is set to one or most custom values not in the list of
+#'   equally. If agg.by is set to one or more custom values not in the list of
 #'   default values, the values should be names of columns in `newdata`, and
 #'   predictions will be grouped according to the values in those columns.
 #' @param na.rm logical. Should NA values be removed before aggregation (TRUE),
