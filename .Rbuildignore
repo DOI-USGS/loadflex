@@ -3,5 +3,5 @@
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^data-raw$
-CONDUCT.md
+CODE_OF_CONDUCT.md
 images

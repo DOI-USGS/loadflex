@@ -1,8 +1,8 @@
 Package: loadflex
 Type: Package
 Title: Models and Tools for Watershed Flux Estimates
-Version: 1.9.1
-Date: 2019-04-12
+Version: 1.9.2
+Date: 2023-07-02
 Authors@R: c(
     person("Alison P.", "Appling", , "aappling@usgs.gov", c("aut", "cre")),
     person("Miguel C.", "Leon", , , "aut"),
@@ -10,8 +10,8 @@ Authors@R: c(
     person("W. David", "Watkins", , , "ctb")
     )
 Author: Alison Appling, Miguel Leon
-Maintainer: Alison Appling <alison.appling@gmail.com>
-Description: Implements several of the most common methods for
+Maintainer: Alison Appling <aappling@usgs.gov>
+Description: loadflex implements several of the most common methods for
     modeling and predicting watershed solute fluxes and concentrations,
     including interpolation and regression models, period-weighted averaging,
     and the composite method. Integrates seamlessly with the USGS's
