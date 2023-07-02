@@ -1,65 +1,75 @@
-## `loadflex`: Models and tools for watershed flux estimates
+# loadflex: Models and Tools for Watershed Flux Estimates
 
-This package implements several of the most common methods for modeling and
-predicting watershed solute fluxes and concentrations, including interpolation
-and regression models, period-weighted averaging, and the composite method.
-loadflex integrates seamlessly with the USGS's
-[rloadest](https://github.com/USGS-R/rloadest) package and with native R
-regression models. It offers a uniform interface for any model type, with which
-you can quickly fit models, generate predictions, and aggregate to monthly or
-annual values.
+<span style="color: red;"> In summer or fall 2023, this package will
+move from <https://github.com/USGS-R/loadflex> to
+<https://github.com/DOI-USGS/loadflex> Please update your links
+accordingly. </span>
 
-The package was created by [Alison Appling](https://github.com/aappling-usgs) 
-and [Miguel Leon](https://github.com/miguelcleon) with the support of [Bill 
-McDowell](https://colsa.unh.edu/faculty/mcdowell) and the [McDowell 
-lab](http://wrrc.unh.edu/mcdowell-lab-current) at the University of New 
-Hampshire, 2013-2015. Funding for the project was provided by the National 
-Science Foundation, USDA National Institute of Food and Agriculture, and the NH 
-Agricultural Experiment Station. Funding for the example dataset from the 
-Lamprey River was provied by the EPA, NH Water Resources Research Center, NH 
-Agricultural Experiment Station, NH Sea Grant, USGS, and NSF. This work is 
-described in
+The `loadflex` R package implements several of the most common methods
+for modeling and predicting watershed solute fluxes and concentrations,
+including interpolation and regression models, period-weighted
+averaging, and the composite method. `loadflex` integrates seamlessly
+with the USGS’s
+[rloadest](https://code.usgs.gov/water/analysis-tools/rloadest) package
+and with native R regression models. It offers a uniform interface for
+any model type, with which you can quickly fit models, generate
+predictions, and aggregate to monthly or annual values.
 
-> Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex. Ecosphere 6(12):269. https://doi.org/10.1890/ES14-00517.1
+This package has been described in Appling et al. (2015):
 
-Additional development and maintenance in 2016-present is being done by 
-[Alison Appling](https://github.com/aappling-usgs), [Lindsay
-Carr](https://github.com/lindsaycarr), and [David 
-Watkins](https://github.com/wdwatkins) of the [USGS Office of Water 
-Information](http://cida.usgs.gov/datascience.html).
+> Appling, A. P., Leon, M. C., & McDowell, W. H. (2015). Reducing bias
+> and quantifying uncertainty in watershed flux estimates: The R package
+> `loadflex`. Ecosphere, 6(12), art269.
+> <https://doi.org/10.1890/ES14-00517.1>
 
-To see how to cite this package, type `citation("loadflex")`.
+To see the recommended citation for this package, please run
+`citation('loadflex')` at the R prompt.
 
-To get started, load the package and type `?loadflex`.
+``` r
+citation('loadflex')
+## 
+## To cite package 'loadflex' in publications use:
+## 
+##   Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias
+##   and quantifying uncertainty in watershed flux estimates: the R
+##   package loadflex. Ecosphere 6(12):269.
+##   https://doi.org/10.1890/ES14-00517.1
+## 
+## A BibTeX entry for LaTeX users is
+## 
+##   @Article{,
+##     title = {Reducing bias and quantifying uncertainty in watershed flux estimates: the R package loadflex},
+##     author = {Alison P. Appling and Miguel C. Leon and William H. McDowell},
+##     year = {2015},
+##     journal = {Ecosphere},
+##     volume = {6},
+##     number = {12},
+##     pages = {art269},
+##     doi = {10.1890/ES14-00517.1},
+##     url = {http://www.esajournals.org/doi/full/10.1890/ES14-00517.1},
+##   }
+```
 
-## Package Status
+## Installation
 
-| Name       | Status           |  
-| :------------ |:-------------|  
-| Windows Build: | [![Windows Build status](https://ci.appveyor.com/api/projects/status/764y0hsh5x3vhufx?svg=true)](https://ci.appveyor.com/project/aappling-usgs/loadflex) |
-| Linux Build: | [![Linux Build Status](https://travis-ci.org/USGS-R/loadflex.svg)](https://travis-ci.org/USGS-R/loadflex)  |
-| Coveralls: | [![Coveralls Coverage](https://coveralls.io/repos/USGS-R/loadflex/badge.svg?branch=master)](https://coveralls.io/r/USGS-R/loadflex?branch=master) |
-| USGS Status: | [![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)|
+To install the `loadflex` package, use the `remotes` package as follows
+(running `install.packages('remotes')` first if needed). To use
+`remotes::install_gitlab()` it is convenient to set a [GitLab Personal
+Access Token
+(PAT)](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
+Similarly, to use `remotes::install_github()` it is convenient to set a
+[GitHub
+PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+There are [several
+methods](https://usethis.r-lib.org/articles/git-credentials.html) for
+setting your PATs within R; the simplest is to call
+\`Sys.setenv(GITLAB_PAT=“xxxx”, GITHUB_PAT=“yyyy”), replacing xxxx and
+yyyy with the PATs you established on the GitLab and GitHub websites.
 
-### Reporting bugs
-
-Please consider reporting bugs and asking questions on the Issues page:
-[https://github.com/USGS-R/loadflex/issues](https://github.com/USGS-R/loadflex/issues)
-
-Follow `@USGS_R` on Twitter for updates on USGS R packages:
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/USGS_R.svg?style=social&label=Follow%20USGS_R)](https://twitter.com/USGS_R)
-
-### Package Support
-
-The Water Mission Area of the USGS supports maintenance of `loadflex` through September 2018, and likely further into the future. Resources are available primarily for maintenance and responding to user questions. Some new features may be added as prioritized by the `loadflex` development team.
-
-[![USGS](http://usgs-r.github.io/images/usgs.png)](https://www.usgs.gov/)
-
-## Installation of loadflex
-
-To install the loadflex package, use the `remotes`
-package (running `install.packages('remotes')` first if needed). You will also need a compiler to install `smwrStats`, `smwrQW`, and `rloadest` -- for Windows, see https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html. For Mac, see https://mac.r-project.org/tools/. 
+You will also need a compiler to install `smwrStats`, `smwrQW`, and
+`rloadest` – for Windows, see
+<https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html>.
+For Mac, see <https://mac.r-project.org/tools/>.
 
 ``` r
 library(remotes)
@@ -69,34 +79,93 @@ remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov
 remotes::install_gitlab("water/analysis-tools/smwrStats", host = "code.usgs.gov") # needs compilation
 remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")    # needs compilation
 remotes::install_gitlab("water/analysis-tools/rloadest", host = "code.usgs.gov")  # needs compilation
-remotes::install_github("aappling/unitted")
-remotes::install_github("USGS-R/loadflex")
+remotes::install_github("appling/unitted")
+remotes::install_github("DOI-USGS/EGRET")
+remotes::install_github("USGS-R/loadflex") # soon to be "DOI-USGS/loadflex"
 ```
 
 Also please see the installation FAQ on the wiki
-(https://github.com/USGS-R/loadflex/wiki/Installation-FAQ) if you run into trouble.
+(<https://github.com/USGS-R/loadflex/wiki/Installation-FAQ>) if you run
+into trouble.
 
+## Getting Started
 
-### Reporting bugs
+To get started, load the package with `library(loadflex)` and type
+`?loadflex` or `vignette('intro_to_loadflex')`.
 
-Please consider reporting bugs and asking questions on the Issues page:
-[https://github.com/USGS-R/loadflex/issues](https://github.com/USGS-R/loadflex/issues)
+## Development and Maintenance Status
 
-Follow `@USGS_R` on Twitter for updates on USGS R packages:
+`loadflex` is a USGS Archive Research Package: [![USGS
+Status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
 
-[![Twitter Follow](https://img.shields.io/twitter/follow/USGS_R.svg?style=social&label=Follow%20USGS_R)](https://twitter.com/USGS_R)
+Project funding has ended and our maintenance time is limited, but we do
+attempt to provide bug fixes and lightweight support as we are able.
+Submit questions or suggestions to
+<https://github.com/USGS-R/loadflex/issues>.
 
-### Code of Conduct
+## Contributing
 
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/loadflex/blob/master/CONDUCT.md) for more information.
+We want to encourage a warm, welcoming, and safe environment for
+contributing to this project. See
+[CODE_OF_CONDUCT.md](https://github.com/USGS-R/streamMetabolizer/blob/main/CODE_OF_CONDUCT.md)
+for more information.
+
+For technical details on how to contribute, see
+[CONTRIBUTING.md](https://github.com/USGS-R/streamMetabolizer/blob/main/CONTRIBUTING.md)
+
+## Contributing
+
+We want to encourage a warm, welcoming, and safe environment for
+contributing to this project. See
+[CODE_OF_CONDUCT.md](https://github.com/USGS-R/loadflex/blob/main/CODE_OF_CONDUCT.md)
+for more information.
+
+For technical details on how to contribute, see
+[CONTRIBUTING.md](https://github.com/USGS-R/loadflex/blob/main/CONTRIBUTING.md)
+
+## Development History
+
+`loadflex` was created 2013-2015 by [Alison
+Appling](https://github.com/aappling-usgs) and [Miguel
+Leon](https://github.com/miguelcleon) with the support of [Bill
+McDowell](https://colsa.unh.edu/faculty/mcdowell) and the [McDowell
+lab](http://wrrc.unh.edu/mcdowell-lab-current) at the University of New
+Hampshire. Funding for the project was provided by the National Science
+Foundation, USDA National Institute of Food and Agriculture, and the NH
+Agricultural Experiment Station. Funding for the example dataset from
+the Lamprey River was provied by the EPA, NH Water Resources Research
+Center, NH Agricultural Experiment Station, NH Sea Grant, USGS, and NSF.
+
+Additional development and maintenance in 2016-2017 was done by [Alison
+Appling](https://github.com/aappling-usgs), [Lindsay
+Platt](https://github.com/lindsayplatt), and [David
+Watkins](https://github.com/wdwatkins) with support from the USGS
+National Water Quality Program and the USGS Office of Water Information.
+
+## Model Archive
+
+The following version of R and package dependencies were used most
+recently to pass the embedded tests within this package. There is no
+guarantee of reproducible results using future versions of R or updated
+versions of package dependencies; however, we aim to test and update
+future modeling environments.
+
+<!-- Run and paste manually after edits, only when tests pass locally -->
+
+``` r
+> sessioninfo::session_info()
+
+## (TBD)
+```
 
 ## Disclaimer
 
-This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [https://www.usgs.gov/visual-id/credit_usgs.html#copyright](https://www.usgs.gov/visual-id/credit_usgs.html#copyright)
-
-Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
-
-This software is provided "AS IS."
-
-
- [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+This software is preliminary or provisional and is subject to revision.
+It is being provided to meet the need for timely best science. The
+software has not received final approval by the U.S. Geological Survey
+(USGS). No warranty, expressed or implied, is made by the USGS or the
+U.S. Government as to the functionality of the software and related
+material nor shall the fact of release constitute any such warranty. The
+software is provided on the condition that neither the USGS nor the U.S.
+Government shall be held liable for any damages resulting from the
+authorized or unauthorized use of the software.
