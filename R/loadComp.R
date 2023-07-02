@@ -430,7 +430,7 @@ predictSolute.loadComp <- function(
   if(agg.by != "unit") {
     preds <- aggregateSolute(preds, metadata = getMetadata(load.model), agg.by = agg.by,
                              format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"),
-                             attach.units = attach.units)
+                             attach.units = attach.units, count = count)
     if(interval != "none" || se.fit || se.pred) {
       warning("Uncertainty for aggregated predictions is unavailable for loadComp models; returning NAs")
     } else {
@@ -441,7 +441,7 @@ predictSolute.loadComp <- function(
 
   # Rename the `fit` column to describe the type of prediction
   if(is.data.frame(preds)) {
-    names(preds) <- replace(names(preds), names(preds)=='fit', flux.or.conc)
+    names(preds) <- replace(names(preds), names(preds)=='fit', c(flux='flux.rate', conc='conc')[flux.or.conc])
   }
 
   # Return

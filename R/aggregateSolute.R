@@ -31,7 +31,7 @@
 #'   "date"
 #' @param metadata A metadata object describing the model
 #' @param format character. The desired format of the aggregated values. If
-#'   "conc", preds is assumed to already be formatted as "conc". If "flux" or
+#'   "conc", preds is assumed to already be formatted as "conc". If
 #'   "flux rate", preds is assumed to already be formatted as "flux rate". If
 #'   preds has a "units" attribute, that attribute is checked for consistency
 #'   with \code{format} and \code{metadata}, but if preds has no "units"
