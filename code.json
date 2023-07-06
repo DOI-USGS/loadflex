@@ -10,14 +10,14 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://raw.githubusercontent.com/USGS-R/loadflex/main/LICENSE.md"
+          "URL": "https://raw.githubusercontent.com/DOI-USGS/loadflex/main/LICENSE.md"
         }
       ]
     },
-    "homepageURL": "https://github.com/USGS-R/loadflex/",
-    "downloadURL": "https://github.com/USGS-R/loadflex/archive/refs/heads/main.zip",
-    "disclaimerURL": "https://raw.githubusercontent.com/USGS-R/loadflex/main/DISCLAIMER.md",
-    "repositoryURL": "https://github.com/USGS-R/loadflex.git",
+    "homepageURL": "https://github.com/DOI-USGS/loadflex/",
+    "downloadURL": "https://github.com/DOI-USGS/loadflex/archive/refs/heads/main.zip",
+    "disclaimerURL": "https://raw.githubusercontent.com/DOI-USGS/loadflex/main/DISCLAIMER.md",
+    "repositoryURL": "https://github.com/DOI-USGS/loadflex.git",
     "vcs": "git",
     "laborHours": 2000,
     "tags": [
@@ -35,7 +35,7 @@
       "email": "aappling@usgs.gov"
     },
     "date": {
-      "metadataLastUpdated": "2023-07-02"
+      "metadataLastUpdated": "2023-07-05"
     }
   }
 ]
