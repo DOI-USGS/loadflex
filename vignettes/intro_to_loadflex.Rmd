@@ -75,7 +75,7 @@ no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow.units="cfs", conc.units="mg/L", load.units="kg",
   station='Lamprey River, NH'))
 no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
-  interp.data=intdat)
+  interp.data=intdat, store = "uncertainty")
 ```
 
 You can inspect these models in a variety of model-specific ways. Here are some commands to try (we won't print them here because the output can be lengthy):

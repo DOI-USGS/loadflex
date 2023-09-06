@@ -323,8 +323,6 @@ predictSolute.loadLm <- function(
                              format = flux.or.conc, dates = getCol(load.model@metadata, newdata, "date"))
     if(interval != "none" || se.fit || se.pred) {
       warning("Uncertainty for aggregated predictions is currently unavailable for loadLm models")
-    } else {
-      preds <- preds %>% dplyr::select(-SE, -CI_lower, -CI_upper)
     }
   }
 
