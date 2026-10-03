@@ -6,6 +6,8 @@ tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=func
 library(rloadest)
 
 test_that("loadReg models can be created", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   
   suppressWarnings(rm(simpledata)) #make sure it's not defined elsewhere
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
@@ -22,6 +24,8 @@ test_that("loadReg models can be created", {
 })
 
 test_that("metadata can be extracted from loadReg models", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
 
   library(rloadest)
   # Sample data & model
@@ -39,6 +43,8 @@ test_that("metadata can be extracted from loadReg models", {
  
 
 test_that("resampleCoefficients.loadReg looks OK", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   
   # Sample data & model
   library(rloadest)

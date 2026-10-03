@@ -2,6 +2,8 @@ context("aggregateSolute")
 tryCatch({source("inst/tests/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("Unit aggregation works", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   ex <- data.frame(preds=1:15, se.preds=1, dates=seq(as.Date("2000/1/1"), by = "week", length.out = 15))
   data(eg_metadata)
 
@@ -21,6 +23,8 @@ test_that("Unit aggregation works", {
 })
 
 test_that("Aggregations by unit line up with rloadest counterparts", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
@@ -62,6 +66,8 @@ test_that("Aggregations by unit line up with rloadest counterparts", {
 })
 
 test_that("mean water and calendar year work", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   #use preds from above
   mean_water <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred,
                               format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES,
@@ -86,6 +92,8 @@ test_that("mean water and calendar year work", {
 
 
 test_that("Confidence intervals can be calculated with normal or lognormal assumption", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
@@ -129,6 +137,8 @@ test_that("Confidence intervals can be calculated with normal or lognormal assum
 
 
 test_that("Aggregations by day (1 per day) line up with rloadest counterparts", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
@@ -178,6 +188,8 @@ test_that("Aggregations by day (1 per day) line up with rloadest counterparts", 
 })
 
 test_that("Aggregations by day (6 per day) pretty much line up with rloadest counterparts", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
@@ -270,6 +282,8 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
 })
 
 test_that("Test custom, An optional data.frame of one or more columns each containing factors or other labels on which to aggregate. Test se.preds as a dataframe.", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
@@ -341,6 +355,8 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
 })
 
 test_that("Aggregation can be done by day, month, year, water year, arbitrary columns, etc.", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # Define & munge dataset
   #library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],

@@ -3,3 +3,4 @@
 .RData
 temp
 tests/testthat/Rplots.pdf
+.kiro

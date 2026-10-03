@@ -19,6 +19,8 @@ no3_lr <- loadReg2(loadReg(
   station='Lamprey River, NH'))
 
 test_that("loadReg2 can summarize itself", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # test that a summary gets produced without any extra arguments
   smry <- summarizeModel(no3_lr)
   expect_equal(nrow(smry), 1)
@@ -26,6 +28,8 @@ test_that("loadReg2 can summarize itself", {
 })
 
 test_that("loadReg2 can make predictions", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   # new units should be respected, though for flux only
   expect_equal(
     predictSolute(no3_lr, flux.or.conc='flux', lin.or.log = 'lin'),

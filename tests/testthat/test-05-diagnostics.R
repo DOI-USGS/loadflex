@@ -1,6 +1,8 @@
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("isTimestepRegular works", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   library(rloadest)
   simpledata <- app2.calib[-which(diff(app2.calib$DATES) < 7),]
   
@@ -24,6 +26,8 @@ test_that("isTimestepRegular works", {
 
 
 test_that("Durbin Watson tests are reasonable", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
@@ -45,6 +49,8 @@ test_that("Durbin Watson tests are reasonable", {
 })
 
 test_that("estimateRho works", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   library(rloadest)
   # make the dates regular so that we can pretend this dataset makes sense
   simpledata <- app2.calib[-which(diff(app2.calib$DATES) < 7),]

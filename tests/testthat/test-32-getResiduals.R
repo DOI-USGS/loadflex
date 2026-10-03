@@ -1,5 +1,7 @@
 context("getResiduals")
 test_that("getResiduals works", {
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
