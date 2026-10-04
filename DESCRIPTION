@@ -40,7 +40,7 @@ Imports:
     stats
 Suggests:
     knitr,
-    testthat
+    testthat (>= 3.0.0)
 LazyData: true
 License: CC0
 URL: https://github.com/USGS-R/loadflex
@@ -72,3 +72,4 @@ Collate:
     'uncertainty.R'
     'unit.conversions.R'
 RoxygenNote: 6.1.1
+Config/testthat/edition: 3
