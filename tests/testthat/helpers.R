@@ -1,24 +1,3 @@
-#' Suppresses only those warnings given in messages; warnings must be presented
-#' in number and order expected.
-library(evaluate)
-gives_exact_warnings <- function(regexp) {
-  function(expr) {
-    res <- evaluate(substitute(expr), parent.frame(), new_device = FALSE)
-    warnings <- vapply(Filter(is.warning, res), "[[", "message", 
-                       FUN.VALUE = character(1))
-    errors <- vapply(Filter(is.error, res), "[[", "message", 
-                     FUN.VALUE = character(1))
-    if(length(errors) > 0) {
-      stop(errors)
-    } else if (!is.null(regexp) && length(warnings) > 0) {
-      matches(regexp, all = TRUE)(warnings)
-    }
-    else {
-      expectation(length(warnings) > 0, "no warnings given")
-    }
-  }
-}
-
 library(ggplot2)
 
 # Helper for manual/interactive tests that originally asked a human to inspect a
