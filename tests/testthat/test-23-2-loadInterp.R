@@ -70,14 +70,14 @@ test_that("loadInterp models make reasonable predictions", {
   # Predict fluxes for new dates
   newdates <- data.frame(datetime=seq(from=strptime("2000-04-30", format="%Y-%m-%d"), to=strptime("2000-05-12", format="%Y-%m-%d"), length.out=150), discharge=10)
   expect_equal(length(predictSolute(lic, "flux", newdates)), nrow(newdates))
-  # print(ggplot(cbind(newdates, Flux=predictSolute(lic, "flux", newdates)), aes(x=datetime, y=Flux)) + geom_point(color="pink") +
-  #  geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + theme_bw())
+  # print(ggplot2::ggplot(cbind(newdates, Flux=predictSolute(lic, "flux", newdates)), ggplot2::aes(x=datetime, y=Flux)) + ggplot2::geom_point(color="pink") +
+  #  ggplot2::geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + ggplot2::theme_bw())
   # expect_manual_OK("Flux: the linear interpolation (pink dots) passes through each calibration point (blue X's)")
 
   # Predict concs for new dates
   expect_equal(length(predictSolute(lic, "conc", newdates)), nrow(newdates))
-  #print(ggplot(cbind(newdates, Conc=predictSolute(lic, "conc", newdates)), aes(x=datetime, y=Conc)) + geom_point(color="pink") +
-  #  geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + theme_bw())
+  #print(ggplot2::ggplot(cbind(newdates, Conc=predictSolute(lic, "conc", newdates)), ggplot2::aes(x=datetime, y=Conc)) + ggplot2::geom_point(color="pink") +
+  #  ggplot2::geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + ggplot2::theme_bw())
   # expect_manual_OK("Conc: the linear interpolation (pink dots) passes through each calibration point (X's)")
 
   # This is the interpolation you'd use within a composite model - same thing
@@ -89,14 +89,14 @@ test_that("loadInterp models make reasonable predictions", {
 
   # Predict concs & fluxes for new dates
   expect_true(length(predictSolute(lif, "flux", newdates[c("datetime","discharge")])) == nrow(newdates))
-  #print(ggplot(cbind(newdates, Flux=predictSolute(lif, "flux", newdates)), aes(x=datetime, y=Flux)) +
-  #        geom_point(color="pink") + geom_point(data=mydat, aes(x=datetime, y=Resid), pch=4, color="blue") + theme_bw())
+  #print(ggplot2::ggplot(cbind(newdates, Flux=predictSolute(lif, "flux", newdates)), ggplot2::aes(x=datetime, y=Flux)) +
+  #        ggplot2::geom_point(color="pink") + ggplot2::geom_point(data=mydat, ggplot2::aes(x=datetime, y=Resid), pch=4, color="blue") + ggplot2::theme_bw())
   # expect_manual_OK("Spline interpolation by load (resids) to predict fluxes (resids)")
   # Now for concs
   expect_true(length(predictSolute(lif, "conc", newdates[c("datetime","discharge")])) == nrow(newdates))
-  #print(ggplot(cbind(newdates, Conc=predictSolute(lif, "conc", newdates)), aes(x=datetime, y=Conc)) +
-  #        geom_point(color="pink") + theme_bw() +
-  #        geom_point(data=transform(mydat, Conc=observeSolute(mydat, "conc", updateMetadata(mymd, load.rate="Resid"), calculate=TRUE)), pch=4, color="blue"))
+  #print(ggplot2::ggplot(cbind(newdates, Conc=predictSolute(lif, "conc", newdates)), ggplot2::aes(x=datetime, y=Conc)) +
+  #        ggplot2::geom_point(color="pink") + ggplot2::theme_bw() +
+  #        ggplot2::geom_point(data=transform(mydat, Conc=observeSolute(mydat, "conc", updateMetadata(mymd, load.rate="Resid"), calculate=TRUE)), pch=4, color="blue"))
   # expect_manual_OK("Spline interpolation by load (resids) can be converted back to concs (resids)")
 
   # This one uses a write-your-own interpolation method
@@ -170,27 +170,27 @@ test_that("loadInterp models can find and report their uncertainty", {
   # plot the predictions
   obs <- data.frame(mydat, obsconc=observeSolute(mydat, "conc", mymd), obsflux=observeSolute(mydat, "flux", mymd))
   #library(gridExtra)
-  # grid.arrange(
-    # ggplot(data.frame(obs, pred=predictSolute(lic, flux.or.conc="conc", interval="prediction", se.pred=TRUE)),
-           # aes(x=datetime, y=pred.fit)) +
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) +
-      # geom_point(aes(y=obsconc), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("conc from lic"),
-    # ggplot(data.frame(obs, pred=predictSolute(lif, flux.or.conc="conc", interval="prediction", se.pred=TRUE)),
-           # aes(x=datetime, y=pred.fit)) +
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) +
-      # geom_point(aes(y=obsconc), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("conc from lif"),
-    # ggplot(data.frame(obs, pred=predictSolute(lic, flux.or.conc="flux", interval="prediction",se.pred=TRUE)),
-           # aes(x=datetime, y=pred.fit)) +
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) +
-      # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("flux from lic"),
-    # ggplot(data.frame(obs, pred=predictSolute(lif, flux.or.conc="flux", interval="prediction", se.pred=TRUE)),
-           # aes(x=datetime, y=pred.fit)) +
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) +
-      # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("flux from lif")
+  # gridExtra::grid.arrange(
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lic, flux.or.conc="conc", interval="prediction", se.pred=TRUE)),
+           # ggplot2::aes(x=datetime, y=pred.fit)) +
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) +
+      # ggplot2::geom_point(ggplot2::aes(y=obsconc), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("conc from lic"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lif, flux.or.conc="conc", interval="prediction", se.pred=TRUE)),
+           # ggplot2::aes(x=datetime, y=pred.fit)) +
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) +
+      # ggplot2::geom_point(ggplot2::aes(y=obsconc), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("conc from lif"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lic, flux.or.conc="flux", interval="prediction",se.pred=TRUE)),
+           # ggplot2::aes(x=datetime, y=pred.fit)) +
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) +
+      # ggplot2::geom_point(ggplot2::aes(y=obsflux), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("flux from lic"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lif, flux.or.conc="flux", interval="prediction", se.pred=TRUE)),
+           # ggplot2::aes(x=datetime, y=pred.fit)) +
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) +
+      # ggplot2::geom_point(ggplot2::aes(y=obsflux), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("flux from lif")
   # )
   # expect_manual_OK("loadInterp predictions (green dots & bars) match the observations (pink X's)")
 

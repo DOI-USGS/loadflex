@@ -1,6 +1,5 @@
 #' loadReg() is defined within rloadest. The functions required to implement
 #' loadModelInterface are defined in loadReg.R within the current package.
-library(rloadest)
 
 test_that("loadReg models can be created", {
   testthat::skip_on_cran()
@@ -24,7 +23,6 @@ test_that("metadata can be extracted from loadReg models", {
   testthat::skip_on_cran()
   testthat::skip_on_ci()
 
-  library(rloadest)
   # Sample data & model
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], Period=seasons(DATES,breaks=c("Apr", "Jul")))
   load.model <- loadReg(
@@ -44,7 +42,6 @@ test_that("resampleCoefficients.loadReg looks OK", {
   testthat::skip_on_ci()
   
   # Sample data & model
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], Period=seasons(DATES,breaks=c("Apr", "Jul")))
   load.model <- loadReg(
     Atrazine ~ Period*center(log(FLOW)), 
@@ -53,10 +50,10 @@ test_that("resampleCoefficients.loadReg looks OK", {
   
   # resample 1000 times and plot the resampled coefficients
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.loadReg(load.model, "flux"))))), c("intercept","period","flow","periodflow"))
-  #print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(new_coefs, ggplot2::aes(x=intercept, y=period, color=flow)) + ggplot2::geom_point() + ggplot2::theme_bw())
   # repeat, but for flux
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.loadReg(load.model, "conc"), which="conc")))), c("intercept","period","flow","periodflow"))
-  #print(ggplot(new_coefs, aes(x=intercept, y=period, color=flow)) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(new_coefs, ggplot2::aes(x=intercept, y=period, color=flow)) + ggplot2::geom_point() + ggplot2::theme_bw())
   #   library(lattice)
   #   cloud(intercept ~ dtsimple * discharge, data=new_coefs, alpha=0.6)
   

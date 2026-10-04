@@ -1,6 +1,4 @@
-# loadReg2 is a wrapper for loadReg produced by rloadest; it's required to load
-# the library explicitly
-library(rloadest)
+# loadReg2 is a wrapper for loadReg produced by rloadest (attached via Depends).
 # Setup from intro_to_loadflex.Rmd
 data(lamprey_nitrate)
 intdat <- lamprey_nitrate[c("DATE","DISCHARGE","NO3")]
@@ -211,18 +209,18 @@ test_that("loadReg2 can make predictions", {
 #   
 #   # Here's the graphical check on flux predictions:
 #   pred <- data.frame(Date=app2_est$DATES, Flux=v(predsF))
-#   print(ggplot(obs, aes(x=DATES, y=FLUX)) + theme_bw() + scale_y_log10() + 
-#           geom_point(data=pred, aes(x=Date, y=Flux), color="blue") + 
-#           geom_line(data=pred, aes(x=Date, y=Flux), color="blue") +
-#           geom_line(color="green") + geom_point(color="green"))
+#   print(ggplot2::ggplot(obs, ggplot2::aes(x=DATES, y=FLUX)) + ggplot2::theme_bw() + ggplot2::scale_y_log10() + 
+#           ggplot2::geom_point(data=pred, ggplot2::aes(x=Date, y=Flux), color="blue") + 
+#           ggplot2::geom_line(data=pred, ggplot2::aes(x=Date, y=Flux), color="blue") +
+#           ggplot2::geom_line(color="green") + ggplot2::geom_point(color="green"))
 #   expect_manual_OK("Flux: the blue dots (preds) should agree reasonably with the green dots (obs)")
 #   
 #   # and on conc predictions:
 #   pred <- data.frame(Date=app2_est$DATES, Conc=v(predsC))
-#   print(ggplot(obs, aes(x=DATES, y=Atrazine)) + theme_bw() + scale_y_log10() + 
-#           geom_point(data=pred, aes(x=Date, y=Conc), color="blue") + 
-#           geom_line(data=pred, aes(x=Date, y=Conc), color="blue") +
-#           geom_line(color="green") + geom_point(color="green"))
+#   print(ggplot2::ggplot(obs, ggplot2::aes(x=DATES, y=Atrazine)) + ggplot2::theme_bw() + ggplot2::scale_y_log10() + 
+#           ggplot2::geom_point(data=pred, ggplot2::aes(x=Date, y=Conc), color="blue") + 
+#           ggplot2::geom_line(data=pred, ggplot2::aes(x=Date, y=Conc), color="blue") +
+#           ggplot2::geom_line(color="green") + ggplot2::geom_point(color="green"))
 #   expect_manual_OK("Conc: the blue dots (preds) should agree reasonably with the green dots (obs)")
 #   
 #   # Passing in load.units should change both the results and the attached units
@@ -262,13 +260,13 @@ test_that("loadReg2 can make predictions", {
 #   
 #   # Confidence intervals make sense
 #   expect_error(predictSolute(load.model, "flux", newdata=simpledata, interval = "confidence"), "not implemented for loadReg2")
-#   print(ggplot(data.frame(date=app2_est$DATES[51:100], predictSolute(load.model, "flux", newdata=app2_est[51:100,], interval = "prediction")),
-#          aes(x=date, y=fit)) + geom_point() + geom_line() + geom_ribbon(aes(ymin=lwr, ymax=upr), fill="green", color="green", alpha=0.2) + theme_bw())
+#   print(ggplot2::ggplot(data.frame(date=app2_est$DATES[51:100], predictSolute(load.model, "flux", newdata=app2_est[51:100,], interval = "prediction")),
+#          ggplot2::aes(x=date, y=fit)) + ggplot2::geom_point() + ggplot2::geom_line() + ggplot2::geom_ribbon(ggplot2::aes(ymin=lwr, ymax=upr), fill="green", color="green", alpha=0.2) + ggplot2::theme_bw())
 #   expect_manual_OK("flux preds & pred intervals look good")
 #   
 #   expect_error(predictSolute(load.model, "conc", newdata=simpledata, interval = "confidence"), "not implemented for loadReg2")
-#   print(ggplot(data.frame(date=app2_est$DATES[51:100], predictSolute(load.model, "conc", newdata=app2_est[51:100,], interval = "prediction")),
-#                aes(x=date, y=fit)) + geom_point() + geom_line() + geom_ribbon(aes(ymin=lwr, ymax=upr), fill="brown", color="brown", alpha=0.2) + theme_bw())
+#   print(ggplot2::ggplot(data.frame(date=app2_est$DATES[51:100], predictSolute(load.model, "conc", newdata=app2_est[51:100,], interval = "prediction")),
+#                ggplot2::aes(x=date, y=fit)) + ggplot2::geom_point() + ggplot2::geom_line() + ggplot2::geom_ribbon(ggplot2::aes(ymin=lwr, ymax=upr), fill="brown", color="brown", alpha=0.2) + ggplot2::theme_bw())
 #   expect_manual_OK("conc preds & pred intervals look good")
 # })
 
@@ -302,9 +300,9 @@ test_that("loadReg2 can make predictions", {
 #   # repeatedly simulate, then plot all the sims
 #   sims <- replicate(1000, simulateSolute(lr, "conc", method="parametric", from.interval="confidence"))
 #   sims <- data.frame(mydat, sims) %>% gather(iter, concentration, X1:X1000)
-#   print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
-#           geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
-#           geom_line(data=data.frame(mydat, concentration=predictSolute(lr, "conc")), color="cyan", size=1))
+#   print(ggplot2::ggplot(sims, ggplot2::aes(x=datetime, y=concentration)) + ggplot2::geom_line(ggplot2::aes(group=iter), alpha=0.1, color="blue") + ggplot2::theme_bw() +
+#           ggplot2::geom_point(data=mydat, ggplot2::aes(y=conc), color="pink", size=2) +
+#           ggplot2::geom_line(data=data.frame(mydat, concentration=predictSolute(lr, "conc")), color="cyan", size=1))
 #   expect_manual_OK("simulated values make a cloud of lines around the original predictions")
 #   # very interesting. relative to lm, they seem to possibly be skewed upward - more of a lognormal than a normal distribution of coefficients?
 #   

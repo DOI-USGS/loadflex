@@ -14,16 +14,14 @@ test_that("Unit aggregation works", {
   # how long that period lasts.
 
   # check that units can be attached
-  library(unitted)
-  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Conc), "mg L^-1")
-  expect_equal(get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Flux_Rate), "kg d^-1")
+  expect_equal(unitted::get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="conc", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Conc), "mg L^-1")
+  expect_equal(unitted::get_units(aggregateSolute(preds=ex$preds, se.preds=ex$se.preds, dates=ex$dates, format="flux rate", metadata=eg_metadata, agg.by="unit", attach.units=TRUE)$Flux_Rate), "kg d^-1")
 })
 
 test_that("Aggregations by unit line up with rloadest counterparts", {
   testthat::skip_on_cran()
   testthat::skip_on_ci()
   # Define & munge dataset
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
 
@@ -92,7 +90,6 @@ test_that("Confidence intervals can be calculated with normal or lognormal assum
   testthat::skip_on_cran()
   testthat::skip_on_ci()
   # Define & munge dataset
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
 
@@ -125,9 +122,9 @@ test_that("Confidence intervals can be calculated with normal or lognormal assum
 #
   expect_equal(sum(lognpreds$Conc), sum(normpreds$Conc))
 
-#   print(ggplot(lognpreds, aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + theme_bw() +
-#           geom_point(color="blue", shape=4, size=3) + geom_ribbon(aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
-#           geom_point(data=normpreds, color="red", shape=3, size=3) + geom_ribbon(data=normpreds, aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
+#   print(ggplot2::ggplot(lognpreds, ggplot2::aes(x=as.Date(paste0(Month,"-15")), y=Conc)) + ggplot2::theme_bw() +
+#           ggplot2::geom_point(color="blue", shape=4, size=3) + ggplot2::geom_ribbon(ggplot2::aes(ymin=CI_lower, ymax=CI_upper), color="blue", fill="blue", alpha=0.2) +
+#           ggplot2::geom_point(data=normpreds, color="red", shape=3, size=3) + ggplot2::geom_ribbon(data=normpreds, ggplot2::aes(ymin=CI_lower, ymax=CI_upper), color="red", fill="red", alpha=0.2))
 #   expect_manual_OK("Normal (red) and lognormal (blue) CIs make sense for monthly fluxes")
 #
 })
@@ -137,7 +134,6 @@ test_that("Aggregations by day (1 per day) line up with rloadest counterparts", 
   testthat::skip_on_cran()
   testthat::skip_on_ci()
   # Define & munge dataset
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
   simpledata_est <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))
@@ -188,7 +184,6 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   testthat::skip_on_cran()
   testthat::skip_on_ci()
   # Define & munge dataset
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
                           DATES=as.POSIXct(DATES),
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
@@ -214,7 +209,7 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
     simpledata_h_est, #FLUX=observeSolute(simpledata_h_est, "flux", getMetadata(reg.model)),
     conc=predictSolute(reg.model, "conc", newdata=simpledata_h_est, interval="prediction", se.pred=TRUE),
     flux=predictSolute(reg.model, "flux", newdata=simpledata_h_est, interval="prediction", se.pred=TRUE))
-  #print(ggplot(reg.preds, aes(x=DATES, y=FLOW)) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(reg.preds, ggplot2::aes(x=DATES, y=FLOW)) + ggplot2::geom_point() + ggplot2::theme_bw())
   #expect_manual_OK("Flows used for prediction")
 
   # Aggregate by day
@@ -235,11 +230,11 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   # remaining discrepancies simply machine precision differences?
   #agg_conc <- agg_conc[-c(1,2),]
   #agg_c_rl <- agg_c_rl[-c(1),]
-  #print(ggplot(reg.preds, aes(x=DATES, y=conc.fit)) + geom_errorbar(aes(ymin=conc.lwr, ymax=conc.upr), alpha=0.1) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(reg.preds, ggplot2::aes(x=DATES, y=conc.fit)) + ggplot2::geom_errorbar(ggplot2::aes(ymin=conc.lwr, ymax=conc.upr), alpha=0.1) + ggplot2::geom_point() + ggplot2::theme_bw())
   #expect_manual_OK("Point conc predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
-  #print(ggplot(agg_conc, aes(x=strptime(Day, format="%Y-%m-%d"), y=Conc)) + geom_point() + geom_errorbar(aes(ymin=CI_lower, ymax=CI_upper)) + theme_bw())
+  #print(ggplot2::ggplot(agg_conc, ggplot2::aes(x=strptime(Day, format="%Y-%m-%d"), y=Conc)) + ggplot2::geom_point() + ggplot2::geom_errorbar(ggplot2::aes(ymin=CI_lower, ymax=CI_upper)) + ggplot2::theme_bw())
   #expect_manual_OK("Plot of agg_conc look OK?")
-  #print(ggplot(agg_c_rl, aes(x=strptime(Date, format="%Y-%m-%d"), y=Conc)) + geom_point() + geom_errorbar(aes(ymin=L95, ymax=U95)) + theme_bw())
+  #print(ggplot2::ggplot(agg_c_rl, ggplot2::aes(x=strptime(Date, format="%Y-%m-%d"), y=Conc)) + ggplot2::geom_point() + ggplot2::geom_errorbar(ggplot2::aes(ymin=L95, ymax=U95)) + ggplot2::theme_bw())
   #expect_manual_OK("Plot of agg_c_rl look OK?")
   # expect_equal(as.character(agg_conc$day), format(agg_c_rl$Date,"%Y-%m-%d")) # I blame predConc here, which lumps 3 hours from the first day into a second second day
   #agg_c_rl <- agg_c_rl[2:59,]
@@ -262,9 +257,9 @@ test_that("Aggregations by day (6 per day) pretty much line up with rloadest cou
   #agg_l_rl <- agg_l_rl[2:59,]
   expect_equal(as.character(agg_rate$Day), format(agg_l_rl$Date,"%Y-%m-%d"))
   # Comparing values further makes no sense; the loadflex predictions look fine, qualitatively, but predLoad has produced all NAs.
-  #print(ggplot(reg.preds, aes(x=DATES, y=flux.fit)) + geom_errorbar(aes(ymin=flux.lwr, ymax=flux.upr), alpha=0.1) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(reg.preds, ggplot2::aes(x=DATES, y=flux.fit)) + ggplot2::geom_errorbar(ggplot2::aes(ymin=flux.lwr, ymax=flux.upr), alpha=0.1) + ggplot2::geom_point() + ggplot2::theme_bw())
   #expect_manual_OK("Point flux predictions w/ SEs. The Period predictor makes the funny jump on May 1st.")
-  #print(ggplot(agg_rate, aes(x=strptime(Day, format="%Y-%m-%d"), y=Flux_Rate)) + geom_point() + geom_errorbar(aes(ymin=CI_lower, ymax=CI_upper)) + theme_bw())
+  #print(ggplot2::ggplot(agg_rate, ggplot2::aes(x=strptime(Day, format="%Y-%m-%d"), y=Flux_Rate)) + ggplot2::geom_point() + ggplot2::geom_errorbar(ggplot2::aes(ymin=CI_lower, ymax=CI_upper)) + ggplot2::theme_bw())
   #expect_manual_OK("Plot look OK? Check back later to see if predLoad(by=day) starts working")
   #   tol <- 0.0005
   expect_equal(agg_rate$Flux/agg_l_rl$Flux, rep(1, nrow(agg_rate)), tolerance=tol)
@@ -282,7 +277,6 @@ test_that("Test custom, An optional data.frame of one or more columns each conta
   testthat::skip_on_cran()
   testthat::skip_on_ci()
   # Define & munge dataset
-  library(rloadest)
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),],
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
   simpledata_est <- transform(app2.est, Period=seasons(DATES,breaks=c("Apr", "Jul")))

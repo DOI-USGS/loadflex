@@ -1,5 +1,3 @@
-library(ggplot2)
-
 # Helper for manual/interactive tests that originally asked a human to inspect a
 # plot or table and press ENTER to confirm.
 # Such tests cannot pass/fail on their own in an automated run and would block on

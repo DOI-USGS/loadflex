@@ -78,15 +78,15 @@ test_that("loadLm models make reasonable predictions", {
   expect_equal(length(predictSolute(lmf, "conc", newdates)), nrow(newdates))
   expect_equal(length(predictSolute(lmf, "flux", newdates)), nrow(newdates))
   #library(gridExtra)
-  #grid.arrange(
-   # ggplot(cbind(newdates, Conc=predictSolute(lmc, "conc", newdates)), aes(x=datetime, y=Conc)) + geom_point(color="pink") + 
-   #  geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + xlab("lmc") + theme_bw(),
-   # ggplot(cbind(newdates, Flux=predictSolute(lmc, "flux", newdates)), aes(x=datetime, y=Flux)) + geom_point(color="pink") + 
-   #   geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + xlab("lmc") + theme_bw(),
-   # ggplot(cbind(newdates, Conc=predictSolute(lmf, "conc", newdates)), aes(x=datetime, y=Conc)) + geom_point(color="pink") + 
-   #   geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + xlab("lmf") + theme_bw(),
-   # ggplot(cbind(newdates, Flux=predictSolute(lmf, "flux", newdates)), aes(x=datetime, y=Flux)) + geom_point(color="pink") + 
-   #   geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + xlab("lmf") + theme_bw())
+  #gridExtra::grid.arrange(
+   # ggplot2::ggplot(cbind(newdates, Conc=predictSolute(lmc, "conc", newdates)), ggplot2::aes(x=datetime, y=Conc)) + ggplot2::geom_point(color="pink") + 
+   #  ggplot2::geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + ggplot2::xlab("lmc") + ggplot2::theme_bw(),
+   # ggplot2::ggplot(cbind(newdates, Flux=predictSolute(lmc, "flux", newdates)), ggplot2::aes(x=datetime, y=Flux)) + ggplot2::geom_point(color="pink") + 
+   #   ggplot2::geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + ggplot2::xlab("lmc") + ggplot2::theme_bw(),
+   # ggplot2::ggplot(cbind(newdates, Conc=predictSolute(lmf, "conc", newdates)), ggplot2::aes(x=datetime, y=Conc)) + ggplot2::geom_point(color="pink") + 
+   #   ggplot2::geom_point(data=data.frame(mydat, Conc=observeSolute(mydat, "conc", mymd)), pch=4, color="blue") + ggplot2::xlab("lmf") + ggplot2::theme_bw(),
+   # ggplot2::ggplot(cbind(newdates, Flux=predictSolute(lmf, "flux", newdates)), ggplot2::aes(x=datetime, y=Flux)) + ggplot2::geom_point(color="pink") + 
+   #   ggplot2::geom_point(data=data.frame(mydat, Flux=observeSolute(mydat, "flux", mymd)), pch=4, color="blue") + ggplot2::xlab("lmf") + ggplot2::theme_bw())
   expect_manual_OK("lm predictions (pink dots) are on the same order as observations (blue X's)")
   
 })
@@ -146,27 +146,27 @@ test_that("loadLm models can find and report their uncertainty", {
   
   # plot the predictions
   obs <- data.frame(mydat, obsconc=observeSolute(mydat, "conc", mymd), obsflux=observeSolute(mydat, "flux", mymd))
-  # grid.arrange(
-    # ggplot(data.frame(obs, pred=predictSolute(lmc, flux.or.conc="conc", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
-           # aes(x=datetime, y=pred.fit)) + 
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) + 
-      # geom_point(aes(y=obsconc), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("conc from lmc"),
-    # ggplot(data.frame(obs, pred=predictSolute(lmf, flux.or.conc="conc", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
-           # aes(x=datetime, y=pred.fit)) + 
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) + 
-      # geom_point(aes(y=obsconc), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("conc from lmf"),
-    # ggplot(data.frame(obs, pred=predictSolute(lmc, flux.or.conc="flux", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
-           # aes(x=datetime, y=pred.fit)) + 
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) + 
-      # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("flux from lmc"),
-    # ggplot(data.frame(obs, pred=predictSolute(lmf, flux.or.conc="flux", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
-           # aes(x=datetime, y=pred.fit)) + 
-      # geom_errorbar(aes(ymin=pred.lwr, ymax=pred.upr), color="green") + geom_point(color="green", size=4) + 
-      # geom_point(aes(y=obsflux), shape=4, size=4, color="magenta") +
-      # theme_bw() + ggtitle("flux from lmf")
+  # gridExtra::grid.arrange(
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lmc, flux.or.conc="conc", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
+           # ggplot2::aes(x=datetime, y=pred.fit)) + 
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) + 
+      # ggplot2::geom_point(ggplot2::aes(y=obsconc), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("conc from lmc"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lmf, flux.or.conc="conc", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
+           # ggplot2::aes(x=datetime, y=pred.fit)) + 
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) + 
+      # ggplot2::geom_point(ggplot2::aes(y=obsconc), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("conc from lmf"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lmc, flux.or.conc="flux", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
+           # ggplot2::aes(x=datetime, y=pred.fit)) + 
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) + 
+      # ggplot2::geom_point(ggplot2::aes(y=obsflux), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("flux from lmc"),
+    # ggplot2::ggplot(data.frame(obs, pred=predictSolute(lmf, flux.or.conc="flux", interval="prediction", se.fit=TRUE, se.pred=TRUE)), 
+           # ggplot2::aes(x=datetime, y=pred.fit)) + 
+      # ggplot2::geom_errorbar(ggplot2::aes(ymin=pred.lwr, ymax=pred.upr), color="green") + ggplot2::geom_point(color="green", size=4) + 
+      # ggplot2::geom_point(ggplot2::aes(y=obsflux), shape=4, size=4, color="magenta") +
+      # ggplot2::theme_bw() + ggplot2::ggtitle("flux from lmf")
   #)
   expect_manual_OK("lm predictions (green dots & bars) are on the same order as observations (pink X's)")
 })
@@ -180,7 +180,7 @@ test_that("resampleCoefficients.lm looks OK", {
   
   # resample 1000 times and plot the resampled coefficients
   new_coefs <- setNames(data.frame(t(replicate(n=1000, coef(resampleCoefficients.lm(mylm))))), c("intercept","discharge","dtsimple"))
-  #print(ggplot(new_coefs, aes(x=intercept, y=discharge, color=dtsimple)) + geom_point() + theme_bw())
+  #print(ggplot2::ggplot(new_coefs, ggplot2::aes(x=intercept, y=discharge, color=dtsimple)) + ggplot2::geom_point() + ggplot2::theme_bw())
   #   library(lattice)
   #   cloud(intercept ~ dtsimple * discharge, data=new_coefs, alpha=0.6)
   print(cov.scaled <- (summary(mylm)$sigma)^2*summary(mylm)$cov.unscaled)
@@ -235,17 +235,17 @@ test_that("predictSolute.loadlm agg.by argument works", {
   # # PARAMETRIC: repeatedly simulate, then plot all the sims
   # print(system.time(sims <- replicate(1000, simulateSolute(lmc, "conc", method="parametric", from.interval="confidence"))))
   # sims <- data.frame(mydat, sims) %>% gather(iter, concentration, X1:X1000)
-  # #print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
-  # #  geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
-  # #  geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
+  # #print(ggplot2::ggplot(sims, ggplot2::aes(x=datetime, y=concentration)) + ggplot2::geom_line(ggplot2::aes(group=iter), alpha=0.1, color="blue") + ggplot2::theme_bw() +
+  # #  ggplot2::geom_point(data=mydat, ggplot2::aes(y=conc), color="pink", size=2) +
+  # #  ggplot2::geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
   # expect_manual_OK("parametric bootstrap: simulated values make a cloud of lines around the original predictions")
   
   # # NONPARAMETRIC: repeatedly simulate, then plot all the sims
   # print(system.time(sims <- replicate(1000, simulateSolute(lmc, "conc", method="non-parametric", from.interval="confidence"))))
   # sims <- data.frame(mydat, sims) %>% gather(iter, concentration, X1:X1000)
-  # #print(ggplot(sims, aes(x=datetime, y=concentration)) + geom_line(aes(group=iter), alpha=0.1, color="blue") + theme_bw() +
-  # #        geom_point(data=mydat, aes(y=conc), color="pink", size=2) +
-  # #        geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
+  # #print(ggplot2::ggplot(sims, ggplot2::aes(x=datetime, y=concentration)) + ggplot2::geom_line(ggplot2::aes(group=iter), alpha=0.1, color="blue") + ggplot2::theme_bw() +
+  # #        ggplot2::geom_point(data=mydat, ggplot2::aes(y=conc), color="pink", size=2) +
+  # #        ggplot2::geom_line(data=data.frame(mydat, concentration=predictSolute(lmc, "conc")), color="cyan", size=1))
   # expect_manual_OK("parametric bootstrap: simulated values make a cloud of lines around the original predictions")
   
   # warning("prediction intervals remain untested")
