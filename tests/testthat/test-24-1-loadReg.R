@@ -16,7 +16,7 @@ test_that("loadReg models can be created", {
     data = simpledata,
     flow = "FLOW", dates = "DATES", conc.units="mg/L")
   
-  expect_is(load.model, "loadReg")
+  expect_s3_class(load.model, "loadReg")
   
 })
 

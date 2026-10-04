@@ -1,6 +1,6 @@
 test_that("loadLm models can be created", {
   # Basic object creation
-  expect_is(new("loadLm"),"loadLm")
+  expect_s4_class(new("loadLm"),"loadLm")
   expect_error(validObject(new("loadLm"))) # checks validity of loadModel part first
   
   # tester data
@@ -10,12 +10,12 @@ test_that("loadLm models can be created", {
   
   # Create a conc model
   lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", metadata=updateMetadata(mymd))
-  expect_is(lmc, "loadLm")
+  expect_s4_class(lmc, "loadLm")
   
   # Create a flux model
   mydat$flux <- observeSolute(mydat, "flux", mymd, calc=TRUE)
   lmf <- loadLm(log(flux) ~ log(discharge), data=mydat, pred.format="flux", metadata=mymd)
-  expect_is(lmf, "loadLm")
+  expect_s4_class(lmf, "loadLm")
   
   # Expect warnings when formula and/or retrans.function don't suggest a log-exp transformation and retransformation
   expect_warning(lmc <- loadLm(conc ~ discharge, data=mydat, pred.format="conc", metadata=updateMetadata(mymd)), "formula")
@@ -34,12 +34,12 @@ test_that("loadLm models implement the loadModelInterface", {
   
   # This is the interpolation you'd compare to a regression or composite method
   lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", metadata=updateMetadata(mymd))
-  expect_is(lmc, "loadLm")
+  expect_s4_class(lmc, "loadLm")
   
   # Create a flux model
   mydat$flux <- observeSolute(mydat, "flux", mymd, calc=TRUE)
   lmf <- loadLm(log(flux) ~ log(discharge), data=mydat, pred.format="flux", metadata=mymd)
-  expect_is(lmf, "loadLm")
+  expect_s4_class(lmf, "loadLm")
   
   # Use the standard validation function to test the interface, suppressing messages about unimplemented optional functions
   expect_true(suppressMessages(validLoadModelInterface(lmc)))
@@ -197,7 +197,7 @@ test_that("predictSolute.loadlm agg.by argument works", {
   lmc <- loadLm(log(conc) ~ discharge, data=mydat, pred.format="conc", 
                 metadata=updateMetadata(mymd, dates = "datetime"))
   expect_warning(preds <- predictSolute(lmc, "flux", newdates, agg.by = "month"))
-  expect_is(preds, 'data.frame')
+  expect_s3_class(preds, 'data.frame')
   expect_gt(nrow(preds), 1)
   expect_true(all(is.na(preds$CI_upper)))
 })

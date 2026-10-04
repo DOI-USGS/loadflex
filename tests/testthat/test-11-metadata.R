@@ -1,20 +1,20 @@
 test_that("metadata can be initialized", {
   
   # new("metadata") does no error checking. This is not recommended for users.
-  expect_is(new("metadata"), "metadata")
+  expect_s4_class(new("metadata"), "metadata")
   
   # metadata() requires every argument except station and custom and tells 
   # you which you're missing. Those arguments with defaults need not be amended;
   # the resulting object will be valid as long as all others are non-empty.
   expect_error(metadata(), 'constituent must be a non-empty string')
-  expect_is(metadata(validate=FALSE), "metadata")
+  expect_s4_class(metadata(validate=FALSE), "metadata")
   expect_error(metadata(constituent=""), 'flow must be a non-empty string')
   expect_error(metadata(constituent="NO3", flow="FLOW"), 'dates must be a non-empty string')
   expect_error(metadata(constituent="NO3", flow="FLOW", dates="DATE"), 'conc.units are invalid')
   
   # metadata doesn't require argument tags as long as you get everything in
   # the right order
-  expect_is(metadata(
+  expect_s4_class(metadata(
     "NO3", "Q", "NO3_FLUX", "DATE", "mg/L", "cms", "kg", "kg/day",
     station="Lamprey River @ Wiswall Dam, Durham, New Hampshire", 
     custom=list(a="anything you want goes here", b=1:10)), "metadata")
@@ -32,9 +32,9 @@ test_that("metadata can be revised (with validation)", {
     conc.units="mg/L", flow.units="cms", load.units="kg", load.rate.units="kg/day",
     station="Lamprey River @ Wiswall Dam, Durham, New Hampshire", 
     custom=list(a="anything you want goes here", b=1:10)), 'argument "metadata" is missing, with no default')
-  expect_is(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), "metadata")
-  expect_is(updateMetadata(eg_metadata, constituent="TSS", flow="FLOW", dates="DATES", flow.units="cfs", load.units="kg", conc.units="mg/L"), "metadata")
-  expect_is(updateMetadata(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), load.units="g", load.rate.units="g/day"), "metadata")
+  expect_s4_class(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), "metadata")
+  expect_s4_class(updateMetadata(eg_metadata, constituent="TSS", flow="FLOW", dates="DATES", flow.units="cfs", load.units="kg", conc.units="mg/L"), "metadata")
+  expect_s4_class(updateMetadata(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES"), load.units="g", load.rate.units="g/day"), "metadata")
   expect_equal(updateMetadata(eg_metadata, constituent="solute", flow="FLOW", dates="DATES")@flow.units, "ft^3 s^-1")
   
   # Revisions are checked within updateMetadata

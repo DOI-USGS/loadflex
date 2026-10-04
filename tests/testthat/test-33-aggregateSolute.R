@@ -73,7 +73,7 @@ test_that("mean water and calendar year work", {
   mean_calendar <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred,
                                    format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES,
                                    agg.by="mean calendar year", na.rm=TRUE)
-  expect_is(mean_water, "data.frame")
+  expect_s3_class(mean_water, "data.frame")
   expect_equal(nrow(mean_water), 1)
   expect_equal(nrow(mean_calendar), 1)
 
@@ -81,7 +81,7 @@ test_that("mean water and calendar year work", {
   noComplete <- aggregateSolute(preds=reg.preds$conc.fit, se.preds=reg.preds$conc.se.pred,
                                 format="conc", metadata=getMetadata(reg.model), dates=reg.preds$DATES,
                                 agg.by="mean calendar year", na.rm=TRUE, complete.threshold = 300)
-  expect_is(noComplete, "data.frame")
+  expect_s3_class(noComplete, "data.frame")
   expect_equal(nrow(noComplete), 1)
   expect_equal(noComplete$years.complete, 0)
   expect_equal(noComplete$multi_year_avg, NaN)

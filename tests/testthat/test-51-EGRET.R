@@ -14,7 +14,7 @@ preds_flux <- predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
 
 test_that("convertToEGRET allows metadata only", {
   eList <- loadflex:::convertToEGRET(meta = meta)
-  expect_is(eList, 'egret')
+  expect_s3_class(eList, 'egret')
   expect_true(is.na(eList$Sample))
   expect_true(is.na(eList$Daily))
 })
@@ -34,15 +34,15 @@ test_that("convertToEGRET complains about redundant metadata or data", {
 test_that("convertToEGRET allows metadata and data or newdata without model", {
   eList <- loadflex:::convertToEGRET(data = fitdat, meta = meta)
   expect_true(is.na(eList$Daily))
-  expect_is(eList$Sample, 'data.frame')
+  expect_s3_class(eList$Sample, 'data.frame')
   
   eList <- loadflex:::convertToEGRET(newdata = estdat, meta = meta)
   expect_true(is.na(eList$Sample))
-  expect_is(eList$Daily, 'data.frame')
+  expect_s3_class(eList$Daily, 'data.frame')
   
   eList <- loadflex:::convertToEGRET(data = fitdat, newdata = estdat, meta = meta)
-  expect_is(eList$Sample, 'data.frame')
-  expect_is(eList$Daily, 'data.frame')
+  expect_s3_class(eList$Sample, 'data.frame')
+  expect_s3_class(eList$Daily, 'data.frame')
 })
 
 test_that("convertToEGRET returns prediction-free Daily when predictions are missing", {

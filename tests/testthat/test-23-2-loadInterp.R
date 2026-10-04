@@ -1,6 +1,6 @@
 test_that("loadInterp models can be created", {
   # Basic object creation
-  expect_is(new("loadInterp"),"loadInterp")
+  expect_s4_class(new("loadInterp"),"loadInterp")
   expect_error(validObject(new("loadInterp"))) # checks validity of loadModel part first
 
   # Creation & validation of an inner interpModel object
@@ -16,7 +16,7 @@ test_that("loadInterp models can be created", {
                approx(x=dates.in, y=y.in, xout=dates.out, method="linear", rule=2)$y
                },
              data=mydat, metadata=updateMetadata(mymd))
-  expect_is(lic, "loadInterp")
+  expect_s4_class(lic, "loadInterp")
 
   # This is the interpolation you'd use within a composite model
   mydat$Resid <- observeSolute(mydat, "flux", mymd)-100
@@ -25,7 +25,7 @@ test_that("loadInterp models can be created", {
                      approx(x=dates.in, y=y.in, xout=dates.out, method="linear", rule=2)$y
                    },
                    data=mydat, metadata=updateMetadata(mymd, load.rate="Resid"))
-  expect_is(lif, "loadInterp")
+  expect_s4_class(lif, "loadInterp")
 
 })
 
@@ -106,7 +106,7 @@ test_that("loadInterp models make reasonable predictions", {
       approx(x=dates.in, y=rep(mean(y.in),length(dates.in)), xout=dates.out, method="linear", rule=2)$y
     },
     data=mydat, metadata=updateMetadata(mymd, load.rate="Resid"))
-  expect_equivalent(predictSolute(lif, "flux", mydat), rep(mean(mydat$Resid), nrow(mydat)))
+  expect_equal(predictSolute(lif, "flux", mydat), rep(mean(mydat$Resid), nrow(mydat)), ignore_attr=TRUE)
 
   # Confirm that error checking gets done
   expect_error(loadInterp(interp.format="conc", data=mydat, interp.function=linearInterpolation, metadata=updateMetadata(mymd, constituent="wrongname")))
@@ -225,9 +225,9 @@ test_that("predictSolute agg.by arguments work", {
   lic <- loadInterp(interp.format="conc", data=mydat, interp.function=linearInterpolation, metadata=updateMetadata(mymd))
   monthAgg <- predictSolute(lic, "flux", agg.by = "month")
   watYearAgg <- predictSolute(lic, "flux", agg.by = "water year", date = TRUE, count=TRUE)
-  expect_is(monthAgg, 'data.frame')
+  expect_s3_class(monthAgg, 'data.frame')
   expect_equal(nrow(monthAgg), 1)
-  expect_is(watYearAgg, 'data.frame')
+  expect_s3_class(watYearAgg, 'data.frame')
   expect_true('count' %in% names(watYearAgg))
   expect_equal(nrow(watYearAgg), 1)
   expect_warning(monthAgg2 <- predictSolute(lic, "flux", agg.by = "month",se.pred=TRUE), "uncertainty for aggregated predictions is unavailable")

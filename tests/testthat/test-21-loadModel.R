@@ -1,6 +1,6 @@
 test_that("loadModel objects can be created and validated", {
   # The simplest case: an empty loadModel
-  expect_is(new("loadModel"), "loadModel")
+  expect_s4_class(new("loadModel"), "loadModel")
   
   # The new() function creates an invalid object because data must be user-supplied
   expect_error(validObject(new("loadModel")))
@@ -14,12 +14,12 @@ test_that("loadModel objects can be created and validated", {
     station="", custom=NULL)
   myff <- function(training.data) { lm(conc ~ discharge, data=training.data) }
   myloadModel <- new("loadModel", fit=mylm, pred.format="conc", metadata=mymd, fitting.function=myff)
-  expect_is(myloadModel, "loadModel")
+  expect_s4_class(myloadModel, "loadModel")
   expect_true(validObject(myloadModel))
   
   # A valid loadModel is even better created with loadModel()
   myloadModel <- loadModel(inner.fit.function=myff, pred.format="conc", data=mydat, metadata=mymd)
-  expect_is(myloadModel, "loadModel")
+  expect_s4_class(myloadModel, "loadModel")
   expect_true(validObject(myloadModel))
 })
 
@@ -63,14 +63,14 @@ test_that("Tranformation and retransformation make sense", {
   # Here's how to use the retrans.function for a logged y variable (with bonus demo that you can scale(discharge))
   mylM <- loadModel(inner.fit.function=function(training.data) { lm(log(conc) ~ scale(discharge), data=training.data) }, 
                     pred.format="conc", data=mydat, metadata=mymd, retrans.function=function(preds) { exp(preds) })
-  expect_equivalent(predictSolute(mylM, flux.or.conc="conc"), exp(predict(lm(log(conc) ~ discharge, data=mydat))))
+  expect_equal(predictSolute(mylM, flux.or.conc="conc"), exp(predict(lm(log(conc) ~ discharge, data=mydat))), ignore_attr=TRUE)
   
   # This works for all sorts of nonlinear transformations, including sqrt, ^3,
   # etc. - again, you can retransform using the one-paramter version of 
   # retrans.function
   mylM <- loadModel(inner.fit.function=function(training.data) { lm(sqrt(conc) ~ discharge, data=training.data) }, 
                     pred.format="conc", data=mydat, metadata=mymd, retrans.function=function(preds) { preds^2 })
-  expect_equivalent(predictSolute(mylM, flux.or.conc="conc"), (predict(lm(sqrt(conc) ~ discharge, data=mydat)))^2)
+  expect_equal(predictSolute(mylM, flux.or.conc="conc"), (predict(lm(sqrt(conc) ~ discharge, data=mydat)))^2, ignore_attr=TRUE)
   
   # For even more complicated transformations, such as scaling the LHS, you can 
   # manually rescale using the two-parameter version of retrans.function
@@ -80,7 +80,7 @@ test_that("Tranformation and retransformation make sense", {
                       rescalars <- attributes(fit$model[["scale(log(conc))"]])[c("scaled:center","scaled:scale")]
                       exp((preds * rescalars$"scaled:scale") + rescalars$"scaled:center")
                     })
-  expect_equivalent(predictSolute(mylM, flux.or.conc="conc"), exp(predict(lm(log(conc) ~ scale(log(discharge)), data=mydat))))
+  expect_equal(predictSolute(mylM, flux.or.conc="conc"), exp(predict(lm(log(conc) ~ scale(log(discharge)), data=mydat))), ignore_attr=TRUE)
   
 })
 
@@ -96,8 +96,8 @@ test_that("loadModels fail gracefully when asked for prediction and confidence i
                     pred.format="conc", data=mydat, metadata=mymd, retrans.function=function(preds) { exp(preds) })
   
   # Predictions can be made in either format
-  expect_is(predictSolute(mylM, "flux"), "numeric")
-  expect_is(predictSolute(mylM, "conc"), "numeric")
+  expect_type(predictSolute(mylM, "flux"), "double")
+  expect_type(predictSolute(mylM, "conc"), "double")
   
   # However, uncertainty intervals and parameters are unavailable and announced as such
   expect_error(predictSolute(mylM, "conc", interval="confidence"), "not implemented")

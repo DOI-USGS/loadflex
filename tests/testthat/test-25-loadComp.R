@@ -21,7 +21,7 @@ test_that("loadComp models can be created", {
   # Create the composite model
   load.model <- loadComp(reg.model=reg.model, interp.format="flux", 
                          interp.data=simpledata2, interp.function=linearInterpolation)
-  expect_is(load.model, "loadComp")
+  expect_s4_class(load.model, "loadComp")
 })
 test_that("loadComp preds can be made in log or linear space", {
   testthat::skip("disabled: breaks on modern toolchain")

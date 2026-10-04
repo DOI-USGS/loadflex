@@ -38,11 +38,11 @@ test_that("Durbin Watson tests are reasonable", {
   expect_error(expect_warning(residDurbinWatson(reg.model), "Time series is irregular"), "invalid for an irregular time series")
   
   # But if you're willing to sacrifice regularity, you should be able to get a number
-  expect_is(residDurbinWatson(reg.model, irregular.timesteps.ok=TRUE, plot=FALSE), "numeric")
+  expect_type(residDurbinWatson(reg.model, irregular.timesteps.ok=TRUE, plot=FALSE), "double")
   
   # And if it's regular already, it should just work.
   newdata <- transform(simpledata)
-  expect_is(residDurbinWatson(reg.model, irregular.timesteps.ok=TRUE, plot=FALSE), "numeric")
+  expect_type(residDurbinWatson(reg.model, irregular.timesteps.ok=TRUE, plot=FALSE), "double")
   
 })
 
@@ -63,11 +63,11 @@ test_that("estimateRho works", {
   rho.out <- estimateRho(load.model=reg.model, flux.or.conc="flux", abs.or.rel.resids="absolute", newdata=NULL, plot.acf=TRUE, irr=TRUE)
   
   # Output should be a function and a fitted Arima model
-  expect_is(rho.out$rho, "numeric")
-  expect_is(rho.out$time.step, "difftime")
-  expect_is(rho.out$rho.fun, "function") # a function that takes a date and a vector of dates and returns a vector of correlations
-  expect_is(rho.out$cormat.fun, "function") # a function that takes a vector of dates and returns a matrix of correlations
-  expect_is(rho.out$arima.model, "Arima") # the arima fit
+  expect_type(rho.out$rho, "double")
+  expect_s3_class(rho.out$time.step, "difftime")
+  expect_type(rho.out$rho.fun, "closure") # a function that takes a date and a vector of dates and returns a vector of correlations
+  expect_type(rho.out$cormat.fun, "closure") # a function that takes a vector of dates and returns a matrix of correlations
+  expect_s3_class(rho.out$arima.model, "Arima") # the arima fit
   
   # Check the function for the regular time series to which it was fitted
   #plot(rho.out$rho.fun(simpledata$DATES[3], simpledata$DATES), x=simpledata$DATES, type="b", col="blue")
