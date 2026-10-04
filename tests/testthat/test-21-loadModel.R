@@ -1,5 +1,3 @@
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("loadModel objects can be created and validated", {
   # The simplest case: an empty loadModel
   expect_is(new("loadModel"), "loadModel")

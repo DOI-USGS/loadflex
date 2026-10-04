@@ -12,8 +12,6 @@ conc_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
 preds <- predictSolute(conc_lm, "conc", estdat, se.pred=TRUE, date=TRUE)
 preds_flux <- predictSolute(conc_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
 
-context("convertToEGRET")
-
 test_that("convertToEGRET allows metadata only", {
   eList <- loadflex:::convertToEGRET(meta = meta)
   expect_is(eList, 'egret')
@@ -54,8 +52,6 @@ test_that("convertToEGRET returns prediction-free Daily when predictions are mis
 })
 
 
-context("convertToEGRETInfo")
-
 test_that("convertToEGRETInfo fails without metadata", {
   expect_error(loadflex:::convertToEGRETInfo(meta = NULL),
                'metadata is required to create an EGRET eList')
@@ -68,8 +64,6 @@ test_that("convertToEGRETInfo correctly converts metadata", {
   expect_equal(INFO$shortName, "Lamprey River, NH")
 })
 
-
-context("convertToEGRETSample")
 
 test_that("convertToEGRETSample returns NA without fitdat", {
   expect_equal(loadflex:::convertToEGRETSample(meta = meta, data = NULL), NA)
@@ -86,8 +80,6 @@ test_that("convertToEGRETSample correctly converts", {
   expect_equal(sort(names(Sample)), sort(expected_cols))
 })
 
-
-context("convertToEGRETDaily")
 
 test_that("convertToEGRETDaily returns NA without estdat or preds", {
   expect_equal(loadflex:::convertToEGRETDaily(meta = meta), NA)
@@ -109,8 +101,6 @@ test_that("convertToEGRETDaily correctly converts", {
   expect_equal(sort(names(Daily)), sort(expected_cols))
 })
 
-
-context("expandFlowForEGRET")
 
 test_that("expandFlowForEGRET returns correct columns", {
   corrected_flow_df <- loadflex:::expandFlowForEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1')

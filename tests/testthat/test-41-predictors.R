@@ -1,6 +1,3 @@
-context("predictors")
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 library(rloadest)
 data(app2.est)
 data(eg_metadata)

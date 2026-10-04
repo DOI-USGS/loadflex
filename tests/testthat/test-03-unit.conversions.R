@@ -1,7 +1,3 @@
-context("unit.conversions")
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("validMetadataUnits works", {
   expect_true(validMetadataUnits("mg L^-1"))
   expect_true(validMetadataUnits("ft^3 s^-1"))

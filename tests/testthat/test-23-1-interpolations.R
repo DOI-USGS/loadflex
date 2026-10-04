@@ -1,5 +1,3 @@
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 # A helper function to test each type of interpolation
 checkInterpPreds <- function(interp.fun) {
   # data for calibration of the interpolation models

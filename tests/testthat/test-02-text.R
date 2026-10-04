@@ -1,7 +1,3 @@
-context("text")
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that(".sentenceCase works", {
   
   expect_equal(loadflex:::.sentenceCase("hark the herald"), "Hark The Herald")

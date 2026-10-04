@@ -1,5 +1,3 @@
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("isTimestepRegular works", {
   testthat::skip_on_cran()
   testthat::skip_on_ci()

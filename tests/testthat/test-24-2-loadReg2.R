@@ -1,7 +1,3 @@
-context('loadReg2')
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 # loadReg2 is a wrapper for loadReg produced by rloadest; it's required to load
 # the library explicitly
 library(rloadest)

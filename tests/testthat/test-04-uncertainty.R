@@ -1,7 +1,3 @@
-context("uncertainty")
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("it's easy to get log-to-linear transformations of distribution moments", {
   testthat::skip("disabled: slow and interactive")
   # meanlin, sdlin, meanlog, and sdlog args work, and the outputs are a

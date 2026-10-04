@@ -1,6 +1,3 @@
-context('loadComp')
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 # Define & munge dataset
 library(rloadest)
 simpledata <- transform(

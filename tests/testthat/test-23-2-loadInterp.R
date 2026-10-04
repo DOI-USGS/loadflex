@@ -1,5 +1,3 @@
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("loadInterp models can be created", {
   # Basic object creation
   expect_is(new("loadInterp"),"loadInterp")

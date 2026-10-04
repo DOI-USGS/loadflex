@@ -1,5 +1,3 @@
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("1D correlation functions work", {
   testthat::skip("disabled: empty/shell test")
   numdays <- 10

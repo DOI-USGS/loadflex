@@ -1,7 +1,3 @@
-context('loadLm')
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("loadLm models can be created", {
   # Basic object creation
   expect_is(new("loadLm"),"loadLm")
