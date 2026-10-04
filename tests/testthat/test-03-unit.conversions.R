@@ -3,8 +3,6 @@ context("unit.conversions")
 tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
 
 test_that("validMetadataUnits works", {
-  testthat::skip("disabled: breaks on modern toolchain")
-
   expect_true(validMetadataUnits("mg L^-1"))
   expect_true(validMetadataUnits("ft^3 s^-1"))
   expect_true(validMetadataUnits("kg"))
@@ -25,8 +23,6 @@ test_that("validMetadataUnits works", {
 })
 
 test_that("translateFreeformToUnitted works", {
-  testthat::skip("disabled: breaks on modern toolchain")
-  
   expect_equal(loadflex:::translateFreeformToUnitted("colonies /L"), "colonies L^-1")
   expect_equal(loadflex:::translateFreeformToUnitted("mg per dL"), "mg dL^-1")
   expect_equal(loadflex:::translateFreeformToUnitted("cfs"), "ft^3 s^-1")
@@ -35,7 +31,6 @@ test_that("translateFreeformToUnitted works", {
 })
 
 test_that("convertUnits works", {
-  testthat::skip("disabled: breaks on modern toolchain")
   expect_equal(loadflex:::convertUnits('mg/L', 'mg/m^3'), 1000)
   expect_equal(loadflex:::convertUnits('mg/L', 'kg/L'), 0.000001)
   expect_equal(loadflex:::convertUnits('mg/L', 'kg/m^3'), 0.001)
@@ -55,7 +50,6 @@ test_that("convertUnits works", {
 })
 
 test_that("flowconcToFluxConversion works", {
-  testthat::skip("disabled: breaks on modern toolchain")
   cf1 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = TRUE)
   expect_equivalent(unitted::v(cf1), 2.8317e-05)
   expect_equal(unitted::get_units(cf1), "kg L ft^-3 mg^-1")
@@ -70,7 +64,6 @@ test_that("flowconcToFluxConversion works", {
 })
 
 test_that("observeSolute generates fluxes with the expected units & format", {
-  testthat::skip("disabled: breaks on modern toolchain")
   obs <- data.frame(MyConc=1:10, MyFlow=rep(10,10))
   row.names(obs) <- paste(11:20)
   data(eg_metadata)
@@ -101,7 +94,6 @@ test_that("observeSolute generates fluxes with the expected units & format", {
 })
 
 test_that("observeSolute generates concentrations with the expected units & format", {
-  testthat::skip("disabled: breaks on modern toolchain")
   obs <- data.frame(MyConc=1:10, MyFlow=rep(10,10), MyFlux=2) # intentionally inconsistent
   row.names(obs) <- paste(11:20)
   data(eg_metadata)
@@ -120,7 +112,6 @@ test_that("observeSolute generates concentrations with the expected units & form
 })
 
 test_that("formatPreds gets predictions into the right format", {
-  testthat::skip("disabled: breaks on modern toolchain")
   obs <- transform(data.frame(MyConc=1:10, MyFlow=rep(10,10)), MyFlux=MyConc*MyFlow*rloadest::loadConvFactor("cms", "mg/l", "mg") )
   row.names(obs) <- paste(11:20)
   data(eg_metadata)
