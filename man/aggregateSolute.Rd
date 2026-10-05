@@ -4,10 +4,19 @@
 \alias{aggregateSolute}
 \title{Aggregate loads by the time periods specified by the user}
 \usage{
-aggregateSolute(preds, metadata, format = c("conc", "flux rate"),
-  agg.by = c("unit", "day", "month", "water year", "calendar year",
-  "total", "[custom]"), dates, custom = NA, na.rm = FALSE,
-  attach.units = FALSE, agg.cols = TRUE, count = TRUE, ...)
+aggregateSolute(
+  preds,
+  metadata,
+  format = c("conc", "flux rate"),
+  agg.by = c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
+  dates,
+  custom = NA,
+  na.rm = FALSE,
+  attach.units = FALSE,
+  agg.cols = TRUE,
+  count = TRUE,
+  ...
+)
 }
 \arguments{
 \item{preds}{Either a vector of predicted instantaneous fluxes or

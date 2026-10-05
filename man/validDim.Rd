@@ -5,8 +5,10 @@
 \title{Determine whether a 1D dimension string is known and of the expected
 dimension type}
 \usage{
-validDim(dimstr, dim.type = c("ANY", "volume", "time", "mass", "count",
-  "area"))
+validDim(
+  dimstr,
+  dim.type = c("ANY", "volume", "time", "mass", "count", "area")
+)
 }
 \arguments{
 \item{dimstr}{A string representing one units dimension (just one at a time, 

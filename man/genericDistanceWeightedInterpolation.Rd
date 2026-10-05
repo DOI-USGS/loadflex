@@ -4,8 +4,14 @@
 \alias{genericDistanceWeightedInterpolation}
 \title{A parameterizable distance-weighted interpolation function.}
 \usage{
-genericDistanceWeightedInterpolation(dates.in, y.in, dates.out,
-  inv.dist.fun = function(a, b) {     1/((a - b)^2) })
+genericDistanceWeightedInterpolation(
+  dates.in,
+  y.in,
+  dates.out,
+  inv.dist.fun = function(a, b) {
+     1/((a - b)^2)
+ }
+)
 }
 \arguments{
 \item{dates.in}{A numeric vector desribing the dates for each of the values 

@@ -4,8 +4,7 @@
 \alias{summarizeModel.loadReg}
 \title{Extract model summary statistics from an \code{\link[rloadest:loadReg]{rloadest::loadReg()}} model}
 \usage{
-\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux",
-  "conc"), ...)
+\method{summarizeModel}{loadReg}(load.model, flux.or.conc = c("flux", "conc"), ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -51,5 +50,5 @@ Produce a 1-row data.frame of model metrics. The relevant metrics for loadReg
 models are largely the same as those reported by the \code{rloadest} package,
 though reported in this streamlined data.frame format for bulk reporting.
 \code{summarizeModel.loadReg} should rarely be accessed directly; instead, call
-\code{summarizeModel()} on a \link{loadReg} object.
+\code{summarizeModel()} on a \link[rloadest:loadReg]{rloadest::loadReg} object.
 }

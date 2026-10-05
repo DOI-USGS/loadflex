@@ -4,10 +4,14 @@
 \alias{loadInterp}
 \title{Create a fitted loadInterp object.}
 \usage{
-loadInterp(interp.format = c("flux", "conc"),
-  interp.function = linearInterpolation, data, metadata,
-  retrans.function = NULL, store = c("data", "fitting.function",
-  "uncertainty"))
+loadInterp(
+  interp.format = c("flux", "conc"),
+  interp.function = linearInterpolation,
+  data,
+  metadata,
+  retrans.function = NULL,
+  store = c("data", "fitting.function", "uncertainty")
+)
 }
 \arguments{
 \item{interp.format}{character. Which sort of observation should the
@@ -57,8 +61,10 @@ and loadLm will retransform predictions back into linear space, loadInterps
 will not.
 }
 \seealso{
-Other load.model.inits: \code{\link{loadComp}},
-  \code{\link{loadLm}}, \code{\link{loadModel}},
-  \code{\link{loadReg2}}
+Other load.model.inits: 
+\code{\link{loadComp}},
+\code{\link{loadLm}},
+\code{\link{loadModel}},
+\code{\link{loadReg2}}
 }
 \concept{load.model.inits}

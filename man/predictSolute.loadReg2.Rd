@@ -4,14 +4,25 @@
 \alias{predictSolute.loadReg2}
 \title{Make flux or concentration predictions from a loadReg2 model.}
 \usage{
-\method{predictSolute}{loadReg2}(load.model, flux.or.conc = c("flux",
-  "conc"), newdata = getFittingData(load.model), date = TRUE,
-  count = !identical(agg.by, "unit"), se.fit = FALSE,
-  se.pred = FALSE, interval = c("none", "confidence", "prediction"),
-  level = 0.95, lin.or.log = c("linear", "log"), agg.by = c("unit",
-  "day", "month", "water year", "calendar year", "total", "[custom]"),
-  na.rm = FALSE, attach.units = FALSE, seopt = "exact",
-  print = FALSE, allow.incomplete = FALSE, ...)
+\method{predictSolute}{loadReg2}(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  newdata = getFittingData(load.model),
+  date = TRUE,
+  count = !identical(agg.by, "unit"),
+  se.fit = FALSE,
+  se.pred = FALSE,
+  interval = c("none", "confidence", "prediction"),
+  level = 0.95,
+  lin.or.log = c("linear", "log"),
+  agg.by = c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
+  na.rm = FALSE,
+  attach.units = FALSE,
+  seopt = "exact",
+  print = FALSE,
+  allow.incomplete = FALSE,
+  ...
+)
 }
 \arguments{
 \item{load.model}{A loadReg2 object.}
@@ -72,7 +83,7 @@ aggregate results by. To do no aggregation, use the default of
 to those intervals, and the flux or concentration will be computed for each
 period. If agg.by="total", \code{dates} will be ignored and the entire
 vector \code{preds} will be aggregated, weighting each point prediction
-equally. If agg.by is set to one or most custom values not in the list of
+equally. If agg.by is set to one or more custom values not in the list of
 default values, the values should be names of columns in `newdata`, and
 predictions will be grouped according to the values in those columns.}
 
@@ -110,10 +121,11 @@ Makes instantaneous predictions (at the temporal resolution of
 \code{\link{predictSolute}} for details.
 }
 \seealso{
-Other predictSolute: \code{\link{predictSolute.loadComp}},
-  \code{\link{predictSolute.loadInterp}},
-  \code{\link{predictSolute.loadLm}},
-  \code{\link{predictSolute.loadModel}},
-  \code{\link{predictSolute}}
+Other predictSolute: 
+\code{\link{predictSolute}()},
+\code{\link{predictSolute.loadComp}()},
+\code{\link{predictSolute.loadInterp}()},
+\code{\link{predictSolute.loadLm}()},
+\code{\link{predictSolute.loadModel}()}
 }
 \concept{predictSolute}

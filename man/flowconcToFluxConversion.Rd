@@ -5,8 +5,12 @@
 \title{Provide the conversion factor which, when multiplied by flow * conc, gives 
 the flux in the desired units}
 \usage{
-flowconcToFluxConversion(flow.units, conc.units, load.rate.units,
-  attach.units = FALSE)
+flowconcToFluxConversion(
+  flow.units,
+  conc.units,
+  load.rate.units,
+  attach.units = FALSE
+)
 }
 \arguments{
 \item{flow.units}{character. The units of flow.}

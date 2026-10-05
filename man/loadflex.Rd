@@ -2,65 +2,62 @@
 % Please edit documentation in R/loadflex.R
 \docType{package}
 \name{loadflex}
-\alias{loadflex}
 \alias{loadflex-package}
+\alias{loadflex}
 \title{Models and Tools for Watershed Flux Estimates}
 \description{
-Models and Tools for Watershed Flux Estimates
+loadflex implements several of the most common methods for modeling and predicting watershed solute fluxes and concentrations, including interpolation and regression models, period-weighted averaging, and the composite method. Integrates seamlessly with the USGS's rloadest package and with native R regression models. Offers a uniform interface for any model type, with which you can quickly fit models, generate predictions, and aggregate to monthly or annual values.
 }
 \section{Models}{
 
-  
+
   \itemize{
-  
+
   \item Linear and period-weighted interpolations: \code{\link{loadInterp}}
-  
+
   \item Generic regression-based models: \code{\link{loadModel}}
-  
-  \item Regression-based models with rloadest (USGS, from LOADEST): 
+
+  \item Regression-based models with rloadest (USGS, from LOADEST):
   \code{\link{loadReg2}}
-  
+
   \item Composite-method-based models: \code{\link{loadComp}}
-  
+
   }
 }
 
 \section{Predictions}{
 
-  
+
   \itemize{
-  
-  \item Make predictions at the resolution of the predictor data: 
+
+  \item Make predictions at the resolution of the predictor data:
   \code{\link{predictSolute}}
-  
-  \item Collect predictions into means or totals over longer time periods: 
+
+  \item Collect predictions into means or totals over longer time periods:
   \code{\link{aggregateSolute}}
-  
+
   }
 }
 
-\section{Installation}{
-
-  
-  loadflex makes use of packages that are currently only available from 
-  GitHub or the USGS R package repository. To install these packages, run the
-  following lines:
-  
-  \code{install.packages(c("smwrData", "smwrBase", "smwrGraphs", "smwrStats", 
-  "smwrQW", "rloadest", "unitted"), repos=c("https://owi.usgs.gov/R", 
-  "https://cran.rstudio.com"), dependencies=TRUE, type="both")}
-  
-  \code{install.packages(c("car", "dplyr", "ggplot2", "lubridate", "MASS", 
-  "Matrix"), dependencies=TRUE, type="both")}
-  
-  You'll also need the `devtools` package; see 
-  \url{https://www.rstudio.com/products/rpackages/devtools/} for special
-  instructions, and also run this command:
-  
-  \code{install.packages("devtools")}
-  
-  and lastly run this call to actually install `loadflex`:
-  
-  \code{devtools::install_github("USGS-R/loadflex")}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/USGS-R/loadflex}
 }
 
+}
+\author{
+\strong{Maintainer}: Alison P. Appling \email{aappling@usgs.gov}
+
+Authors:
+\itemize{
+  \item Miguel C. Leon
+}
+
+Other contributors:
+\itemize{
+  \item Lindsay R. Carr [contributor]
+  \item W. David Watkins [contributor]
+}
+
+}

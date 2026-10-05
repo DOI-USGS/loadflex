@@ -4,9 +4,14 @@
 \alias{getResiduals}
 \title{getResiduals return the residuals of the load.model}
 \usage{
-getResiduals(load.model, flux.or.conc = c("flux", "conc"),
-  abs.or.rel.resids = c("absolute", "relative"), use.log = FALSE,
-  newdata = NULL, raw = FALSE)
+getResiduals(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  abs.or.rel.resids = c("absolute", "relative"),
+  use.log = FALSE,
+  newdata = NULL,
+  raw = FALSE
+)
 }
 \arguments{
 \item{load.model}{a loadModel descendant}

@@ -21,7 +21,8 @@ Extracts and imports metadata from an rloadest loadReg model into an object of c
 #'
 }
 \seealso{
-Other getMetadata: \code{\link{getMetadata.loadModel}},
-  \code{\link{getMetadata}}
+Other getMetadata: 
+\code{\link{getMetadata}()},
+\code{\link{getMetadata.loadModel}()}
 }
 \concept{getMetadata}

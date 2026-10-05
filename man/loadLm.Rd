@@ -4,9 +4,17 @@
 \alias{loadLm}
 \title{Create a fitted loadLm object.}
 \usage{
-loadLm(formula, pred.format = c("flux", "conc"), data, metadata,
-  fitting_function = NULL, y.trans.function = NULL,
-  retrans.function = exp, store = c("data", "fitting.function"), ylog)
+loadLm(
+  formula,
+  pred.format = c("flux", "conc"),
+  data,
+  metadata,
+  fitting_function = NULL,
+  y.trans.function = NULL,
+  retrans.function = exp,
+  store = c("data", "fitting.function"),
+  ylog
+)
 }
 \arguments{
 \item{formula}{A formula specifying the linear model to fit.}
@@ -66,8 +74,10 @@ no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc",
   data=eg_fitdat, metadata=eg_metadata, retrans=exp)
 }
 \seealso{
-Other load.model.inits: \code{\link{loadComp}},
-  \code{\link{loadInterp}}, \code{\link{loadModel}},
-  \code{\link{loadReg2}}
+Other load.model.inits: 
+\code{\link{loadComp}},
+\code{\link{loadInterp}},
+\code{\link{loadModel}},
+\code{\link{loadReg2}}
 }
 \concept{load.model.inits}

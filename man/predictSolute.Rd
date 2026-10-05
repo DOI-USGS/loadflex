@@ -4,13 +4,22 @@
 \alias{predictSolute}
 \title{Make flux or concentration predictions from a load model.}
 \usage{
-predictSolute(load.model, flux.or.conc = c("flux", "conc"),
-  newdata = getFittingData(load.model), date = TRUE,
-  count = !identical(agg.by, "unit"), se.fit = FALSE,
-  se.pred = FALSE, interval = c("none", "confidence", "prediction"),
-  level = 0.95, lin.or.log = c("linear", "log"), agg.by = c("unit",
-  "day", "month", "water year", "calendar year", "total", "[custom]"),
-  na.rm = FALSE, attach.units = FALSE, ...)
+predictSolute(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  newdata = getFittingData(load.model),
+  date = TRUE,
+  count = !identical(agg.by, "unit"),
+  se.fit = FALSE,
+  se.pred = FALSE,
+  interval = c("none", "confidence", "prediction"),
+  level = 0.95,
+  lin.or.log = c("linear", "log"),
+  agg.by = c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
+  na.rm = FALSE,
+  attach.units = FALSE,
+  ...
+)
 }
 \arguments{
 \item{load.model}{A load model object, probably a loadInterp, loadReg2,
@@ -72,7 +81,7 @@ aggregate results by. To do no aggregation, use the default of
 to those intervals, and the flux or concentration will be computed for each
 period. If agg.by="total", \code{dates} will be ignored and the entire
 vector \code{preds} will be aggregated, weighting each point prediction
-equally. If agg.by is set to one or most custom values not in the list of
+equally. If agg.by is set to one or more custom values not in the list of
 default values, the values should be names of columns in `newdata`, and
 predictions will be grouped according to the values in those columns.}
 
@@ -109,19 +118,22 @@ rloadest::predLoad() and predConc(), and more like most other predict
 functions in R, this function makes no attempt to aggregate the results.
 }
 \seealso{
-Other loadModelInterface: \code{\link{estimateMSE}},
-  \code{\link{getFittedModel}},
-  \code{\link{getFittingData}},
-  \code{\link{getFittingFunction}},
-  \code{\link{getMetadata}}, \code{\link{simulateSolute}},
-  \code{\link{summarizeModel}},
-  \code{\link{validLoadModelInterface}}
+Other loadModelInterface: 
+\code{\link{estimateMSE}()},
+\code{\link{getFittedModel}()},
+\code{\link{getFittingData}()},
+\code{\link{getFittingFunction}()},
+\code{\link{getMetadata}()},
+\code{\link{simulateSolute}()},
+\code{\link{summarizeModel}()},
+\code{\link{validLoadModelInterface}()}
 
-Other predictSolute: \code{\link{predictSolute.loadComp}},
-  \code{\link{predictSolute.loadInterp}},
-  \code{\link{predictSolute.loadLm}},
-  \code{\link{predictSolute.loadModel}},
-  \code{\link{predictSolute.loadReg2}}
+Other predictSolute: 
+\code{\link{predictSolute.loadComp}()},
+\code{\link{predictSolute.loadInterp}()},
+\code{\link{predictSolute.loadLm}()},
+\code{\link{predictSolute.loadModel}()},
+\code{\link{predictSolute.loadReg2}()}
 }
 \concept{loadModelInterface}
 \concept{predictSolute}

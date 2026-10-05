@@ -10,8 +10,10 @@ This class is closely related to loadModel except that the model slot is more
 strictly defined, and the associated methods are a little different.
 }
 \seealso{
-Other load.model.classes: \code{\link{loadComp-class}},
-  \code{\link{loadInterp-class}},
-  \code{\link{loadLm-class}}, \code{\link{loadModel-class}}
+Other load.model.classes: 
+\code{\link{loadComp-class}},
+\code{\link{loadInterp-class}},
+\code{\link{loadLm-class}},
+\code{\link{loadModel-class}}
 }
 \concept{load.model.classes}
