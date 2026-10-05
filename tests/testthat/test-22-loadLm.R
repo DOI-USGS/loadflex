@@ -59,14 +59,16 @@ test_that("loadLm models make reasonable predictions", {
   lmf <- loadLm(log(flux) ~ discharge, data=mydat, pred.format="flux", metadata=mymd)
   
   # Predict fluxes for the same dates
-  par(mfrow=c(3,2), mar=c(2,2,0,0))
+  # par() commented out so no graphics device is touched; we're making the test suite fully automated
+  #par(mfrow=c(3,2), mar=c(2,2,0,0))
   #plot(predictSolute(lmc, "conc") ~ observeSolute(mydat, "conc", mymd), ylab="lmc-c", xlab="obs-c"); abline(a=0,b=1,col="gray")
   #plot(predictSolute(lmc, "flux") ~ observeSolute(mydat, "flux", mymd), ylab="lmc-f", xlab="obs-f"); abline(a=0,b=1,col="gray")
   #plot(predictSolute(lmf, "conc") ~ observeSolute(mydat, "conc", mymd), ylab="lmf-c", xlab="obs-c"); abline(a=0,b=1,col="gray")
   #plot(predictSolute(lmf, "flux") ~ observeSolute(mydat, "flux", mymd), ylab="lmf-f", xlab="obs-f"); abline(a=0,b=1,col="gray")
   #plot(predictSolute(lmf, "conc") ~ predictSolute(lmc, "conc"), ylab="lmf-c", xlab="lmc-c"); abline(a=0,b=1,col="gray")
   #plot(predictSolute(lmf, "flux") ~ predictSolute(lmc, "flux"), ylab="lmf-f", xlab="lmc-f"); abline(a=0,b=1,col="gray")
-  par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
+  # par() commented out so no graphics device is touched; we're making the test suite fully automated
+  #par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
   expect_manual_OK("Predictions by two models and observations from data agree, roughly")
   
   # Predict fluxes for new dates
