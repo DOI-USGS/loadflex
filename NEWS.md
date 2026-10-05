@@ -1,3 +1,13 @@
+# 1.9.3
+
+* Fixed the grouping in `aggregateSolute` by replacing the defunct dplyr
+`group_by_()` with `group_by(across(all_of(...)))`.
+
+* Fixed the column selection and renaming in `convertToEGRET` by replacing the
+defunct dplyr `select_()` and `rename_()` with `select()` and `rename()` using
+`all_of()`.
+
+
 # 1.1.0 - 1.1.20 or so
 
 * New function: `plotEGRET`. Generates plots of loadflex inputs and outputs 
