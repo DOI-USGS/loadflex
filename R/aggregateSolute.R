@@ -182,7 +182,8 @@ aggregateSolute <- function(
   # Group the estimates as requested
   preds_grp <- group_by(
     v(data.frame(preds, dates, aggregate_by)),
-    across(all_of(agg.by)))
+    across(all_of(agg.by))
+  )
 
   # Remove grouping periods with insufficient non-NA data
   preds_filt <- preds_grp %>%

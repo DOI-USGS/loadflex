@@ -83,7 +83,8 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
     sample_data <- data %>%
       select(
         dateTime = all_of(date_col),
-        ConcLow  = all_of(const_col)) %>%
+        ConcLow  = all_of(const_col)
+      ) %>%
       mutate(
         ConcHigh = ConcLow)
   }
@@ -153,7 +154,6 @@ convertToEGRETInfo <- function(meta) {
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
 #'
-#' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
@@ -238,8 +238,10 @@ expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) 
 
   # Convert to EGRET format with many columns describing flow
   flowdat_corrected <- flowdat %>%
-    rename(value = all_of(flow.colname),
-           dateTime = all_of(date.colname)) %>%
+    rename(
+      value = all_of(flow.colname),
+      dateTime = all_of(date.colname)
+    ) %>%
     mutate(code = "") %>%
     populateDaily(qConvert = qconvert, verbose = FALSE) %>%
     mutate(dateTime = flowdat[[date.colname]])
