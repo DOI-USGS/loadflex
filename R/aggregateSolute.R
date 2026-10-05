@@ -20,7 +20,7 @@
 #' However, we will deviate from the above equation to accommodate the lognormal
 #' distribution of each flux prediction.
 #'
-#' @importFrom dplyr %>% group_by_ summarise filter n n_groups
+#' @importFrom dplyr %>% group_by across all_of summarise filter n n_groups
 #' @importFrom lubridate tz
 #' @importFrom smwrBase waterYear
 #' @importFrom unitted u v get_units
@@ -180,9 +180,9 @@ aggregateSolute <- function(
   }
 
   # Group the estimates as requested
-  preds_grp <- group_by_(
+  preds_grp <- group_by(
     v(data.frame(preds, dates, aggregate_by)),
-    .dots=as.list(agg.by))
+    across(all_of(agg.by)))
 
   # Remove grouping periods with insufficient non-NA data
   preds_filt <- preds_grp %>%
