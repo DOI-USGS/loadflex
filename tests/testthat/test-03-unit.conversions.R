@@ -1,9 +1,4 @@
-context("unit.conversions")
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("validMetadataUnits works", {
-
   expect_true(validMetadataUnits("mg L^-1"))
   expect_true(validMetadataUnits("ft^3 s^-1"))
   expect_true(validMetadataUnits("kg"))
@@ -24,7 +19,6 @@ test_that("validMetadataUnits works", {
 })
 
 test_that("translateFreeformToUnitted works", {
-  
   expect_equal(loadflex:::translateFreeformToUnitted("colonies /L"), "colonies L^-1")
   expect_equal(loadflex:::translateFreeformToUnitted("mg per dL"), "mg dL^-1")
   expect_equal(loadflex:::translateFreeformToUnitted("cfs"), "ft^3 s^-1")
@@ -53,11 +47,11 @@ test_that("convertUnits works", {
 
 test_that("flowconcToFluxConversion works", {
   cf1 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = TRUE)
-  expect_equivalent(unitted::v(cf1), 2.8317e-05)
+  expect_equal(unitted::v(cf1), 2.8317e-05, ignore_attr=TRUE)
   expect_equal(unitted::get_units(cf1), "kg L ft^-3 mg^-1")
   
   cf2 <- flowconcToFluxConversion(flow.units = "ft^3 d^-1", conc.units = "mg L^-1", load.rate.units = "kg d^-1", attach.units = FALSE)
-  expect_equivalent(cf2, 2.8317e-05)
+  expect_equal(cf2, 2.8317e-05, ignore_attr=TRUE)
   expect_equal(unitted::get_units(cf2), NA)
 
   # Comparisons to the sister rloadest function
@@ -74,25 +68,25 @@ test_that("observeSolute generates fluxes with the expected units & format", {
   
   # See whether observeSolute can calculate fluxes
   # cms * mg/L = m^3 mg / (L s). To get to mg/day, multiply by 1000 L/m^3 and 60*60*24 s/day
-  expect_that(observeSolute(obs, "flux", md), equals(obs$MyConc*obs$MyFlow*1000*60*60*24))
-  expect_that(unitted::get_units(observeSolute(obs, "flux", md, attach.units=TRUE)), equals("mg d^-1"))
+  expect_equal(observeSolute(obs, "flux", md), obs$MyConc*obs$MyFlow*1000*60*60*24)
+  expect_equal(unitted::get_units(observeSolute(obs, "flux", md, attach.units=TRUE)), "mg d^-1")
   
   # If we're also converting to kg, divide by 1000000
-  expect_that(observeSolute(obs, "flux", updateMetadata(md, load.units="kg", load.rate.units="kg/day"), attach.units=TRUE), 
-              equals(unitted::u(obs$MyConc*obs$MyFlow*1000*60*60*24/1000000, units="kg d^-1")))
+  expect_equal(observeSolute(obs, "flux", updateMetadata(md, load.units="kg", load.rate.units="kg/day"), attach.units=TRUE), 
+               unitted::u(obs$MyConc*obs$MyFlow*1000*60*60*24/1000000, units="kg d^-1"))
   # If we're converting from flow units of cfs, we need 28.317 L/ft^3 instead of 1000 L/m^3
-  expect_that(observeSolute(obs, "flux", updateMetadata(md, flow.units="cfs"), attach.units=TRUE), 
-              equals(unitted::u(obs$MyConc*obs$MyFlow*28.317*60*60*24, units="mg d^-1")))
+  expect_equal(observeSolute(obs, "flux", updateMetadata(md, flow.units="cfs"), attach.units=TRUE), 
+               unitted::u(obs$MyConc*obs$MyFlow*28.317*60*60*24, units="mg d^-1"))
 
   # See whether observeSolute can find fluxes
   obs$MyFlux <- 7 #intentionally wrong
-  expect_equivalent(observeSolute(obs, "flux", updateMetadata(md, load.rate="MyFlux"), calculate=FALSE), rep(7, nrow(obs)))
+  expect_equal(observeSolute(obs, "flux", updateMetadata(md, load.rate="MyFlux"), calculate=FALSE), rep(7, nrow(obs)), ignore_attr=TRUE)
   
   # Check the formatting
   expect_equal(observeSolute(obs, "flux", md, calculate=TRUE), observeSolute(obs, "flux", md))
   expect_equal(observeSolute(obs, "flux", md, attach.units=FALSE), as.numeric(observeSolute(obs, "flux", md, attach.units=TRUE)))
-  expect_is(observeSolute(obs, "flux", md), "numeric")
-  expect_that(names(observeSolute(obs, "flux", md)), equals(NULL))
+  expect_type(observeSolute(obs, "flux", md), "double")
+  expect_null(names(observeSolute(obs, "flux", md)))
 })
 
 test_that("observeSolute generates concentrations with the expected units & format", {

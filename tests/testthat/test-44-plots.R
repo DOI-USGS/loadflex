@@ -1,5 +1,3 @@
-context("plotEGRET")
-
 # Setup of data to use in tests
 data(lamprey_nitrate)
 fitdat <- lamprey_nitrate

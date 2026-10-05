@@ -1,7 +1,3 @@
-context("match.arg.loadflex")
-
-tryCatch({source("tests/testthat/helpers.R"); source("helpers.R")}, warning=function(w) invisible())
-
 test_that("loadflex:::match.arg.loadflex knows the defaults for many args", {
 
   # Passes when given acceptable answers

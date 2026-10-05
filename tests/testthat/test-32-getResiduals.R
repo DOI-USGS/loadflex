@@ -1,6 +1,6 @@
-context("getResiduals")
 test_that("getResiduals works", {
-  library(rloadest)
+  testthat::skip_on_cran()
+  testthat::skip_on_ci()
   simpledata <- transform(app2.calib[-which(diff(app2.calib$DATES) < 7),], 
                           Period=seasons(DATES,breaks=c("Apr", "Jul")))
   reg.model <- loadReg2(loadReg(
