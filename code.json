@@ -14,7 +14,7 @@
         }
       ]
     },
-    "homepageURL": "https://github.com/DOI-USGS/loadflex/",
+    "homepageURL": "http://doi-usgs.github.io/loadflex/",
     "downloadURL": "https://github.com/DOI-USGS/loadflex/archive/refs/heads/main.zip",
     "disclaimerURL": "https://raw.githubusercontent.com/DOI-USGS/loadflex/main/DISCLAIMER.md",
     "repositoryURL": "https://github.com/DOI-USGS/loadflex.git",
@@ -35,7 +35,7 @@
       "email": "aappling@usgs.gov"
     },
     "date": {
-      "metadataLastUpdated": "2023-07-05"
+      "metadataLastUpdated": "2026-10-07"
     }
   }
 ]
