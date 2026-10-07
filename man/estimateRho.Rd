@@ -4,10 +4,16 @@
 \alias{estimateRho}
 \title{Estimate the autocorrelation of a mid- to high-resolution time series}
 \usage{
-estimateRho(load.model, flux.or.conc = c("flux", "conc"),
-  abs.or.rel.resids = c("absolute", "relative"), use.log = FALSE,
-  newdata = NULL, plot.acf = TRUE,
-  timestep.tol = .Machine$double.eps^0.5, irregular.timesteps.ok = NA)
+estimateRho(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  abs.or.rel.resids = c("absolute", "relative"),
+  use.log = FALSE,
+  newdata = NULL,
+  plot.acf = TRUE,
+  timestep.tol = .Machine$double.eps^0.5,
+  irregular.timesteps.ok = NA
+)
 }
 \arguments{
 \item{load.model}{a loadModel descendant}
@@ -59,7 +65,8 @@ functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}},
 or write your own assumptions.
 }
 \seealso{
-Other diagnostics: \code{\link{getCorrectionFraction}},
-  \code{\link{residDurbinWatson}}
+Other diagnostics: 
+\code{\link{getCorrectionFraction}()},
+\code{\link{residDurbinWatson}()}
 }
 \concept{diagnostics}

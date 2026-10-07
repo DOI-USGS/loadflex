@@ -18,19 +18,22 @@ metrics vary by model type; only the relevant metrics are reported for each
 model.
 }
 \seealso{
-Other loadModelInterface: \code{\link{estimateMSE}},
-  \code{\link{getFittedModel}},
-  \code{\link{getFittingData}},
-  \code{\link{getFittingFunction}},
-  \code{\link{getMetadata}}, \code{\link{predictSolute}},
-  \code{\link{simulateSolute}},
-  \code{\link{validLoadModelInterface}}
+Other loadModelInterface: 
+\code{\link{estimateMSE}()},
+\code{\link{getFittedModel}()},
+\code{\link{getFittingData}()},
+\code{\link{getFittingFunction}()},
+\code{\link{getMetadata}()},
+\code{\link{predictSolute}()},
+\code{\link{simulateSolute}()},
+\code{\link{validLoadModelInterface}()}
 
-Other summarizeModel: \code{\link{summarizeModel.loadComp}},
-  \code{\link{summarizeModel.loadInterp}},
-  \code{\link{summarizeModel.loadLm}},
-  \code{\link{summarizeModel.loadModel}},
-  \code{\link{summarizeModel.loadReg2}}
+Other summarizeModel: 
+\code{\link{summarizeModel.loadComp}()},
+\code{\link{summarizeModel.loadInterp}()},
+\code{\link{summarizeModel.loadLm}()},
+\code{\link{summarizeModel.loadModel}()},
+\code{\link{summarizeModel.loadReg2}()}
 }
 \concept{loadModelInterface}
 \concept{summarizeModel}

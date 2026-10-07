@@ -52,7 +52,7 @@ convertToEGRET <- function(load.model = NULL, newdata = NULL, data = NULL, meta 
 #' @inheritParams convertToEGRET
 #' @param dailydat an EGRET Daily data.frame of flow and prediction values
 #'
-#' @importFrom dplyr rename_ select select_ mutate left_join bind_cols
+#' @importFrom dplyr rename select mutate left_join bind_cols all_of
 #' @importFrom EGRET populateSampleColumns
 #' @importFrom methods S3Part
 convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
@@ -75,15 +75,16 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
     vals <- S3Part(data[[const_col]], strictS3=TRUE, S3Class='matrix')[,'values']
     censored <- attr(data[[const_col]], 'censor.codes')
     sample_data <- data %>%
-      select_(dateTime = date_col) %>%
+      select(dateTime = all_of(date_col)) %>%
       mutate(
         ConcLow  = ifelse(censored, NA, vals),
         ConcHigh = vals)
   } else {
     sample_data <- data %>%
-      select_(
-        dateTime = date_col,
-        ConcLow  = const_col) %>%
+      select(
+        dateTime = all_of(date_col),
+        ConcLow  = all_of(const_col)
+      ) %>%
       mutate(
         ConcHigh = ConcLow)
   }
@@ -98,7 +99,7 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   # Format the flow info
   flow_col <- getInfo(meta, 'flow', TRUE)
   flow_data <- data %>%
-    select_(date_col, flow_col) %>%
+    select(all_of(c(date_col, flow_col))) %>%
     expandFlowForEGRET(
       flow.colname = flow_col,
       date.colname = date_col,
@@ -153,7 +154,6 @@ convertToEGRETInfo <- function(meta) {
 #' @param meta loadflex metadata object; it must include constituent,
 #' flow, dates, conc.units, site.id, and consti.name
 #'
-#' @importFrom dplyr rename_
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
 #' @importFrom dplyr left_join
@@ -228,7 +228,7 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
 #' @param flow.units character string giving the current units of flow in
 #'   flowdat
 #'
-#' @importFrom dplyr rename_
+#' @importFrom dplyr rename all_of
 #' @importFrom dplyr mutate
 #' @importFrom EGRET populateDaily
 expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
@@ -238,8 +238,10 @@ expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) 
 
   # Convert to EGRET format with many columns describing flow
   flowdat_corrected <- flowdat %>%
-    rename_("value" = flow.colname,
-            "dateTime" = date.colname) %>%
+    rename(
+      value = all_of(flow.colname),
+      dateTime = all_of(date.colname)
+    ) %>%
     mutate(code = "") %>%
     populateDaily(qConvert = qconvert, verbose = FALSE) %>%
     mutate(dateTime = flowdat[[date.colname]])

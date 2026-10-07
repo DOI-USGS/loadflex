@@ -34,8 +34,10 @@ returning their values from \code{predictSolute()}.}
 }}
 
 \seealso{
-Other load.model.classes: \code{\link{loadComp-class}},
-  \code{\link{loadInterp-class}},
-  \code{\link{loadLm-class}}, \code{\link{loadReg2-class}}
+Other load.model.classes: 
+\code{\link{loadComp-class}},
+\code{\link{loadInterp-class}},
+\code{\link{loadLm-class}},
+\code{\link{loadReg2-class}}
 }
 \concept{load.model.classes}

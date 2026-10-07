@@ -14,6 +14,7 @@ which to return the fitting data}
 Retrieve the data used to fit the model
 }
 \seealso{
-Other getFittingData: \code{\link{getFittingData}}
+Other getFittingData: 
+\code{\link{getFittingData}()}
 }
 \concept{getFittingData}

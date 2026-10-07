@@ -4,8 +4,7 @@
 \alias{convertToEGRET}
 \title{Convert loadflex to EGRET object}
 \usage{
-convertToEGRET(load.model = NULL, newdata = NULL, data = NULL,
-  meta = NULL)
+convertToEGRET(load.model = NULL, newdata = NULL, data = NULL, meta = NULL)
 }
 \arguments{
 \item{load.model}{a load model (loadReg2, loadComp, loadInterp, loadLm, etc.)

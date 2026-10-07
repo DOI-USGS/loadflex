@@ -4,9 +4,15 @@
 \alias{loadModel}
 \title{Create a fitted loadModel object.}
 \usage{
-loadModel(inner.fit.function, pred.format, data, metadata,
-  y.trans.function = NULL, retrans.function = exp, store = c("data",
-  "fitting.function"))
+loadModel(
+  inner.fit.function,
+  pred.format,
+  data,
+  metadata,
+  y.trans.function = NULL,
+  retrans.function = exp,
+  store = c("data", "fitting.function")
+)
 }
 \arguments{
 \item{inner.fit.function}{function that accepts one argument, a training data
@@ -48,8 +54,10 @@ A fitted loadModel.
 Generates a new model of class loadModel (\code{\link{loadModel-class}}).
 }
 \seealso{
-Other load.model.inits: \code{\link{loadComp}},
-  \code{\link{loadInterp}}, \code{\link{loadLm}},
-  \code{\link{loadReg2}}
+Other load.model.inits: 
+\code{\link{loadComp}},
+\code{\link{loadInterp}},
+\code{\link{loadLm}},
+\code{\link{loadReg2}}
 }
 \concept{load.model.inits}

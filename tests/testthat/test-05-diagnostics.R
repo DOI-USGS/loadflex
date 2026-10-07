@@ -7,17 +7,21 @@ test_that("isTimestepRegular works", {
   expect_error(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=stop), "Time series is irregular")
   expect_warning(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=warning), "Time series is irregular")
   expect_false(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=function(e) {}))
-  expect_false(isTimestepRegular(simpledata$DATES, hist=TRUE, handler=function(e) {}))
+  # hist=FALSE (was TRUE) so no histogram is drawn; we're making the test suite fully automated
+  expect_false(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=function(e) {}))
   expect_manual_OK("Histogram of timesteps makes sense")
   
   # Regular time steps should pass
   simpledata <- transform(simpledata, DATES=seq(DATES[1], DATES[length(DATES)], length.out=length(DATES)))
-  expect_true(isTimestepRegular(simpledata$DATES, hist=TRUE, handler=function(e) {}))
+  # hist=FALSE (was TRUE) so no histogram is drawn; we're making the test suite fully automated
+  expect_true(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=function(e) {}))
   
   # Tolerance should be settable
   simpledata <- transform(simpledata, DATES=DATES + pmin(pmax(rnorm(length(DATES), 0, 0.1), -0.5), 0.5))
-  expect_false(isTimestepRegular(simpledata$DATES, hist=TRUE, handler=function(e) {}))
-  expect_true(isTimestepRegular(simpledata$DATES, hist=TRUE, tol = 1, handler=function(e) {}))
+  # hist=FALSE (was TRUE) so no histogram is drawn; we're making the test suite fully automated
+  expect_false(isTimestepRegular(simpledata$DATES, hist=FALSE, handler=function(e) {}))
+  # hist=FALSE (was TRUE) so no histogram is drawn; we're making the test suite fully automated
+  expect_true(isTimestepRegular(simpledata$DATES, hist=FALSE, tol = 1, handler=function(e) {}))
   
 })
 
@@ -57,7 +61,8 @@ test_that("estimateRho works", {
     flow = "FLOW", dates = "DATES", conc.units="mg/L"))
   
   # Call estimateRho
-  rho.out <- estimateRho(load.model=reg.model, flux.or.conc="flux", abs.or.rel.resids="absolute", newdata=NULL, plot.acf=TRUE, irr=TRUE)
+  # plot.acf=FALSE (was TRUE) so no ACF plot is drawn; we're making the test suite fully automated
+  rho.out <- estimateRho(load.model=reg.model, flux.or.conc="flux", abs.or.rel.resids="absolute", newdata=NULL, plot.acf=FALSE, irr=TRUE)
   
   # Output should be a function and a fitted Arima model
   expect_type(rho.out$rho, "double")

@@ -4,10 +4,17 @@
 \alias{loadComp}
 \title{Create a fitted loadComp object.}
 \usage{
-loadComp(reg.model, interp.format = c("flux", "conc"),
-  abs.or.rel.resids = c("absolute", "relative"), use.log = TRUE,
-  interp.data, interp.function = linearInterpolation, store = c("data",
-  "fitting.function"), n.iter = 100, MSE.method = "parametric")
+loadComp(
+  reg.model,
+  interp.format = c("flux", "conc"),
+  abs.or.rel.resids = c("absolute", "relative"),
+  use.log = TRUE,
+  interp.data,
+  interp.function = linearInterpolation,
+  store = c("data", "fitting.function"),
+  n.iter = 100,
+  MSE.method = "parametric"
+)
 }
 \arguments{
 \item{reg.model}{The model, usually a regression model, to whose predictions
@@ -60,8 +67,10 @@ loadComps themselves contain two inner load models, one for regression and
 one for interpolation of the residuals of the regression predictions.
 }
 \seealso{
-Other load.model.inits: \code{\link{loadInterp}},
-  \code{\link{loadLm}}, \code{\link{loadModel}},
-  \code{\link{loadReg2}}
+Other load.model.inits: 
+\code{\link{loadInterp}},
+\code{\link{loadLm}},
+\code{\link{loadModel}},
+\code{\link{loadReg2}}
 }
 \concept{load.model.inits}

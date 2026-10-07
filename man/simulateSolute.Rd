@@ -4,9 +4,15 @@
 \alias{simulateSolute}
 \title{Simulate solute concentrations based on the model and model uncertainty.}
 \usage{
-simulateSolute(load.model, flux.or.conc = c("flux", "conc"), newdata,
+simulateSolute(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  newdata,
   method = c("non-parametric", "parametric"),
-  from.interval = c("confidence", "prediction"), rho, ...)
+  from.interval = c("confidence", "prediction"),
+  rho,
+  ...
+)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -52,17 +58,20 @@ in conjunction with the composite method (i.e., within a
 \code{\link{loadComp}} model).
 }
 \seealso{
-Other loadModelInterface: \code{\link{estimateMSE}},
-  \code{\link{getFittedModel}},
-  \code{\link{getFittingData}},
-  \code{\link{getFittingFunction}},
-  \code{\link{getMetadata}}, \code{\link{predictSolute}},
-  \code{\link{summarizeModel}},
-  \code{\link{validLoadModelInterface}}
+Other loadModelInterface: 
+\code{\link{estimateMSE}()},
+\code{\link{getFittedModel}()},
+\code{\link{getFittingData}()},
+\code{\link{getFittingFunction}()},
+\code{\link{getMetadata}()},
+\code{\link{predictSolute}()},
+\code{\link{summarizeModel}()},
+\code{\link{validLoadModelInterface}()}
 
-Other simulateSolute: \code{\link{simulateSolute.loadLm}},
-  \code{\link{simulateSolute.loadModel}},
-  \code{\link{simulateSolute.loadReg2}}
+Other simulateSolute: 
+\code{\link{simulateSolute.loadLm}()},
+\code{\link{simulateSolute.loadModel}()},
+\code{\link{simulateSolute.loadReg2}()}
 }
 \concept{loadModelInterface}
 \concept{simulateSolute}

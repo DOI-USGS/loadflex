@@ -47,7 +47,7 @@ measured, as in \code{\link[=metadata]{metadata()}}
 the site where discharge was measured, as in \code{\link[=metadata]{metadata()}}
 \item \code{basin.area.units} - the units of the values in \code{basin.area} and
 \code{flow.basin.area} (same for both), as in \code{\link[=metadata]{metadata()}}
-\item \code{[custom]} - if the \code{custom} slot of \code{metadata} is a 1-row data.frame or
+\item \verb{[custom]} - if the \code{custom} slot of \code{metadata} is a 1-row data.frame or
 a list of length-1 elements, the columns of that data.frame are included in
 this summary
 \item \code{basin.area.ratio.QC} - the ratio of \code{flow.basin.area} to \code{basin.area}

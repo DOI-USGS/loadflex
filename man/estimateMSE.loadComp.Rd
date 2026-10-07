@@ -4,8 +4,7 @@
 \alias{estimateMSE.loadComp}
 \title{Estimate uncertainty in a composite model.}
 \usage{
-\method{estimateMSE}{loadComp}(load.model, n.iter = 100,
-  method = "parametric", rho, ...)
+\method{estimateMSE}{loadComp}(load.model, n.iter = 100, method = "parametric", rho, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -41,7 +40,8 @@ and involves repeated resampling of the coefficients from which the
 regression predictions and residuals are calculated.
 }
 \seealso{
-Other estimateMSE: \code{\link{estimateMSE.loadInterp}},
-  \code{\link{estimateMSE}}
+Other estimateMSE: 
+\code{\link{estimateMSE}()},
+\code{\link{estimateMSE.loadInterp}()}
 }
 \concept{estimateMSE}

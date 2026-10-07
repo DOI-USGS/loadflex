@@ -5,12 +5,31 @@
 \alias{updateMetadata}
 \title{Create or modify the metadata for a load model.}
 \usage{
-metadata(constituent, flow, load.rate = "", dates, conc.units,
-  flow.units, load.units, load.rate.units, station = "", custom = NULL,
-  validate = TRUE, consti.name = "", site.name = "", site.id = "",
-  lat = NA, lon = NA, basin.area = NA, flow.site.name = site.name,
-  flow.site.id = site.id, flow.lat = lat, flow.lon = lon,
-  flow.basin.area = basin.area, basin.area.units = "km^2")
+metadata(
+  constituent,
+  flow,
+  load.rate = "",
+  dates,
+  conc.units,
+  flow.units,
+  load.units,
+  load.rate.units,
+  station = "",
+  custom = NULL,
+  validate = TRUE,
+  consti.name = "",
+  site.name = "",
+  site.id = "",
+  lat = NA,
+  lon = NA,
+  basin.area = NA,
+  flow.site.name = site.name,
+  flow.site.id = site.id,
+  flow.lat = lat,
+  flow.lon = lon,
+  flow.basin.area = basin.area,
+  basin.area.units = "km^2"
+)
 
 updateMetadata(metadata, new.metadata = NA, ..., validate = TRUE)
 }
@@ -249,6 +268,7 @@ md2 <- updateMetadata(md1, site.id="1073500",
   custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
 }
 \seealso{
-Other metadata: \code{\link{metadata-getters}}
+Other metadata: 
+\code{\link{metadata-getters}}
 }
 \concept{metadata}

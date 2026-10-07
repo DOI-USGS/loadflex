@@ -29,6 +29,7 @@ by absolute residuals (obs-pred) or relative residuals (obs/pred).}
 }}
 
 \seealso{
-Other load.model.fits: \code{\link{interpModel-class}}
+Other load.model.fits: 
+\code{\link{interpModel-class}}
 }
 \concept{load.model.fits}

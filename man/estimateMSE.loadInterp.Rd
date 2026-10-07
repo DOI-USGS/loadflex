@@ -5,8 +5,13 @@
 \title{Estimate uncertainty in an interpolation using leave-one-out cross
 validation.}
 \usage{
-\method{estimateMSE}{loadInterp}(load.model, n.out,
-  n.iter = floor(nrow(getFittingData(load.model))/n.out), replace, ...)
+\method{estimateMSE}{loadInterp}(
+  load.model,
+  n.out,
+  n.iter = floor(nrow(getFittingData(load.model))/n.out),
+  replace,
+  ...
+)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -35,7 +40,8 @@ method is k-fold cross validation when
 n.out*n.iter==nrow(getFittingData(load.model)) and with.replacement==FALSE.
 }
 \seealso{
-Other estimateMSE: \code{\link{estimateMSE.loadComp}},
-  \code{\link{estimateMSE}}
+Other estimateMSE: 
+\code{\link{estimateMSE}()},
+\code{\link{estimateMSE.loadComp}()}
 }
 \concept{estimateMSE}

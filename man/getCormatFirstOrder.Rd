@@ -4,8 +4,11 @@
 \alias{getCormatFirstOrder}
 \title{get rho matrix first order}
 \usage{
-getCormatFirstOrder(rho, time.step = as.difftime(1, units = "hours"),
-  max.tao = as.difftime(1, units = "days"))
+getCormatFirstOrder(
+  rho,
+  time.step = as.difftime(1, units = "hours"),
+  max.tao = as.difftime(1, units = "days")
+)
 }
 \arguments{
 \item{rho}{the covariance  asdefined as difference between the times divided by the time step}

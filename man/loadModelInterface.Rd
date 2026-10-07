@@ -4,8 +4,10 @@
 \name{loadModelInterface}
 \alias{loadModelInterface}
 \title{Functions implemented by any \code{loadflex}-compatible load model.}
-\format{A collection of functions which any load model for use with
-  \code{loadflex} should implement.}
+\format{
+A collection of functions which any load model for use with
+  \code{loadflex} should implement.
+}
 \description{
 Solute load models in the \code{loadflex} package, such as \code{loadModel},
 \code{loadReg2}, and \code{loadComp}, all implement a common set of core

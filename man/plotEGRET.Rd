@@ -4,9 +4,17 @@
 \alias{plotEGRET}
 \title{Create an EGRET-style plot}
 \usage{
-plotEGRET(plot.name, load.model = NULL, newdata = NULL, data = NULL,
-  meta = NULL, eList = NULL, moreTitle = "loadflex",
-  plotFlowNorm = FALSE, ...)
+plotEGRET(
+  plot.name,
+  load.model = NULL,
+  newdata = NULL,
+  data = NULL,
+  meta = NULL,
+  eList = NULL,
+  moreTitle = "loadflex",
+  plotFlowNorm = FALSE,
+  ...
+)
 }
 \arguments{
 \item{plot.name}{the name of the plot the user wants to create. See Details 

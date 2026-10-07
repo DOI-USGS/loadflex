@@ -4,8 +4,13 @@
 \alias{observeSolute}
 \title{observeSolute - instantaneous loads or concentrations}
 \usage{
-observeSolute(data, flux.or.conc = c("flux", "conc"), metadata,
-  calculate = isTRUE(flux.or.conc == "flux"), attach.units = FALSE)
+observeSolute(
+  data,
+  flux.or.conc = c("flux", "conc"),
+  metadata,
+  calculate = isTRUE(flux.or.conc == "flux"),
+  attach.units = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame containing, at a minimum, the columns named by 

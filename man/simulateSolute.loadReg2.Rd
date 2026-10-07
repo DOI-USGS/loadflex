@@ -5,9 +5,15 @@
 \title{Produce a set of predictions that reflect the coefficient uncertainty and
 possibly also natural variation.}
 \usage{
-\method{simulateSolute}{loadReg2}(load.model, flux.or.conc = c("flux",
-  "conc"), newdata, method = c("parametric", "non-parametric"),
-  from.interval = c("confidence", "prediction"), rho, ...)
+\method{simulateSolute}{loadReg2}(
+  load.model,
+  flux.or.conc = c("flux", "conc"),
+  newdata,
+  method = c("parametric", "non-parametric"),
+  from.interval = c("confidence", "prediction"),
+  rho,
+  ...
+)
 }
 \arguments{
 \item{load.model}{A loadReg2 object.}
@@ -49,8 +55,9 @@ makes predictions whose individual errors are sampled from a time series with
 the same first-order autocorrelation as the original series of errors.
 }
 \seealso{
-Other simulateSolute: \code{\link{simulateSolute.loadLm}},
-  \code{\link{simulateSolute.loadModel}},
-  \code{\link{simulateSolute}}
+Other simulateSolute: 
+\code{\link{simulateSolute}()},
+\code{\link{simulateSolute.loadLm}()},
+\code{\link{simulateSolute.loadModel}()}
 }
 \concept{simulateSolute}

@@ -4,8 +4,16 @@
 \alias{getPred_baseflow}
 \title{Create a vector of baseflow rates.}
 \usage{
-getPred_baseflow(data, metadata, method = c("hysep", "1p digital filter",
-  "2p digital filter"), da, select, alpha, BFImax, ...)
+getPred_baseflow(
+  data,
+  metadata,
+  method = c("hysep", "1p digital filter", "2p digital filter"),
+  da,
+  select,
+  alpha,
+  BFImax,
+  ...
+)
 }
 \arguments{
 \item{data}{data.frame with columns as specified by metadata}
@@ -72,7 +80,8 @@ Implementation of the 1- and 2-parameter digital filters was
   2013 Hydrology course (https://user.engineering.uiowa.edu/~flood)
 }
 \seealso{
-Other predictors: \code{\link{getPred_isBaseflow}}
+Other predictors: 
+\code{\link{getPred_isBaseflow}()}
 }
 \concept{predictors}
 \keyword{internal}

@@ -4,8 +4,12 @@
 \alias{isTimestepRegular}
 \title{Check a time series for evenly spaced dates.}
 \usage{
-isTimestepRegular(dates, hist = TRUE, tol = .Machine$double.eps^0.5,
-  handler = stop)
+isTimestepRegular(
+  dates,
+  hist = TRUE,
+  tol = .Machine$double.eps^0.5,
+  handler = stop
+)
 }
 \arguments{
 \item{dates}{A time series of dates in any format accepted by \code{diff}.}

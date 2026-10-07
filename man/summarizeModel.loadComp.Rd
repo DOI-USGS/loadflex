@@ -4,8 +4,7 @@
 \alias{summarizeModel.loadComp}
 \title{Extract model summary statistics from a loadComp model}
 \usage{
-\method{summarizeModel}{loadComp}(load.model, newdata,
-  irregular.timesteps.ok = NA, ...)
+\method{summarizeModel}{loadComp}(load.model, newdata, irregular.timesteps.ok = NA, ...)
 }
 \arguments{
 \item{load.model}{A load model object, typically inheriting from loadModel
@@ -58,10 +57,11 @@ the regression residuals, one for the 'residuals' used to do the composite
 correction).
 }
 \seealso{
-Other summarizeModel: \code{\link{summarizeModel.loadInterp}},
-  \code{\link{summarizeModel.loadLm}},
-  \code{\link{summarizeModel.loadModel}},
-  \code{\link{summarizeModel.loadReg2}},
-  \code{\link{summarizeModel}}
+Other summarizeModel: 
+\code{\link{summarizeModel}()},
+\code{\link{summarizeModel.loadInterp}()},
+\code{\link{summarizeModel.loadLm}()},
+\code{\link{summarizeModel.loadModel}()},
+\code{\link{summarizeModel.loadReg2}()}
 }
 \concept{summarizeModel}

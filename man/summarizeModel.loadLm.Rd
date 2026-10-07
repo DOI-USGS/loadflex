@@ -51,10 +51,11 @@ data(eg_loadLm)
 summarizeModel(eg_loadLm)
 }
 \seealso{
-Other summarizeModel: \code{\link{summarizeModel.loadComp}},
-  \code{\link{summarizeModel.loadInterp}},
-  \code{\link{summarizeModel.loadModel}},
-  \code{\link{summarizeModel.loadReg2}},
-  \code{\link{summarizeModel}}
+Other summarizeModel: 
+\code{\link{summarizeModel}()},
+\code{\link{summarizeModel.loadComp}()},
+\code{\link{summarizeModel.loadInterp}()},
+\code{\link{summarizeModel.loadModel}()},
+\code{\link{summarizeModel.loadReg2}()}
 }
 \concept{summarizeModel}
