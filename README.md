@@ -1,10 +1,5 @@
 # loadflex: Models and Tools for Watershed Flux Estimates
 
-<span style="color: red;"> In summer or fall 2023, this package will
-move from <https://github.com/USGS-R/loadflex> to
-<https://github.com/DOI-USGS/loadflex> Please update your links
-accordingly. </span>
-
 The `loadflex` R package implements several of the most common methods
 for modeling and predicting watershed solute fluxes and concentrations,
 including interpolation and regression models, period-weighted
@@ -15,19 +10,11 @@ and with native R regression models. It offers a uniform interface for
 any model type, with which you can quickly fit models, generate
 predictions, and aggregate to monthly or annual values.
 
-This package has been described in Appling et al. (2015):
-
-> Appling, A. P., Leon, M. C., & McDowell, W. H. (2015). Reducing bias
-> and quantifying uncertainty in watershed flux estimates: The R package
-> `loadflex`. Ecosphere, 6(12), art269.
-> <https://doi.org/10.1890/ES14-00517.1>
-
 To see the recommended citation for this package, please run
 `citation('loadflex')` at the R prompt.
 
 ``` r
 citation('loadflex')
-## 
 ## To cite package 'loadflex' in publications use:
 ## 
 ##   Appling, A. P., M. C. Leon, and W. H. McDowell. 2015. Reducing bias
@@ -72,21 +59,21 @@ You will also need a compiler to install `smwrStats`, `smwrQW`, and
 For Mac, see <https://mac.r-project.org/tools/>.
 
 ``` r
-library(remotes)
+# install.packages(remotes) # run if needed
 remotes::install_gitlab("water/analysis-tools/smwrData", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrBase", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrStats", host = "code.usgs.gov") # needs compilation
 remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")    # needs compilation
-remotes::install_gitlab("water/analysis-tools/rloadest", host = "code.usgs.gov")  # needs compilation
+remotes::install_github("USGS-R/rloadest")  # needs compilation
 remotes::install_github("appling/unitted")
 remotes::install_github("DOI-USGS/EGRET")
-remotes::install_github("USGS-R/loadflex") # soon to be "DOI-USGS/loadflex"
+remotes::install_github("DOI-USGS/loadflex")
 ```
 
 Also please see the installation FAQ on the wiki
-(<https://github.com/USGS-R/loadflex/wiki/Installation-FAQ>) if you run
-into trouble.
+(<https://github.com/DOI-USGS/loadflex/wiki/Installation-FAQ>) if you
+run into trouble.
 
 ## Getting Started
 
@@ -95,33 +82,30 @@ To get started, load the package with `library(loadflex)` and type
 
 ## Development and Maintenance Status
 
-`loadflex` is a USGS Archive Research Package: [![USGS
-Status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
-
 Project funding has ended and our maintenance time is limited, but we do
 attempt to provide bug fixes and lightweight support as we are able.
 Submit questions or suggestions to
-<https://github.com/USGS-R/loadflex/issues>.
+<https://github.com/DOI-USGS/loadflex/issues>.
 
 ## Contributing
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See
-[CODE_OF_CONDUCT.md](https://github.com/USGS-R/streamMetabolizer/blob/main/CODE_OF_CONDUCT.md)
+[CODE_OF_CONDUCT.md](https://github.com/DOI-USGS/loadflex/blob/main/CODE_OF_CONDUCT.md)
 for more information.
 
 For technical details on how to contribute, see
-[CONTRIBUTING.md](https://github.com/USGS-R/streamMetabolizer/blob/main/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/DOI-USGS/loadflex/blob/main/CONTRIBUTING.md)
 
 ## Contributing
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See
-[CODE_OF_CONDUCT.md](https://github.com/USGS-R/loadflex/blob/main/CODE_OF_CONDUCT.md)
+[CODE_OF_CONDUCT.md](https://github.com/DOI-USGS/loadflex/blob/main/CODE_OF_CONDUCT.md)
 for more information.
 
 For technical details on how to contribute, see
-[CONTRIBUTING.md](https://github.com/USGS-R/loadflex/blob/main/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/DOI-USGS/loadflex/blob/main/CONTRIBUTING.md)
 
 ## Development History
 
@@ -150,13 +134,106 @@ guarantee of reproducible results using future versions of R or updated
 versions of package dependencies; however, we aim to test and update
 future modeling environments.
 
-<!-- Run and paste manually after edits, only when tests pass locally -->
-
-``` r
-> sessioninfo::session_info()
-
-## (TBD)
-```
+    ## ─ Session info ───────────────────────────────────────────────────────────────
+    ##  setting  value
+    ##  version  R version 4.5.2 (2025-10-31)
+    ##  os       macOS Tahoe 26.7.1
+    ##  system   aarch64, darwin20
+    ##  ui       X11
+    ##  language (EN)
+    ##  collate  C.UTF-8
+    ##  ctype    C.UTF-8
+    ##  tz       America/New_York
+    ##  date     2026-10-07
+    ## 
+    ## ─ Packages ───────────────────────────────────────────────────────────────────
+    ##  package       * version    date (UTC) lib source
+    ##  abind           1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+    ##  akima           0.6-3.6    2025-06-02 [2] CRAN (R 4.5.0)
+    ##  boot            1.3-32     2025-08-29 [3] CRAN (R 4.5.2)
+    ##  cachem          1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+    ##  car             3.1-5      2026-02-03 [2] CRAN (R 4.5.2)
+    ##  carData         3.0-6      2026-01-30 [2] CRAN (R 4.5.2)
+    ##  class           7.3-24     2026-08-03 [2] CRAN (R 4.5.2)
+    ##  classInt        0.4-11     2025-01-08 [2] CRAN (R 4.5.0)
+    ##  cli             3.6.6      2026-04-09 [2] CRAN (R 4.5.2)
+    ##  codetools       0.2-20     2024-03-31 [3] CRAN (R 4.5.2)
+    ##  coin            1.4-6      2026-09-30 [2] CRAN (R 4.5.2)
+    ##  data.table      1.18.6.1   2026-08-24 [2] CRAN (R 4.5.2)
+    ##  dataRetrieval * 2.7.26     2026-09-11 [2] CRAN (R 4.5.2)
+    ##  DBI             1.3.0      2026-02-25 [2] CRAN (R 4.5.2)
+    ##  digest          0.6.39     2025-11-19 [2] CRAN (R 4.5.2)
+    ##  dplyr           1.2.1      2026-04-03 [2] CRAN (R 4.5.2)
+    ##  e1071           1.7-17     2025-12-18 [2] CRAN (R 4.5.2)
+    ##  EGRET           3.0.12     2026-10-07 [2] Github (DOI-USGS/EGRET@b5eb22c)
+    ##  evaluate        1.0.5      2025-08-27 [2] CRAN (R 4.5.0)
+    ##  farver          2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+    ##  fastmap         1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+    ##  Formula         1.2-6      2026-08-03 [2] CRAN (R 4.5.2)
+    ##  generics        0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+    ##  ggplot2         4.0.3      2026-04-22 [2] CRAN (R 4.5.2)
+    ##  glue            1.8.1      2026-04-17 [2] CRAN (R 4.5.2)
+    ##  gtable          0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+    ##  htmltools       0.5.9      2025-12-04 [2] CRAN (R 4.5.2)
+    ##  KernSmooth      2.23-27    2026-08-12 [2] CRAN (R 4.5.2)
+    ##  knitr           1.52       2026-09-06 [2] CRAN (R 4.5.2)
+    ##  lattice         0.23-1     2026-08-12 [2] CRAN (R 4.5.2)
+    ##  lazyeval        0.2.3      2026-04-04 [2] CRAN (R 4.5.2)
+    ##  leaps           3.2        2024-06-10 [2] CRAN (R 4.5.0)
+    ##  libcoin         1.0-13     2026-06-04 [2] CRAN (R 4.5.2)
+    ##  lifecycle       1.0.5      2026-01-08 [2] CRAN (R 4.5.2)
+    ##  loadflex      * 1.9.3      2026-10-07 [1] local
+    ##  lubridate     * 1.9.5      2026-02-04 [2] CRAN (R 4.5.2)
+    ##  magrittr        2.0.5      2026-04-04 [2] CRAN (R 4.5.2)
+    ##  MASS            7.3-66     2026-07-15 [2] CRAN (R 4.5.2)
+    ##  Matrix          1.7-6      2026-07-25 [2] CRAN (R 4.5.2)
+    ##  matrixStats     1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+    ##  memoise         2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+    ##  modeltools      0.2-25     2026-09-30 [2] CRAN (R 4.5.2)
+    ##  multcomp        1.4-32     2026-08-21 [2] CRAN (R 4.5.2)
+    ##  mvtnorm         1.4-2      2026-07-12 [2] CRAN (R 4.5.2)
+    ##  NADA            1.6-1.2    2025-08-29 [2] CRAN (R 4.5.0)
+    ##  nlme            3.1-171    2026-09-01 [2] CRAN (R 4.5.2)
+    ##  otel            0.2.0      2025-08-29 [2] CRAN (R 4.5.0)
+    ##  pillar          1.11.1     2025-09-17 [2] CRAN (R 4.5.0)
+    ##  pkgconfig       2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+    ##  proxy           0.4-29     2025-12-29 [2] CRAN (R 4.5.2)
+    ##  R6              2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+    ##  randtests       1.0.2      2024-04-23 [2] CRAN (R 4.5.0)
+    ##  RColorBrewer    1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+    ##  Rcpp            1.1.2      2026-07-05 [2] CRAN (R 4.5.2)
+    ##  rlang           1.3.0      2026-07-05 [2] CRAN (R 4.5.2)
+    ##  rloadest      * 0.4.5      2026-09-14 [2] Github (USGS-R/rloadest@8a8119f)
+    ##  rmarkdown       2.32       2026-09-01 [2] CRAN (R 4.5.2)
+    ##  S7              0.2.2      2026-04-22 [2] CRAN (R 4.5.2)
+    ##  sandwich        3.1-3      2026-08-03 [2] CRAN (R 4.5.2)
+    ##  scales          1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+    ##  segmented       2.2-2      2026-09-11 [2] CRAN (R 4.5.2)
+    ##  sessioninfo     1.2.4      2026-06-04 [2] CRAN (R 4.5.2)
+    ##  sf              1.1-3      2026-09-11 [2] CRAN (R 4.5.2)
+    ##  smwrBase      * 1.1.5      2026-02-13 [2] gitlab (water/analysis-tools/smwrBase@8037379)
+    ##  smwrGraphs    * 1.1.4.9000 2026-02-13 [2] gitlab (water/analysis-tools/smwrGraphs@e494d6f)
+    ##  smwrQW        * 0.7.14     2026-02-13 [2] gitlab (water/analysis-tools/smwrQW@b6211ad)
+    ##  smwrStats     * 0.7.6      2026-02-13 [2] gitlab (water/analysis-tools/smwrStats@7fa1862)
+    ##  sp              2.2-3      2026-07-19 [2] CRAN (R 4.5.2)
+    ##  survival        3.8-12     2026-09-09 [2] CRAN (R 4.5.2)
+    ##  TH.data         1.1-5      2025-11-17 [2] CRAN (R 4.5.2)
+    ##  tibble          3.3.1      2026-01-11 [2] CRAN (R 4.5.2)
+    ##  tidyselect      1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+    ##  timechange      0.4.0      2026-01-29 [2] CRAN (R 4.5.2)
+    ##  truncnorm       1.0-9      2023-03-20 [2] CRAN (R 4.5.0)
+    ##  units           1.0-1      2026-03-11 [2] CRAN (R 4.5.2)
+    ##  unitted         0.2.9      2026-10-07 [2] Github (appling/unitted@0585684)
+    ##  vctrs           0.7.3      2026-04-11 [2] CRAN (R 4.5.2)
+    ##  xfun            0.61       2026-09-16 [2] CRAN (R 4.5.2)
+    ##  XML             3.99-0.25  2026-09-27 [2] CRAN (R 4.5.2)
+    ##  yaml            2.3.12     2025-12-10 [2] CRAN (R 4.5.2)
+    ##  zCompositions   1.6.2      2026-06-23 [2] CRAN (R 4.5.2)
+    ##  zoo             1.9-1      2026-09-25 [2] CRAN (R 4.5.2)
+    ## 
+    ##  * ── Packages attached to the search path.
+    ## 
+    ## ──────────────────────────────────────────────────────────────────────────────
 
 ## Disclaimer
 
