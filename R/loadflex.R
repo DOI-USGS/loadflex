@@ -28,7 +28,7 @@
 #'   }
 #'
 #' @name loadflex
-#' @docType package
+#' @docType _PACKAGE
 NULL
 
 #' @keywords internal

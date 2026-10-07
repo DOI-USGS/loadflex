@@ -17,8 +17,7 @@ checkRloadestStatus <- function() {
 
 #' Extracts and imports metadata from an rloadest loadReg model into an object of class 
 #' "metadata"
-#' #' 
-#' @inheritParams getMetadata 
+#' 
 #' @importFrom rloadest loadReg
 #' @param load.model a loadReg object
 #' @export

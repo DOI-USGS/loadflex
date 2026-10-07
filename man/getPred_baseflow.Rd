@@ -80,8 +80,8 @@ Implementation of the 1- and 2-parameter digital filters was
   2013 Hydrology course (https://user.engineering.uiowa.edu/~flood)
 }
 \seealso{
-Other predictors: 
-\code{\link{getPred_isBaseflow}()}
+Other predictors:
+\code{\link[=getPred_isBaseflow]{getPred_isBaseflow()}}
 }
 \concept{predictors}
 \keyword{internal}

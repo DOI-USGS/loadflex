@@ -111,11 +111,11 @@ prediction intervals. Also, where other models such as loadReg and loadLm
 will retransform predictions back into linear space, loadInterps will not.
 }
 \seealso{
-Other predictSolute: 
-\code{\link{predictSolute}()},
-\code{\link{predictSolute.loadComp}()},
-\code{\link{predictSolute.loadLm}()},
-\code{\link{predictSolute.loadModel}()},
-\code{\link{predictSolute.loadReg2}()}
+Other predictSolute:
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=predictSolute.loadComp]{predictSolute.loadComp()}},
+\code{\link[=predictSolute.loadLm]{predictSolute.loadLm()}},
+\code{\link[=predictSolute.loadModel]{predictSolute.loadModel()}},
+\code{\link[=predictSolute.loadReg2]{predictSolute.loadReg2()}}
 }
 \concept{predictSolute}

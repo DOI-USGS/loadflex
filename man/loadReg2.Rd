@@ -109,10 +109,10 @@ no3_lr <- suppressWarnings(
 }
 }
 \seealso{
-Other load.model.inits: 
-\code{\link{loadComp}},
-\code{\link{loadInterp}},
-\code{\link{loadLm}},
-\code{\link{loadModel}}
+Other load.model.inits:
+\code{\link[=loadComp]{loadComp()}},
+\code{\link[=loadInterp]{loadInterp()}},
+\code{\link[=loadLm]{loadLm()}},
+\code{\link[=loadModel]{loadModel()}}
 }
 \concept{load.model.inits}

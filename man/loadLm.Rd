@@ -74,10 +74,10 @@ no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE) + DATE, pred.format="conc",
   data=eg_fitdat, metadata=eg_metadata, retrans=exp)
 }
 \seealso{
-Other load.model.inits: 
-\code{\link{loadComp}},
-\code{\link{loadInterp}},
-\code{\link{loadModel}},
-\code{\link{loadReg2}}
+Other load.model.inits:
+\code{\link[=loadComp]{loadComp()}},
+\code{\link[=loadInterp]{loadInterp()}},
+\code{\link[=loadModel]{loadModel()}},
+\code{\link[=loadReg2]{loadReg2()}}
 }
 \concept{load.model.inits}

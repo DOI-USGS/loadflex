@@ -22,11 +22,11 @@ the regression residuals, one for the 'residuals' used to do the composite
 correction).
 }
 \seealso{
-Other summarizeModel: 
-\code{\link{summarizeModel}()},
-\code{\link{summarizeModel.loadComp}()},
-\code{\link{summarizeModel.loadInterp}()},
-\code{\link{summarizeModel.loadLm}()},
-\code{\link{summarizeModel.loadReg2}()}
+Other summarizeModel:
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=summarizeModel.loadComp]{summarizeModel.loadComp()}},
+\code{\link[=summarizeModel.loadInterp]{summarizeModel.loadInterp()}},
+\code{\link[=summarizeModel.loadLm]{summarizeModel.loadLm()}},
+\code{\link[=summarizeModel.loadReg2]{summarizeModel.loadReg2()}}
 }
 \concept{summarizeModel}

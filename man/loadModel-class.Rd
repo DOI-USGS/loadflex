@@ -34,7 +34,7 @@ returning their values from \code{predictSolute()}.}
 }}
 
 \seealso{
-Other load.model.classes: 
+Other load.model.classes:
 \code{\link{loadComp-class}},
 \code{\link{loadInterp-class}},
 \code{\link{loadLm-class}},

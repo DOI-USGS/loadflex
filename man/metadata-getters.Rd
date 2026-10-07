@@ -90,7 +90,7 @@ md <- metadata(constituent="NO3", flow="DISCHARGE",
 getInfo(md, 'site.name')
 }
 \seealso{
-Other metadata: 
-\code{\link{metadata}}
+Other metadata:
+\code{\link[=metadata]{metadata()}}
 }
 \concept{metadata}

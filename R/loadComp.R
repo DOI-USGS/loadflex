@@ -702,7 +702,6 @@ getCorrectionFraction <- function(load.model, flux.or.conc=c("flux","conc"), new
 #'
 #' @rdname getCorrectionFraction
 #' @importFrom stats complete.cases
-#' @inheritParams getCorrectionFraction
 #' @param na.rm logical. Should predictions with NA values be excluded?
 #' @export
 getCorrectionFraction.loadComp <- function(load.model, flux.or.conc=c("flux","conc"), newdata, na.rm=FALSE, ...) {

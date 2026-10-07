@@ -20,18 +20,18 @@ returned function should accept exactly one argument, the training data, and
 should return an object of the same class as load.model.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getMetadata}()},
-\code{\link{predictSolute}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other getFittingFunction: 
-\code{\link{getFittingFunction.loadModel}()}
+Other getFittingFunction:
+\code{\link[=getFittingFunction.loadModel]{getFittingFunction.loadModel()}}
 }
 \concept{getFittingFunction}
 \concept{loadModelInterface}

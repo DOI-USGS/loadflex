@@ -3,8 +3,7 @@
 \name{getMetadata.loadReg}
 \alias{getMetadata.loadReg}
 \title{Extracts and imports metadata from an rloadest loadReg model into an object of class 
-"metadata"
-#'}
+"metadata"}
 \usage{
 \method{getMetadata}{loadReg}(load.model)
 }
@@ -18,11 +17,10 @@ Object of class "metadata" with slots modified according to the
 \description{
 Extracts and imports metadata from an rloadest loadReg model into an object of class 
 "metadata"
-#'
 }
 \seealso{
-Other getMetadata: 
-\code{\link{getMetadata}()},
-\code{\link{getMetadata.loadModel}()}
+Other getMetadata:
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=getMetadata.loadModel]{getMetadata.loadModel()}}
 }
 \concept{getMetadata}

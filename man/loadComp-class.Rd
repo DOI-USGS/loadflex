@@ -8,7 +8,7 @@
 A load model class implementing the composite method for flux estimation.
 }
 \seealso{
-Other load.model.classes: 
+Other load.model.classes:
 \code{\link{loadInterp-class}},
 \code{\link{loadLm-class}},
 \code{\link{loadModel-class}},

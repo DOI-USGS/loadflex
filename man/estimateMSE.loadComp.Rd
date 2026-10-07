@@ -40,8 +40,8 @@ and involves repeated resampling of the coefficients from which the
 regression predictions and residuals are calculated.
 }
 \seealso{
-Other estimateMSE: 
-\code{\link{estimateMSE}()},
-\code{\link{estimateMSE.loadInterp}()}
+Other estimateMSE:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=estimateMSE.loadInterp]{estimateMSE.loadInterp()}}
 }
 \concept{estimateMSE}

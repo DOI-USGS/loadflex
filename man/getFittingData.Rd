@@ -17,18 +17,18 @@ data.frame containing the original fitting data
 A function in the loadModelInterface.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingFunction}()},
-\code{\link{getMetadata}()},
-\code{\link{predictSolute}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other getFittingData: 
-\code{\link{getFittingData.loadModel}()}
+Other getFittingData:
+\code{\link[=getFittingData.loadModel]{getFittingData.loadModel()}}
 }
 \concept{getFittingData}
 \concept{loadModelInterface}

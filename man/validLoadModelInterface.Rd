@@ -25,14 +25,14 @@ TRUE if interface for given load.model is well defined; otherwise,
 provided object.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getFittingFunction}()},
-\code{\link{getMetadata}()},
-\code{\link{predictSolute}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}}
 }
 \concept{loadModelInterface}

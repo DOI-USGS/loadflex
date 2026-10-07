@@ -110,8 +110,6 @@ linToLog <- function(meanlin, sdlin, mslist) {
 #' 
 #' @rdname lognormal-moments
 #' @export
-#' @inheritParams logToLin
-#' @inheritParams linToLog
 #' @examples
 #' #
 #' # mixedToLog

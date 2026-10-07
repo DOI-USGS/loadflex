@@ -19,19 +19,19 @@ A function in the loadModelInterface. Returns a load model's metadata,
 encapsulated as a \code{metadata} object.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getFittingFunction}()},
-\code{\link{predictSolute}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other getMetadata: 
-\code{\link{getMetadata.loadModel}()},
-\code{\link{getMetadata.loadReg}()}
+Other getMetadata:
+\code{\link[=getMetadata.loadModel]{getMetadata.loadModel()}},
+\code{\link[=getMetadata.loadReg]{getMetadata.loadReg()}}
 }
 \concept{getMetadata}
 \concept{loadModelInterface}

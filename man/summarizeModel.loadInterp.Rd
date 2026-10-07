@@ -39,11 +39,11 @@ Produce a 1-row data.frame of model metrics. The relevant metrics for
 loadInterp models include RMSE, p-values, and others TBD.
 }
 \seealso{
-Other summarizeModel: 
-\code{\link{summarizeModel}()},
-\code{\link{summarizeModel.loadComp}()},
-\code{\link{summarizeModel.loadLm}()},
-\code{\link{summarizeModel.loadModel}()},
-\code{\link{summarizeModel.loadReg2}()}
+Other summarizeModel:
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=summarizeModel.loadComp]{summarizeModel.loadComp()}},
+\code{\link[=summarizeModel.loadLm]{summarizeModel.loadLm()}},
+\code{\link[=summarizeModel.loadModel]{summarizeModel.loadModel()}},
+\code{\link[=summarizeModel.loadReg2]{summarizeModel.loadReg2()}}
 }
 \concept{summarizeModel}

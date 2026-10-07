@@ -54,8 +54,8 @@ car::durbinWatsonTest to test for autocorrelation of those residuals.
 \seealso{
 car::durbinWatsonTest
 
-Other diagnostics: 
-\code{\link{estimateRho}()},
-\code{\link{getCorrectionFraction}()}
+Other diagnostics:
+\code{\link[=estimateRho]{estimateRho()}},
+\code{\link[=getCorrectionFraction]{getCorrectionFraction()}}
 }
 \concept{diagnostics}

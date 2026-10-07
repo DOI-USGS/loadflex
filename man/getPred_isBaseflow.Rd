@@ -24,8 +24,8 @@ for a time point to be classified as baseflow (TRUE).}
 Internal for now; not yet ready to be a part of the official API
 }
 \seealso{
-Other predictors: 
-\code{\link{getPred_baseflow}()}
+Other predictors:
+\code{\link[=getPred_baseflow]{getPred_baseflow()}}
 }
 \concept{predictors}
 \keyword{internal}

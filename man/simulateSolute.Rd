@@ -58,20 +58,20 @@ in conjunction with the composite method (i.e., within a
 \code{\link{loadComp}} model).
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getFittingFunction}()},
-\code{\link{getMetadata}()},
-\code{\link{predictSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other simulateSolute: 
-\code{\link{simulateSolute.loadLm}()},
-\code{\link{simulateSolute.loadModel}()},
-\code{\link{simulateSolute.loadReg2}()}
+Other simulateSolute:
+\code{\link[=simulateSolute.loadLm]{simulateSolute.loadLm()}},
+\code{\link[=simulateSolute.loadModel]{simulateSolute.loadModel()}},
+\code{\link[=simulateSolute.loadReg2]{simulateSolute.loadReg2()}}
 }
 \concept{loadModelInterface}
 \concept{simulateSolute}
