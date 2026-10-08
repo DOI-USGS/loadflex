@@ -268,7 +268,7 @@ md2 <- updateMetadata(md1, site.id="1073500",
   custom=list(data_source="USGS NWIS, waterdata.usgs.gov"))
 }
 \seealso{
-Other metadata: 
+Other metadata:
 \code{\link{metadata-getters}}
 }
 \concept{metadata}

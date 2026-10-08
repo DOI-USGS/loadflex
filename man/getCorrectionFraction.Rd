@@ -55,8 +55,8 @@ space) as \eqn{L}, and \eqn{\Delta t} is the vector of time periods
 represented by the predictions.
 }
 \seealso{
-Other diagnostics: 
-\code{\link{estimateRho}()},
-\code{\link{residDurbinWatson}()}
+Other diagnostics:
+\code{\link[=estimateRho]{estimateRho()}},
+\code{\link[=residDurbinWatson]{residDurbinWatson()}}
 }
 \concept{diagnostics}

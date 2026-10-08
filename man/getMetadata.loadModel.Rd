@@ -14,8 +14,8 @@ which to return the metadata}
 Retrieve metadata from a loadModel load model
 }
 \seealso{
-Other getMetadata: 
-\code{\link{getMetadata}()},
-\code{\link{getMetadata.loadReg}()}
+Other getMetadata:
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=getMetadata.loadReg]{getMetadata.loadReg()}}
 }
 \concept{getMetadata}

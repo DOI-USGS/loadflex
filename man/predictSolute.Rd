@@ -118,22 +118,22 @@ rloadest::predLoad() and predConc(), and more like most other predict
 functions in R, this function makes no attempt to aggregate the results.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{estimateMSE}()},
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getFittingFunction}()},
-\code{\link{getMetadata}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other predictSolute: 
-\code{\link{predictSolute.loadComp}()},
-\code{\link{predictSolute.loadInterp}()},
-\code{\link{predictSolute.loadLm}()},
-\code{\link{predictSolute.loadModel}()},
-\code{\link{predictSolute.loadReg2}()}
+Other predictSolute:
+\code{\link[=predictSolute.loadComp]{predictSolute.loadComp()}},
+\code{\link[=predictSolute.loadInterp]{predictSolute.loadInterp()}},
+\code{\link[=predictSolute.loadLm]{predictSolute.loadLm()}},
+\code{\link[=predictSolute.loadModel]{predictSolute.loadModel()}},
+\code{\link[=predictSolute.loadReg2]{predictSolute.loadReg2()}}
 }
 \concept{loadModelInterface}
 \concept{predictSolute}

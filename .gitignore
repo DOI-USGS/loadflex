@@ -2,5 +2,7 @@
 .Rhistory
 .RData
 temp
-tests/testthat/Rplots.pdf
 .kiro
+inst/doc/
+doc/
+docs/

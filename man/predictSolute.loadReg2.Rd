@@ -121,11 +121,11 @@ Makes instantaneous predictions (at the temporal resolution of
 \code{\link{predictSolute}} for details.
 }
 \seealso{
-Other predictSolute: 
-\code{\link{predictSolute}()},
-\code{\link{predictSolute.loadComp}()},
-\code{\link{predictSolute.loadInterp}()},
-\code{\link{predictSolute.loadLm}()},
-\code{\link{predictSolute.loadModel}()}
+Other predictSolute:
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=predictSolute.loadComp]{predictSolute.loadComp()}},
+\code{\link[=predictSolute.loadInterp]{predictSolute.loadInterp()}},
+\code{\link[=predictSolute.loadLm]{predictSolute.loadLm()}},
+\code{\link[=predictSolute.loadModel]{predictSolute.loadModel()}}
 }
 \concept{predictSolute}

@@ -65,8 +65,8 @@ functions such as \code{\link{rhoEqualDates}} or \code{\link{rho1DayBand}},
 or write your own assumptions.
 }
 \seealso{
-Other diagnostics: 
-\code{\link{getCorrectionFraction}()},
-\code{\link{residDurbinWatson}()}
+Other diagnostics:
+\code{\link[=getCorrectionFraction]{getCorrectionFraction()}},
+\code{\link[=residDurbinWatson]{residDurbinWatson()}}
 }
 \concept{diagnostics}

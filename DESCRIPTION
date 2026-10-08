@@ -26,6 +26,8 @@ Depends:
     rloadest (>= 0.4.4)
 Imports:
     smwrBase (>= 1.1.2),
+    smwrData,
+    smwrGraphs,
     smwrStats,
     smwrQW,
     unitted (>= 0.2.8),
@@ -41,9 +43,18 @@ Imports:
 Suggests:
     knitr,
     testthat (>= 3.0.0)
+Remotes:
+    git::https://code.usgs.gov/water/analysis-tools/smwrBase.git,
+    git::https://code.usgs.gov/water/analysis-tools/smwrData.git,
+    git::https://code.usgs.gov/water/analysis-tools/smwrGraphs.git,
+    git::https://code.usgs.gov/water/analysis-tools/smwrQW.git,
+    git::https://code.usgs.gov/water/analysis-tools/smwrStats.git,
+    USGS-R/rloadest,
+    DOI-USGS/EGRET,
+    appling/unitted
 LazyData: true
 License: CC0
-URL: https://github.com/USGS-R/loadflex
+URL: https://github.com/DOI-USGS/loadflex, http://doi-usgs.github.io/loadflex/
 Collate: 
     'aaa_onLoad.R'
     'aggregateSolute.R'
@@ -71,5 +82,5 @@ Collate:
     'text.R'
     'uncertainty.R'
     'unit.conversions.R'
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0

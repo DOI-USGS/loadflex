@@ -67,10 +67,10 @@ loadComps themselves contain two inner load models, one for regression and
 one for interpolation of the residuals of the regression predictions.
 }
 \seealso{
-Other load.model.inits: 
-\code{\link{loadInterp}},
-\code{\link{loadLm}},
-\code{\link{loadModel}},
-\code{\link{loadReg2}}
+Other load.model.inits:
+\code{\link[=loadInterp]{loadInterp()}},
+\code{\link[=loadLm]{loadLm()}},
+\code{\link[=loadModel]{loadModel()}},
+\code{\link[=loadReg2]{loadReg2()}}
 }
 \concept{load.model.inits}

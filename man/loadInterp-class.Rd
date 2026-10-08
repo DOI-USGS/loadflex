@@ -18,7 +18,7 @@ errors, probably as estimated by leave-one-out cross validation.}
 }}
 
 \seealso{
-Other load.model.classes: 
+Other load.model.classes:
 \code{\link{loadComp-class}},
 \code{\link{loadLm-class}},
 \code{\link{loadModel-class}},

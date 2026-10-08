@@ -40,8 +40,8 @@ method is k-fold cross validation when
 n.out*n.iter==nrow(getFittingData(load.model)) and with.replacement==FALSE.
 }
 \seealso{
-Other estimateMSE: 
-\code{\link{estimateMSE}()},
-\code{\link{estimateMSE.loadComp}()}
+Other estimateMSE:
+\code{\link[=estimateMSE]{estimateMSE()}},
+\code{\link[=estimateMSE.loadComp]{estimateMSE.loadComp()}}
 }
 \concept{estimateMSE}

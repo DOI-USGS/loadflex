@@ -1,8 +1,7 @@
 #### Documentation ####
 
 #' @name eg_loadflex
-#' @aliases lamprey_discharge lamprey_nitrate eg_fitdat eg_estdat eg_metadata
-#'   eg_loadInterp eg_loadLm eg_loadReg2 eg_loadComp
+#' @aliases lamprey_discharge lamprey_nitrate eg_fitdat eg_estdat eg_metadata eg_loadInterp eg_loadLm eg_loadReg2 eg_loadComp
 #' @title Example datasets and objects for the \pkg{loadflex} package
 #' @description These datasets and pre-created objects are provided for 
 #'   exploring and testing the \pkg{loadflex} package.

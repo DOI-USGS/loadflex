@@ -1,0 +1,82 @@
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'R/**'
+      - 'vignettes/**'
+      - 'man/**'
+      - 'README.Rmd'
+      - 'NEWS.md'
+      - '_pkgdown.yml'
+      - 'DESCRIPTION'
+      - '.github/workflows/pkgdown-preview.yaml'
+
+name: pkgdown-preview
+
+permissions:
+  contents: write        # to push preview to gh-pages
+  pull-requests: write   # to comment the preview link
+
+jobs:
+  preview:
+    # Skip fork PRs: they lack secrets (GITLAB_PAT) and write token
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITLAB_PAT: ${{ secrets.GITLAB_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Print toolchain versions
+        run: |
+          echo "=== gfortran ==="
+          gfortran --version || echo "gfortran not on PATH"
+          echo "=== gcc / g++ ==="
+          gcc --version
+          g++ --version
+          echo "=== R's configured Fortran compiler ==="
+          R CMD config FC
+          R CMD config FFLAGS
+          R CMD config FCFLAGS
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Deploy preview to gh-pages subfolder
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
+        with:
+          folder: docs
+          target-folder: preview/pr${{ github.event.pull_request.number }}
+          branch: gh-pages
+          clean: false   # don't wipe the production site or other PR previews
+
+      - name: Comment preview link
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = `https://doi-usgs.github.io/loadflex/preview/pr${context.issue.number}/`;
+            const marker = '<!-- pkgdown-preview -->';
+            const body = `${marker}\n📖 pkgdown preview for this PR: ${url}`;
+            const {data: comments} = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body});
+            } else {
+              await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body});
+            }

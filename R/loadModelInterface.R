@@ -167,7 +167,6 @@ getFittedModel <- function(load.model) {
 #' @param na.rm logical. Should NA values be removed before aggregation (TRUE),
 #'   or should NA be returned for intervals that contain one or more NA
 #'   predictions (FALSE)?
-#' @inheritParams aggregateSolute
 #' @param ... Additional arguments passed to class-specific implementations of
 #'   the \code{predictSolute} generic function.
 #' @return If interval=="none" and all of dates, se.fit, se.pred, and count are

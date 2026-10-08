@@ -60,11 +60,11 @@ summarizeModel(no3_lr)
 }
 }
 \seealso{
-Other summarizeModel: 
-\code{\link{summarizeModel}()},
-\code{\link{summarizeModel.loadComp}()},
-\code{\link{summarizeModel.loadInterp}()},
-\code{\link{summarizeModel.loadLm}()},
-\code{\link{summarizeModel.loadModel}()}
+Other summarizeModel:
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=summarizeModel.loadComp]{summarizeModel.loadComp()}},
+\code{\link[=summarizeModel.loadInterp]{summarizeModel.loadInterp()}},
+\code{\link[=summarizeModel.loadLm]{summarizeModel.loadLm()}},
+\code{\link[=summarizeModel.loadModel]{summarizeModel.loadModel()}}
 }
 \concept{summarizeModel}

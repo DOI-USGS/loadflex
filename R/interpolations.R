@@ -59,7 +59,6 @@ linearInterpolation <- function(dates.in, y.in, dates.out) {
 #' residuals interpolation with the composite method.
 #' 
 #' @rdname interpolations
-#' @inheritParams interpolations
 #' @export
 triangularInterpolation <- function(dates.in, y.in, dates.out) {
   genericTriangularInterpolation(dates.in, y.in, dates.out, y.mid=mean(y.in))
@@ -122,7 +121,6 @@ genericTriangularInterpolation <- function(dates.in, y.in, dates.out, y.mid) {
 #' 
 #' @rdname interpolations
 #' @importFrom stats approx
-#' @inheritParams interpolations
 #' @export
 rectangularInterpolation <- function(dates.in, y.in, dates.out) {
   
@@ -160,7 +158,6 @@ rectangularInterpolation <- function(dates.in, y.in, dates.out) {
 #' @importFrom splines interpSpline
 #' @importFrom stats predict
 #' @rdname interpolations
-#' @inheritParams interpolations
 #' @export
 splineInterpolation <- function(dates.in, y.in, dates.out) {
   predict(splines::interpSpline(dates.in, y.in), dates.out)$y
@@ -176,7 +173,6 @@ splineInterpolation <- function(dates.in, y.in, dates.out) {
 #' function with the parameters of your choice.
 #' 
 #' @rdname interpolations
-#' @inheritParams interpolations
 #' @export
 smoothSplineInterpolation <- function(dates.in, y.in, dates.out) {
   genericSmoothSplineInterpolation(dates.in, y.in, dates.out, keep.data=FALSE)
@@ -223,7 +219,6 @@ genericSmoothSplineInterpolation <- function(dates.in, y.in, dates.out, ...) {
 #' inverse-distance function of your choice.
 #' 
 #' @rdname interpolations
-#' @inheritParams interpolations
 #' @export
 distanceWeightedInterpolation <- function(dates.in, y.in, dates.out) {
   genericDistanceWeightedInterpolation(dates.in, y.in, dates.out)

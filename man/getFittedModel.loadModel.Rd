@@ -13,7 +13,7 @@
 Retrieve the fitted model, if appropriate, from a loadModel load model
 }
 \seealso{
-Other getFittedModel: 
-\code{\link{getFittedModel}()}
+Other getFittedModel:
+\code{\link[=getFittedModel]{getFittedModel()}}
 }
 \concept{getFittedModel}

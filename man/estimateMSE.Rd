@@ -20,19 +20,19 @@ in conjunction with the composite method (i.e., within a
 MSE cannot be known without some estimation procedure.
 }
 \seealso{
-Other loadModelInterface: 
-\code{\link{getFittedModel}()},
-\code{\link{getFittingData}()},
-\code{\link{getFittingFunction}()},
-\code{\link{getMetadata}()},
-\code{\link{predictSolute}()},
-\code{\link{simulateSolute}()},
-\code{\link{summarizeModel}()},
-\code{\link{validLoadModelInterface}()}
+Other loadModelInterface:
+\code{\link[=getFittedModel]{getFittedModel()}},
+\code{\link[=getFittingData]{getFittingData()}},
+\code{\link[=getFittingFunction]{getFittingFunction()}},
+\code{\link[=getMetadata]{getMetadata()}},
+\code{\link[=predictSolute]{predictSolute()}},
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=summarizeModel]{summarizeModel()}},
+\code{\link[=validLoadModelInterface]{validLoadModelInterface()}}
 
-Other estimateMSE: 
-\code{\link{estimateMSE.loadComp}()},
-\code{\link{estimateMSE.loadInterp}()}
+Other estimateMSE:
+\code{\link[=estimateMSE.loadComp]{estimateMSE.loadComp()}},
+\code{\link[=estimateMSE.loadInterp]{estimateMSE.loadInterp()}}
 }
 \concept{estimateMSE}
 \concept{loadModelInterface}

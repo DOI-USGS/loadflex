@@ -89,103 +89,125 @@ exportClasses(metadata)
 exportMethods("==")
 exportMethods(show)
 import(dplyr)
-importFrom(EGRET,as.egret)
-importFrom(EGRET,boxConcMonth)
-importFrom(EGRET,boxConcThree)
-importFrom(EGRET,boxQTwice)
-importFrom(EGRET,boxResidMonth)
-importFrom(EGRET,fluxBiasMulti)
-importFrom(EGRET,multiPlotDataOverview)
-importFrom(EGRET,plotConcHist)
-importFrom(EGRET,plotConcPred)
-importFrom(EGRET,plotConcQ)
-importFrom(EGRET,plotConcTime)
-importFrom(EGRET,plotConcTimeDaily)
-importFrom(EGRET,plotFluxHist)
-importFrom(EGRET,plotFluxPred)
-importFrom(EGRET,plotFluxQ)
-importFrom(EGRET,plotFluxTimeDaily)
-importFrom(EGRET,plotResidPred)
-importFrom(EGRET,plotResidQ)
-importFrom(EGRET,plotResidTime)
-importFrom(EGRET,populateDaily)
-importFrom(EGRET,populateSampleColumns)
+importFrom(EGRET,
+  as.egret,
+  boxConcMonth,
+  boxConcThree,
+  boxQTwice,
+  boxResidMonth,
+  fluxBiasMulti,
+  multiPlotDataOverview,
+  plotConcHist,
+  plotConcPred,
+  plotConcQ,
+  plotConcTime,
+  plotConcTimeDaily,
+  plotFluxHist,
+  plotFluxPred,
+  plotFluxQ,
+  plotFluxTimeDaily,
+  plotResidPred,
+  plotResidQ,
+  plotResidTime,
+  populateDaily,
+  populateSampleColumns
+)
 importFrom(MASS,mvrnorm)
-importFrom(Matrix,Diagonal)
-importFrom(Matrix,Matrix)
+importFrom(Matrix,
+  Diagonal,
+  Matrix
+)
 importFrom(car,durbinWatsonTest)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,all_of)
-importFrom(dplyr,bind_cols)
-importFrom(dplyr,everything)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n)
-importFrom(dplyr,n_groups)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,summarise)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,aes_string)
-importFrom(ggplot2,geom_histogram)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,scale_colour_manual)
-importFrom(ggplot2,scale_linetype_manual)
-importFrom(ggplot2,scale_shape_manual)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
-importFrom(lubridate,is.Date)
-importFrom(lubridate,is.POSIXt)
-importFrom(lubridate,tz)
-importFrom(methods,"slot<-")
-importFrom(methods,S3Part)
-importFrom(methods,getSlots)
-importFrom(methods,is)
-importFrom(methods,new)
-importFrom(methods,setClass)
-importFrom(methods,setMethod)
-importFrom(methods,show)
-importFrom(methods,slot)
-importFrom(methods,validObject)
-importFrom(rloadest,loadReg)
-importFrom(rloadest,predConc)
-importFrom(rloadest,predLoad)
+importFrom(dplyr,
+  "%>%",
+  across,
+  all_of,
+  bind_cols,
+  everything,
+  filter,
+  group_by,
+  left_join,
+  mutate,
+  n,
+  n_groups,
+  rename,
+  select,
+  summarise
+)
+importFrom(ggplot2,
+  aes,
+  aes_string,
+  geom_histogram,
+  geom_line,
+  geom_point,
+  ggplot,
+  scale_colour_manual,
+  scale_linetype_manual,
+  scale_shape_manual,
+  theme_bw,
+  xlab,
+  ylab
+)
+importFrom(lubridate,
+  is.Date,
+  is.POSIXt,
+  tz
+)
+importFrom(methods,
+  "slot<-",
+  S3Part,
+  getSlots,
+  is,
+  new,
+  setClass,
+  setMethod,
+  show,
+  slot,
+  validObject
+)
+importFrom(rloadest,
+  loadReg,
+  predConc,
+  predLoad
+)
 importFrom(smwrBase,waterYear)
-importFrom(smwrQW,as.lcens)
-importFrom(smwrQW,censPPCC.test)
+importFrom(smwrQW,
+  as.lcens,
+  censPPCC.test
+)
 importFrom(smwrStats,rmse)
 importFrom(splines,interpSpline)
-importFrom(stats,acf)
-importFrom(stats,aggregate)
-importFrom(stats,approx)
-importFrom(stats,arima)
-importFrom(stats,arima.sim)
-importFrom(stats,coef)
-importFrom(stats,complete.cases)
-importFrom(stats,cor)
-importFrom(stats,lm)
-importFrom(stats,median)
-importFrom(stats,pchisq)
-importFrom(stats,predict)
-importFrom(stats,qnorm)
-importFrom(stats,qt)
-importFrom(stats,rchisq)
-importFrom(stats,residuals)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(stats,smooth.spline)
-importFrom(unitted,get_units)
-importFrom(unitted,separate_units)
-importFrom(unitted,u)
-importFrom(unitted,unitbundle)
-importFrom(unitted,v)
-importFrom(utils,capture.output)
-importFrom(utils,data)
-importFrom(utils,head)
-importFrom(utils,methods)
+importFrom(stats,
+  acf,
+  aggregate,
+  approx,
+  arima,
+  arima.sim,
+  coef,
+  complete.cases,
+  cor,
+  lm,
+  median,
+  pchisq,
+  predict,
+  qnorm,
+  qt,
+  rchisq,
+  residuals,
+  sd,
+  setNames,
+  smooth.spline
+)
+importFrom(unitted,
+  get_units,
+  separate_units,
+  u,
+  unitbundle,
+  v
+)
+importFrom(utils,
+  capture.output,
+  data,
+  head,
+  methods
+)

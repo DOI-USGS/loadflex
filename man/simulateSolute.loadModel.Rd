@@ -58,9 +58,9 @@ makes predictions whose individual errors are sampled from a time series with
 the same first-order autocorrelation as the original series of errors.
 }
 \seealso{
-Other simulateSolute: 
-\code{\link{simulateSolute}()},
-\code{\link{simulateSolute.loadLm}()},
-\code{\link{simulateSolute.loadReg2}()}
+Other simulateSolute:
+\code{\link[=simulateSolute]{simulateSolute()}},
+\code{\link[=simulateSolute.loadLm]{simulateSolute.loadLm()}},
+\code{\link[=simulateSolute.loadReg2]{simulateSolute.loadReg2()}}
 }
 \concept{simulateSolute}

@@ -27,7 +27,7 @@ interpolate.}
 }}
 
 \seealso{
-Other load.model.fits: 
+Other load.model.fits:
 \code{\link{compModel-class}}
 }
 \concept{load.model.fits}

@@ -1,0 +1,26 @@
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+name: pkgdown-preview-cleanup
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Remove preview folder
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          rm -rf "preview/pr${{ github.event.pull_request.number }}"
+          git add -A
+          git commit -m "Clean up preview for PR #${{ github.event.pull_request.number }}" || echo "nothing to clean"
+          git push

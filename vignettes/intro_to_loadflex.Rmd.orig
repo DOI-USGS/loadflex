@@ -1,6 +1,6 @@
 ---
 title: "Introduction to loadflex"
-author: Alison Appling
+author: "Alison Appling"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
@@ -8,7 +8,7 @@ output:
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Introduction to loadflex}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 The `loadflex` package lets you quickly fit and compare concentrations and/or
@@ -22,12 +22,15 @@ concentration observations from the Lamprey River in southeastern New Hampshire,
 where researchers in the NH Water Resources Research Center (University of New
 Hampshire; PI: William H. McDowell) have been monitoring water quality weekly
 since 1999. Discharge data are from the same location, Packers Falls, from a
-USGS gaging station (http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500).
+USGS gaging station (https://waterdata.usgs.gov/monitoring-location/USGS-01073500).
 
 ```{r, echo=FALSE, message=FALSE}
 # Set options for producing the html file & figures
 library(knitr)
-opts_chunk$set(echo=TRUE, message=FALSE)
+opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  fig.path = 'figure/')
 set.seed(8437)
 ```
 
@@ -75,7 +78,7 @@ no3_lr <- loadReg2(loadReg(NO3 ~ model(9), data=regdat,
   flow.units="cfs", conc.units="mg/L", load.units="kg",
   station='Lamprey River, NH'))
 no3_lc <- loadComp(reg.model=no3_lr, interp.format="conc", 
-  interp.data=intdat)
+  interp.data=intdat, store = "uncertainty")
 ```
 
 You can inspect these models in a variety of model-specific ways. Here are some commands to try (we won't print them here because the output can be lengthy):
@@ -90,13 +93,13 @@ getFittingData(no3_lc)
 Now generate point predictions from each model.
 
 ```{r fig_1C}
-preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE, date=TRUE)
-preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE, date=TRUE)
+preds_li <- predictSolute(no3_li, "flux", estdat, se.pred=TRUE)
+preds_lm <- predictSolute(no3_lm, "flux", estdat, se.pred=TRUE, lin.or.log="linear")
+preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE)
+preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE)
 ```
 
-A few lines from one of the resulting prediction data.frames (they're all structured the same way):
+A few lines from one of the resulting prediction data.frames:
 
 ```{r}
 head(preds_lr)
@@ -114,17 +117,45 @@ estimateRho(no3_lr, "conc", newdata=intdat, irreg=TRUE)$rho
 getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 ```
 
-Aggregate from point predictions to monthly predictions from each model. You can also do this for mean concentration or total flux for the month, or for years or other time intervals.
 
-```{r, fig_1E}
-aggs_li <- aggregateSolute(preds_li, meta, "flux rate", "month")
-aggs_lm <- aggregateSolute(preds_lm, meta, "flux rate", "month")
-aggs_lr <- aggregateSolute(preds_lr, meta, "flux rate", "month")
-aggs_lc <- aggregateSolute(preds_lc, meta, "flux rate", "month")
-```
-
-A few lines from one of the resulting aggregated flux data.frames (they're all structured the same way):
+The `loadflex` process for aggregation of point predictions (to monthly, annual, etc.)
+has changed since we published our 2015 manuscript.
+`aggregateSolute` from that manuscript is no longer exported as a function in loadflex.
+Instead, you can use the `agg.by` argument to `predictSolute` to
+generate predictions at the time interval of interest.
+You can aggregate for for months, water years, calendar years, or other time intervals,
+and for mean concentration (named `conc` in the output)
+or flux (`flux.rate` in the output, using "rate" to remind users that the time denominator
+does not change regardless of the time period being aggregated over).
+Standard errors (`se.fit` and `se.pred`) are available for `loadReg2` models.
+The units of the aggregated output are what you passed into each model as metadata.
+`count` reports the number of observations going into the aggregated estimate in each row.
+Some examples:
 
 ```{r}
-head(aggs_lc)
+getUnits(getMetadata(no3_lr), 'conc')
+agg_c_li <- predictSolute(no3_li, "conc", newdata=estdat, agg.by="month")
+agg_c_lm <- predictSolute(no3_lm, "conc", newdata=estdat, agg.by="water year")
+agg_c_lr <- predictSolute(no3_lr, "conc", newdata=estdat, agg.by="unit", se.fit=TRUE, se.pred=TRUE)
+agg_c_lc <- predictSolute(no3_lc, "conc", newdata=estdat, agg.by="day")
+
+getUnits(getMetadata(no3_lr), 'flux rate')
+agg_f_li <- predictSolute(no3_li, "flux", newdata=estdat, agg.by="month")
+agg_f_lm <- predictSolute(no3_lm, "flux", newdata=estdat, agg.by="water year")
+agg_f_lr <- predictSolute(no3_lr, "flux", newdata=estdat, agg.by="calendar year", se.fit=TRUE, se.pred=TRUE)
+agg_f_lc <- predictSolute(no3_lc, "flux", newdata=estdat, agg.by="day")
+```
+
+A few lines from each of the resulting aggregated flux data.frames:
+
+```{r}
+head(agg_c_li)
+head(agg_c_lm)
+head(agg_c_lr)
+head(agg_c_lc)
+
+head(agg_f_li)
+head(agg_f_lm)
+head(agg_f_lr)
+head(agg_f_lc)
 ```

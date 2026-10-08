@@ -54,10 +54,10 @@ A fitted loadModel.
 Generates a new model of class loadModel (\code{\link{loadModel-class}}).
 }
 \seealso{
-Other load.model.inits: 
-\code{\link{loadComp}},
-\code{\link{loadInterp}},
-\code{\link{loadLm}},
-\code{\link{loadReg2}}
+Other load.model.inits:
+\code{\link[=loadComp]{loadComp()}},
+\code{\link[=loadInterp]{loadInterp()}},
+\code{\link[=loadLm]{loadLm()}},
+\code{\link[=loadReg2]{loadReg2()}}
 }
 \concept{load.model.inits}
