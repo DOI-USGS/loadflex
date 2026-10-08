@@ -144,7 +144,7 @@ future modeling environments.
     ##  collate  C.UTF-8
     ##  ctype    C.UTF-8
     ##  tz       America/New_York
-    ##  date     2026-10-07
+    ##  date     2026-10-08
     ## 
     ## ─ Packages ───────────────────────────────────────────────────────────────────
     ##  package       * version    date (UTC) lib source
@@ -182,7 +182,7 @@ future modeling environments.
     ##  leaps           3.2        2024-06-10 [2] CRAN (R 4.5.0)
     ##  libcoin         1.0-13     2026-06-04 [2] CRAN (R 4.5.2)
     ##  lifecycle       1.0.5      2026-01-08 [2] CRAN (R 4.5.2)
-    ##  loadflex      * 1.9.3      2026-10-07 [1] local
+    ##  loadflex      * 1.9.3      2026-10-08 [1] local
     ##  lubridate     * 1.9.5      2026-02-04 [2] CRAN (R 4.5.2)
     ##  magrittr        2.0.5      2026-04-04 [2] CRAN (R 4.5.2)
     ##  MASS            7.3-66     2026-07-15 [2] CRAN (R 4.5.2)

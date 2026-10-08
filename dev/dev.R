@@ -13,7 +13,8 @@ knitr::knit(
   output = "vignettes/intro_to_loadflex.Rmd"
 )
 
-# Docs site (local preview)
+# At this point, the code can be pushed; the site will be built and deployed with GitHub actions.
+# But if you want to check readiness for deployment, generate a local preview of the docs site
 pkgdown::build_site()     # or build_site(lazy = TRUE) while iterating
 
 # Release-ish

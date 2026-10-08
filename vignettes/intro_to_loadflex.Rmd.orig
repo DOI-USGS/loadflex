@@ -22,7 +22,7 @@ concentration observations from the Lamprey River in southeastern New Hampshire,
 where researchers in the NH Water Resources Research Center (University of New
 Hampshire; PI: William H. McDowell) have been monitoring water quality weekly
 since 1999. Discharge data are from the same location, Packers Falls, from a
-USGS gaging station (http://waterdata.usgs.gov/usa/nwis/uv?site_no=01073500).
+USGS gaging station (https://waterdata.usgs.gov/monitoring-location/USGS-01073500).
 
 ```{r, echo=FALSE, message=FALSE}
 # Set options for producing the html file & figures
@@ -99,7 +99,7 @@ preds_lr <- predictSolute(no3_lr, "flux", estdat, se.pred=TRUE)
 preds_lc <- predictSolute(no3_lc, "flux", estdat, se.pred=TRUE)
 ```
 
-A few lines from one of the resulting prediction data.frames (they're all structured the same way):
+A few lines from one of the resulting prediction data.frames:
 
 ```{r}
 head(preds_lr)
@@ -118,19 +118,44 @@ getCorrectionFraction(no3_lc, "flux", newdat=intdat)
 ```
 
 
-The `loadflex` process for aggregation of point predictions (to monthly, annual, etc.) has changed since we published our 2015 manuscript, so `aggregateSolute` from that manuscript is no longer offered as a function in loadflex. Instead, you can use the `agg.by` argument to `predictSolute` to generate predictions at the time interval of interest. You can aggregate for mean concentration or flux rate, and for months, water years, calendar years, or other time intervals. `n` reports the number of observations going into the aggregated estimate in each row. Some examples:
+The `loadflex` process for aggregation of point predictions (to monthly, annual, etc.)
+has changed since we published our 2015 manuscript.
+`aggregateSolute` from that manuscript is no longer exported as a function in loadflex.
+Instead, you can use the `agg.by` argument to `predictSolute` to
+generate predictions at the time interval of interest.
+You can aggregate for for months, water years, calendar years, or other time intervals,
+and for mean concentration (named `conc` in the output)
+or flux (`flux.rate` in the output, using "rate" to remind users that the time denominator
+does not change regardless of the time period being aggregated over).
+Standard errors (`se.fit` and `se.pred`) are available for `loadReg2` models.
+The units of the aggregated output are what you passed into each model as metadata.
+`count` reports the number of observations going into the aggregated estimate in each row.
+Some examples:
+
 ```{r}
-aggs_li <- predictSolute(no3_li, "flux", newdata=estdat, agg.by="month")
-aggs_lm <- predictSolute(no3_lm, "flux", newdata=estdat, agg.by="water year")
-aggs_lr <- predictSolute(no3_lr, "flux", newdata=estdat, agg.by="calendar year", date=TRUE, se.fit=TRUE)
-aggs_lc <- predictSolute(no3_lc, "flux", newdata=estdat, agg.by="day")
+getUnits(getMetadata(no3_lr), 'conc')
+agg_c_li <- predictSolute(no3_li, "conc", newdata=estdat, agg.by="month")
+agg_c_lm <- predictSolute(no3_lm, "conc", newdata=estdat, agg.by="water year")
+agg_c_lr <- predictSolute(no3_lr, "conc", newdata=estdat, agg.by="unit", se.fit=TRUE, se.pred=TRUE)
+agg_c_lc <- predictSolute(no3_lc, "conc", newdata=estdat, agg.by="day")
+
+getUnits(getMetadata(no3_lr), 'flux rate')
+agg_f_li <- predictSolute(no3_li, "flux", newdata=estdat, agg.by="month")
+agg_f_lm <- predictSolute(no3_lm, "flux", newdata=estdat, agg.by="water year")
+agg_f_lr <- predictSolute(no3_lr, "flux", newdata=estdat, agg.by="calendar year", se.fit=TRUE, se.pred=TRUE)
+agg_f_lc <- predictSolute(no3_lc, "flux", newdata=estdat, agg.by="day")
 ```
 
 A few lines from each of the resulting aggregated flux data.frames:
 
 ```{r}
-head(aggs_li)
-head(aggs_lm)
-head(aggs_lr)
-head(aggs_lc)
+head(agg_c_li)
+head(agg_c_lm)
+head(agg_c_lr)
+head(agg_c_lc)
+
+head(agg_f_li)
+head(agg_f_lm)
+head(agg_f_lr)
+head(agg_f_lc)
 ```
