@@ -128,24 +128,48 @@ rectangularInterpolation <- function(dates.in, y.in, dates.out) {
   # nearly-simultaneous points having the y values of their left and right
   # neighboring observations, respectively.
 
-  # Determine x values: interleave dates.in and their near-duplicated midpoints 
-  # and remove the last elements (a false pair of midpoints, stored temporarily 
-  # as NAs). For separating each pair of midpoints, we need a number
-  # (tiny_number) that's small enough to make all predictions correctly, but not
-  # too small to disappear in number storage
-  midpoints1 <- dates.in + c(diff(dates.in), NA)/2
-  tiny_number <- if(length(dates.out) > 1) min(diff(dates.out))/2 else 0.5 # actually, 0.5 should pretty much always be sufficient since dates are in as.numeric(POSIXct), so units = seconds
-  midpoints2 <- midpoints1 + tiny_number
-  dates.in.interp <- c(rbind(dates.in, midpoints1, midpoints2))
-  dates.in.interp <- dates.in.interp[-which(is.na(dates.in.interp))]
+  # Determine x values: interleave dates.in with midpoints on either side,
+  # temporarily storing a point on either side of dates.in as NA with intent to 
+  # remove shortly. To define the right interval bounds for each horizontal line
+  # in the interpolation, we choose the midpoints between each pair of dates.
+  right.bounds <- head(dates.in, -1) + diff(dates.in)/2
   
-  # Determine y values: replicate the y.in values to make horizontal lines 
-  # between midpoints, removing the first and last elements because these are 
-  # unnecessary midpoint values
-  y.in.interp <- rep(y.in, each=3)[-c(1, 3*length(y.in))]
+  # We need two bounding points between each date a and date b, so that we can assign
+  # them y.in[a] and y.in[b], respectively. To define unique bound points, that satisfy
+  # approx's demand for unique values, we separate them by a small interval (tiny_gap).
+  # We choose a value for tiny_gap that's small enough to fit between right.bounds[a]
+  # and the very next dates.out, but no smaller than necessary so it won't disappear
+  # in number storage.
+  # * min_gap1: the smallest gap between a dates.in and its subsequent right.bounds.
+  # * min_gap2: the smallest gap between a right.bounds and a subsequent dates.out.
+  # * tiny_gap: something smaller than min_gap1 and min_gap2, to use in picking left.bounds
+  min_gap1 <- min(right.bounds - head(dates.in, -1))
+  slot <- findInterval(dates.out, right.bounds)
+  valid <- slot >= 1 &
+    slot < length(right.bounds) &
+    !(dates.out %in% right.bounds)
+  min_gap2 <- if (any(valid)) {
+    min(dates.out[valid] - right.bounds[slot[valid]])
+  } else {
+    min_gap1
+  }
+  tiny_gap <- min(min_gap1, min_gap2)/2
+  left.bounds <- right.bounds + tiny_gap
   
-  # Run a linear interpolation among the sequence of points and middles
-  approx(x=dates.in.interp, y=y.in.interp, xout=dates.out, method="linear", rule=2)$y
+  # replicate the y.in values to make horizontal lines between left and right points
+  # around each dates.in, then remove NA bound points at either end of the sequence
+  interp.points <- tibble(left = c(NA, left.bounds), middle = dates.in, right = c(right.bounds, NA), y.in.interp = y.in) |>
+    tidyr::pivot_longer(cols=left:right, values_to = 'dates.in.interp') |>
+    dplyr::filter(!is.na(dates.in.interp))
+  if(is.unsorted(interp.points$dates.in.interp)) {
+    stop('Hit a logic error. You can help by submitting an issue with the exact R command and minimal data to reproduce this error')
+  }
+  
+  # Run a linear interpolation among the sequence of points and middles. Rule 2
+  # extends horizontal lines out indefinitely to the left and right of the sequence
+  approx(
+    x = interp.points$dates.in.interp, y = interp.points$y.in.interp,
+    xout = dates.out, method = "linear", rule = 2)$y
   
 }
 
