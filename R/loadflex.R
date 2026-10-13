@@ -1,4 +1,11 @@
 #' Models and Tools for Watershed Flux Estimates
+#' 
+#' @section Vignettes:
+#'   \itemize{
+#' 
+#'    \item `vignette('intro_to_loadflex', package='loadflex')`
+#' 
+#'   }
 #'
 #' @section Models:
 #'
@@ -8,7 +15,7 @@
 #'
 #'   \item Generic regression-based models: \code{\link{loadModel}}
 #'
-#'   \item Regression-based models with rloadest (USGS, from LOADEST):
+#'   \item Regression-based models with the `rloadest` package:
 #'   \code{\link{loadReg2}}
 #'
 #'   \item Composite-method-based models: \code{\link{loadComp}}
@@ -19,25 +26,26 @@
 #'
 #'   \itemize{
 #'
-#'   \item Make predictions at the resolution of the predictor data:
+#'   \item Make predictions at the resolution of the predictor data or over longer time periods:
 #'   \code{\link{predictSolute}}
-#'
-#'   \item Collect predictions into means or totals over longer time periods:
-#'   \code{\link{aggregateSolute}}
 #'
 #'   }
 #'
-#' @name loadflex
-#' @docType _PACKAGE
-NULL
+#' @section Maintenance:
+#' 
+#'   Project funding has ended and our maintenance time is limited,
+#'   but we do attempt to provide bug fixes and lightweight support as we are able.
+#'   Submit questions or suggestions to https://github.com/DOI-USGS/loadflex/issues.
+#'
+"_PACKAGE"
 
 #' @keywords internal
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(paste(c(
-    strwrap(paste(
-      "Project funding has ended and our maintenance time is limited,",
-      "but we do attempt to provide bug fixes and lightweight support as we are able.",
-      "Submit questions or suggestions to https://github.com/DOI-USGS/loadflex/issues."))),
-    collapse='\n'))
+  # packageStartupMessage(paste(c(
+  #   strwrap(paste(
+  #     "Project funding has ended and our maintenance time is limited,",
+  #     "but we do attempt to provide bug fixes and lightweight support as we are able.",
+  #     "Submit questions or suggestions to https://github.com/DOI-USGS/loadflex/issues."))),
+  #   collapse='\n'))
 }
 
