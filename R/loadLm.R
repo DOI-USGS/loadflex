@@ -326,6 +326,12 @@ predictSolute.loadLm <- function(
     }
   }
 
+  # Rename the `fit` column to describe the type of prediction, matching the
+  # convention used by the other load models (see loadInterp). Fixes #258.
+  if(is.data.frame(preds)) {
+    names(preds) <- replace(names(preds), names(preds)=='fit', flux.or.conc)
+  }
+
   return(preds)
 }
 

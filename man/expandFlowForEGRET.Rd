@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertToEGRET.R
 \name{expandFlowForEGRET}
 \alias{expandFlowForEGRET}
-\title{Convert a date and discharge data.frame into EGRET format}
+\title{Convert a date and discharge data.frame into the EGRET Daily format}
 \usage{
 expandFlowForEGRET(flowdat, flow.colname, date.colname, flow.units)
 }
@@ -21,7 +21,17 @@ flowdat}
 \description{
 Use EGRET functions to convert a data.frame of date and
   discharge columns into "the basic Daily data frame used in WRTDS", i.e., a
-  13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day
-  smoothed Q, plus a column for dateTime. See
+  data.frame with one row per day, parsed datetimes, log(Q), and 7-day and
+  30-day smoothed Q, keyed on a `Date` column. See
   \code{\link[EGRET]{populateDaily}}
+}
+\details{
+The input must be daily (one row per calendar day). Sub-daily input
+  is rejected with an error because EGRET's Daily data.frame is defined as one
+  row per day; see [convertToEGRETSample()] for the sample (observation-level)
+  flow path.
+
+  The date column is converted to class `Date` using its own timezone before
+  being passed to [EGRET::populateDaily()], so loadflex (not populateDaily)
+  decides how timestamps map to calendar days.
 }
