@@ -39,27 +39,14 @@ citation('loadflex')
 
 ## Installation
 
-To install the `loadflex` package, use the `remotes` package as follows
-(running `install.packages('remotes')` first if needed). To use
-`remotes::install_gitlab()` it is convenient to set a [GitLab Personal
-Access Token
-(PAT)](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
-Similarly, to use `remotes::install_github()` it is convenient to set a
-[GitHub
-PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
-There are [several
-methods](https://usethis.r-lib.org/articles/git-credentials.html) for
-setting your PATs within R; the simplest is to call
-\`Sys.setenv(GITLAB_PAT=“xxxx”, GITHUB_PAT=“yyyy”), replacing xxxx and
-yyyy with the PATs you established on the GitLab and GitHub websites.
-
-You will also need a compiler to install `smwrStats`, `smwrQW`, and
+To install the `loadflex` package, use the `remotes` package as follows.
+You will need a compiler to install `smwrStats`, `smwrQW`, and
 `rloadest` – for Windows, see
 <https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html>.
 For Mac, see <https://mac.r-project.org/tools/>.
 
 ``` r
-# install.packages(remotes) # run if needed
+# install.packages("remotes") # run if needed
 remotes::install_gitlab("water/analysis-tools/smwrData", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrBase", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov")
@@ -68,7 +55,32 @@ remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")  
 remotes::install_github("USGS-R/rloadest")  # needs compilation
 remotes::install_github("appling/unitted")
 remotes::install_github("DOI-USGS/EGRET")
-remotes::install_github("DOI-USGS/loadflex")
+remotes::install_github("DOI-USGS/loadflex", build_vignettes=TRUE)
+```
+
+Credentials, if needed: `loadflex` and its dependencies are all on
+public websites, so you *shouldn’t* need to create any Personal Access
+Tokens (PATs), but sometimes it seems to help anyway, depending on your
+network and account settings. If you encounter errors in accessing
+code.usgs.gov or github.com in any of the above `remotes::` commands: \*
+to use `remotes::install_gitlab()` you *may* need to create and store a
+[GitLab
+PAT](https://docs.gitlab.com/auth/tokens/fine_grained_access_tokens) for
+the USGS GitLab instance at code.usgs.gov
+(<https://code.usgs.gov/-/user_settings/personal_access_tokens>). \* to
+use `remotes::install_github()` you *may* need to create and store a
+[GitHub
+PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+for github.com (<https://github.com/settings/personal-access-tokens>).
+The currently [recommended
+method](https://usethis.r-lib.org/articles/git-credentials.html#put-your-pat-into-the-local-git-credential-store)
+for storing your PATs within R is to call `gitcreds::gitcreds_set()` and
+enter the PATs you established on the GitLab and GitHub websites.
+
+``` r
+# install.packages("gitcreds") # run if needed
+gitcreds::gitcreds_set(url = 'https://code.usgs.gov') # enter your code.usgs.gov GITLAB_PAT value (begins with `glpat_`) at the interactive prompt
+gitcreds::gitcreds_set() # enter your GITHUB_PAT value (begins with `ghp_`) at the interactive prompt
 ```
 
 Also please see the installation FAQ on the wiki
@@ -78,7 +90,9 @@ run into trouble.
 ## Getting Started
 
 To get started, load the package with `library(loadflex)` and type
-`?loadflex` or `vignette('intro_to_loadflex')`.
+`?loadflex` or `vignette('intro_to_loadflex', package = 'loadflex')`.
+The vignette is also viewable at
+<https://doi-usgs.github.io/loadflex/articles/intro_to_loadflex.html>.
 
 ## Development and Maintenance Status
 
@@ -86,16 +100,6 @@ Project funding has ended and our maintenance time is limited, but we do
 attempt to provide bug fixes and lightweight support as we are able.
 Submit questions or suggestions to
 <https://github.com/DOI-USGS/loadflex/issues>.
-
-## Contributing
-
-We want to encourage a warm, welcoming, and safe environment for
-contributing to this project. See
-[CODE_OF_CONDUCT.md](https://github.com/DOI-USGS/loadflex/blob/main/CODE_OF_CONDUCT.md)
-for more information.
-
-For technical details on how to contribute, see
-[CONTRIBUTING.md](https://github.com/DOI-USGS/loadflex/blob/main/CONTRIBUTING.md)
 
 ## Contributing
 
@@ -144,7 +148,7 @@ future modeling environments.
     ##  collate  C.UTF-8
     ##  ctype    C.UTF-8
     ##  tz       America/New_York
-    ##  date     2026-10-08
+    ##  date     2026-10-13
     ## 
     ## ─ Packages ───────────────────────────────────────────────────────────────────
     ##  package       * version    date (UTC) lib source
@@ -165,7 +169,7 @@ future modeling environments.
     ##  digest          0.6.39     2025-11-19 [2] CRAN (R 4.5.2)
     ##  dplyr           1.2.1      2026-04-03 [2] CRAN (R 4.5.2)
     ##  e1071           1.7-17     2025-12-18 [2] CRAN (R 4.5.2)
-    ##  EGRET           3.0.12     2026-10-07 [2] Github (DOI-USGS/EGRET@b5eb22c)
+    ##  EGRET           3.0.12     2026-10-12 [2] Github (DOI-USGS/EGRET@b5eb22c)
     ##  evaluate        1.0.5      2025-08-27 [2] CRAN (R 4.5.0)
     ##  farver          2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
     ##  fastmap         1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
@@ -182,7 +186,7 @@ future modeling environments.
     ##  leaps           3.2        2024-06-10 [2] CRAN (R 4.5.0)
     ##  libcoin         1.0-13     2026-06-04 [2] CRAN (R 4.5.2)
     ##  lifecycle       1.0.5      2026-01-08 [2] CRAN (R 4.5.2)
-    ##  loadflex      * 1.9.3      2026-10-08 [1] local
+    ##  loadflex      * 1.9.3      2026-10-13 [1] local
     ##  lubridate     * 1.9.5      2026-02-04 [2] CRAN (R 4.5.2)
     ##  magrittr        2.0.5      2026-04-04 [2] CRAN (R 4.5.2)
     ##  MASS            7.3-66     2026-07-15 [2] CRAN (R 4.5.2)
@@ -203,7 +207,7 @@ future modeling environments.
     ##  RColorBrewer    1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
     ##  Rcpp            1.1.2      2026-07-05 [2] CRAN (R 4.5.2)
     ##  rlang           1.3.0      2026-07-05 [2] CRAN (R 4.5.2)
-    ##  rloadest      * 0.4.5      2026-09-14 [2] Github (USGS-R/rloadest@8a8119f)
+    ##  rloadest      * 0.4.5      2026-10-12 [2] Github (USGS-R/rloadest@8a8119f)
     ##  rmarkdown       2.32       2026-09-01 [2] CRAN (R 4.5.2)
     ##  S7              0.2.2      2026-04-22 [2] CRAN (R 4.5.2)
     ##  sandwich        3.1-3      2026-08-03 [2] CRAN (R 4.5.2)
@@ -211,11 +215,11 @@ future modeling environments.
     ##  segmented       2.2-2      2026-09-11 [2] CRAN (R 4.5.2)
     ##  sessioninfo     1.2.4      2026-06-04 [2] CRAN (R 4.5.2)
     ##  sf              1.1-3      2026-09-11 [2] CRAN (R 4.5.2)
-    ##  smwrBase      * 1.1.5      2026-02-13 [2] gitlab (water/analysis-tools/smwrBase@8037379)
+    ##  smwrBase      * 1.1.5      2026-10-12 [2] gitlab (water/analysis-tools/smwrBase@8037379)
     ##  smwrGraphs    * 1.1.4.9000 2026-02-13 [2] gitlab (water/analysis-tools/smwrGraphs@e494d6f)
     ##  smwrQW        * 0.7.14     2026-02-13 [2] gitlab (water/analysis-tools/smwrQW@b6211ad)
-    ##  smwrStats     * 0.7.6      2026-02-13 [2] gitlab (water/analysis-tools/smwrStats@7fa1862)
-    ##  sp              2.2-3      2026-07-19 [2] CRAN (R 4.5.2)
+    ##  smwrStats     * 0.7.6      2026-10-12 [2] gitlab (water/analysis-tools/smwrStats@7fa1862)
+    ##  sp              2.2-4      2026-10-11 [2] CRAN (R 4.5.2)
     ##  survival        3.8-12     2026-09-09 [2] CRAN (R 4.5.2)
     ##  TH.data         1.1-5      2025-11-17 [2] CRAN (R 4.5.2)
     ##  tibble          3.3.1      2026-01-11 [2] CRAN (R 4.5.2)
@@ -223,7 +227,7 @@ future modeling environments.
     ##  timechange      0.4.0      2026-01-29 [2] CRAN (R 4.5.2)
     ##  truncnorm       1.0-9      2023-03-20 [2] CRAN (R 4.5.0)
     ##  units           1.0-1      2026-03-11 [2] CRAN (R 4.5.2)
-    ##  unitted         0.2.9      2026-10-07 [2] Github (appling/unitted@0585684)
+    ##  unitted         0.2.9      2026-10-12 [2] Github (appling/unitted@0585684)
     ##  vctrs           0.7.3      2026-04-11 [2] CRAN (R 4.5.2)
     ##  xfun            0.61       2026-09-16 [2] CRAN (R 4.5.2)
     ##  XML             3.99-0.25  2026-09-27 [2] CRAN (R 4.5.2)

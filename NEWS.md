@@ -1,4 +1,4 @@
-# 1.9.3
+# Version 1.9.3
 
 * Fixed the grouping in `aggregateSolute` by replacing the defunct dplyr
 `group_by_()` with `group_by(across(all_of(...)))`.
@@ -8,7 +8,7 @@ defunct dplyr `select_()` and `rename_()` with `select()` and `rename()` using
 `all_of()`.
 
 
-# 1.2.0 - 1.9.2
+# Version 1.2.0 - 1.9.2
 
 * `aggregateSolute` is no longer exported and is now an internal function. The
 aggregation workflow it provided is now reached through the `agg.by` argument of
@@ -27,7 +27,7 @@ aggregate uncertainty estimates (`SE`, `CI_lower`, `CI_upper`) now return `NA`
 because the earlier estimates were unreliable.
 
 
-# 1.0.2 - 1.1.11
+# Version 1.0.2 - 1.1.11
 
 * New function: `plotEGRET`. Generates plots of loadflex inputs and outputs 
 using code already written and refined in the EGRET load estimation package.
@@ -40,7 +40,7 @@ and summarization.
 * Lightly altered the arguments and features of `getUnits` and `getInfo`.
 
 
-# 1.0.1
+# Version 1.0.1
 
 * This version is consistent with the description in Appling, A. P., M. C. Leon,
 and W. H. McDowell. 2015. Reducing bias and quantifying uncertainty in watershed

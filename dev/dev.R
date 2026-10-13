@@ -4,7 +4,7 @@
 devtools::document()      # regenerate NAMESPACE + Rd from roxygen
 devtools::check()         # full R CMD check (builds vignettes too)
 
-# README
+# README - requires that a GITLAB_PAT is set with gitcreds::gitcreds_set() and a restart of R
 devtools::build_readme()  # knit README.Rmd -> README.md after editing it
 
 # Vignette - prebuild locally because rloadest::censReg_AMLE.fit(Y, X, "lognormal") segfaults on GitHub CI

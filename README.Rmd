@@ -33,13 +33,11 @@ citation('loadflex')
 
 ## Installation
 
-To install the `loadflex` package, use the `remotes` package as follows (running `install.packages('remotes')` first if needed). To use `remotes::install_gitlab()` it is convenient to set a [GitLab Personal Access Token (PAT)](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html). Similarly, to use `remotes::install_github()` it is convenient to set a [GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens). There are [several methods](https://usethis.r-lib.org/articles/git-credentials.html) for setting your PATs within R; the simplest is to call `Sys.setenv(GITLAB_PAT="xxxx", GITHUB_PAT="yyyy"),
-replacing xxxx and yyyy with the PATs you established on the GitLab and GitHub websites.
-
-You will also need a compiler to install `smwrStats`, `smwrQW`, and `rloadest` -- for Windows, see https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html. For Mac, see https://mac.r-project.org/tools/.
+To install the `loadflex` package, use the `remotes` package as follows.
+You will need a compiler to install `smwrStats`, `smwrQW`, and `rloadest` -- for Windows, see https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html. For Mac, see https://mac.r-project.org/tools/.
 
 ```{r eval=FALSE}
-# install.packages(remotes) # run if needed
+# install.packages("remotes") # run if needed
 remotes::install_gitlab("water/analysis-tools/smwrData", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrBase", host = "code.usgs.gov")
 remotes::install_gitlab("water/analysis-tools/smwrGraphs", host = "code.usgs.gov")
@@ -48,7 +46,18 @@ remotes::install_gitlab("water/analysis-tools/smwrQW", host = "code.usgs.gov")  
 remotes::install_github("USGS-R/rloadest")  # needs compilation
 remotes::install_github("appling/unitted")
 remotes::install_github("DOI-USGS/EGRET")
-remotes::install_github("DOI-USGS/loadflex")
+remotes::install_github("DOI-USGS/loadflex", build_vignettes=TRUE)
+```
+
+Credentials, if needed: `loadflex` and its dependencies are all on public websites, so you _shouldn't_ need to create any Personal Access Tokens (PATs), but sometimes it seems to help anyway, depending on your network and account settings.
+If you encounter errors in accessing code.usgs.gov or github.com in any of the above `remotes::` commands:
+* to use `remotes::install_gitlab()` you _may_ need to create and store a [GitLab PAT](https://docs.gitlab.com/auth/tokens/fine_grained_access_tokens) for the USGS GitLab instance at code.usgs.gov (https://code.usgs.gov/-/user_settings/personal_access_tokens).
+* to use `remotes::install_github()` you _may_ need to create and store a [GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) for github.com (https://github.com/settings/personal-access-tokens).
+The currently [recommended method](https://usethis.r-lib.org/articles/git-credentials.html#put-your-pat-into-the-local-git-credential-store) for storing your PATs within R is to call `gitcreds::gitcreds_set()` and enter the PATs you established on the GitLab and GitHub websites.
+```{r eval=FALSE}
+# install.packages("gitcreds") # run if needed
+gitcreds::gitcreds_set(url = 'https://code.usgs.gov') # enter your code.usgs.gov GITLAB_PAT value (begins with `glpat_`) at the interactive prompt
+gitcreds::gitcreds_set() # enter your GITHUB_PAT value (begins with `ghp_`) at the interactive prompt
 ```
 
 Also please see the installation FAQ on the wiki
@@ -57,7 +66,9 @@ Also please see the installation FAQ on the wiki
 
 ## Getting Started
 
-To get started, load the package with `library(loadflex)` and type `?loadflex` or `vignette('intro_to_loadflex')`.
+To get started, load the package with `library(loadflex)` and type `?loadflex` or
+`vignette('intro_to_loadflex', package = 'loadflex')`.
+The vignette is also viewable at https://doi-usgs.github.io/loadflex/articles/intro_to_loadflex.html.
 
 
 ## Development and Maintenance Status
@@ -75,14 +86,6 @@ See [CODE_OF_CONDUCT.md](https://github.com/DOI-USGS/loadflex/blob/main/CODE_OF_
 
 For technical details on how to contribute,
 see [CONTRIBUTING.md](https://github.com/DOI-USGS/loadflex/blob/main/CONTRIBUTING.md)
-
-
-## Contributing
-
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See [CODE_OF_CONDUCT.md](https://github.com/DOI-USGS/loadflex/blob/main/CODE_OF_CONDUCT.md) for more information.
-
-For technical details on how to contribute, see [CONTRIBUTING.md](https://github.com/DOI-USGS/loadflex/blob/main/CONTRIBUTING.md)
-
 
 ## Development History
 
