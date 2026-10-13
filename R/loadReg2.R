@@ -499,9 +499,13 @@ predictSolute.loadReg2 <- function(
       preds <- data.frame(fit=preds)
     }
     # prepend the count column
-    if(agg.by=="unit") {
+    if(agg.by == "unit") {
       preds <- data.frame(
         setNames(list(rep(1, nrow(preds))), "count"),
+        preds)
+    } else if(agg.by == "day") {
+      preds <- data.frame(
+        setNames(list(1), "count.days"),
         preds)
     } else {
       preds <- data.frame(
@@ -523,7 +527,7 @@ predictSolute.loadReg2 <- function(
       "unit" = raw_dates,
       "day" = as.Date(raw_dates),
       "month" = strptime(sprintf("01 %s", raw_dates), format="%d %B %Y") %>%
-        strftime("%Y-%m", tz=tz(dates)),
+        strftime("%Y-%m", tz=tz(raw_dates)),
       "water year" = gsub("WY ", "", raw_dates),
       "calendar year" = gsub("CY ", "", raw_dates),
       raw_dates)
