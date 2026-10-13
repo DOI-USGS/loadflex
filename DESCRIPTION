@@ -21,7 +21,7 @@ Description: loadflex implements several of the most common methods for
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends:
-    R(>= 3.0),
+    R(>= 4.1.0),
     methods,
     rloadest (>= 0.4.4)
 Imports:
