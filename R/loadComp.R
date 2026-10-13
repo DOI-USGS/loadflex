@@ -711,7 +711,7 @@ getCorrectionFraction.loadComp <- function(load.model, flux.or.conc=c("flux","co
     preds <- preds[complete.cases(preds), ]
   }
   R <- preds$fit.resid
-  L <- preds$fit
+  L <- preds[[flux.or.conc]]
   #dt involves explicit and/or implicit conversions to numeric; fine as long as
   #dates are in a date format with a decent as.numeric implementation (includes
   #Date, POSIXt, chron)
