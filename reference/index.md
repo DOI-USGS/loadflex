@@ -226,7 +226,8 @@
 
   Deprecated functions in the loadflex package
 
-- [`loadflex`](http://doi-usgs.github.io/loadflex/reference/loadflex.md)
+- [`loadflex`](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
+  [`loadflex-package`](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
   : Models and Tools for Watershed Flux Estimates
 
 - [`logToLin()`](http://doi-usgs.github.io/loadflex/reference/lognormal-moments.md)

@@ -188,7 +188,7 @@ where the user is only interested in using metadata objects in isolation
 ### Valid units options, loadflex style
 
 Models used in
-[loadflex](http://doi-usgs.github.io/loadflex/reference/loadflex.md)
+[loadflex](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
 require metadata with units in a standardized form. For any model not
 produced using rloadest functions, this standardized format is a
 space-separated list of text units with exponents denoted with "^".
@@ -235,7 +235,7 @@ also accept all those units accepted by rloadest (see next section).
 Units passed to rloadest take the form "X/Y" or "X per Y" or an
 abbreviation and accept a limited number of numerators and denominators.
 Any valid rloadest units will be translated to valid
-[loadflex](http://doi-usgs.github.io/loadflex/reference/loadflex.md)
+[loadflex](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
 units when supplied to
 [`loadReg2`](http://doi-usgs.github.io/loadflex/reference/loadReg2.md),
 `metadata` or `updateMetadata`. These rloadest-style units are currently
