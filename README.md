@@ -148,7 +148,7 @@ future modeling environments.
     ##  collate  C.UTF-8
     ##  ctype    C.UTF-8
     ##  tz       America/New_York
-    ##  date     2026-10-13
+    ##  date     2026-10-14
     ## 
     ## ─ Packages ───────────────────────────────────────────────────────────────────
     ##  package       * version    date (UTC) lib source
@@ -169,7 +169,7 @@ future modeling environments.
     ##  digest          0.6.39     2025-11-19 [2] CRAN (R 4.5.2)
     ##  dplyr           1.2.1      2026-04-03 [2] CRAN (R 4.5.2)
     ##  e1071           1.7-17     2025-12-18 [2] CRAN (R 4.5.2)
-    ##  EGRET           3.0.12     2026-10-12 [2] Github (DOI-USGS/EGRET@b5eb22c)
+    ##  EGRET           3.0.12     2026-10-13 [2] Github (DOI-USGS/EGRET@b5eb22c)
     ##  evaluate        1.0.5      2025-08-27 [2] CRAN (R 4.5.0)
     ##  farver          2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
     ##  fastmap         1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
@@ -186,7 +186,7 @@ future modeling environments.
     ##  leaps           3.2        2024-06-10 [2] CRAN (R 4.5.0)
     ##  libcoin         1.0-13     2026-06-04 [2] CRAN (R 4.5.2)
     ##  lifecycle       1.0.5      2026-01-08 [2] CRAN (R 4.5.2)
-    ##  loadflex      * 1.9.3      2026-10-13 [1] local
+    ##  loadflex      * 1.9.4      2026-10-14 [1] local
     ##  lubridate     * 1.9.5      2026-02-04 [2] CRAN (R 4.5.2)
     ##  magrittr        2.0.5      2026-04-04 [2] CRAN (R 4.5.2)
     ##  MASS            7.3-66     2026-07-15 [2] CRAN (R 4.5.2)
