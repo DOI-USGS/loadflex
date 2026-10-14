@@ -45,13 +45,8 @@ meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE",
 no3_lm <- loadLm(formula=log(NO3) ~ log(DISCHARGE), pred.format="conc",
   data=fitdat, metadata=meta, retrans=exp)
 minimalEGRET <- loadflex:::convertToEGRET(data=fitdat, meta=meta)
-#> Many EGRET functions will not work with missing values.
-#> Error in mutate(., dateTime = flowdat[[date.colname]]): ℹ In argument: `dateTime = flowdat[[date.colname]]`.
-#> Caused by error:
-#> ! `dateTime` must be size 4740 or 1, not 555.
+#> 
+#> There are 35 duplicated Sample dates.
 maximalEGRET <- loadflex:::convertToEGRET(load.model=no3_lm, newdata=estdat)
-#> Many EGRET functions will not work with missing values.
-#> Error in mutate(., dateTime = flowdat[[date.colname]]): ℹ In argument: `dateTime = flowdat[[date.colname]]`.
-#> Caused by error:
-#> ! `dateTime` must be size 4749 or 1, not 18996.
+#> Error in expandFlowForEGRET(flowdat = newdata, flow.colname = getInfo(meta,     "flow", TRUE), date.colname = getInfo(meta, "dates", TRUE),     flow.units = getUnits(meta, "flow", "EGRET")): flowdat for the EGRET Daily frame must be daily (one row per day); sub-daily flow data is not supported here
 ```

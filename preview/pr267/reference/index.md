@@ -80,7 +80,7 @@
   series
 
 - [`expandFlowForEGRET()`](http://doi-usgs.github.io/loadflex/reference/expandFlowForEGRET.md)
-  : Convert a date and discharge data.frame into EGRET format
+  : Convert a date and discharge data.frame into the EGRET Daily format
 
 - [`flowconcToFluxConversion()`](http://doi-usgs.github.io/loadflex/reference/flowconcToFluxConversion.md)
   : Provide the conversion factor which, when multiplied by flow \*
@@ -226,7 +226,8 @@
 
   Deprecated functions in the loadflex package
 
-- [`loadflex`](http://doi-usgs.github.io/loadflex/reference/loadflex.md)
+- [`loadflex`](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
+  [`loadflex-package`](http://doi-usgs.github.io/loadflex/reference/loadflex-package.md)
   : Models and Tools for Watershed Flux Estimates
 
 - [`logToLin()`](http://doi-usgs.github.io/loadflex/reference/lognormal-moments.md)

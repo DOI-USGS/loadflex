@@ -16,7 +16,7 @@ predictSolute(
   flux.or.conc = c("flux", "conc"),
   newdata,
   date = TRUE,
-  count = TRUE,
+  count = !identical(agg.by, "unit"),
   se.fit = FALSE,
   se.pred = FALSE,
   interval = c("none", "prediction"),

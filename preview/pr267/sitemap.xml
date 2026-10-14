@@ -23,6 +23,7 @@
 <url><loc>http://doi-usgs.github.io/loadflex/reference/correlations.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/dimInfo.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/eg_loadflex.html</loc></url>
+<url><loc>http://doi-usgs.github.io/loadflex/reference/egretDateTZ.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/equals.metadata.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/estimateMSE.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/estimateMSE.loadComp.html</loc></url>
@@ -72,7 +73,7 @@
 <url><loc>http://doi-usgs.github.io/loadflex/reference/loadflex-deprecated-data.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/loadflex-deprecated-internal.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/loadflex-deprecated.html</loc></url>
-<url><loc>http://doi-usgs.github.io/loadflex/reference/loadflex.html</loc></url>
+<url><loc>http://doi-usgs.github.io/loadflex/reference/loadflex-package.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/lognormal-moments.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/match.arg.loadflex.html</loc></url>
 <url><loc>http://doi-usgs.github.io/loadflex/reference/meltDates.html</loc></url>

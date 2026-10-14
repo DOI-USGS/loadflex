@@ -195,6 +195,10 @@ head(getFittingData(no3_lc))
 ggplot2::qplot(x=Date, y=Resid, data=getResiduals(no3_lr, newdata=regdat))
 ```
 
+    ## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+
 ![](figure/fig_1Da-1.png)
 
 ``` r
