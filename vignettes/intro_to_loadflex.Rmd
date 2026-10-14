@@ -1,7 +1,7 @@
 ---
 title: "Introduction to loadflex"
 author: "Alison Appling"
-date: "13 October, 2026"
+date: "14 October, 2026"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -200,6 +200,12 @@ head(getFittingData(no3_lc))
 
 ``` r
 ggplot2::qplot(x=Date, y=Resid, data=getResiduals(no3_lr, newdata=regdat))
+```
+
+```
+## Warning: `qplot()` was deprecated in ggplot2 3.4.0.
+## This warning is displayed once per session.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
 ```
 
 ![](figure/fig_1Da-1.png)
