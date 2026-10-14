@@ -80,7 +80,7 @@
   series
 
 - [`expandFlowForEGRET()`](http://doi-usgs.github.io/loadflex/reference/expandFlowForEGRET.md)
-  : Convert a date and discharge data.frame into EGRET format
+  : Convert a date and discharge data.frame into the EGRET Daily format
 
 - [`flowconcToFluxConversion()`](http://doi-usgs.github.io/loadflex/reference/flowconcToFluxConversion.md)
   : Provide the conversion factor which, when multiplied by flow \*
