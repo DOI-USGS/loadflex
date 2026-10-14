@@ -3,7 +3,10 @@ data(lamprey_nitrate)
 fitdat <- lamprey_nitrate
 data(lamprey_discharge)
 estdat <- subset(lamprey_discharge, DATE < as.POSIXct("2012-10-01 00:00:00", tz="EST5EDT"))
-estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day
+estdat <- estdat[seq(1, nrow(estdat), by=96/4),] # only keep 4 observations per day (sub-daily)
+# A daily version (one row per day) for the Daily-path tests, which require
+# daily input. Keep the first observation of each calendar day.
+estdat_daily <- estdat[!duplicated(as.Date(estdat$DATE, tz="EST5EDT")), ]
 meta <- metadata(constituent="NO3", flow="DISCHARGE", dates="DATE",
   conc.units="mg L^-1", flow.units="cfs", load.units="kg", load.rate.units="kg d^-1",
   site.name="Lamprey River, NH", site.id='NWIS 01073500', consti.name = "nitrate")
@@ -36,18 +39,18 @@ test_that("convertToEGRET allows metadata and data or newdata without model", {
   expect_true(is.na(eList$Daily))
   expect_s3_class(eList$Sample, 'data.frame')
   
-  eList <- loadflex:::convertToEGRET(newdata = estdat, meta = meta)
+  eList <- loadflex:::convertToEGRET(newdata = estdat_daily, meta = meta)
   expect_true(is.na(eList$Sample))
   expect_s3_class(eList$Daily, 'data.frame')
   
-  eList <- loadflex:::convertToEGRET(data = fitdat, newdata = estdat, meta = meta)
+  eList <- loadflex:::convertToEGRET(data = fitdat, newdata = estdat_daily, meta = meta)
   expect_s3_class(eList$Sample, 'data.frame')
   expect_s3_class(eList$Daily, 'data.frame')
 })
 
 test_that("convertToEGRET returns prediction-free Daily when predictions are missing", {
-  yespreds <- loadflex:::convertToEGRET(newdata = estdat, load.model=conc_lm)
-  nopreds <- loadflex:::convertToEGRET(newdata = estdat, data = fitdat, meta = meta)
+  yespreds <- loadflex:::convertToEGRET(newdata = estdat_daily, load.model=conc_lm)
+  nopreds <- loadflex:::convertToEGRET(newdata = estdat_daily, data = fitdat, meta = meta)
   expect_equal(c("ConcDay","FluxDay","SE","yHat"), sort(setdiff(names(yespreds$Daily), names(nopreds$Daily))))
 })
 
@@ -86,27 +89,42 @@ test_that("convertToEGRETDaily returns NA without estdat or preds", {
 })
 
 test_that("convertToEGRETDaily returns partial info without preds", {
-  Daily <- loadflex:::convertToEGRETDaily(meta = meta, newdata = estdat)
-  expect_equal(ncol(Daily), 14)
+  Daily <- loadflex:::convertToEGRETDaily(meta = meta, newdata = estdat_daily)
+  expect_equal(ncol(Daily), 13)
 })
 
 test_that("convertToEGRETDaily correctly converts", {
-  Daily <- loadflex:::convertToEGRETDaily(newdata = estdat, load.model = conc_lm)
-  expect_equal(nrow(Daily), nrow(estdat))
-  expect_equal(ncol(Daily), 18)
-  
-  expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",  
-                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime",
+  Daily <- loadflex:::convertToEGRETDaily(newdata = estdat_daily, load.model = conc_lm)
+  # The EGRET Daily frame is one row per day, not one row per input observation.
+  expect_equal(nrow(Daily), length(unique(as.Date(estdat_daily$DATE, tz = "EST5EDT"))))
+  expect_equal(ncol(Daily), 17)
+
+  # Daily keys on Date (class Date); dateTime is no longer part of the frame.
+  expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",
+                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30",
                      "ConcDay", "SE", "FluxDay", "yHat")
   expect_equal(sort(names(Daily)), sort(expected_cols))
 })
 
+test_that("convertToEGRETDaily rejects sub-daily flow data", {
+  expect_error(
+    loadflex:::convertToEGRETDaily(newdata = estdat, load.model = conc_lm),
+    "must be daily")
+})
+
 
 test_that("expandFlowForEGRET returns correct columns", {
-  corrected_flow_df <- loadflex:::expandFlowForEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1')
-  expect_equal(nrow(corrected_flow_df), nrow(estdat))
-  expect_equal(ncol(corrected_flow_df), 14)
+  corrected_flow_df <- loadflex:::expandFlowForEGRET(estdat_daily, 'DISCHARGE', 'DATE', 'ft^3 s^-1')
+  # One row per day, keyed on Date; no dateTime column.
+  expect_equal(nrow(corrected_flow_df), length(unique(as.Date(estdat_daily$DATE, tz = "EST5EDT"))))
+  expect_equal(ncol(corrected_flow_df), 13)
   expected_cols <- c("Date", "Q", "Julian", "Month", "Day", "DecYear", "MonthSeq",
-                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30", "dateTime")
+                     "waterYear", "Qualifier", "i", "LogQ", "Q7", "Q30")
   expect_equal(sort(names(corrected_flow_df)), sort(expected_cols))
+})
+
+test_that("expandFlowForEGRET rejects sub-daily flow data", {
+  expect_error(
+    loadflex:::expandFlowForEGRET(estdat, 'DISCHARGE', 'DATE', 'ft^3 s^-1'),
+    "must be daily")
 })

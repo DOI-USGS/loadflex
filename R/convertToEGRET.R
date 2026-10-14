@@ -94,21 +94,21 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
     populateSampleColumns() %>%
     mutate(
       dateTime = data[[date_col]],
-      Date = as.Date(Date))
+      Date = as.Date(data[[date_col]], tz = egretDateTZ(data[[date_col]])))
 
-  # Format the flow info
+  # Format the flow info. Samples are observation-level (possibly sub-daily), so
+  # compute an instantaneous Q per observation rather than routing through the
+  # daily populateDaily(). EGRET expects cms for all flow values.
   flow_col <- getInfo(meta, 'flow', TRUE)
+  qconvert <- 1/convertUnits(getUnits(meta, 'flow', 'EGRET'), 'cms')
   flow_data <- data %>%
-    select(all_of(c(date_col, flow_col))) %>%
-    expandFlowForEGRET(
-      flow.colname = flow_col,
-      date.colname = date_col,
-      flow.units = getUnits(meta, 'flow', 'EGRET')) %>%
-    select(Date, Q, dateTime)
+    select(dateTime = all_of(date_col), value = all_of(flow_col)) %>%
+    mutate(Q = value / qconvert) %>%
+    select(dateTime, Q)
 
-  # Combine the sample and flow info
+  # Combine the sample and flow info by the observation timestamp
   sample_df <- sample_data %>%
-    left_join(flow_data, by=c('dateTime', 'Date'))
+    left_join(flow_data, by = 'dateTime')
 
   # Add in predictions if available. The sample-specific model predictions
   # created by EGRET are actually leave-one-out estimates where yHat, SE, and
@@ -121,8 +121,8 @@ convertToEGRETSample <- function(data = NULL, meta = NULL, dailydat = NULL) {
   if(!is.null(dailydat) && all(c('yHat','SE','ConcDay') %in% names(dailydat))) {
     sample_df <- left_join(
       sample_df,
-      select(dailydat, dateTime, yHat, SE, ConcHat=ConcDay),
-      by='dateTime')
+      select(dailydat, Date, yHat, SE, ConcHat=ConcDay),
+      by='Date')
   }
 
   return(sample_df)
@@ -198,10 +198,14 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   #   (1) is the estimated log concentration (yHat),
   #   (2) is the estimated standard error (SE),
   #   (3) is the estimated concentration (ConcHat).
-  fit <- se.pred <- '.dplyr.var'
+  # The Daily frame keys on Date (class Date), so reduce the prediction
+  # timestamps to calendar days in the same timezone before joining.
+  conc <- se.pred <- date <- '.dplyr.var'
+  preds_log <- mutate(preds_log, Date = as.Date(date, tz = egretDateTZ(date)))
+  preds_lin <- mutate(preds_lin, Date = as.Date(date, tz = egretDateTZ(date)))
   daily_df <- daily_df %>%
-    left_join(select(preds_log, date, yHat = conc, SE = se.pred), by=c("dateTime" = "date")) %>%
-    left_join(select(preds_lin, date, ConcDay = conc), by=c("dateTime" = "date"))
+    left_join(select(preds_log, Date, yHat = conc, SE = se.pred), by = "Date") %>%
+    left_join(select(preds_lin, Date, ConcDay = conc), by = "Date")
 
   # Fill in the Flux preds based on the Conc preds
   meta.conv <- updateMetadata(meta, flow='Q', flow.units='cms', load.rate.units='kg d^-1')
@@ -212,13 +216,22 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
   return(daily_df)
 }
 
-#' Convert a date and discharge data.frame into EGRET format
+#' Convert a date and discharge data.frame into the EGRET Daily format
 #'
 #' @description Use EGRET functions to convert a data.frame of date and
 #'   discharge columns into "the basic Daily data frame used in WRTDS", i.e., a
-#'   13-column data.frame with parsed datetimes, log(Q), and 7-day and 30-day
-#'   smoothed Q, plus a column for dateTime. See
+#'   data.frame with one row per day, parsed datetimes, log(Q), and 7-day and
+#'   30-day smoothed Q, keyed on a `Date` column. See
 #'   \code{\link[EGRET]{populateDaily}}
+#'
+#' @details The input must be daily (one row per calendar day). Sub-daily input
+#'   is rejected with an error because EGRET's Daily data.frame is defined as one
+#'   row per day; see [convertToEGRETSample()] for the sample (observation-level)
+#'   flow path.
+#'
+#'   The date column is converted to class `Date` using its own timezone before
+#'   being passed to [EGRET::populateDaily()], so loadflex (not populateDaily)
+#'   decides how timestamps map to calendar days.
 #'
 #' @param flowdat data frame with discharge values to convert
 #' @param flow.colname character string giving the column name that corresponds
@@ -233,18 +246,40 @@ convertToEGRETDaily <- function(newdata, load.model = NULL, meta = NULL) {
 #' @importFrom EGRET populateDaily
 expandFlowForEGRET <- function(flowdat, flow.colname, date.colname, flow.units) {
 
+  # Reduce timestamps to calendar days in their own timezone, so loadflex owns
+  # the date conversion rather than relying on populateDaily's internal handling.
+  flow_dates <- flowdat[[date.colname]]
+  day <- as.Date(flow_dates, tz = egretDateTZ(flow_dates))
+
+  # EGRET's Daily data.frame is one row per day; reject sub-daily input so we
+  # don't silently duplicate rows when populateDaily merges on the Date key.
+  if(anyDuplicated(day) != 0) {
+    stop("flowdat for the EGRET Daily frame must be daily (one row per day); ",
+         "sub-daily flow data is not supported here")
+  }
+
   # Get the conversion factor. EGRET expects cms for all flow values
   qconvert <- 1/convertUnits(flow.units, 'cms')
 
-  # Convert to EGRET format with many columns describing flow
+  # Convert to EGRET format with many columns describing flow. populateDaily
+  # reads the date from a column named `Date` and the discharge from `value`,
+  # keys on the Date column, and returns one row per day.
   flowdat_corrected <- flowdat %>%
-    rename(
-      value = all_of(flow.colname),
-      dateTime = all_of(date.colname)
-    ) %>%
-    mutate(code = "") %>%
-    populateDaily(qConvert = qconvert, verbose = FALSE) %>%
-    mutate(dateTime = flowdat[[date.colname]])
+    rename(value = all_of(flow.colname)) %>%
+    mutate(Date = day, code = "") %>%
+    populateDaily(qConvert = qconvert, verbose = FALSE)
 
   return(flowdat_corrected)
+}
+
+#' Pick a timezone for converting EGRET datetimes to calendar days
+#'
+#' Use the timezone carried by the datetime vector so that `as.Date()` does not
+#' silently fall back to UTC and shift observations to the wrong calendar day.
+#'
+#' @param datetimes a Date or POSIXct vector
+#' @keywords internal
+egretDateTZ <- function(datetimes) {
+  tz <- attr(datetimes, "tzone")
+  if(is.null(tz) || identical(tz, "")) "UTC" else tz
 }
