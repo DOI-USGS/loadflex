@@ -229,7 +229,7 @@ loadInterp <- function(interp.format=c("flux","conc"), interp.function=linearInt
 #' @family predictSolute
 predictSolute.loadInterp <- function(
   load.model, flux.or.conc=c("flux","conc"), newdata,
-  date=TRUE, count=TRUE, se.fit=FALSE, se.pred=FALSE,
+  date=TRUE, count=!identical(agg.by,"unit"), se.fit=FALSE, se.pred=FALSE,
   interval=c("none","prediction"), level=0.95, lin.or.log=c("linear","log"),
   agg.by=c("unit", "day", "month", "water year", "calendar year", "total", "[custom]"),
   na.rm=FALSE, attach.units=FALSE, ...) {
